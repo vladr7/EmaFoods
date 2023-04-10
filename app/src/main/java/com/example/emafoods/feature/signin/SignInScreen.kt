@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.addfood
+package com.example.emafoods.feature.signin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,27 +14,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AddFoodRoute(
-    modifier: Modifier = Modifier
+fun SignInRoute(
+    modifier: Modifier = Modifier,
 ) {
-    AddFoodScreen(
+    SignInScreen(
         modifier = modifier
     )
 }
 
 @Composable
-fun AddFoodScreen(
-    modifier: Modifier = Modifier
+fun SignInScreen(
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.tertiary),
+            .background(MaterialTheme.colorScheme.secondary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Add food",
+            text = "Sign In",
             fontSize = 36.sp,
             modifier = Modifier.padding(16.dp)
         )

@@ -3,15 +3,12 @@ package com.example.emafoods
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.emafoods.ui.EmaFoodsNavigation
+import com.example.emafoods.ui.SignInNavigation
 import com.example.emafoods.ui.theme.EmaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,34 +18,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             EmaTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    val randomNumber = (0..1).random()
+                    if (randomNumber == 0) {
+                        SignInNavigation()
+                    } else {
+                        EmaFoodsNavigation()
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-
-    Column {
-        Text(text = "Hello $name!")
-        OutlinedButton(onClick = { /*TODO*/ }) {
-            Text(text = "Click me")
-        }
-    }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    EmaTheme {
-        Greeting("Android")
-    }
-}
