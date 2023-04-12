@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.emafoods.feature.addfood.navigation.addFoodNavigationRoute
 import com.example.emafoods.feature.addfood.navigation.addFoodScreen
+import com.example.emafoods.feature.listfood.navigation.listFoodScreen
 
 @Composable
 fun HomeNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = addFoodNavigationRoute,
+    startDestination: String = HomeBottomDestination.AddFood.route,
 ) {
     NavHost(
         navController = navController,
@@ -19,5 +19,6 @@ fun HomeNavHost(
         modifier = modifier,
     ) {
         addFoodScreen()
+        listFoodScreen()
     }
 }

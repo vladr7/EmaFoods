@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EmaFoods</string>
+    <string name="add_food">Add Food</string>
+    <string name="foods_list">"Foods "</string>
 </resources>

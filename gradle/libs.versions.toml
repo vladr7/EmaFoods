@@ -36,7 +36,8 @@ junit = "4.13.2"
 kotlin = "1.8.0"
 ksp = "1.8.0-1.0.9"
 maps-compose = "2.5.3"
-material = "1.9.0-alpha02"
+material-google = "1.9.0-alpha02"
+material = "1.4.1"
 # @keep
 minSdk = "21"
 okhttp = "4.10.0"
@@ -108,7 +109,7 @@ androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", 
 androidx-window = { module = "androidx.window:window", version.ref = "androidx-window" }
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 core-jdk-desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "jdkDesugar" }
-google-android-material = { module = "com.google.android.material:material", version.ref = "material" }
+google-android-material = { module = "com.google.android.material:material", version.ref = "material-google" }
 googlemaps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "maps-compose" }
 googlemaps-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "google-maps" }
 junit = { module = "junit:junit", version.ref = "junit" }

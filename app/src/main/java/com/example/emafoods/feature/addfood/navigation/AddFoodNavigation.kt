@@ -5,15 +5,15 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.example.emafoods.feature.addfood.AddFoodRoute
+import com.example.emafoods.navigation.home.HomeBottomDestination
 
-const val addFoodNavigationRoute = "add_food_route"
 
 fun NavController.navigateToAddFood(navOptions: NavOptions? = null) {
-    this.navigate(addFoodNavigationRoute, navOptions)
+    this.navigate(HomeBottomDestination.AddFood.route, navOptions)
 }
 
 fun NavGraphBuilder.addFoodScreen() {
-    composable(route = addFoodNavigationRoute) {
+    composable(route = HomeBottomDestination.AddFood.route) {
         AddFoodRoute()
     }
 }

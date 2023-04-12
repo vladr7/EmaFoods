@@ -22,12 +22,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val randomNumber = (0..1).random()
-                    if (randomNumber == 0) {
-                        SignInNavigation()
-                    } else {
-                        EmaFoodsNavigation()
-                    }
+                    EmaFoodsNavigation()
+
+//                    val randomNumber = (0..1).random()
+//                    if (randomNumber == 0) {
+//                        SignInNavigation()
+//                    } else {
+//                        EmaFoodsNavigation()
+//                    }
                 }
             }
         }
