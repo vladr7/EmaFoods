@@ -22,6 +22,7 @@ coil = "2.2.0"
 hilt = "2.45"
 hilt-navigation-compose = "1.1.0-alpha01"
 hilt-android-testing = "2.42"
+relay = "0.3.05"
 
 # @keep
 compileSdk = "33"
@@ -136,3 +137,4 @@ kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref =
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
+relay = { id = "com.google.relay", version.ref = "relay" }
