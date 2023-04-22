@@ -169,8 +169,8 @@ fun SignInButton(
     isLoading: Boolean = false,
     shape: Shape = RoundedCornerShape(8.dp),
     borderColor: Color = Color.LightGray,
-    backgroundColor: Color = androidx.compose.material.MaterialTheme.colors.surface,
-    progressIndicatorColor: Color = androidx.compose.material.MaterialTheme.colors.primary,
+    backgroundColor: Color = MaterialTheme.colorScheme.surface,
+    progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit
 ) {
     Surface(
