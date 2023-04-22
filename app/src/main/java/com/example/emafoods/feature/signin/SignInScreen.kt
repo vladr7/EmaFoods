@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,15 +38,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.emafoods.R
@@ -70,13 +73,7 @@ fun SignInScreen(
 ) {
     var isLoading by remember { mutableStateOf(false) }
 
-    Image(
-        painter = painterResource(id = R.drawable.background),
-        contentDescription = null,
-        contentScale = ContentScale.FillHeight,
-        modifier = modifier
-            .fillMaxSize(),
-    )
+    SignInBackground(modifier = modifier)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -92,6 +89,37 @@ fun SignInScreen(
                 isLoading = true
                 onSignInClick()
             },
+        )
+    }
+}
+
+@Composable
+fun SignInBackground(
+    modifier: Modifier = Modifier
+) {
+    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
+
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.secondary),
+        startY = sizeImage.height.toFloat() / 3,
+        endY = sizeImage.height.toFloat()
+    )
+
+    Box() {
+        Image(
+            painter = painterResource(id = R.drawable.background),
+            contentDescription = null,
+            contentScale = ContentScale.FillHeight,
+            modifier = modifier
+                .onGloballyPositioned {
+                    sizeImage = it.size
+                }
+                .fillMaxSize(),
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(gradient)
         )
     }
 }
@@ -200,29 +228,62 @@ fun SignInButtonText(
     loadingText: String
 ) {
     if (isLoading) {
-        Text(text = loadingText)
+        Text(
+            text = loadingText,
+            fontSize = 18.sp
+        )
     } else {
         Text(
             buildAnnotatedString {
                 withStyle(style = SpanStyle(color = MaterialTheme.typography.bodyLarge.color)) {
-                    append("Sign In With ")
+                    append(stringResource(id = R.string.login_button_text))
                 }
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF4285F4))) {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF4285F4)
+                    )
+                ) {
                     append("G")
                 }
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFFDB4437))) {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFDB4437)
+                    )
+                ) {
                     append("o")
                 }
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFFF4B400))) {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFF4B400)
+                    )
+                ) {
                     append("o")
                 }
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF4285F4))) {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF4285F4)
+                    )
+                ) {
                     append("g")
                 }
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFF0F9D58))) {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF0F9D58)
+                    )
+                ) {
                     append("l")
                 }
-                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, color = Color(0xFFDB4437))) {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFDB4437)
+                    )
+                ) {
                     append("e")
                 }
             },
