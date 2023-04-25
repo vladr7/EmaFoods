@@ -116,6 +116,8 @@ dependencies {
     implementation(libs.androidx.window)
 
     implementation(libs.google.android.material)
+    implementation(libs.bundles.firebase)
+    implementation(libs.gms.auth)
 
     // Testing
     androidTestImplementation(libs.junit)

@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.signin
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -52,15 +53,39 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.emafoods.R
+import com.example.emafoods.feature.signin.utils.AuthResultContract
+import kotlinx.coroutines.launch
 
 @Composable
 fun SignInRoute(
     modifier: Modifier = Modifier,
 ) {
+
+    val signInRequestCode = 1
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
+            try {
+                val account = task?.getResult(ApiException::class.java)
+                if (account == null) {
+                    text = "Google sign in failed"
+                } else {
+                    coroutineScope.launch {
+                        viewModel.signIn(
+                            email = account.email.toString(),
+                            displayName = account.displayName.toString(),
+                            idToken = account.idToken ?: ""
+                        )
+                    }
+                }
+            } catch (e: ApiException) {
+                text = "Google sign in failed"
+            }
+        }
+
     SignInScreen(
         modifier = modifier,
         onSignInClick = {
-
+            authResultLauncher.launch(signInRequestCode)
         }
     )
 }
