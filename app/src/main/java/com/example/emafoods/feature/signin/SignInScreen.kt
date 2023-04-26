@@ -20,11 +20,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.Surface
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,7 +52,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.emafoods.R
-import com.example.emafoods.feature.signin.utils.AuthResultContract
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,36 +59,35 @@ fun SignInRoute(
     modifier: Modifier = Modifier,
 ) {
 
-    val signInRequestCode = 1
-    val authResultLauncher =
-        rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
-            try {
-                val account = task?.getResult(ApiException::class.java)
-                if (account == null) {
-                    text = "Google sign in failed"
-                } else {
-                    coroutineScope.launch {
-                        viewModel.signIn(
-                            email = account.email.toString(),
-                            displayName = account.displayName.toString(),
-                            idToken = account.idToken ?: ""
-                        )
-                    }
-                }
-            } catch (e: ApiException) {
-                text = "Google sign in failed"
-            }
-        }
+//    val signInRequestCode = 1
+//    val authResultLauncher =
+//        rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
+//            try {
+//                val account = task?.getResult(ApiException::class.java)
+//                if (account == null) {
+//                    text = "Google sign in failed"
+//                } else {
+//                    coroutineScope.launch {
+//                        viewModel.signIn(
+//                            email = account.email.toString(),
+//                            displayName = account.displayName.toString(),
+//                            idToken = account.idToken ?: ""
+//                        )
+//                    }
+//                }
+//            } catch (e: ApiException) {
+//                text = "Google sign in failed"
+//            }
+//        }
 
     SignInScreen(
         modifier = modifier,
         onSignInClick = {
-            authResultLauncher.launch(signInRequestCode)
+//            authResultLauncher.launch(signInRequestCode)
         }
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
@@ -186,7 +183,6 @@ fun SignInTopBar(
     }
 }
 
-@ExperimentalMaterialApi
 @Composable
 fun SignInButton(
     loadingText: String = "Signing in...",
@@ -318,7 +314,6 @@ fun SignInButtonText(
 
 }
 
-@ExperimentalMaterialApi
 @Composable
 @Preview
 fun SignInButtonPreview() {
