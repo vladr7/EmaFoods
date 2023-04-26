@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,39 +52,47 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.emafoods.R
+import com.example.emafoods.feature.signin.utils.AuthResultContract
+import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
 
 @Composable
 fun SignInRoute(
+    viewModel: SignInViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
 ) {
 
-//    val signInRequestCode = 1
-//    val authResultLauncher =
-//        rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
-//            try {
-//                val account = task?.getResult(ApiException::class.java)
-//                if (account == null) {
-//                    text = "Google sign in failed"
-//                } else {
-//                    coroutineScope.launch {
+    val coroutineScope = rememberCoroutineScope()
+//    val state by viewModel.state.collectAsState()
+    var text by remember { mutableStateOf<String?>(null) }
+    var navigated by remember { mutableStateOf<Boolean>(false) }
+    val signInRequestCode = 1
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
+            try {
+                val account = task?.getResult(ApiException::class.java)
+                if (account == null) {
+                    text = "Google sign in failed"
+                } else {
+                    coroutineScope.launch {
 //                        viewModel.signIn(
 //                            email = account.email.toString(),
 //                            displayName = account.displayName.toString(),
 //                            idToken = account.idToken ?: ""
 //                        )
-//                    }
-//                }
-//            } catch (e: ApiException) {
-//                text = "Google sign in failed"
-//            }
-//        }
+                    }
+                }
+            } catch (e: ApiException) {
+                text = "Google sign in failed"
+            }
+        }
 
     SignInScreen(
         modifier = modifier,
         onSignInClick = {
-//            authResultLauncher.launch(signInRequestCode)
+            authResultLauncher.launch(signInRequestCode)
         }
     )
 }
