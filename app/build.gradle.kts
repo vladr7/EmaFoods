@@ -1,62 +1,45 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.relay)
+    alias(libs.plugins.google.hilt)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.gms)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
     namespace = "com.example.emafoods"
+    compileSdk = 33
 
-    compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
         applicationId = "com.example.emafoods"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
-        vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
+        minSdk = 26
+        targetSdk = 33
+        versionCode = (findProperty("versionCode") as? String)?.toIntOrNull() ?: 1
+        versionName = libs.versions.versionName.get()
 
-    signingConfigs {
-        // We use a bundled debug keystore, to allow debug builds from CI to be upgradable
-        named("debug") {
-            storeFile = rootProject.file("debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
         }
     }
 
     buildTypes {
-        getByName("debug") {}
+
+        getByName("debug") {
+        }
 
         getByName("release") {
-            isMinifyEnabled = true
-            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
-    }
-
-    testOptions {
-        unitTests {
-            isReturnDefaultValues = true
-            isIncludeAndroidResources = true
-        }
-    }
-
-    // Tests can be Robolectric or instrumented tests
-    sourceSets {
-        val sharedTestDir = "src/sharedTest/java"
-        getByName("test") {
-            java.srcDir(sharedTestDir)
-        }
-        getByName("androidTest") {
-            java.srcDir(sharedTestDir)
-        }
+        flavorDimensions += listOf("environment")
     }
 
     compileOptions {
@@ -64,81 +47,57 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
     buildFeatures {
         compose = true
     }
-
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
-
     packagingOptions {
-        // Multiple dependency bring these files in. Exclude them to enable
-        // our test APK to build (has no effect on our AARs)
-        excludes += "/META-INF/AL2.0"
-        excludes += "/META-INF/LGPL2.1"
+        resources.excludes.add("META-INF/notice.txt")
     }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
 
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlinx.coroutines.android)
-
-    implementation(libs.androidx.compose.animation)
-    implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.materialWindow)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.runtime.livedata)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
-    implementation(libs.accompanist.swiperefresh)
-    implementation(libs.accompanist.systemuicontroller)
-
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.activity.compose)
-
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewModelCompose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.window)
-
-    implementation(libs.google.android.material)
-    implementation(libs.bundles.firebase)
+    implementation(libs.bundles.compose)
+    implementation(libs.room.runtime)
+    implementation(libs.room.coroutines)
     implementation(libs.gms.auth)
-
-    // Testing
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.compose.ui.test)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.bundles.testing)
-    // Robolectric dependencies
-    testImplementation(libs.androidx.compose.ui.test.junit4)
-    testImplementation(libs.robolectric)
-
-    // HILT
+    annotationProcessor(libs.room.annotationProcessor)
+    kapt(libs.room.annotationProcessor)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.firebase)
     implementation(libs.bundles.hilt)
-
+    implementation(libs.bundles.androidx)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.coil)
+    implementation(libs.media3)
+    implementation(libs.media3Ui)
+    implementation(libs.media3Session)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.datastore)
+    implementation(libs.bundles.retrofitAndSerialization)
+    implementation(libs.squareup.okHttp)
+    implementation(libs.maps.playServices)
+    implementation(libs.maps.compose)
+    implementation(libs.playServiceCodeScanner)
+    kapt(libs.google.hiltandroidcompiler)
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.test.junit)
+    testImplementation(libs.androidx.test.espresso.core)
+    testImplementation(libs.compose.testing)
+    testImplementation(libs.bundles.testing)
+    debugImplementation(libs.compose.preview)
+    debugImplementation(libs.compose.tooling)
+    debugImplementation(libs.navigation)
+    testCompileOnly(libs.hamcrest)
+    testCompileOnly(libs.kotlinx.coroutines.test)
 }
-
-tasks.withType<Test>().configureEach {
-    systemProperties.put("robolectric.logging", "stdout")
-} 
