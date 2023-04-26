@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,19 +56,20 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.emafoods.R
 import com.example.emafoods.feature.signin.utils.AuthResultContract
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
 
 @Composable
 fun SignInRoute(
-    viewModel: SignInViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
+    viewModel: SignInViewModel = hiltViewModel(),
 ) {
 
     val coroutineScope = rememberCoroutineScope()
-//    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
     var text by remember { mutableStateOf<String?>(null) }
-    var navigated by remember { mutableStateOf<Boolean>(false) }
+    val navigated by remember { mutableStateOf<Boolean>(false) }
     val signInRequestCode = 1
     val authResultLauncher =
         rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
@@ -77,11 +79,11 @@ fun SignInRoute(
                     text = "Google sign in failed"
                 } else {
                     coroutineScope.launch {
-//                        viewModel.signIn(
-//                            email = account.email.toString(),
-//                            displayName = account.displayName.toString(),
-//                            idToken = account.idToken ?: ""
-//                        )
+                        viewModel.signIn(
+                            email = account.email.toString(),
+                            displayName = account.displayName.toString(),
+                            idToken = account.idToken ?: ""
+                        )
                     }
                 }
             } catch (e: ApiException) {
@@ -95,6 +97,10 @@ fun SignInRoute(
             authResultLauncher.launch(signInRequestCode)
         }
     )
+
+    if(state.shouldNavigate == true && !navigated) {
+        Text(text = "Navigated1")
+    }
 }
 
 @Composable

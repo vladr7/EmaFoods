@@ -30,6 +30,9 @@ firebase-core = "21.1.1"
 firebase-config = "21.2.1"
 firebase-crashlytics = "18.3.3"
 firebase-crashlytics-gradle = "2.9.4"
+firebase-auth = "21.0.1"
+firebase-firestore = "24.4.1"
+firebase-storage = "20.1.0"
 navigation-compose = "2.5.3"
 hilt-navigation-compose = "1.1.0-alpha01"
 accompanist = "0.28.0"
@@ -99,6 +102,9 @@ firebase-core = { module = "com.google.firebase:firebase-core", version.ref = "f
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", version.ref = "firebase-analytics" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx", version.ref = "firebase-crashlytics" }
 firebase-config = { module = "com.google.firebase:firebase-config-ktx", version.ref = "firebase-config" }
+firebase-auth = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebase-auth" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebase-firestore" }
+firebase-storage = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebase-storage" }
 #ROOM
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room"}
 room-annotationProcessor = { module = "androidx.room:room-compiler", version.ref = "room"}
@@ -135,7 +141,7 @@ playServiceCodeScanner = {module = "com.google.android.gms:play-services-code-sc
 compose = ["compose-ui", "compose-material3", "compose-preview", "compose-material"]
 accompanist = ["accompanist-pager-indicators", "accompanist-pager"]
 androidx = ["androidx-core", "androidx-lifecycle-runtime", "androidx-lifecycle-viewmodel", "androidx-lifecycle-viewmodelcompose", "androidx-activity", "androidx-activity-compose", "androidx-fragment", "androidx-datastore", "androidx-splashscreen", "androidx-savedstate"]
-firebase = ["firebase-core", "firebase-analytics", "firebase-crashlytics", "firebase-config"]
+firebase = ["firebase-core", "firebase-analytics", "firebase-crashlytics", "firebase-config", "firebase-auth", "firebase-firestore", "firebase-storage"]
 retrofitAndSerialization = ["squareup-retrofit", "retrofit-converter", "kotlinx-serialization"]
 hilt = ["google-hilt", "hilt-navigation-compose"]
 testing = ["mockk", "mockito-kotlin", "hilt-android-testing", "mockito-inline", "core-testing"]
