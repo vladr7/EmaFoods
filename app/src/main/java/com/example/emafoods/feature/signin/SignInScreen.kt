@@ -57,7 +57,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.emafoods.R
 import com.example.emafoods.feature.signin.utils.AuthResultContract
 import com.example.emafoods.ui.EmaFoodsNavigation
-import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
 
@@ -70,7 +69,6 @@ fun SignInRoute(
     val coroutineScope = rememberCoroutineScope()
     val state by viewModel.state.collectAsState()
     var text by remember { mutableStateOf<String?>(null) }
-    val navigated by remember { mutableStateOf<Boolean>(false) }
     val signInRequestCode = 1
     val authResultLauncher =
         rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
@@ -99,7 +97,7 @@ fun SignInRoute(
         }
     )
 
-    if(state.shouldNavigate == true && !navigated) {
+    if(state.signInSuccess) {
         EmaFoodsNavigation()
     }
 }

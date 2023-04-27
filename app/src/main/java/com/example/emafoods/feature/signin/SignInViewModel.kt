@@ -34,7 +34,7 @@ class SignInViewModel @Inject constructor(
                     println("SignIn success! ${task.result.user}")
                     _state.update {
                         it.copy(
-                            shouldNavigate = true
+                            signInSuccess = true
                         )
                     }
                 } else {
@@ -46,5 +46,5 @@ class SignInViewModel @Inject constructor(
 
 data class LoginViewState(
     val user: CrashlyticsReport.Session.User? = null,
-    val shouldNavigate: Boolean? = null
+    val signInSuccess: Boolean = false,
 )
