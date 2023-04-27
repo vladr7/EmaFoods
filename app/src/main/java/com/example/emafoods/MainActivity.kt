@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import com.example.emafoods.ui.EmaFoodsNavigation
 import com.example.emafoods.ui.SignInNavigation
 import com.example.emafoods.ui.theme.EmaTheme
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,8 +23,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    EmaFoodsNavigation()
-                    SignInNavigation()
+                    if (FirebaseAuth.getInstance().currentUser == null) {
+                        SignInNavigation()
+                    } else {
+                        EmaFoodsNavigation()
+                    }
                 }
             }
         }
