@@ -20,13 +20,14 @@ class DefaultFoodDataSource: FoodDataSource {
     companion object {
         const val FIRESTORE_FOODS_COLLECTION = "ALLFOODS"
         const val STORAGE_FOODS = "ALLFOODS"
+        const val FIREBASE_BUCKET_NAME = "emafoods-16e9e.appspot.com"
     }
 
     private val foodCollection = FirebaseFirestore.getInstance()
         .collection(FIRESTORE_FOODS_COLLECTION)
 
     private val storage = FirebaseStorage.getInstance()
-    private val gsReference = storage.getReferenceFromUrl("gs://emaveganapp.appspot.com/$STORAGE_FOODS/")
+    private val gsReference = storage.getReferenceFromUrl("gs://$FIREBASE_BUCKET_NAME/$STORAGE_FOODS/")
 
     override suspend fun addFood(food: Food): State<Food> {
         val task = foodCollection.document(food.id).set(food)

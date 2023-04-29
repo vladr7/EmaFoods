@@ -11,6 +11,7 @@ class GenerateFoodUseCase @Inject constructor(
 
     suspend fun execute(): Food {
         val foods = getAllFoodsUseCase.execute().first()
+        if(foods.isEmpty()) return Food(id = "empty")
         return foods.random()
     }
 }
