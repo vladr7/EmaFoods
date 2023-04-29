@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.generatefood.domain
+package com.example.emafoods.feature.generatefood.domain.usecase
 
 import com.example.emafoods.core.data.models.Food
 import javax.inject.Inject
