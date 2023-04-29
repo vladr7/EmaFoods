@@ -1,4 +1,4 @@
-package com.example.emafoods.core.data.network
+package com.example.emafoods.core.domain.network
 
 interface FirebaseService {
 

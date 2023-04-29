@@ -1,7 +1,7 @@
 package com.example.emafoods.di
 
 import com.example.emafoods.core.data.network.DefaultFirebaseService
-import com.example.emafoods.core.data.network.FirebaseService
+import com.example.emafoods.core.domain.network.FirebaseService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
