@@ -2,6 +2,7 @@ package com.example.emafoods.feature.generatefood.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
@@ -16,13 +17,21 @@ import javax.inject.Inject
 class GenerateViewModel @Inject constructor(
     private val foodMapper: FoodMapper,
     private val generateFoodUseCase: GenerateFoodUseCase,
+    private val refreshFoodsUseCase: RefreshFoodsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
     val state: StateFlow<GenerateViewState> = _state
 
     init {
+        refreshFoodsFromRepository()
         generateFoodEvent()
+    }
+
+    private fun refreshFoodsFromRepository() {
+        viewModelScope.launch {
+            refreshFoodsUseCase.execute()
+        }
     }
 
     fun generateFoodEvent() {
