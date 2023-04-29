@@ -7,6 +7,6 @@ class GetAllFoodsUseCase @Inject constructor(
     private val foodsRepository: FoodRepository
 ) {
 
-    operator fun invoke() =
+    fun execute() =
         foodsRepository.foods
 }

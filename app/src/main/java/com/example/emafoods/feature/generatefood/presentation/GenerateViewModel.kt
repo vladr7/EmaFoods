@@ -1,6 +1,7 @@
 package com.example.emafoods.feature.generatefood.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
@@ -8,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,12 +21,18 @@ class GenerateViewModel @Inject constructor(
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
     val state: StateFlow<GenerateViewState> = _state
 
+    init {
+        generateFoodEvent()
+    }
+
     fun generateFoodEvent() {
-        val food = generateFoodUseCase.execute()
-        _state.update {
-            it.copy(
-                food = foodMapper.mapToViewData(food)
-            )
+        viewModelScope.launch {
+            val food = generateFoodUseCase.execute()
+            _state.update {
+                it.copy(
+                    food = foodMapper.mapToViewData(food)
+                )
+            }
         }
     }
 }
