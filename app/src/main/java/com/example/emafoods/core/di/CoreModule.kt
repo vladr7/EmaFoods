@@ -10,6 +10,7 @@ import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.network.FirebaseService
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
+import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,8 +47,15 @@ object CoreModule {
 
     @Provides
     fun provideGetAllFoodsUseCase(
-        foodsRepository: FoodRepository
+        foodRepository: FoodRepository
     ) = GetAllFoodsUseCase(
-        foodsRepository = foodsRepository
+        foodRepository = foodRepository
+    )
+
+    @Provides
+    fun provideRefreshFoodsUseCase(
+        foodRepository: FoodRepository
+    ) = RefreshFoodsUseCase(
+        foodRepository = foodRepository
     )
 }

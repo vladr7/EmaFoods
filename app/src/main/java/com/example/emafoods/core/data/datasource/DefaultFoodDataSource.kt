@@ -76,7 +76,7 @@ class DefaultFoodDataSource: FoodDataSource {
         snapshot.items.forEach { storageReference ->
             mutableListOfFoodImages.add(
                 FoodImage(
-                    id = storageReference.name.removeSuffix(".jpg"),
+                    id = storageReference.name.removeSuffix(".jpeg"),
                     imageRef = storageReference.downloadUrl.await().toString()
                 )
             )
@@ -84,6 +84,7 @@ class DefaultFoodDataSource: FoodDataSource {
 
         emit(mutableListOfFoodImages.toList())
     }.catch {
+        println("vlad ${it.message}")
         emit(listOf())
     }.flowOn(Dispatchers.IO)
 }
