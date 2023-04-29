@@ -3,7 +3,7 @@ package com.example.emafoods.feature.generatefood.presentation
 import androidx.lifecycle.ViewModel
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
-import com.example.emafoods.feature.generatefood.domain.GenerateFoodUseCase
+import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
