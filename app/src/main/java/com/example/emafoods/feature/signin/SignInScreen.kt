@@ -48,6 +48,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
@@ -97,7 +98,7 @@ fun SignInRoute(
         }
     )
 
-    if(state.signInSuccess) {
+    if (state.signInSuccess) {
         EmaFoodsNavigation()
     }
 }
@@ -181,7 +182,7 @@ fun SignInTopBar(
                 ),
         )
         Text(
-            text = "EmaFoods",
+            text = stringResource(id = R.string.app_name),
             fontSize = 36.sp,
             fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
             fontWeight = FontWeight.Bold,
@@ -193,6 +194,27 @@ fun SignInTopBar(
                     )
                 )
             ),
+            textAlign = TextAlign.Center,
+            modifier = modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 16.dp)
+        )
+        Text(
+            text = stringResource(id = R.string.login_subtitle),
+            fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.secondary,
+                        MaterialTheme.colorScheme.tertiary,
+                    )
+                )
+            ),
+            textAlign = TextAlign.Center,
+            modifier = modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
         )
     }
 }
