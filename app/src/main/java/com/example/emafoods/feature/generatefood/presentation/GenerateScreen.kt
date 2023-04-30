@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -54,6 +53,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
@@ -77,6 +77,7 @@ fun GenerateScreenRoute(
         title = state.food.title,
         description = state.food.description,
         foodHasBeenGenerated = state.foodHasBeenGenerated,
+        loadingFood = state.loadingFood,
     )
 }
 
@@ -88,6 +89,7 @@ fun GenerateScreen(
     description: String,
     modifier: Modifier = Modifier,
     foodHasBeenGenerated: Boolean,
+    loadingFood: Boolean,
 ) {
     Column(
         modifier = modifier,
@@ -104,20 +106,29 @@ fun GenerateScreen(
                     .alpha(0.2f),
             )
             GenerateDescription(modifier, description)
+
         } else {
-            CookingAnimation()
-            GenerateButton(
-                modifier = modifier,
-                onGenerateClick = onGenerateClick
-            )
+            // waiting animation
         }
+        if(loadingFood) {
+//            LoadingCookingAnimation()
+        }
+
+        GenerateButton(
+            modifier = modifier,
+            onGenerateClick = onGenerateClick
+        )
     }
 }
 
 @Composable
-fun CookingAnimation() {
+fun LoadingCookingAnimation() {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cookinganimation))
-    val progress by animateLottieCompositionAsState(composition)
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+        speed = 3f
+    )
     LottieAnimation(
         composition = composition,
         progress = { progress },
@@ -229,10 +240,7 @@ fun GenerateImage(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         loading = {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .padding(100.dp)
-            )
+//            LoadingCookingAnimation()
         }
     )
 }

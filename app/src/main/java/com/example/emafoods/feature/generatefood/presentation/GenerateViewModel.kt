@@ -34,11 +34,18 @@ class GenerateViewModel @Inject constructor(
     }
 
     fun generateFoodEvent() {
+        _state.update {
+            it.copy(
+                loadingFood = true
+            )
+        }
         viewModelScope.launch {
             val food = generateFoodUseCase.execute()
             _state.update {
                 it.copy(
-                    food = foodMapper.mapToViewData(food)
+                    food = foodMapper.mapToViewData(food),
+                    foodHasBeenGenerated = true,
+                    loadingFood = false
                 )
             }
         }
@@ -48,5 +55,6 @@ class GenerateViewModel @Inject constructor(
 data class GenerateViewState(
     val food: FoodViewData = FoodViewData(),
     val isNetworkAvailable: Boolean? = null,
-    val foodHasBeenGenerated: Boolean = false
+    val foodHasBeenGenerated: Boolean = false,
+    val loadingFood: Boolean = false
 )
