@@ -25,7 +25,6 @@ class GenerateViewModel @Inject constructor(
 
     init {
         refreshFoodsFromRepository()
-        generateFoodEvent()
     }
 
     private fun refreshFoodsFromRepository() {
