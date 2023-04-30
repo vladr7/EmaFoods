@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,8 +36,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -91,27 +94,53 @@ fun GenerateScreen(
 }
 
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 fun GenerateTitle(
     modifier: Modifier = Modifier,
     title: String,
 ) {
-    Text(
+    androidx.compose.material3.Text(
         text = title,
-        modifier = modifier.padding(start = 20.dp, end = 20.dp),
-        style = MaterialTheme.typography.h4
+        fontSize = 36.sp,
+        fontFamily = androidx.compose.material3.MaterialTheme.typography.titleLarge.fontFamily,
+        fontWeight = FontWeight.Bold,
+        style = TextStyle(
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                    androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                )
+            )
+        ),
+        textAlign = TextAlign.Center,
+        modifier = modifier
+            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
     )
 }
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 fun GenerateDescription(
     modifier: Modifier,
     description: String
 ) {
-    Text(
+    androidx.compose.material3.Text(
         text = description,
-        modifier = modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 20.dp),
-        style = MaterialTheme.typography.subtitle1
+        fontFamily = androidx.compose.material3.MaterialTheme.typography.titleSmall.fontFamily,
+        fontWeight = FontWeight.Bold,
+        style = TextStyle(
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    androidx.compose.material3.MaterialTheme.colorScheme.secondary,
+                    androidx.compose.material3.MaterialTheme.colorScheme.tertiary,
+                )
+            )
+        ),
+        fontSize = 16.sp,
+        textAlign = TextAlign.Left,
+        modifier = modifier
+            .padding(start = 25.dp, end = 20.dp, top = 10.dp)
     )
 }
 
