@@ -2,14 +2,14 @@ package com.example.emafoods.feature.generatefood.presentation
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,12 +17,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,15 +27,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,6 +55,7 @@ fun GenerateScreenRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    GenerateScreenBackground()
     GenerateScreen(
         generatedImagedRef = state.food.imageRef,
         modifier = modifier,
@@ -98,7 +98,7 @@ fun GenerateTitle(
 ) {
     Text(
         text = title,
-        modifier = modifier.padding(10.dp),
+        modifier = modifier.padding(start = 20.dp, end = 20.dp),
         style = MaterialTheme.typography.h4
     )
 }
@@ -110,7 +110,7 @@ fun GenerateDescription(
 ) {
     Text(
         text = description,
-        modifier = modifier.padding(10.dp),
+        modifier = modifier.padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 20.dp),
         style = MaterialTheme.typography.subtitle1
     )
 }
@@ -124,7 +124,7 @@ fun GenerateImage(
         modifier = modifier
             .fillMaxWidth()
             .height(300.dp)
-            .padding(10.dp)
+            .padding(20.dp)
             .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
         model = ImageRequest.Builder(LocalContext.current)
             .data(generatedImagedRef)
@@ -181,26 +181,9 @@ fun GenerateButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        GenerateButtonText(text = stringResource(id = R.string.generate_button_text))
         ArcComposable(modifier = modifier)
     }
 
-}
-
-@Composable
-fun GenerateButtonText(
-    modifier: Modifier = Modifier,
-    text: String,
-    color: Color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
-) {
-    Text(
-        text = text,
-        fontSize = androidx.compose.material3.MaterialTheme.typography.titleLarge.fontSize,
-        modifier = modifier
-            .zIndex(1f)
-            .offset(y = 80.dp),
-        color = color,
-    )
 }
 
 @Composable
@@ -222,8 +205,8 @@ private fun ArcComposable(modifier: Modifier = Modifier) {
             0f,
             -180f,
             useCenter = true,
-            size = Size(formWidth, 1700f),
-            topLeft = Offset(x = -xPos, y = canvasHeight - 350)
+            size = Size(formWidth, 1000f),
+            topLeft = Offset(x = -xPos, y = canvasHeight - 200)
         )
 
         val handleWidth = 200f
@@ -231,8 +214,41 @@ private fun ArcComposable(modifier: Modifier = Modifier) {
 
         drawRoundRect(
             color = Color.LightGray,
-            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 310),
+            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
             size = Size(handleWidth, handleHeight),
             cornerRadius = CornerRadius(50f, 50f))
+    }
+}
+
+@Composable
+fun GenerateScreenBackground(
+    modifier: Modifier = Modifier
+) {
+    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
+
+    val gradient = Brush.verticalGradient(
+        colors = listOf(Color.Transparent, androidx.compose.material3.MaterialTheme.colorScheme.secondary),
+        startY = sizeImage.height.toFloat() ,
+        endY = sizeImage.height.toFloat() / 4,
+    )
+
+    Box() {
+        Image(
+            painter = painterResource(id = R.drawable.background),
+            contentDescription = null,
+            contentScale = ContentScale.FillHeight,
+            modifier = modifier
+                .onGloballyPositioned {
+                    sizeImage = it.size
+                }
+                .fillMaxSize(),
+            alpha = 0.2f
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .alpha(0.7f)
+                .background(gradient)
+        )
     }
 }
