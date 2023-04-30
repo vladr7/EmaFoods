@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -85,6 +87,11 @@ fun GenerateScreen(
     ) {
         GenerateImage(generatedImagedRef, modifier)
         GenerateTitle(modifier, title)
+        Divider(
+            color = MaterialTheme.colorScheme.primary, thickness = 2.dp, modifier = modifier
+                .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+                .alpha(0.2f),
+        )
         GenerateDescription(modifier, description)
         GenerateButton(
             modifier = modifier,
@@ -245,7 +252,8 @@ private fun ArcComposable(modifier: Modifier = Modifier) {
             color = Color.LightGray,
             topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
             size = Size(handleWidth, handleHeight),
-            cornerRadius = CornerRadius(50f, 50f))
+            cornerRadius = CornerRadius(50f, 50f)
+        )
     }
 }
 
@@ -256,8 +264,11 @@ fun GenerateScreenBackground(
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
     val gradient = Brush.verticalGradient(
-        colors = listOf(Color.Transparent, androidx.compose.material3.MaterialTheme.colorScheme.secondary),
-        startY = sizeImage.height.toFloat() ,
+        colors = listOf(
+            Color.Transparent,
+            androidx.compose.material3.MaterialTheme.colorScheme.secondary
+        ),
+        startY = sizeImage.height.toFloat(),
         endY = sizeImage.height.toFloat() / 4,
     )
 
