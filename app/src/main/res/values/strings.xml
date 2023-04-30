@@ -5,5 +5,5 @@
     <string name="generate_food">"Generează"</string>
     <string name="login_button_text">"Conectează-te cu "</string>
     <string name="login_subtitle">"Găsește inspirație în zilele când nu știi ce să mănânci! "</string>
-    <string name="generate">Genereaza</string>
+    <string name="generate_button_text">Genereaza</string>
 </resources>
