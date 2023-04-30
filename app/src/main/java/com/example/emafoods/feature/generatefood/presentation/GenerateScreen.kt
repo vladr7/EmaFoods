@@ -19,7 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +53,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -88,7 +91,8 @@ fun GenerateScreen(
         GenerateImage(generatedImagedRef, modifier)
         GenerateTitle(modifier, title)
         Divider(
-            color = MaterialTheme.colorScheme.primary, thickness = 2.dp, modifier = modifier
+            color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
+            modifier = modifier
                 .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
                 .alpha(0.2f),
         )
@@ -107,16 +111,33 @@ fun GenerateTitle(
     modifier: Modifier = Modifier,
     title: String,
 ) {
-    androidx.compose.material3.Text(
-        text = title,
+    var textToDisplay by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(
+        key1 = title,
+    ) {
+        title.forEachIndexed { charIndex, _ ->
+            textToDisplay = title
+                .substring(
+                    startIndex = 0,
+                    endIndex = charIndex + 1,
+                )
+            delay(2)
+        }
+    }
+
+    Text(
+        text = textToDisplay,
         fontSize = 36.sp,
-        fontFamily = androidx.compose.material3.MaterialTheme.typography.titleLarge.fontFamily,
+        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
         fontWeight = FontWeight.Bold,
         style = TextStyle(
             brush = Brush.linearGradient(
                 colors = listOf(
-                    androidx.compose.material3.MaterialTheme.colorScheme.primary,
-                    androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.onSurface
                 )
             )
         ),
@@ -130,17 +151,34 @@ fun GenerateTitle(
 @Composable
 fun GenerateDescription(
     modifier: Modifier,
-    description: String
+    description: String,
 ) {
-    androidx.compose.material3.Text(
-        text = description,
-        fontFamily = androidx.compose.material3.MaterialTheme.typography.titleSmall.fontFamily,
+    var textToDisplay by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(
+        key1 = description
+    ) {
+        description.forEachIndexed { charIndex, _ ->
+            textToDisplay = description
+                .substring(
+                    startIndex = 0,
+                    endIndex = charIndex + 1,
+                )
+            delay(2)
+        }
+    }
+
+    Text(
+        text = textToDisplay,
+        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
         style = TextStyle(
             brush = Brush.linearGradient(
                 colors = listOf(
-                    androidx.compose.material3.MaterialTheme.colorScheme.secondary,
-                    androidx.compose.material3.MaterialTheme.colorScheme.tertiary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.tertiary,
                 )
             )
         ),
@@ -149,6 +187,8 @@ fun GenerateDescription(
         modifier = modifier
             .padding(start = 25.dp, end = 20.dp, top = 10.dp)
     )
+
+
 }
 
 @Composable
