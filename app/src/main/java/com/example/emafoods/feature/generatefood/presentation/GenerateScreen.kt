@@ -17,8 +17,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,9 +32,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -175,24 +181,33 @@ fun GenerateButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = stringResource(id = R.string.generate_button_text),
-            fontSize = androidx.compose.material3.MaterialTheme.typography.titleLarge.fontSize,
-            modifier = modifier
-                .zIndex(1f)
-                .offset(y = 70.dp),
-            color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
-        )
+        GenerateButtonText(text = stringResource(id = R.string.generate_button_text))
         ArcComposable(modifier = modifier)
     }
 
 }
 
 @Composable
+fun GenerateButtonText(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary
+) {
+    Text(
+        text = text,
+        fontSize = androidx.compose.material3.MaterialTheme.typography.titleLarge.fontSize,
+        modifier = modifier
+            .zIndex(1f)
+            .offset(y = 80.dp),
+        color = color,
+    )
+}
+
+@Composable
 private fun ArcComposable(modifier: Modifier = Modifier) {
     val color = androidx.compose.material3.MaterialTheme.colorScheme.primary
     Canvas(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .zIndex(0f)
 
@@ -210,5 +225,14 @@ private fun ArcComposable(modifier: Modifier = Modifier) {
             size = Size(formWidth, 1700f),
             topLeft = Offset(x = -xPos, y = canvasHeight - 350)
         )
+
+        val handleWidth = 200f
+        val handleHeight = 30f
+
+        drawRoundRect(
+            color = Color.LightGray,
+            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 310),
+            size = Size(handleWidth, handleHeight),
+            cornerRadius = CornerRadius(50f, 50f))
     }
 }
