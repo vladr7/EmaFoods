@@ -84,7 +84,6 @@ class DefaultFoodDataSource: FoodDataSource {
 
         emit(mutableListOfFoodImages.toList())
     }.catch {
-        println("vlad ${it.message}")
         emit(listOf())
     }.flowOn(Dispatchers.IO)
 }
