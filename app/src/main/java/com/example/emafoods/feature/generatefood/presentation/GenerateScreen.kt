@@ -52,6 +52,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,7 +75,8 @@ fun GenerateScreenRoute(
             viewModel.generateFoodEvent()
         },
         title = state.food.title,
-        description = state.food.description
+        description = state.food.description,
+        foodHasBeenGenerated = state.foodHasBeenGenerated,
     )
 }
 
@@ -82,26 +87,41 @@ fun GenerateScreen(
     title: String,
     description: String,
     modifier: Modifier = Modifier,
+    foodHasBeenGenerated: Boolean,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GenerateImage(generatedImagedRef, modifier)
-        GenerateTitle(modifier, title)
-        Divider(
-            color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
-            modifier = modifier
-                .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-                .alpha(0.2f),
-        )
-        GenerateDescription(modifier, description)
-        GenerateButton(
-            modifier = modifier,
-            onGenerateClick = onGenerateClick
-        )
+        if(foodHasBeenGenerated) {
+            GenerateImage(generatedImagedRef, modifier)
+            GenerateTitle(modifier, title)
+            Divider(
+                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
+                modifier = modifier
+                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+                    .alpha(0.2f),
+            )
+            GenerateDescription(modifier, description)
+        } else {
+            CookingAnimation()
+            GenerateButton(
+                modifier = modifier,
+                onGenerateClick = onGenerateClick
+            )
+        }
     }
+}
+
+@Composable
+fun CookingAnimation() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cookinganimation))
+    val progress by animateLottieCompositionAsState(composition)
+    LottieAnimation(
+        composition = composition,
+        progress = { progress },
+    )
 }
 
 

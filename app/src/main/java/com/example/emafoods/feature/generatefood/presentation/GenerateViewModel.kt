@@ -48,4 +48,5 @@ class GenerateViewModel @Inject constructor(
 data class GenerateViewState(
     val food: FoodViewData = FoodViewData(),
     val isNetworkAvailable: Boolean? = null,
+    val foodHasBeenGenerated: Boolean = false
 )

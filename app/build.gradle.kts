@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.tasks.factory.dependsOn
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -90,6 +88,8 @@ dependencies {
     implementation(libs.maps.compose)
     implementation(libs.playServiceCodeScanner)
     kapt(libs.google.hiltandroidcompiler)
+    implementation(libs.lottie)
+
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.junit)
     testImplementation(libs.androidx.test.espresso.core)

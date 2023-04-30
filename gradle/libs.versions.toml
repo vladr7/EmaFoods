@@ -43,6 +43,7 @@ room = "2.5.1"
 datastore = "1.0.0"
 play-services-barcode-scanner = "16.0.0"
 coil = "2.3.0"
+lottie = "6.0.0"
 
 #Tests
 junit = "4.13.2"
@@ -137,6 +138,8 @@ maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = 
 maps-playServices = {module = "com.google.android.gms:play-services-maps", version.ref = "play-services-maps"}
 playServiceCodeScanner = {module = "com.google.android.gms:play-services-code-scanner", version.ref = "play-services-barcode-scanner"}
 
+#Lottie
+lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
 [bundles]
 compose = ["compose-ui", "compose-material3", "compose-preview", "compose-material"]
