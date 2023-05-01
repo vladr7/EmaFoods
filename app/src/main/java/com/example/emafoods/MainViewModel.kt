@@ -1,7 +1,7 @@
 package com.example.emafoods
 
 import androidx.lifecycle.ViewModel
-import com.example.emafoods.core.data.network.FirebaseService
+import com.example.emafoods.core.domain.network.FirebaseService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
