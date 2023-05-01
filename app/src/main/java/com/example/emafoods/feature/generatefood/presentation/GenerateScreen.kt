@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -76,7 +77,6 @@ fun GenerateScreenRoute(
         title = state.food.title,
         description = state.food.description,
         foodHasBeenGenerated = state.foodHasBeenGenerated,
-        loadingFood = state.loadingFood,
     )
 }
 
@@ -88,31 +88,26 @@ fun GenerateScreen(
     description: String,
     modifier: Modifier = Modifier,
     foodHasBeenGenerated: Boolean,
-    loadingFood: Boolean,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        WaitingCookAnimation()
-//        if(foodHasBeenGenerated) {
-//            GenerateImage(generatedImagedRef, modifier)
-//            GenerateTitle(modifier, title)
-//            Divider(
-//                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
-//                modifier = modifier
-//                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-//                    .alpha(0.2f),
-//            )
-//            GenerateDescription(modifier, description)
-//
-//        } else {
-//            // waiting animation
-//        }
-//        if(loadingFood) {
-////            LoadingCookingAnimation()
-//        }
+
+        if (!foodHasBeenGenerated) {
+            WaitingCookAnimation()
+        } else {
+            GenerateImage(generatedImagedRef = generatedImagedRef, modifier = modifier)
+            GenerateTitle(modifier, title)
+            Divider(
+                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
+                modifier = modifier
+                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+                    .alpha(0.2f),
+            )
+            GenerateDescription(modifier, description)
+        }
 
         GenerateButton(
             modifier = modifier,
@@ -136,19 +131,25 @@ fun LoadingCookingAnimation() {
 }
 
 @Composable
-fun WaitingCookAnimation() {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.waitingcook))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever,
-        speed = 1f
-    )
-    LottieAnimation(
-        composition = composition,
-        progress = { progress },
-    )
+fun WaitingCookAnimation(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .padding(start = 32.dp, end = 32.dp, bottom = 32.dp)
+    ) {
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.waitingcook))
+        val progress by animateLottieCompositionAsState(
+            composition = composition,
+            iterations = LottieConstants.IterateForever,
+            speed = 1f
+        )
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+        )
+    }
 }
-
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
@@ -241,12 +242,16 @@ fun GenerateImage(
     generatedImagedRef: String,
     modifier: Modifier
 ) {
+    var shadow by remember {
+        mutableStateOf(0f)
+    }
+
     SubcomposeAsyncImage(
         modifier = modifier
             .fillMaxWidth()
             .height(300.dp)
             .padding(20.dp)
-            .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
+            .shadow(elevation = shadow.dp, shape = RoundedCornerShape(8.dp)),
         model = ImageRequest.Builder(LocalContext.current)
             .data(generatedImagedRef)
             .crossfade(true)
@@ -254,7 +259,21 @@ fun GenerateImage(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         loading = {
-//            LoadingCookingAnimation()
+            LoadingCookingAnimation()
+        },
+        success = {
+            shadow = 16f
+        },
+        error = {
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .padding(20.dp)
+                    .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
+            ) {
+                Text(text = "Error loading image ${it.result.throwable.message}")
+            }
         }
     )
 }
