@@ -18,7 +18,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.emafoods.navigation.home.HomeBottomDestination
 import com.example.emafoods.navigation.home.HomeNavHost
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmaFoodsNavigation(
     emaFoodsAppState: EmaFoodsAppState = rememberEmaFoodsAppState()
@@ -26,6 +25,7 @@ fun EmaFoodsNavigation(
     val items = listOf(
         HomeBottomDestination.AddFood,
         HomeBottomDestination.ListFood,
+        HomeBottomDestination.GenerateFood,
     )
     val navController = emaFoodsAppState.navController
     Scaffold(
