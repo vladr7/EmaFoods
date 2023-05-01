@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -96,23 +95,24 @@ fun GenerateScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if(foodHasBeenGenerated) {
-            GenerateImage(generatedImagedRef, modifier)
-            GenerateTitle(modifier, title)
-            Divider(
-                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
-                modifier = modifier
-                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-                    .alpha(0.2f),
-            )
-            GenerateDescription(modifier, description)
-
-        } else {
-            // waiting animation
-        }
-        if(loadingFood) {
-//            LoadingCookingAnimation()
-        }
+        WaitingCookAnimation()
+//        if(foodHasBeenGenerated) {
+//            GenerateImage(generatedImagedRef, modifier)
+//            GenerateTitle(modifier, title)
+//            Divider(
+//                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
+//                modifier = modifier
+//                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+//                    .alpha(0.2f),
+//            )
+//            GenerateDescription(modifier, description)
+//
+//        } else {
+//            // waiting animation
+//        }
+//        if(loadingFood) {
+////            LoadingCookingAnimation()
+//        }
 
         GenerateButton(
             modifier = modifier,
@@ -128,6 +128,20 @@ fun LoadingCookingAnimation() {
         composition = composition,
         iterations = LottieConstants.IterateForever,
         speed = 3f
+    )
+    LottieAnimation(
+        composition = composition,
+        progress = { progress },
+    )
+}
+
+@Composable
+fun WaitingCookAnimation() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.waitingcook))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+        speed = 1f
     )
     LottieAnimation(
         composition = composition,
