@@ -242,16 +242,13 @@ fun GenerateImage(
     generatedImagedRef: String,
     modifier: Modifier
 ) {
-    var shadow by remember {
-        mutableStateOf(0f)
-    }
 
     SubcomposeAsyncImage(
         modifier = modifier
             .fillMaxWidth()
             .height(300.dp)
             .padding(20.dp)
-            .shadow(elevation = shadow.dp, shape = RoundedCornerShape(8.dp)),
+            .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
         model = ImageRequest.Builder(LocalContext.current)
             .data(generatedImagedRef)
             .crossfade(true)
@@ -260,9 +257,6 @@ fun GenerateImage(
         contentScale = ContentScale.Crop,
         loading = {
             LoadingCookingAnimation()
-        },
-        success = {
-            shadow = 16f
         },
         error = {
             Box(
