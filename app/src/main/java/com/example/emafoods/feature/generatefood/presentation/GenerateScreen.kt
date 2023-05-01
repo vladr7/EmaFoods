@@ -325,12 +325,13 @@ fun GenerateButton(
 
 @Composable
 private fun ArcComposable(modifier: Modifier = Modifier) {
-    val color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+    val color1 = MaterialTheme.colorScheme.primary
+    val color2 = MaterialTheme.colorScheme.secondary
+    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
     Canvas(
         modifier = modifier
             .fillMaxSize()
             .zIndex(0f)
-
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
@@ -338,19 +339,24 @@ private fun ArcComposable(modifier: Modifier = Modifier) {
         val xPos = canvasWidth / 2
 
         drawArc(
-            color = color,
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    color1,
+                    color2
+                ),
+            ),
             0f,
             -180f,
             useCenter = true,
             size = Size(formWidth, 1000f),
-            topLeft = Offset(x = -xPos, y = canvasHeight - 200)
+            topLeft = Offset(x = -xPos, y = canvasHeight - 200),
         )
 
         val handleWidth = 200f
         val handleHeight = 30f
 
         drawRoundRect(
-            color = Color.LightGray,
+            color = colorOnPrimary,
             topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
             size = Size(handleWidth, handleHeight),
             cornerRadius = CornerRadius(50f, 50f)
