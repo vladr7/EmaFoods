@@ -76,7 +76,7 @@ class DefaultFoodDataSource: FoodDataSource {
         snapshot.items.forEach { storageReference ->
             mutableListOfFoodImages.add(
                 FoodImage(
-                    id = storageReference.name.removeSuffix(".jpeg"),
+                    id = storageReference.name.removeSuffix(".jpg"),
                     imageRef = storageReference.downloadUrl.await().toString()
                 )
             )
