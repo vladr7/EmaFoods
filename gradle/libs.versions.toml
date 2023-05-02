@@ -44,6 +44,7 @@ datastore = "1.0.0"
 play-services-barcode-scanner = "16.0.0"
 coil = "2.3.0"
 lottie = "6.0.0"
+image-compressor = "3.0.1"
 
 #Tests
 junit = "4.13.2"
@@ -140,6 +141,9 @@ playServiceCodeScanner = {module = "com.google.android.gms:play-services-code-sc
 
 #Lottie
 lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
+
+#Image compressor
+image-compressor = { module = "id.zelory:compressor", version.ref = "image-compressor" }
 
 [bundles]
 compose = ["compose-ui", "compose-material3", "compose-preview", "compose-material"]

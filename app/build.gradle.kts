@@ -89,6 +89,7 @@ dependencies {
     implementation(libs.playServiceCodeScanner)
     kapt(libs.google.hiltandroidcompiler)
     implementation(libs.lottie)
+    implementation(libs.image.compressor)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.junit)
