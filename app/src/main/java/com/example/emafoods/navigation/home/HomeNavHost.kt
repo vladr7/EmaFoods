@@ -12,7 +12,7 @@ import com.example.emafoods.feature.listfood.navigation.listFoodScreen
 fun HomeNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = HomeBottomDestination.GenerateFood.route,
+    startDestination: String = HomeBottomDestination.AddFood.route,
 ) {
     NavHost(
         navController = navController,
