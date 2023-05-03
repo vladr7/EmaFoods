@@ -24,7 +24,7 @@ fun HomeNavHost(
         modifier = modifier,
     ) {
 
-        homeGraph(
+        addFoodGraph(
             onNextClick = {
                 navController.navigate(AddFoodDestinations.AddTitle.route)
             },
@@ -37,7 +37,7 @@ fun HomeNavHost(
     }
 }
 
-fun NavGraphBuilder.homeGraph(
+fun NavGraphBuilder.addFoodGraph(
     onNextClick: () -> Unit,
     nestedGraph: NavGraphBuilder.() -> Unit
 ) {
