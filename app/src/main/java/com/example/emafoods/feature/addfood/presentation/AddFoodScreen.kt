@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,6 +42,7 @@ import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFile
 
 @Composable
 fun AddFoodRoute(
+    onNextClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddFoodViewModel = hiltViewModel()
 ) {
@@ -55,12 +57,33 @@ fun AddFoodRoute(
         imageUri = state.imageUri,
         foodTitle = state.foodTitle,
         foodDescription = state.foodDescription,
+        onNextClick = onNextClick,
         modifier = modifier
     )
 }
 
 @Composable
 fun AddFoodScreen(
+    modifier: Modifier = Modifier,
+    context: Context = LocalContext.current,
+    errorMessage: String? = null,
+    viewModel: AddFoodViewModel = hiltViewModel(),
+    isLoading: Boolean = false,
+    hasImage: Boolean = false,
+    imageUri: Uri? = null,
+    foodTitle: String,
+    foodDescription: String,
+    onNextClick: () -> Unit,
+) {
+    Button(onClick = {
+        onNextClick()
+    }) {
+        Text(text = "Add food (Image screen)")
+    }
+}
+
+@Composable
+fun AddFoodScreenTemp(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     errorMessage: String? = null,
