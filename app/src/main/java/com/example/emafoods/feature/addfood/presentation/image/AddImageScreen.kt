@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.addfood.presentation
+package com.example.emafoods.feature.addfood.presentation.image
 
 import android.content.Context
 import android.net.Uri
@@ -39,9 +39,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.emafoods.R
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
+import com.example.emafoods.feature.addfood.presentation.AddFoodViewModel
 
 @Composable
-fun AddFoodRoute(
+fun AddImageRoute(
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddFoodViewModel = hiltViewModel()
@@ -49,7 +50,7 @@ fun AddFoodRoute(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    AddFoodScreen(
+    AddImageScreen(
         errorMessage = state.errorMessage,
         context = context,
         isLoading = state.isLoading,
@@ -63,7 +64,7 @@ fun AddFoodRoute(
 }
 
 @Composable
-fun AddFoodScreen(
+fun AddImageScreen(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     errorMessage: String? = null,
