@@ -57,7 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.emafoods.R
 import com.example.emafoods.feature.signin.utils.AuthResultContract
-import com.example.emafoods.ui.EmaFoodsNavigation
+import com.example.emafoods.navigation.home.EmaFoodsNavigation
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
 

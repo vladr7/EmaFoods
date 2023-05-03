@@ -9,8 +9,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.emafoods.ui.EmaFoodsNavigation
-import com.example.emafoods.ui.SignInNavigation
+import com.example.emafoods.navigation.home.EmaFoodsNavigation
+import com.example.emafoods.navigation.signin.SignInNavigation
 import com.example.emafoods.ui.theme.EmaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
