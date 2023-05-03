@@ -8,12 +8,12 @@ import com.example.emafoods.feature.addfood.presentation.AddFoodRoute
 import com.example.emafoods.navigation.home.HomeBottomDestination
 
 
-fun NavController.navigateToAddFood(navOptions: NavOptions? = null) {
+fun NavController.navigateToAddFoodGraph(navOptions: NavOptions? = null) {
     this.navigate(HomeBottomDestination.AddFood.route, navOptions)
 }
 
-fun NavGraphBuilder.addFoodScreen() {
-    composable(route = HomeBottomDestination.AddFood.route) {
-        AddFoodRoute()
+fun NavGraphBuilder.addFoodScreen(onNextClick: () -> Unit) {
+    composable(route = AddFoodDestinations.AddImage.route) {
+        AddFoodRoute(onNextClick)
     }
 }
