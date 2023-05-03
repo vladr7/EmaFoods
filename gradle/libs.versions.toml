@@ -67,6 +67,7 @@ compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "co
 navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 gms-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "gms-auth" }
+icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composematerial" }
 
 #Androidx dependencies;
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -146,7 +147,7 @@ lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" 
 image-compressor = { module = "id.zelory:compressor", version.ref = "image-compressor" }
 
 [bundles]
-compose = ["compose-ui", "compose-material3", "compose-preview", "compose-material"]
+compose = ["compose-ui", "compose-material3", "compose-preview", "compose-material", "icons-extended"]
 accompanist = ["accompanist-pager-indicators", "accompanist-pager"]
 androidx = ["androidx-core", "androidx-lifecycle-runtime", "androidx-lifecycle-viewmodel", "androidx-lifecycle-viewmodelcompose", "androidx-lifecycle-runtime-compose", "androidx-activity", "androidx-activity-compose", "androidx-fragment", "androidx-datastore", "androidx-splashscreen", "androidx-savedstate"]
 firebase = ["firebase-core", "firebase-analytics", "firebase-crashlytics", "firebase-config", "firebase-auth", "firebase-firestore", "firebase-storage"]
