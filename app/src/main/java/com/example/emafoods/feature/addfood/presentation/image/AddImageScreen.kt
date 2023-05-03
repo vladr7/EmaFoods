@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.composables.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.AddFoodViewModel
 
@@ -91,7 +94,16 @@ fun AddImageScreen(
     onNextClick: () -> Unit,
 ) {
     AddImageScreenBackground()
+    AddImageOptions(
+        modifier = modifier
+    )
 
+}
+
+@Composable
+fun AddImageOptions(
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxSize(),
@@ -106,6 +118,13 @@ fun AddImageScreen(
                 modifier = Modifier
                     .padding(16.dp)
                     .size(150.dp)
+                    .bounceClick()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+
+                    }
             )
             Icon(
                 imageVector = Icons.Filled.PhotoCamera,
@@ -113,11 +132,16 @@ fun AddImageScreen(
                 modifier = Modifier
                     .padding(16.dp)
                     .size(150.dp)
+                    .bounceClick()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                    ) {
+
+                    },
             )
         }
     }
-
-
 }
 
 @Composable
