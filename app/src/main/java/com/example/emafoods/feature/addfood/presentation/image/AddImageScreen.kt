@@ -30,6 +30,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -124,7 +125,8 @@ fun AddImageOptions(
                         indication = null,
                     ) {
 
-                    }
+                    },
+                tint = MaterialTheme.colorScheme.onSecondary
             )
             Icon(
                 imageVector = Icons.Filled.PhotoCamera,
@@ -139,6 +141,7 @@ fun AddImageOptions(
                     ) {
 
                     },
+                tint = MaterialTheme.colorScheme.onSecondary
             )
         }
     }
