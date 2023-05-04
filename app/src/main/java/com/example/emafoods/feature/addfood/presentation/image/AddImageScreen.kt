@@ -38,7 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -54,7 +54,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.emafoods.R
-import com.example.emafoods.core.presentation.composables.ScreenBackground
 import com.example.emafoods.core.presentation.composables.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.AddFoodViewModel
@@ -94,7 +93,6 @@ fun AddImageScreen(
     foodDescription: String,
     onNextClick: () -> Unit,
 ) {
-    ScreenBackground()
     AddImageScreenBackground()
     AddImageOptions(
         modifier = modifier
@@ -152,13 +150,13 @@ fun AddImageScreenBackground(
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
-    val gradient = Brush.verticalGradient(
+    val gradient = Brush.linearGradient(
         colors = listOf(
             Color.Transparent,
             androidx.compose.material3.MaterialTheme.colorScheme.secondary
         ),
-        startY = sizeImage.height.toFloat(),
-        endY = sizeImage.height.toFloat() / 4,
+        start = Offset(0f, 0f),
+        end = Offset(sizeImage.width.toFloat(), sizeImage.height.toFloat() / 2),
     )
 
     Box() {
@@ -176,7 +174,6 @@ fun AddImageScreenBackground(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .alpha(0.7f)
                 .background(gradient)
         )
     }
