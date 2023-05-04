@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,10 +48,15 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -95,8 +101,48 @@ fun AddImageScreen(
     onNextClick: () -> Unit,
 ) {
     AddImageScreenBackground()
+    AddImageTitle()
     AddImageOptions(
         modifier = modifier
+    )
+
+}
+
+@OptIn(ExperimentalTextApi::class)
+@Composable
+fun AddImageTitle(
+    modifier: Modifier = Modifier,
+) {
+
+    val gradient = Brush.horizontalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.secondary,
+            Color.Transparent
+        ),
+        startX = 300.0f,
+        endX = 0.0f
+    )
+
+    Text(
+        text = stringResource(id = R.string.add_image_title),
+        fontSize = 36.sp,
+        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
+        fontWeight = FontWeight.Bold,
+        style = TextStyle(
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.onSecondary,
+                    MaterialTheme.colorScheme.onSecondary
+                )
+            )
+        ),
+        textAlign = TextAlign.Center,
+        modifier = modifier
+            .padding(20.dp, top = 40.dp, bottom = 40.dp)
+            .background(
+                brush = gradient
+            )
+
     )
 
 }
@@ -114,37 +160,51 @@ fun AddImageOptions(
             modifier = Modifier
                 .padding(16.dp),
         ) {
-            Icon(
-                imageVector = Icons.Filled.AttachFile, contentDescription = null,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(150.dp)
-                    .bounceClick()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                    ) {
-
-                    },
-                tint = MaterialTheme.colorScheme.onSecondary
-            )
-            Icon(
-                imageVector = Icons.Filled.PhotoCamera,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(150.dp)
-                    .bounceClick()
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                    ) {
-
-                    },
-                tint = MaterialTheme.colorScheme.onSecondary
-            )
+            AttachFileIcon()
+            TakePictureIcon()
         }
     }
+}
+
+@Composable
+fun AttachFileIcon(
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        imageVector = Icons.Filled.AttachFile, contentDescription = null,
+        modifier = modifier
+            .padding(16.dp)
+            .size(150.dp)
+            .bounceClick()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+
+            },
+        tint = MaterialTheme.colorScheme.onSecondary
+    )
+}
+
+@Composable
+fun TakePictureIcon(
+    modifier: Modifier = Modifier
+) {
+    Icon(
+        imageVector = Icons.Filled.PhotoCamera,
+        contentDescription = null,
+        modifier = modifier
+            .padding(16.dp)
+            .size(150.dp)
+            .bounceClick()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) {
+
+            },
+        tint = MaterialTheme.colorScheme.onSecondary
+    )
 }
 
 @Composable
@@ -156,7 +216,7 @@ fun AddImageScreenBackground(
     val gradient = Brush.linearGradient(
         colors = listOf(
             Color.Transparent,
-            androidx.compose.material3.MaterialTheme.colorScheme.secondary
+            MaterialTheme.colorScheme.secondary
         ),
         start = Offset(0f, 0f),
         end = Offset(sizeImage.width.toFloat(), sizeImage.height.toFloat() / 2),
