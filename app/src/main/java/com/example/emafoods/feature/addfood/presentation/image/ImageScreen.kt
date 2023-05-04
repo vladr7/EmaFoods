@@ -48,7 +48,7 @@ import com.example.emafoods.core.presentation.composables.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 
 @Composable
-fun AddImageRoute(
+fun ImageRoute(
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
@@ -59,7 +59,7 @@ fun AddImageRoute(
     if(state.hasImage) {
         onNextClick()
     } else {
-        AddImageScreen(
+        ImageScreen(
             errorMessage = state.errorMessage,
             context = context,
             imageUri = state.imageUri,
@@ -73,14 +73,14 @@ fun AddImageRoute(
 }
 
 @Composable
-fun AddImageScreen(
+fun ImageScreen(
     modifier: Modifier = Modifier,
     context: Context = LocalContext.current,
     errorMessage: String? = null,
     imageUri: Uri? = null,
     onUriRetrieved: (Uri?) -> Unit
 ) {
-    AddImageScreenBackground()
+    ImageScreenBackground()
     AddImageTitle()
     AddImageOptions(
         modifier = modifier,
@@ -213,7 +213,7 @@ fun TakePictureIcon(
 }
 
 @Composable
-fun AddImageScreenBackground(
+fun ImageScreenBackground(
     modifier: Modifier = Modifier
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
