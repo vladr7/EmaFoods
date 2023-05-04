@@ -2,8 +2,6 @@ package com.example.emafoods.feature.generatefood.presentation
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -34,16 +32,12 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -57,6 +51,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.composables.ScreenBackground
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -67,7 +62,7 @@ fun GenerateScreenRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    GenerateScreenBackground()
+    ScreenBackground()
     GenerateScreen(
         generatedImagedRef = state.food.imageRef,
         modifier = modifier,
@@ -358,38 +353,3 @@ private fun ArcComposable(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun GenerateScreenBackground(
-    modifier: Modifier = Modifier
-) {
-    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
-
-    val gradient = Brush.verticalGradient(
-        colors = listOf(
-            Color.Transparent,
-            androidx.compose.material3.MaterialTheme.colorScheme.secondary
-        ),
-        startY = sizeImage.height.toFloat(),
-        endY = sizeImage.height.toFloat() / 4,
-    )
-
-    Box() {
-        Image(
-            painter = painterResource(id = R.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.FillHeight,
-            modifier = modifier
-                .onGloballyPositioned {
-                    sizeImage = it.size
-                }
-                .fillMaxSize(),
-            alpha = 0.2f
-        )
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .alpha(0.7f)
-                .background(gradient)
-        )
-    }
-}
