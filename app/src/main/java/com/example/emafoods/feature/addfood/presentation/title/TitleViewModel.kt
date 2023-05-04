@@ -18,11 +18,14 @@ class TitleViewModel @Inject constructor(
     )
     val state: StateFlow<TitleViewState> = _state
 
+    fun onTitleChange(title: String) {
+        _state.value = _state.value.copy(title = title)
+    }
 }
 
 data class TitleViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
-    val hasImage: Boolean = false,
-    val imageUri: Uri? = null
+    val imageUri: Uri? = null,
+    val title: String = ""
 ) : ViewState(isLoading, errorMessage)

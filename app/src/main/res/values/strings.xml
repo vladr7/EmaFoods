@@ -9,4 +9,6 @@
     <string name="title">Titlu</string>
     <string name="description">Descriere</string>
     <string name="add_image_title">Adaugă o rețetă nouă</string>
+    <string name="title_screen_title">Titlu rețetă</string>
+    <string name="title_input_label_text">Titlu</string>
 </resources>
