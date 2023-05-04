@@ -14,8 +14,8 @@ class AddImageViewModel @Inject constructor(
 
 ): BaseViewModel() {
 
-    private val _state = MutableStateFlow<AddImageViewState>(AddImageViewState())
-    val state: StateFlow<AddImageViewState> = _state
+    private val _state = MutableStateFlow<ImageViewState>(ImageViewState())
+    val state: StateFlow<ImageViewState> = _state
 
     fun updateImageUri(imageUri: Uri?) {
         _state.update {
@@ -54,7 +54,7 @@ class AddImageViewModel @Inject constructor(
     }
 }
 
-data class AddImageViewState(
+data class ImageViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
     val hasImage: Boolean = false,
