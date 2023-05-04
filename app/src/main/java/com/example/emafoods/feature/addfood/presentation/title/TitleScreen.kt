@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -40,7 +42,7 @@ import com.example.emafoods.R
 
 @Composable
 fun TitleRoute(
-    modifier : Modifier = Modifier,
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     viewModel: TitleViewModel = hiltViewModel(),
 ) {
@@ -87,17 +89,7 @@ fun TitleScreen(
 fun TitleScreenTitle(
     modifier: Modifier = Modifier,
     title: String,
-
-    ) {
-    val gradient = Brush.horizontalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.secondary,
-            Color.Transparent
-        ),
-        startX = 300.0f,
-        endX = 0.0f
-    )
-
+) {
     Text(
         text = title,
         fontSize = 36.sp,
@@ -114,26 +106,40 @@ fun TitleScreenTitle(
         textAlign = TextAlign.Center,
         modifier = modifier
             .padding(20.dp, top = 40.dp, bottom = 40.dp)
-            .background(
-                brush = gradient
-            )
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TitleScreenInput(
     modifier: Modifier = Modifier,
     onTitleChange: (String) -> Unit,
     title: String
 ) {
-
     OutlinedTextField(
         value = title,
         onValueChange = onTitleChange,
-        label = { Text(text = stringResource(id = R.string.title_input_label_text)) },
+        label = {
+            Text(
+                text = stringResource(id = R.string.title_input_label_text),
+                color = MaterialTheme.colorScheme.onSecondary,
+            )
+        },
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(24.dp),
+        textStyle = TextStyle(
+            color = MaterialTheme.colorScheme.onSecondary,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = MaterialTheme.typography.titleLarge.fontFamily
+        ),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.onSecondary,
+            cursorColor = MaterialTheme.colorScheme.onSecondary,
+            ),
+        maxLines = 1
     )
 }
 
@@ -143,13 +149,13 @@ fun TitleScreenBackground(
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
-    val gradient = Brush.linearGradient(
+    val gradient = Brush.verticalGradient(
         colors = listOf(
             Color.Transparent,
             MaterialTheme.colorScheme.secondary
         ),
-        start = Offset(0f, 0f),
-        end = Offset(sizeImage.width.toFloat(), sizeImage.height.toFloat() / 2),
+        startY = sizeImage.height.toFloat(),
+        endY = 900.0f,
     )
 
     Box() {
@@ -167,6 +173,7 @@ fun TitleScreenBackground(
         Box(
             modifier = Modifier
                 .matchParentSize()
+                .alpha(0.90f)
                 .background(gradient)
         )
     }

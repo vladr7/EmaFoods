@@ -56,20 +56,22 @@ fun ImageRoute(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if(state.hasImage) {
-        onNextClick()
-    } else {
-        ImageScreen(
-            errorMessage = state.errorMessage,
-            context = context,
-            imageUri = state.imageUri,
-            onUriRetrieved = { uri ->
-                viewModel.updateHasImage(uri != null)
-                viewModel.updateImageUri(uri)
-            },
-            modifier = modifier
-        )
-    }
+    onNextClick()
+
+//    if(state.hasImage) {
+//        onNextClick()
+//    } else {
+//        ImageScreen(
+//            errorMessage = state.errorMessage,
+//            context = context,
+//            imageUri = state.imageUri,
+//            onUriRetrieved = { uri ->
+//                viewModel.updateHasImage(uri != null)
+//                viewModel.updateImageUri(uri)
+//            },
+//            modifier = modifier
+//        )
+//    }
 }
 
 @Composable
