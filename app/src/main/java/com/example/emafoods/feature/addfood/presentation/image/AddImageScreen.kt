@@ -54,6 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.composables.ScreenBackground
 import com.example.emafoods.core.presentation.composables.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.AddFoodViewModel
@@ -93,6 +94,7 @@ fun AddImageScreen(
     foodDescription: String,
     onNextClick: () -> Unit,
 ) {
+    ScreenBackground()
     AddImageScreenBackground()
     AddImageOptions(
         modifier = modifier
@@ -161,7 +163,7 @@ fun AddImageScreenBackground(
 
     Box() {
         Image(
-            painter = painterResource(id = R.drawable.background),
+            painter = painterResource(id = R.drawable.imagefoodbackgr),
             contentDescription = null,
             contentScale = ContentScale.FillHeight,
             modifier = modifier
@@ -169,7 +171,7 @@ fun AddImageScreenBackground(
                     sizeImage = it.size
                 }
                 .fillMaxSize(),
-            alpha = 0.2f
+            alpha = 0.35f
         )
         Box(
             modifier = Modifier
