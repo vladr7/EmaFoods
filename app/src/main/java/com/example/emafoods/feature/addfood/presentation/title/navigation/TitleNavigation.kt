@@ -9,6 +9,6 @@ fun NavGraphBuilder.titleScreen(
     onBackClick: () -> Unit
 ) {
     composable(route = AddFoodDestinations.AddTitle.route) {
-        TitleRoute(onBackClick)
+        TitleRoute(onBackClick = onBackClick)
     }
 }
