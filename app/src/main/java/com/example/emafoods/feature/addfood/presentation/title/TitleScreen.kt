@@ -8,7 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -54,7 +59,10 @@ fun TitleRoute(
         onTitleChange = { title ->
             viewModel.onTitleChange(title)
         },
-        title = state.title
+        title = state.title,
+        onConfirmedClick = {
+
+        }
     )
 }
 
@@ -62,9 +70,9 @@ fun TitleRoute(
 fun TitleScreen(
     modifier: Modifier = Modifier,
     onTitleChange: (String) -> Unit,
+    onConfirmedClick: () -> Unit,
     title: String
 ) {
-
     TitleScreenBackground()
     Column(
         verticalArrangement = Arrangement.Center,
@@ -80,6 +88,10 @@ fun TitleScreen(
             modifier = modifier,
             onTitleChange = onTitleChange,
             title = title
+        )
+        TitleScreenNextButton(
+            modifier = modifier,
+            onConfirmedClick = onConfirmedClick,
         )
     }
 }
@@ -138,10 +150,26 @@ fun TitleScreenInput(
             focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
             unfocusedBorderColor = MaterialTheme.colorScheme.onSecondary,
             cursorColor = MaterialTheme.colorScheme.onSecondary,
-            ),
+        ),
         maxLines = 1
     )
 }
+
+@Composable
+fun TitleScreenNextButton(
+    modifier: Modifier = Modifier,
+    onConfirmedClick: () -> Unit
+) {
+    FloatingActionButton(
+        modifier = modifier
+            .padding(end = 16.dp),
+        onClick = onConfirmedClick,
+        shape = CircleShape,
+    ) {
+        Icon(imageVector = Icons.Rounded.Check, contentDescription = "Add")
+    }
+}
+
 
 @Composable
 fun TitleScreenBackground(
