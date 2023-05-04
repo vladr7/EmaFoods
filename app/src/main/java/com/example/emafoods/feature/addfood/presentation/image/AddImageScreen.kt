@@ -64,6 +64,7 @@ import com.example.emafoods.R
 import com.example.emafoods.core.presentation.composables.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.AddFoodViewModel
+import com.example.emafoods.feature.addfood.presentation.title.TitleRoute
 
 @Composable
 fun AddImageRoute(
@@ -75,7 +76,8 @@ fun AddImageRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     if(state.hasImage) {
-        onNextClick()
+        TitleRoute(onBackClick = {  })
+//        onNextClick()
     } else {
         AddImageScreen(
             errorMessage = state.errorMessage,
