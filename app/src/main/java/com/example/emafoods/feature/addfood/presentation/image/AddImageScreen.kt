@@ -172,7 +172,9 @@ fun AddImageOptions(
             AttachFileIcon(
                 onUriRetrieved = onUriRetrieved
             )
-            TakePictureIcon()
+            TakePictureIcon(
+                onUriRetrieved = onUriRetrieved
+            )
         }
     }
 }
@@ -208,8 +210,18 @@ fun AttachFileIcon(
 @Composable
 fun TakePictureIcon(
     modifier: Modifier = Modifier,
-) {
-
+    onUriRetrieved: (Uri?) -> Unit,
+    context: Context = LocalContext.current,
+    ) {
+    val uri = ComposeFileProvider.getImageUri(context)
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if(success) {
+                onUriRetrieved(uri)
+            }
+        }
+    )
     Icon(
         imageVector = Icons.Filled.PhotoCamera,
         contentDescription = null,
@@ -221,6 +233,7 @@ fun TakePictureIcon(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
+                cameraLauncher.launch(uri)
             },
         tint = MaterialTheme.colorScheme.onSecondary
     )
