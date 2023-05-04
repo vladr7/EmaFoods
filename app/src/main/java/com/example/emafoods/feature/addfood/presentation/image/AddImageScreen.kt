@@ -74,17 +74,24 @@ fun AddImageRoute(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    AddImageScreen(
-        errorMessage = state.errorMessage,
-        context = context,
-        isLoading = state.isLoading,
-        hasImage = state.hasImage,
-        imageUri = state.imageUri,
-        foodTitle = state.foodTitle,
-        foodDescription = state.foodDescription,
-        onNextClick = onNextClick,
-        modifier = modifier
-    )
+    if(state.hasImage) {
+        onNextClick()
+    } else {
+        AddImageScreen(
+            errorMessage = state.errorMessage,
+            context = context,
+            isLoading = state.isLoading,
+            imageUri = state.imageUri,
+            foodTitle = state.foodTitle,
+            foodDescription = state.foodDescription,
+            onNextClick = onNextClick,
+            onUriRetrieved = { uri ->
+                viewModel.updateHasImage(uri != null)
+                viewModel.updateImageUri(uri)
+            },
+            modifier = modifier
+        )
+    }
 }
 
 @Composable
@@ -94,16 +101,17 @@ fun AddImageScreen(
     errorMessage: String? = null,
     viewModel: AddFoodViewModel = hiltViewModel(),
     isLoading: Boolean = false,
-    hasImage: Boolean = false,
     imageUri: Uri? = null,
     foodTitle: String,
     foodDescription: String,
     onNextClick: () -> Unit,
+    onUriRetrieved: (Uri?) -> Unit
 ) {
     AddImageScreenBackground()
     AddImageTitle()
     AddImageOptions(
-        modifier = modifier
+        modifier = modifier,
+        onUriRetrieved = onUriRetrieved
     )
 
 }
@@ -149,7 +157,8 @@ fun AddImageTitle(
 
 @Composable
 fun AddImageOptions(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onUriRetrieved: (Uri?) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -160,7 +169,9 @@ fun AddImageOptions(
             modifier = Modifier
                 .padding(16.dp),
         ) {
-            AttachFileIcon()
+            AttachFileIcon(
+                onUriRetrieved = onUriRetrieved
+            )
             TakePictureIcon()
         }
     }
@@ -168,8 +179,16 @@ fun AddImageOptions(
 
 @Composable
 fun AttachFileIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onUriRetrieved: (Uri?) -> Unit,
 ) {
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            onUriRetrieved(uri)
+        }
+    )
+
     Icon(
         imageVector = Icons.Filled.AttachFile, contentDescription = null,
         modifier = modifier
@@ -180,7 +199,7 @@ fun AttachFileIcon(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
-
+                imagePicker.launch("image/*")
             },
         tint = MaterialTheme.colorScheme.onSecondary
     )
@@ -188,8 +207,9 @@ fun AttachFileIcon(
 
 @Composable
 fun TakePictureIcon(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+
     Icon(
         imageVector = Icons.Filled.PhotoCamera,
         contentDescription = null,
@@ -201,7 +221,6 @@ fun TakePictureIcon(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
             ) {
-
             },
         tint = MaterialTheme.colorScheme.onSecondary
     )
