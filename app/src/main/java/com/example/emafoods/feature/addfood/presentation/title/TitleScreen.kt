@@ -53,7 +53,7 @@ import com.example.emafoods.R
 @Composable
 fun TitleRoute(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
+    onConfirmedClick: () -> Unit,
     viewModel: TitleViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -66,9 +66,7 @@ fun TitleRoute(
         },
         title = state.title,
         showNextButton = state.showNextButton,
-        onConfirmedClick = {
-
-        }
+        onConfirmedClick = onConfirmedClick
     )
 }
 

@@ -5,15 +5,15 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun DescriptionRoute(
-    onNextClick: () -> Unit,
+    onConfirmedClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    DescriptionScreen(onNextClick = onNextClick)
+    DescriptionScreen(onConfirmedClick = onConfirmedClick)
 }
 
 @Composable
 fun DescriptionScreen(
-    onNextClick: () -> Unit,
+    onConfirmedClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
