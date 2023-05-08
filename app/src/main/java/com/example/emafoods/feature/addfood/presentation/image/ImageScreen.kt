@@ -49,29 +49,27 @@ import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFile
 
 @Composable
 fun ImageRoute(
-    onNextClick: () -> Unit,
+    onHasImage: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    onNextClick()
-
-//    if(state.hasImage) {
-//        onNextClick()
-//    } else {
-//        ImageScreen(
-//            errorMessage = state.errorMessage,
-//            context = context,
-//            imageUri = state.imageUri,
-//            onUriRetrieved = { uri ->
-//                viewModel.updateHasImage(uri != null)
-//                viewModel.updateImageUri(uri)
-//            },
-//            modifier = modifier
-//        )
-//    }
+    if(state.hasImage) {
+        onHasImage()
+    } else {
+        ImageScreen(
+            errorMessage = state.errorMessage,
+            context = context,
+            imageUri = state.imageUri,
+            onUriRetrieved = { uri ->
+                viewModel.updateHasImage(uri != null)
+                viewModel.updateImageUri(uri)
+            },
+            modifier = modifier
+        )
+    }
 }
 
 @Composable

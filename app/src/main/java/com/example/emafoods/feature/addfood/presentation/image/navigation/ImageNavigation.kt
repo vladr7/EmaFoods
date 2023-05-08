@@ -5,8 +5,8 @@ import androidx.navigation.compose.composable
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.image.ImageRoute
 
-fun NavGraphBuilder.imageScreen(onNextClick: () -> Unit) {
+fun NavGraphBuilder.imageScreen(onHasImage: () -> Unit) {
     composable(route = AddFoodDestinations.AddImage.route) {
-        ImageRoute(onNextClick)
+        ImageRoute(onHasImage)
     }
 }

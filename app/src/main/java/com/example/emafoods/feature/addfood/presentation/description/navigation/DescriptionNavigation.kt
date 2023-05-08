@@ -5,8 +5,8 @@ import androidx.navigation.compose.composable
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionRoute
 
-fun NavGraphBuilder.descriptionScreen(onNextClick: () -> Unit) {
+fun NavGraphBuilder.descriptionScreen(onConfirmedClick: () -> Unit) {
     composable(route = AddFoodDestinations.AddDescription.route) {
-        DescriptionRoute(onNextClick)
+        DescriptionRoute(onConfirmedClick)
     }
 }
