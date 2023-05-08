@@ -20,11 +20,10 @@ class TitleViewModel @Inject constructor(
 
     fun onTitleChange(title: String) {
         if(title.length > 4) {
-            _state.value = _state.value.copy(showNextButton = true)
+            _state.value = _state.value.copy(showNextButton = true, title = title)
         } else {
-            _state.value = _state.value.copy(showNextButton = false)
+            _state.value = _state.value.copy(showNextButton = false, title = title)
         }
-        _state.value = _state.value.copy(title = title)
     }
 }
 
