@@ -19,6 +19,11 @@ class TitleViewModel @Inject constructor(
     val state: StateFlow<TitleViewState> = _state
 
     fun onTitleChange(title: String) {
+        if(title.length > 4) {
+            _state.value = _state.value.copy(showNextButton = true)
+        } else {
+            _state.value = _state.value.copy(showNextButton = false)
+        }
         _state.value = _state.value.copy(title = title)
     }
 }
@@ -27,5 +32,6 @@ data class TitleViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
     val imageUri: Uri? = null,
-    val title: String = ""
+    val title: String = "",
+    val showNextButton: Boolean = false,
 ) : ViewState(isLoading, errorMessage)
