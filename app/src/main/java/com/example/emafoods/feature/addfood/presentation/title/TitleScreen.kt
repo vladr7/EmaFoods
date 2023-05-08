@@ -3,10 +3,7 @@ package com.example.emafoods.feature.addfood.presentation.title
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,29 +23,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.features.BackgroundTopToBot
+import com.example.emafoods.core.presentation.features.addfood.TitleComponent
 
 
 @Composable
@@ -79,16 +66,17 @@ fun TitleScreen(
     title: String,
     showNextButton: Boolean
 ) {
-    TitleScreenBackground()
+    BackgroundTopToBot(
+        imageId = R.drawable.titlebackground
+    )
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = modifier.fillMaxSize(0.13f))
-        TitleScreenTitle(
-            modifier = modifier
-                .fillMaxWidth(),
-            title = stringResource(id = R.string.title_screen_title)
+        TitleComponent(
+            text = stringResource(id = R.string.title_screen_title),
+            modifier = modifier.padding(20.dp, top = 40.dp, bottom = 12.dp)
         )
         TitleScreenInput(
             modifier = modifier,
@@ -103,31 +91,6 @@ fun TitleScreen(
     }
 }
 
-@OptIn(ExperimentalTextApi::class)
-@Composable
-fun TitleScreenTitle(
-    modifier: Modifier = Modifier,
-    title: String,
-) {
-    Text(
-        text = title,
-        fontSize = 36.sp,
-        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-        fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.onSecondary,
-                    MaterialTheme.colorScheme.onSecondary
-                )
-            )
-        ),
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .padding(20.dp, top = 40.dp, bottom = 12.dp)
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TitleScreenInput(
@@ -139,7 +102,7 @@ fun TitleScreenInput(
     OutlinedTextField(
         value = title,
         onValueChange = {
-            if(it.length <= maxChars) {
+            if (it.length <= maxChars) {
                 onTitleChange(it)
             }
         },
@@ -169,7 +132,7 @@ fun TitleScreenInput(
         modifier = modifier
             .padding(end = 36.dp)
             .offset(y = (-52).dp),
-    ){
+    ) {
         Spacer(modifier = modifier.weight(1f))
         Text(
             text = (maxChars - title.count()).toString(),
@@ -206,39 +169,3 @@ fun TitleScreenNextButton(
     }
 }
 
-
-@Composable
-fun TitleScreenBackground(
-    modifier: Modifier = Modifier
-) {
-    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
-
-    val gradient = Brush.verticalGradient(
-        colors = listOf(
-            Color.Transparent,
-            MaterialTheme.colorScheme.secondary
-        ),
-        startY = sizeImage.height.toFloat(),
-        endY = 900.0f,
-    )
-
-    Box() {
-        Image(
-            painter = painterResource(id = R.drawable.titlebackground),
-            contentDescription = null,
-            contentScale = ContentScale.FillHeight,
-            modifier = modifier
-                .onGloballyPositioned {
-                    sizeImage = it.size
-                }
-                .fillMaxSize(),
-            alpha = 0.35f
-        )
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .alpha(0.90f)
-                .background(gradient)
-        )
-    }
-}
