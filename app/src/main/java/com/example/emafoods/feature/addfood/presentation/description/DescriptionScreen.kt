@@ -1,14 +1,10 @@
 package com.example.emafoods.feature.addfood.presentation.description
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -24,29 +20,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.features.BackgroundTopToBot
+import com.example.emafoods.core.presentation.features.addfood.TitleComponent
 
 @Composable
 fun DescriptionRoute(
@@ -74,15 +60,18 @@ fun DescriptionScreen(
     onConfirmedClick: () -> Unit,
     description: String,
 ) {
-    DescriptionScreenBackground()
+    BackgroundTopToBot(
+        imageId = R.drawable.descriptionbackgr
+    )
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        DescriptionScreenTitle(
+        TitleComponent(
+            text = stringResource(id = R.string.description_screen_title),
             modifier = modifier
-                .fillMaxWidth(),
-            description = stringResource(id = R.string.description_screen_title)
+                .fillMaxWidth()
+                .padding(start = 20.dp, top = 40.dp, bottom = 12.dp, end = 20.dp)
         )
         DescriptionScreenInput(
             modifier = modifier,
@@ -94,31 +83,6 @@ fun DescriptionScreen(
             onConfirmedClick = onConfirmedClick,
         )
     }
-}
-
-@OptIn(ExperimentalTextApi::class)
-@Composable
-fun DescriptionScreenTitle(
-    modifier: Modifier = Modifier,
-    description: String,
-) {
-    Text(
-        text = description,
-        fontSize = 36.sp,
-        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-        fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.onSecondary,
-                    MaterialTheme.colorScheme.onSecondary
-                )
-            )
-        ),
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .padding(start = 20.dp, top = 40.dp, bottom = 12.dp, end = 20.dp)
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -198,40 +162,4 @@ fun DescriptionScreenNextButton(
     }
 }
 
-
-@Composable
-fun DescriptionScreenBackground(
-    modifier: Modifier = Modifier
-) {
-    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
-
-    val gradient = Brush.verticalGradient(
-        colors = listOf(
-            Color.Transparent,
-            MaterialTheme.colorScheme.secondary
-        ),
-        startY = sizeImage.height.toFloat(),
-        endY = 900.0f,
-    )
-
-    Box() {
-        Image(
-            painter = painterResource(id = R.drawable.descriptionbackgr),
-            contentDescription = null,
-            contentScale = ContentScale.FillHeight,
-            modifier = modifier
-                .onGloballyPositioned {
-                    sizeImage = it.size
-                }
-                .fillMaxSize(),
-            alpha = 0.35f
-        )
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .alpha(0.90f)
-                .background(gradient)
-        )
-    }
-}
 

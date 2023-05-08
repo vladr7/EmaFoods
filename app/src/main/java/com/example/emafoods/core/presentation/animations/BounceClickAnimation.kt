@@ -1,4 +1,4 @@
-package com.example.emafoods.core.presentation.composables
+package com.example.emafoods.core.presentation.animations
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
