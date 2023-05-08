@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -78,10 +80,11 @@ fun TitleScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        Spacer(modifier = modifier.fillMaxSize(0.13f))
         TitleScreenTitle(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp, bottom = 0.dp),
             title = stringResource(id = R.string.title_screen_title)
         )
         TitleScreenInput(
@@ -117,7 +120,7 @@ fun TitleScreenTitle(
         ),
         textAlign = TextAlign.Center,
         modifier = modifier
-            .padding(20.dp, top = 40.dp, bottom = 40.dp)
+            .padding(20.dp, top = 40.dp, bottom = 12.dp)
     )
 }
 
@@ -139,7 +142,7 @@ fun TitleScreenInput(
         },
         modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .padding(top = 0.dp, start = 24.dp, end = 24.dp, bottom = 16.dp),
         textStyle = TextStyle(
             color = MaterialTheme.colorScheme.onSecondary,
             fontSize = 24.sp,
@@ -160,13 +163,16 @@ fun TitleScreenNextButton(
     modifier: Modifier = Modifier,
     onConfirmedClick: () -> Unit
 ) {
-    FloatingActionButton(
-        modifier = modifier
-            .padding(end = 16.dp),
-        onClick = onConfirmedClick,
-        shape = CircleShape,
-    ) {
-        Icon(imageVector = Icons.Rounded.Check, contentDescription = "Add")
+    Row {
+        Spacer(modifier = modifier.weight(1f))
+        FloatingActionButton(
+            modifier = modifier
+                .padding(end = 24.dp, top = 4.dp),
+            onClick = onConfirmedClick,
+            shape = CircleShape,
+        ) {
+            Icon(imageVector = Icons.Rounded.Check, contentDescription = "Add")
+        }
     }
 }
 
