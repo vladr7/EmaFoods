@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -86,8 +87,7 @@ fun TitleScreen(
         Spacer(modifier = modifier.fillMaxSize(0.13f))
         TitleScreenTitle(
             modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp, bottom = 0.dp),
+                .fillMaxWidth(),
             title = stringResource(id = R.string.title_screen_title)
         )
         TitleScreenInput(
@@ -135,9 +135,14 @@ fun TitleScreenInput(
     onTitleChange: (String) -> Unit,
     title: String
 ) {
+    val maxChars = 50
     OutlinedTextField(
         value = title,
-        onValueChange = onTitleChange,
+        onValueChange = {
+            if(it.length <= maxChars) {
+                onTitleChange(it)
+            }
+        },
         label = {
             Text(
                 text = stringResource(id = R.string.title_input_label_text),
@@ -160,6 +165,17 @@ fun TitleScreenInput(
         ),
         maxLines = 1
     )
+    Row(
+        modifier = modifier
+            .padding(end = 36.dp)
+            .offset(y = (-52).dp),
+    ){
+        Spacer(modifier = modifier.weight(1f))
+        Text(
+            text = (maxChars - title.count()).toString(),
+            color = MaterialTheme.colorScheme.onSecondary,
+        )
+    }
 }
 
 @Composable
