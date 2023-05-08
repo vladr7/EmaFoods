@@ -8,7 +8,7 @@ import com.example.emafoods.feature.addfood.presentation.title.TitleRoute
 fun NavGraphBuilder.titleScreen(
     onConfirmedClick: () -> Unit,
 ) {
-    composable(route = AddFoodDestinations.AddTitle.route) {
+    composable(route = AddFoodDestinations.Title.route) {
         TitleRoute(onConfirmedClick = onConfirmedClick)
     }
 }

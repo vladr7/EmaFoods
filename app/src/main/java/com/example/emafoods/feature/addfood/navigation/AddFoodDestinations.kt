@@ -1,7 +1,8 @@
 package com.example.emafoods.feature.addfood.navigation
 
 enum class AddFoodDestinations(val route: String) {
-    AddImage("add_image"),
-    AddTitle("add_title"),
-    AddDescription("add_description"),
+    Image("add_image"),
+    Title("add_title"),
+    Description("add_description"),
+    InsertFood("insert_food"),
 }
