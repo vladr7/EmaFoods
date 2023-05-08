@@ -1,5 +1,8 @@
 package com.example.emafoods.feature.addfood.presentation.title
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -62,6 +65,7 @@ fun TitleRoute(
             viewModel.onTitleChange(title)
         },
         title = state.title,
+        showNextButton = state.showNextButton,
         onConfirmedClick = {
 
         }
@@ -73,7 +77,8 @@ fun TitleScreen(
     modifier: Modifier = Modifier,
     onTitleChange: (String) -> Unit,
     onConfirmedClick: () -> Unit,
-    title: String
+    title: String,
+    showNextButton: Boolean
 ) {
     TitleScreenBackground()
     Column(
@@ -95,6 +100,7 @@ fun TitleScreen(
         TitleScreenNextButton(
             modifier = modifier,
             onConfirmedClick = onConfirmedClick,
+            showNextButton = showNextButton
         )
     }
 }
@@ -161,17 +167,27 @@ fun TitleScreenInput(
 @Composable
 fun TitleScreenNextButton(
     modifier: Modifier = Modifier,
-    onConfirmedClick: () -> Unit
+    showNextButton: Boolean,
+    onConfirmedClick: () -> Unit,
 ) {
-    Row {
-        Spacer(modifier = modifier.weight(1f))
-        FloatingActionButton(
-            modifier = modifier
-                .padding(end = 24.dp, top = 4.dp),
-            onClick = onConfirmedClick,
-            shape = CircleShape,
-        ) {
-            Icon(imageVector = Icons.Rounded.Check, contentDescription = "Add")
+    AnimatedVisibility(visible = showNextButton,
+        enter = slideInHorizontally {
+            it
+        },
+        exit = slideOutHorizontally(
+            targetOffsetX = { it }
+        )
+    ) {
+        Row {
+            Spacer(modifier = modifier.weight(1f))
+            FloatingActionButton(
+                modifier = modifier
+                    .padding(end = 24.dp, top = 4.dp),
+                onClick = onConfirmedClick,
+                shape = CircleShape,
+            ) {
+                Icon(imageVector = Icons.Rounded.Check, contentDescription = "Add Title")
+            }
         }
     }
 }
