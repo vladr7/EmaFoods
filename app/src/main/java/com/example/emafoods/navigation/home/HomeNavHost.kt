@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
-import com.example.emafoods.feature.addfood.presentation.image.navigation.addImageScreen
+import com.example.emafoods.feature.addfood.presentation.image.navigation.imageScreen
 import com.example.emafoods.feature.addfood.presentation.title.navigation.titleScreen
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
 import com.example.emafoods.feature.listfood.navigation.listFoodScreen
@@ -29,8 +29,10 @@ fun HomeNavHost(
                 navController.navigate(AddFoodDestinations.AddTitle.route)
             },
             nestedGraph = {
-                titleScreen(onBackClick = { navController.navigateUp() })
-            }
+                titleScreen(
+                    onBackClick = { navController.navigateUp() },
+                )
+            },
         )
         listFoodScreen()
         generateFoodScreen()
@@ -45,7 +47,7 @@ fun NavGraphBuilder.addFoodGraph(
         route = HomeBottomDestination.AddFood.route,
         startDestination = AddFoodDestinations.AddImage.route
     ) {
-        addImageScreen(onNextClick)
+        imageScreen(onNextClick)
         nestedGraph()
     }
 }
