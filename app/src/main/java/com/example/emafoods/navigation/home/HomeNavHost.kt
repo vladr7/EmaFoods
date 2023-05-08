@@ -2,7 +2,6 @@ package com.example.emafoods.navigation.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
@@ -25,33 +24,21 @@ fun HomeNavHost(
         modifier = modifier,
     ) {
 
-        addFoodGraph(
-            onHasImage = {
-                navController.navigate(AddFoodDestinations.AddTitle.route)
-            },
-            nestedGraph = {
-                titleScreen(
-                    onConfirmedClick = { navController.navigate(AddFoodDestinations.AddDescription.route) },
-                )
-                descriptionScreen(
-                    onConfirmedClick = {  },
-                )
-            },
-        )
+        navigation(
+            route = HomeBottomDestination.AddFood.route,
+            startDestination = AddFoodDestinations.AddImage.route
+        ) {
+            imageScreen(
+                onHasImage = { navController.navigate(AddFoodDestinations.AddTitle.route) })
+            titleScreen(
+                onConfirmedClick = { navController.navigate(AddFoodDestinations.AddDescription.route) },
+            )
+            descriptionScreen(
+                onConfirmedClick = { },
+            )
+        }
         listFoodScreen()
         generateFoodScreen()
     }
 }
 
-fun NavGraphBuilder.addFoodGraph(
-    onHasImage: () -> Unit,
-    nestedGraph: NavGraphBuilder.() -> Unit
-) {
-    navigation(
-        route = HomeBottomDestination.AddFood.route,
-        startDestination = AddFoodDestinations.AddImage.route
-    ) {
-        imageScreen(onHasImage)
-        nestedGraph()
-    }
-}
