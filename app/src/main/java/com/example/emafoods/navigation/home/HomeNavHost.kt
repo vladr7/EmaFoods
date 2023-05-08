@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.description.navigation.descriptionScreen
 import com.example.emafoods.feature.addfood.presentation.image.navigation.imageScreen
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
 import com.example.emafoods.feature.addfood.presentation.title.navigation.titleScreen
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
 import com.example.emafoods.feature.listfood.navigation.listFoodScreen
@@ -26,15 +27,18 @@ fun HomeNavHost(
 
         navigation(
             route = HomeBottomDestination.AddFood.route,
-            startDestination = AddFoodDestinations.AddDescription.route
+            startDestination = AddFoodDestinations.Description.route
         ) {
             imageScreen(
-                onHasImage = { navController.navigate(AddFoodDestinations.AddTitle.route) })
+                onHasImage = { navController.navigate(AddFoodDestinations.Title.route) })
             titleScreen(
-                onConfirmedClick = { navController.navigate(AddFoodDestinations.AddDescription.route) },
+                onConfirmedClick = { navController.navigate(AddFoodDestinations.Description.route) },
             )
             descriptionScreen(
-                onConfirmedClick = { },
+                onConfirmedClick = { navController.navigate(AddFoodDestinations.InsertFood.route) },
+            )
+            insertFoodScreen(
+                onConfirmedClick = {  },
             )
         }
         listFoodScreen()
