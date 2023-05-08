@@ -7,6 +7,6 @@ import com.example.emafoods.feature.addfood.presentation.description.Description
 
 fun NavGraphBuilder.descriptionScreen(onConfirmedClick: () -> Unit) {
     composable(route = AddFoodDestinations.AddDescription.route) {
-        DescriptionRoute(onConfirmedClick)
+        DescriptionRoute(onConfirmedClick = onConfirmedClick)
     }
 }
