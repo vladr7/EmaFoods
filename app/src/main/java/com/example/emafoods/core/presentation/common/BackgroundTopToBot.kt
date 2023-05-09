@@ -1,4 +1,4 @@
-package com.example.emafoods.core.presentation.features
+package com.example.emafoods.core.presentation.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,12 +18,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
-import com.example.emafoods.R
 
 @Composable
 fun BackgroundTopToBot(
     modifier: Modifier = Modifier,
-    imageId: Int = R.drawable.background
+    imageId: Int
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
