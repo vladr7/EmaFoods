@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
-import com.example.emafoods.core.presentation.features.BackgroundTopToBot
+import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.core.presentation.features.addfood.TitleComponent
 
 

@@ -11,19 +11,23 @@ import javax.inject.Inject
 @HiltViewModel
 class InsertFoodViewModel @Inject constructor(
 
-): BaseViewModel() {
+) : BaseViewModel() {
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
     )
     val state: StateFlow<InsertFoodViewState> = _state
 
-    fun onTitleChange(title: String) {
-        if(title.length > 4) {
+    fun updateTitle(title: String) {
+        if (title.length > 4) {
             _state.value = _state.value.copy(showNextButton = true, title = title)
         } else {
             _state.value = _state.value.copy(showNextButton = false, title = title)
         }
+    }
+
+    fun updateDescription(description: String) {
+        _state.value = _state.value.copy(description = description)
     }
 }
 
