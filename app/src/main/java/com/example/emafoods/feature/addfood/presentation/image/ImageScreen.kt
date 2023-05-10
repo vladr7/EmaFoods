@@ -156,6 +156,7 @@ fun AddImageOptions(
 fun AttachFileIcon(
     modifier: Modifier = Modifier,
     onUriRetrieved: (Uri?) -> Unit,
+    tint: Color = MaterialTheme.colorScheme.onSecondary
 ) {
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -176,7 +177,7 @@ fun AttachFileIcon(
             ) {
                 imagePicker.launch("image/*")
             },
-        tint = MaterialTheme.colorScheme.onSecondary
+        tint = tint
     )
 }
 
