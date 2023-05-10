@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.addfood.presentation.description
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -37,11 +38,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.core.presentation.features.addfood.TitleComponent
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 
 @Composable
 fun DescriptionRoute(
     modifier: Modifier = Modifier,
-    onConfirmedClick: () -> Unit,
+    onConfirmedClick: (InsertFoodArguments) -> Unit,
     viewModel: DescriptionViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -53,7 +55,14 @@ fun DescriptionRoute(
             viewModel.onDescriptionChange(description)
         },
         description = state.description,
-        onConfirmedClick = onConfirmedClick,
+        onConfirmedClick = {
+            onConfirmedClick(
+                InsertFoodArguments(
+                    description = state.description,
+                    uri = state.uri,
+                )
+            )
+        },
         showNextButton = state.showNextButton
     )
 }

@@ -1,6 +1,5 @@
 package com.example.emafoods.feature.addfood.presentation.description
 
-import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
@@ -29,9 +28,8 @@ class DescriptionViewModel @Inject constructor(
 
     init {
         _state.update {
-            it.copy(uri = Uri.parse(uriId))
+            it.copy(uri = uriId)
         }
-        println("vlad: $uriId")
     }
 
     fun onDescriptionChange(description: String) {
@@ -48,5 +46,5 @@ data class DescriptionViewState(
     override val errorMessage: String? = null,
     val description: String = "",
     val showNextButton: Boolean = false,
-    val uri: Uri? = null,
+    val uri: String = "",
 ) : ViewState(isLoading, errorMessage)
