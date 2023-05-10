@@ -29,6 +29,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
+import com.example.emafoods.core.presentation.common.keyboardAsState
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.title.TitleScreenInput
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
@@ -63,6 +64,8 @@ fun InsertFoodScreen(
     description: String,
     onConfirmedClick: () -> Unit
 ) {
+    val isKeyboardVisible by keyboardAsState()
+
     BackgroundTopToBot(
         imageId = R.drawable.descriptionbackgr
     )
@@ -86,12 +89,14 @@ fun InsertFoodScreen(
                 description = description
             )
         }
-        InsertFoodButton(
-            modifier = modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 32.dp, end = 40.dp),
-            onConfirmedClick = onConfirmedClick
-        )
+        if(!isKeyboardVisible) {
+            InsertFoodButton(
+                modifier = modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = 32.dp, end = 40.dp),
+                onConfirmedClick = onConfirmedClick
+            )
+        }
     }
 }
 
@@ -146,3 +151,4 @@ fun InsertFoodButton(
         text = { Text(stringResource(R.string.add_recipe)) }
     )
 }
+
