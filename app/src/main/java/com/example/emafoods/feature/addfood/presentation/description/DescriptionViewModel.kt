@@ -18,7 +18,11 @@ class DescriptionViewModel @Inject constructor(
     val state: StateFlow<DescriptionViewState> = _state
 
     fun onDescriptionChange(description: String) {
-        _state.value = _state.value.copy(description = description)
+        if(description.length > 10) {
+            _state.value = _state.value.copy(showNextButton = true, description = description)
+        } else {
+            _state.value = _state.value.copy(showNextButton = false, description = description)
+        }
     }
 }
 
@@ -26,4 +30,5 @@ data class DescriptionViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
     val description: String = "",
+    val showNextButton: Boolean = false,
 ) : ViewState(isLoading, errorMessage)

@@ -1,5 +1,8 @@
 package com.example.emafoods.feature.addfood.presentation.description
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,7 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -51,7 +53,8 @@ fun DescriptionRoute(
             viewModel.onDescriptionChange(description)
         },
         description = state.description,
-        onConfirmedClick = onConfirmedClick
+        onConfirmedClick = onConfirmedClick,
+        showNextButton = state.showNextButton
     )
 }
 
@@ -61,6 +64,7 @@ fun DescriptionScreen(
     onDescriptionChange: (String) -> Unit,
     onConfirmedClick: () -> Unit,
     description: String,
+    showNextButton: Boolean,
 ) {
     BackgroundTopToBot(
         imageId = R.drawable.descriptionbackgr
@@ -83,6 +87,7 @@ fun DescriptionScreen(
         DescriptionScreenNextButton(
             modifier = modifier,
             onConfirmedClick = onConfirmedClick,
+            showNextButton = showNextButton
         )
     }
 }
@@ -150,17 +155,26 @@ fun DescriptionScreenInput(
 fun DescriptionScreenNextButton(
     modifier: Modifier = Modifier,
     onConfirmedClick: () -> Unit,
+    showNextButton: Boolean = false,
 ) {
-    Row {
-        Spacer(modifier = modifier.weight(1f))
-        FloatingActionButton(
-            modifier = modifier
-                .padding(end = 24.dp)
-                .offset(y = (-12).dp),
-            onClick = onConfirmedClick,
-            shape = CircleShape,
-        ) {
-            Icon(imageVector = Icons.Rounded.Check, contentDescription = "Add Description")
+    AnimatedVisibility(visible = showNextButton,
+        enter = slideInHorizontally {
+            it
+        },
+        exit = slideOutHorizontally(
+            targetOffsetX = { it }
+        )
+    ) {
+        Row {
+            Spacer(modifier = modifier.weight(1f))
+            FloatingActionButton(
+                modifier = modifier
+                    .padding(end = 24.dp),
+                onClick = onConfirmedClick,
+                shape = CircleShape,
+            ) {
+                Icon(imageVector = Icons.Rounded.Check, contentDescription = "Add Description")
+            }
         }
     }
 }
