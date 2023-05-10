@@ -3,7 +3,7 @@ package com.example.emafoods.navigation.home
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
@@ -27,9 +27,13 @@ fun EmaFoodsNavigation(
     )
 
     val navController = emaFoodsAppState.navController
+    val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
     Scaffold(
         bottomBar = {
-            BottomNavigation {
+            BottomNavigation(
+                modifier = Modifier
+                    .padding(bottom = systemBarsPadding.calculateBottomPadding())
+            ) {
                 items.forEach { destination ->
                     val selected =
                         emaFoodsAppState.currentDestination?.isTopLevelDestinationInHierarchy(destination) ?: false
