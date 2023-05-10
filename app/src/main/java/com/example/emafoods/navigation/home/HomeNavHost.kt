@@ -27,7 +27,7 @@ fun HomeNavHost(
 
         navigation(
             route = HomeBottomDestination.AddFood.route,
-            startDestination = AddFoodDestinations.InsertFood.route
+            startDestination = AddFoodDestinations.Description.route
         ) {
             imageScreen(
                 onHasImage = { navController.navigate(AddFoodDestinations.Title.route) })
