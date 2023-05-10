@@ -3,7 +3,8 @@ package com.example.emafoods.feature.addfood.presentation.insert
 import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,7 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
@@ -29,9 +29,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
-import com.example.emafoods.core.presentation.common.keyboardAsState
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
-import com.example.emafoods.feature.addfood.presentation.title.TitleScreenInput
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 
 
@@ -46,8 +44,6 @@ fun InsertFoodRoute(
     InsertFoodScreen(
         modifier = modifier,
         imageUri = state.imageUri,
-        onTitleChange = { viewModel.updateTitle(it) },
-        title = state.title,
         onDescriptionChange = { viewModel.updateDescription(it) },
         description = state.description,
         onConfirmedClick = onConfirmedClick
@@ -58,46 +54,36 @@ fun InsertFoodRoute(
 fun InsertFoodScreen(
     imageUri: Uri?,
     modifier: Modifier = Modifier,
-    onTitleChange: (String) -> Unit,
-    title: String,
     onDescriptionChange: (String) -> Unit,
     description: String,
     onConfirmedClick: () -> Unit
 ) {
-    val isKeyboardVisible by keyboardAsState()
 
     BackgroundTopToBot(
         imageId = R.drawable.descriptionbackgr
     )
-    Box(
+
+    Column(
         modifier = modifier
             .fillMaxSize()
     ) {
-        Column {
-            InsertFoodImage(
-                imageUri = imageUri,
-                modifier = modifier
-            )
-            TitleScreenInput(
-                onTitleChange = onTitleChange,
-                title = title
-            )
-            DescriptionScreenInput(
-                modifier = modifier
-                    .fillMaxHeight(),
-                onDescriptionChange = onDescriptionChange,
-                description = description
-            )
-        }
-        if(!isKeyboardVisible) {
-            InsertFoodButton(
-                modifier = modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(bottom = 32.dp, end = 40.dp),
-                onConfirmedClick = onConfirmedClick
-            )
-        }
+        InsertFoodImage(
+            imageUri = imageUri,
+            modifier = modifier
+        )
+        DescriptionScreenInput(
+            modifier = modifier
+                .weight(1f),
+            onDescriptionChange = onDescriptionChange,
+            description = description
+        )
+        InsertFoodButton(
+            modifier = modifier
+                .padding(bottom = 32.dp, end = 24.dp),
+            onConfirmedClick = onConfirmedClick
+        )
     }
+
 }
 
 @Composable
@@ -139,16 +125,19 @@ fun InsertFoodButton(
     modifier: Modifier = Modifier,
     onConfirmedClick: () -> Unit,
 ) {
-    ExtendedFloatingActionButton(
-        modifier = modifier,
-        onClick = onConfirmedClick,
-        icon = {
-            Icon(
-                Icons.Filled.Add,
-                contentDescription = "Add recipe"
-            )
-        },
-        text = { Text(stringResource(R.string.add_recipe)) }
-    )
+    Row {
+        Spacer(modifier = modifier.weight(1f))
+        ExtendedFloatingActionButton(
+            modifier = modifier,
+            onClick = onConfirmedClick,
+            icon = {
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "Add recipe"
+                )
+            },
+            text = { Text(stringResource(R.string.add_recipe)) }
+        )
+    }
 }
 

@@ -1,10 +1,12 @@
 package com.example.emafoods.feature.addfood.presentation.description
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -93,54 +95,55 @@ fun DescriptionScreenInput(
     description: String
 ) {
     val maxChars = 300
-    OutlinedTextField(
-        value = description,
-        onValueChange = {
-            if (it.length <= maxChars) {
-                onDescriptionChange(it)
-            }
-        },
-        label = {
-            if (description.isEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.description_empty_input_label_text),
-                    color = MaterialTheme.colorScheme.onSecondary,
-                )
-            } else {
-                Text(
-                    text = stringResource(id = R.string.description_input_label_text),
-                    color = MaterialTheme.colorScheme.onSecondary,
-                )
-            }
-        },
+
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(0.5f)
             .padding(top = 0.dp, start = 24.dp, end = 24.dp, bottom = 16.dp),
-        textStyle = TextStyle(
-            color = MaterialTheme.colorScheme.onSecondary,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            fontFamily = MaterialTheme.typography.titleLarge.fontFamily
-        ),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.onSecondary,
-            cursorColor = MaterialTheme.colorScheme.onSecondary,
-        ),
-    )
-    Row(
-        modifier = modifier
-            .padding(end = 36.dp)
-            .offset(y = (-52).dp),
     ) {
-        Spacer(modifier = modifier.weight(1f))
+        OutlinedTextField(
+            value = description,
+            onValueChange = {
+                if (it.length <= maxChars) {
+                    onDescriptionChange(it)
+                }
+            },
+            label = {
+                if (description.isEmpty()) {
+                    Text(
+                        text = stringResource(id = R.string.description_empty_input_label_text),
+                        color = MaterialTheme.colorScheme.onSecondary,
+                    )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.description_input_label_text),
+                        color = MaterialTheme.colorScheme.onSecondary,
+                    )
+                }
+            },
+            modifier = modifier
+                .fillMaxSize(),
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSecondary,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = MaterialTheme.typography.titleLarge.fontFamily
+            ),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSecondary,
+                cursorColor = MaterialTheme.colorScheme.onSecondary,
+            ),
+        )
         Text(
             text = (maxChars - description.count()).toString(),
             color = MaterialTheme.colorScheme.onSecondary,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(8.dp)
         )
     }
-
 }
 
 @Composable
