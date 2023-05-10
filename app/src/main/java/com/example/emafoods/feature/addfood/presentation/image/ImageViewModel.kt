@@ -1,6 +1,5 @@
 package com.example.emafoods.feature.addfood.presentation.image
 
-import android.net.Uri
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +16,7 @@ class AddImageViewModel @Inject constructor(
     private val _state = MutableStateFlow<ImageViewState>(ImageViewState())
     val state: StateFlow<ImageViewState> = _state
 
-    fun updateImageUri(imageUri: Uri?) {
+    fun updateImageUri(imageUri: String) {
         _state.update {
             it.copy(imageUri = imageUri)
         }
@@ -58,5 +57,5 @@ data class ImageViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
     val hasImage: Boolean = false,
-    val imageUri: Uri? = null
+    val imageUri: String = "",
 ) : ViewState(isLoading, errorMessage)

@@ -6,11 +6,13 @@ import com.example.emafoods.core.data.database.getFoodDatabase
 import com.example.emafoods.core.data.datasource.DefaultFoodDataSource
 import com.example.emafoods.core.data.network.DefaultFirebaseService
 import com.example.emafoods.core.data.repository.DefaultFoodRepository
+import com.example.emafoods.core.data.stringdecoder.UriDecoder
 import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.network.FirebaseService
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
+import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,4 +60,9 @@ object CoreModule {
     ) = RefreshFoodsUseCase(
         foodRepository = foodRepository
     )
+
+    @Singleton
+    @Provides
+    fun bindStringDecoder(): StringDecoder = UriDecoder()
+
 }
