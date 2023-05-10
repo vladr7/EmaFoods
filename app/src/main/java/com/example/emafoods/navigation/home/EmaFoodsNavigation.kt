@@ -1,6 +1,9 @@
 package com.example.emafoods.navigation.home
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
@@ -22,6 +25,7 @@ fun EmaFoodsNavigation(
         HomeBottomDestination.ListFood,
         HomeBottomDestination.GenerateFood,
     )
+
     val navController = emaFoodsAppState.navController
     Scaffold(
         bottomBar = {
@@ -56,7 +60,8 @@ fun EmaFoodsNavigation(
     ) { innerPadding ->
         HomeNavHost(
             navController = navController,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
         )
     }
 }
