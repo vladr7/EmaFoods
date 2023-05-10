@@ -3,6 +3,7 @@ package com.example.emafoods.feature.addfood.presentation.insert
 import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -79,13 +80,16 @@ fun InsertFoodScreen(
                 title = title
             )
             DescriptionScreenInput(
+                modifier = modifier
+                    .fillMaxHeight(),
                 onDescriptionChange = onDescriptionChange,
                 description = description
             )
         }
         InsertFoodButton(
             modifier = modifier
-                .align(Alignment.BottomEnd),
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 32.dp, end = 40.dp),
             onConfirmedClick = onConfirmedClick
         )
     }
@@ -131,6 +135,7 @@ fun InsertFoodButton(
     onConfirmedClick: () -> Unit,
 ) {
     ExtendedFloatingActionButton(
+        modifier = modifier,
         onClick = onConfirmedClick,
         icon = {
             Icon(
