@@ -46,26 +46,33 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
+import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 
 @Composable
 fun ImageRoute(
-    onHasImage: () -> Unit,
+    onHasImage: (DescriptionArguments) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if(state.hasImage) {
-        onHasImage()
+    if (state.hasImage) {
+        onHasImage(
+            DescriptionArguments(
+                uriId = state.imageUri
+            )
+        )
     } else {
         ImageScreen(
             errorMessage = state.errorMessage,
             context = context,
-            imageUri = state.imageUri,
             onUriRetrieved = { uri ->
-                viewModel.updateHasImage(uri != null)
-                viewModel.updateImageUri(uri)
+                uri?.let {
+                    val uriString = Uri.encode(it.toString())
+                    viewModel.updateHasImage(true)
+                    viewModel.updateImageUri(uriString)
+                }
             },
             modifier = modifier
         )
@@ -186,12 +193,12 @@ fun TakePictureIcon(
     modifier: Modifier = Modifier,
     onUriRetrieved: (Uri?) -> Unit,
     context: Context = LocalContext.current,
-    ) {
+) {
     val uri = ComposeFileProvider.getImageUri(context)
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
-            if(success) {
+            if (success) {
                 onUriRetrieved(uri)
             }
         }
