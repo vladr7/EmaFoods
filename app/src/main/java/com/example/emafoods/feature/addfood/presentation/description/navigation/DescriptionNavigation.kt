@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.addfood.presentation.description.navigation
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -9,8 +10,9 @@ import androidx.navigation.navArgument
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionRoute
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 
-const val UriIdArg = "uriIdArg"
+const val UriIdArg = "UriIdArg"
 
 data class DescriptionArguments(
     val uriId: String,
@@ -23,10 +25,11 @@ data class DescriptionArguments(
 }
 
 fun NavController.navigateToDescription(uriId: String) {
-    this.navigate("${AddFoodDestinations.Description.route}/$uriId")
+    val uri = Uri.encode(uriId)
+    this.navigate("${AddFoodDestinations.Description.route}/$uri")
 }
 
-fun NavGraphBuilder.descriptionScreen(onConfirmedClick: () -> Unit) {
+fun NavGraphBuilder.descriptionScreen(onConfirmedClick: (InsertFoodArguments) -> Unit) {
     composable(
         route = "${AddFoodDestinations.Description.route}/{$UriIdArg}",
         arguments = listOf(

@@ -10,6 +10,7 @@ import com.example.emafoods.feature.addfood.presentation.description.navigation.
 import com.example.emafoods.feature.addfood.presentation.description.navigation.navigateToDescription
 import com.example.emafoods.feature.addfood.presentation.image.navigation.imageScreen
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.navigateToInsertFood
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
 import com.example.emafoods.feature.listfood.navigation.listFoodScreen
 
@@ -37,7 +38,12 @@ fun HomeNavHost(
                 }
             )
             descriptionScreen(
-                onConfirmedClick = { navController.navigate(AddFoodDestinations.InsertFood.route) },
+                onConfirmedClick = {
+                    navController.navigateToInsertFood(
+                        uriId = it.uri,
+                        descriptionId = it.description
+                    )
+                },
             )
             insertFoodScreen(
                 onConfirmedClick = { },

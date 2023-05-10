@@ -69,9 +69,8 @@ fun ImageRoute(
             context = context,
             onUriRetrieved = { uri ->
                 uri?.let {
-                    val uriString = Uri.encode(it.toString())
                     viewModel.updateHasImage(true)
-                    viewModel.updateImageUri(uriString)
+                    viewModel.updateImageUri(it.toString())
                 }
             },
             modifier = modifier
