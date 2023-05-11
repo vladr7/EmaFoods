@@ -5,11 +5,12 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.UUID
 
 @Serializable
 data class Food(
     @DocumentId
-    @SerialName("id") val id: String = "",
+    @SerialName("id") val id: String = UUID.randomUUID().toString(),
     @SerialName("description") val description: String = "",
     @SerialName("timeInSeconds") val addedDateInSeconds: Long = Timestamp.now().seconds,
     val imageRef: String = ""

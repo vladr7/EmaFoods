@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,7 +52,7 @@ class InsertFoodViewModel @Inject constructor(
     }
 
     fun insertFood(
-        food: Food,
+        description: String,
         imageUri: Uri?
     ) {
         _state.update {
@@ -61,8 +60,8 @@ class InsertFoodViewModel @Inject constructor(
         }
         viewModelScope.launch {
             when (val result = insertFoodUseCase.execute(
-                food = food.copy(
-                    id = UUID.randomUUID().toString(),
+                food = Food(
+                    description = description,
                 ),
                 imageUri = imageUri
             )) {
@@ -78,7 +77,7 @@ class InsertFoodViewModel @Inject constructor(
 
                 is State.Success -> {
                     _state.update {
-                        it.copy(isLoading = false, errorMessage = null)
+                        it.copy(isLoading = false, errorMessage = null, insertFoodSuccess = true)
                     }
                 }
             }
@@ -91,5 +90,5 @@ data class InsertFoodViewState(
     override val errorMessage: String? = null,
     val imageUri: Uri? = null,
     val description: String = "",
-    val showNextButton: Boolean = false,
+    val insertFoodSuccess: Boolean = false,
 ) : ViewState(isLoading, errorMessage)

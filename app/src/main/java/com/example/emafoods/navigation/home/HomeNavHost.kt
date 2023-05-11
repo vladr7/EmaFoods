@@ -6,6 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
+import com.example.emafoods.feature.addfood.presentation.congratulation.navigation.congratulationScreen
+import com.example.emafoods.feature.addfood.presentation.congratulation.navigation.navigateToCongratulation
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
 import com.example.emafoods.feature.listfood.navigation.listFoodScreen
@@ -41,7 +43,12 @@ fun HomeNavHost(
 //                    )
 //                },
 //            )
-            insertFoodScreen()
+            insertFoodScreen(
+                onSuccess = {
+                    navController.navigateToCongratulation()
+                }
+            )
+            congratulationScreen()
         }
         listFoodScreen()
         generateFoodScreen()
