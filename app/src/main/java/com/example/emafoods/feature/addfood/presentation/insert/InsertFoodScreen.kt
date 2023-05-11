@@ -34,35 +34,38 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
-import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
-import java.util.UUID
 
 
 @Composable
 fun InsertFoodRoute(
     modifier: Modifier = Modifier,
+    onSuccess: () -> Unit,
     viewModel: InsertFoodViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    InsertFoodScreen(
-        modifier = modifier,
-        imageUri = state.imageUri,
-        onDescriptionChange = { viewModel.updateDescription(it) },
-        description = state.description,
-        onConfirmedClick = { viewModel.insertFood(
-            food = Food(
-                description = state.description,
-            ),
-            imageUri = state.imageUri
-        ) },
-        onUriChanged = { viewModel.updateImageUri(it) }
-    )
+    if(state.insertFoodSuccess) {
+        onSuccess()
+    } else {
+        InsertFoodScreen(
+            modifier = modifier,
+            imageUri = state.imageUri,
+            onDescriptionChange = { viewModel.updateDescription(it) },
+            description = state.description,
+            onConfirmedClick = {
+                viewModel.insertFood(
+                    description = state.description,
+                    imageUri = state.imageUri
+                )
+            },
+            onUriChanged = { viewModel.updateImageUri(it) }
+        )
+    }
 }
 
 @Composable
