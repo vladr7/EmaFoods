@@ -58,12 +58,12 @@ fun InsertFoodRoute(
             imageUri = state.imageUri,
             onDescriptionChange = { viewModel.updateDescription(it) },
             description = state.description,
-            onConfirmedClick = {
-                viewModel.insertFood(
-                    description = state.description,
-                    imageUri = state.imageUri
-                )
-//                onSuccess()
+            onInsertFoodClick = {
+//                viewModel.insertFood(
+//                    description = state.description,
+//                    imageUri = state.imageUri
+//                )
+                onSuccess()
             },
             onUriChanged = { viewModel.updateImageUri(it) }
         )
@@ -76,7 +76,7 @@ fun InsertFoodScreen(
     modifier: Modifier = Modifier,
     onDescriptionChange: (String) -> Unit,
     description: String,
-    onConfirmedClick: () -> Unit,
+    onInsertFoodClick: () -> Unit,
     onUriChanged: (Uri?) -> Unit,
 ) {
 
@@ -100,9 +100,8 @@ fun InsertFoodScreen(
             description = description
         )
         InsertFoodButton(
-            modifier = modifier
-                .padding(bottom = 32.dp, end = 24.dp),
-            onConfirmedClick = onConfirmedClick
+            modifier = modifier,
+            onInsertFoodClick = onInsertFoodClick
         )
     }
 
@@ -186,13 +185,16 @@ fun InsertFoodImage(
 @Composable
 fun InsertFoodButton(
     modifier: Modifier = Modifier,
-    onConfirmedClick: () -> Unit,
+    onInsertFoodClick: () -> Unit,
 ) {
-    Row {
-        Spacer(modifier = modifier.weight(1f))
+    Row(
+        modifier = modifier
+            .padding(bottom = 32.dp, end = 24.dp),
+        ){
+        Spacer(modifier = Modifier.weight(1f))
         ExtendedFloatingActionButton(
-            modifier = modifier,
-            onClick = onConfirmedClick,
+            modifier = Modifier,
+            onClick = onInsertFoodClick,
             icon = {
                 Icon(
                     Icons.Filled.Add,

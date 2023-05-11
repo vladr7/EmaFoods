@@ -6,9 +6,9 @@ import androidx.navigation.compose.composable
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.congratulation.CongratulationRoute
 
-fun NavGraphBuilder.congratulationScreen() {
+fun NavGraphBuilder.congratulationScreen(onInsertNewFoodClick: () -> Unit) {
     composable(route = AddFoodDestinations.Congratulation.route) {
-        CongratulationRoute()
+        CongratulationRoute(onInsertNewFoodClick = onInsertNewFoodClick)
     }
 }
 
