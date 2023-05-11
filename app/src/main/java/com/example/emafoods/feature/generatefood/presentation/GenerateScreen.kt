@@ -72,7 +72,6 @@ fun GenerateScreenRoute(
         onGenerateClick = {
             viewModel.generateFoodEvent()
         },
-        title = state.food.title,
         description = state.food.description,
         foodHasBeenGenerated = state.foodHasBeenGenerated,
     )
@@ -82,7 +81,6 @@ fun GenerateScreenRoute(
 fun GenerateScreen(
     generatedImagedRef: String,
     onGenerateClick: () -> Unit,
-    title: String,
     description: String,
     modifier: Modifier = Modifier,
     foodHasBeenGenerated: Boolean,
@@ -97,7 +95,6 @@ fun GenerateScreen(
             WaitingCookAnimation()
         } else {
             GenerateImage(generatedImagedRef = generatedImagedRef, modifier = modifier)
-            GenerateTitle(modifier, title)
             Divider(
                 color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
                 modifier = modifier
@@ -147,48 +144,6 @@ fun WaitingCookAnimation(
             progress = { progress },
         )
     }
-}
-
-@OptIn(ExperimentalTextApi::class)
-@Composable
-fun GenerateTitle(
-    modifier: Modifier = Modifier,
-    title: String,
-) {
-    var textToDisplay by remember {
-        mutableStateOf("")
-    }
-
-    LaunchedEffect(
-        key1 = title,
-    ) {
-        title.forEachIndexed { charIndex, _ ->
-            textToDisplay = title
-                .substring(
-                    startIndex = 0,
-                    endIndex = charIndex + 1,
-                )
-            delay(2)
-        }
-    }
-
-    Text(
-        text = textToDisplay,
-        fontSize = 36.sp,
-        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-        fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.onSurface
-                )
-            )
-        ),
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-    )
 }
 
 @OptIn(ExperimentalTextApi::class)

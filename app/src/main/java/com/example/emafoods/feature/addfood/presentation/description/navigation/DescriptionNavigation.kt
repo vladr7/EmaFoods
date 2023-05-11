@@ -10,7 +10,6 @@ import androidx.navigation.navArgument
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionRoute
-import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 
 const val UriIdArg = "UriIdArg"
 
@@ -29,13 +28,15 @@ fun NavController.navigateToDescription(uriId: String) {
     this.navigate("${AddFoodDestinations.Description.route}/$uri")
 }
 
-fun NavGraphBuilder.descriptionScreen(onConfirmedClick: (InsertFoodArguments) -> Unit) {
+//fun NavGraphBuilder.descriptionScreen(onConfirmedClick: (InsertFoodArguments) -> Unit) {
+fun NavGraphBuilder.descriptionScreen(onConfirmedClick: () -> Unit) {
     composable(
         route = "${AddFoodDestinations.Description.route}/{$UriIdArg}",
         arguments = listOf(
             navArgument(UriIdArg) { type = NavType.StringType },
         ),
     ) {
-        DescriptionRoute(onConfirmedClick = onConfirmedClick)
+//        DescriptionRoute(onConfirmedClick = onConfirmedClick)
+        DescriptionRoute()
     }
 }

@@ -48,6 +48,7 @@ import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 
+
 @Composable
 fun ImageRoute(
     onHasImage: (DescriptionArguments) -> Unit,
@@ -164,6 +165,8 @@ fun AttachFileIcon(
     onUriRetrieved: (Uri?) -> Unit,
     tint: Color = MaterialTheme.colorScheme.onSecondary
 ) {
+
+
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->

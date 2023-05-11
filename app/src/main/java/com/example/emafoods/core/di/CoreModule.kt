@@ -65,4 +65,5 @@ object CoreModule {
     @Provides
     fun bindStringDecoder(): StringDecoder = UriDecoder()
 
+    
 }

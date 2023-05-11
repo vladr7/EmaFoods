@@ -6,8 +6,8 @@ class CheckFieldsAreFilledUseCase @Inject constructor(
 
 ) {
 
-    fun execute(foodTitle: String, foodDescription: String): Boolean {
-        if(foodTitle.isEmpty() || foodDescription.isEmpty()) {
+    fun execute(foodDescription: String): Boolean {
+        if(foodDescription.isEmpty()) {
             return false
         }
         return true

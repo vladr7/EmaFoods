@@ -10,7 +10,6 @@ import kotlinx.serialization.Serializable
 data class Food(
     @DocumentId
     @SerialName("id") val id: String = "",
-    @SerialName("title") val title: String = "",
     @SerialName("description") val description: String = "",
     @SerialName("timeInSeconds") val addedDateInSeconds: Long = Timestamp.now().seconds,
     val imageRef: String = ""

@@ -6,13 +6,13 @@ import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.utils.State
 import javax.inject.Inject
 
-class AddFoodUseCase @Inject constructor(
+class InsertFoodUseCase @Inject constructor(
     private val checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
     private val foodRepository: FoodRepository
 ) {
 
     suspend fun execute(food: Food, imageUri: Uri?): State<Food> {
-        if(!checkFieldsAreFilledUseCase.execute(food.title, food.description)) {
+        if(!checkFieldsAreFilledUseCase.execute(food.description)) {
             return State.failed("Te rog adauga titlu si o scurta descriere")
         }
 
