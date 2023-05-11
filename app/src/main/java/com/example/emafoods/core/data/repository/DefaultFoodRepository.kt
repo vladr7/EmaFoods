@@ -33,7 +33,6 @@ class DefaultFoodRepository @Inject constructor(
                         }
                         val newFood = Food(
                             id = food.id,
-                            title = food.title,
                             description = food.description,
                             imageRef = image?.imageRef ?: ""
                         )
