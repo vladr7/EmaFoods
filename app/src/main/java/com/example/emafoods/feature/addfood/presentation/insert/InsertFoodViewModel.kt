@@ -38,6 +38,15 @@ class InsertFoodViewModel @Inject constructor(
 //    }
 
     fun updateDescription(description: String) {
+        if(description.length > 10) {
+            _state.update {
+                it.copy(shouldShowButton = true)
+            }
+        } else {
+            _state.update {
+                it.copy(shouldShowButton = false)
+            }
+        }
         _state.value = _state.value.copy(description = description)
     }
 
@@ -103,4 +112,5 @@ data class InsertFoodViewState(
     val imageUri: Uri? = null,
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
+    val shouldShowButton: Boolean = false
 ) : ViewState(isLoading, errorMessage)
