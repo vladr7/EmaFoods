@@ -48,7 +48,11 @@ fun HomeNavHost(
                     navController.navigateToCongratulation()
                 }
             )
-            congratulationScreen()
+            congratulationScreen(
+                onInsertNewFoodClick = {
+                    navController.navigateUp()
+                }
+            )
         }
         listFoodScreen()
         generateFoodScreen()

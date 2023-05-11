@@ -8,4 +8,6 @@ import javax.inject.Inject
 class CongratulationViewModel @Inject constructor(
 
 ): BaseViewModel() {
+
+
 }
