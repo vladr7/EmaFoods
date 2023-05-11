@@ -50,6 +50,7 @@ fun InsertFoodRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     if(state.insertFoodSuccess) {
+        viewModel.resetState()
         onSuccess()
     } else {
         InsertFoodScreen(
@@ -62,6 +63,7 @@ fun InsertFoodRoute(
                     description = state.description,
                     imageUri = state.imageUri
                 )
+//                onSuccess()
             },
             onUriChanged = { viewModel.updateImageUri(it) }
         )
