@@ -1,6 +1,9 @@
 package com.example.emafoods.feature.addfood.presentation.insert
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,7 +68,8 @@ fun InsertFoodRoute(
 //                )
                 onSuccess()
             },
-            onUriChanged = { viewModel.updateImageUri(it) }
+            onUriChanged = { viewModel.updateImageUri(it) },
+            shouldShowButton = state.shouldShowButton
         )
     }
 }
@@ -78,6 +82,7 @@ fun InsertFoodScreen(
     description: String,
     onInsertFoodClick: () -> Unit,
     onUriChanged: (Uri?) -> Unit,
+    shouldShowButton: Boolean
 ) {
 
     BackgroundTopToBot(
@@ -101,7 +106,8 @@ fun InsertFoodScreen(
         )
         InsertFoodButton(
             modifier = modifier,
-            onInsertFoodClick = onInsertFoodClick
+            onInsertFoodClick = onInsertFoodClick,
+            shouldShowButton = shouldShowButton
         )
     }
 
@@ -186,23 +192,33 @@ fun InsertFoodImage(
 fun InsertFoodButton(
     modifier: Modifier = Modifier,
     onInsertFoodClick: () -> Unit,
+    shouldShowButton: Boolean = false
 ) {
-    Row(
-        modifier = modifier
-            .padding(bottom = 32.dp, end = 24.dp),
-        ){
-        Spacer(modifier = Modifier.weight(1f))
-        ExtendedFloatingActionButton(
-            modifier = Modifier,
-            onClick = onInsertFoodClick,
-            icon = {
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = "Add recipe"
-                )
-            },
-            text = { Text(stringResource(R.string.add_recipe)) }
+    AnimatedVisibility(visible = shouldShowButton,
+        enter = slideInHorizontally {
+            it
+        },
+        exit = slideOutHorizontally(
+            targetOffsetX = { it }
         )
+    ) {
+        Row(
+            modifier = modifier
+                .padding(bottom = 32.dp, end = 24.dp),
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            ExtendedFloatingActionButton(
+                modifier = Modifier,
+                onClick = onInsertFoodClick,
+                icon = {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = "Add recipe"
+                    )
+                },
+                text = { Text(stringResource(R.string.add_recipe)) }
+            )
+        }
     }
 }
 
