@@ -83,6 +83,18 @@ class InsertFoodViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetState() {
+        _state.update {
+            it.copy(
+                isLoading = false,
+                errorMessage = null,
+                imageUri = null,
+                description = "",
+                insertFoodSuccess = false,
+            )
+        }
+    }
 }
 
 data class InsertFoodViewState(
