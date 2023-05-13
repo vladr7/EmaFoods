@@ -2,6 +2,7 @@ package com.example.emafoods.feature.addfood.presentation.insert
 
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.LoadingButton
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
@@ -59,14 +61,14 @@ fun InsertFoodRoute(
             onDescriptionChange = { viewModel.updateDescription(it) },
             description = state.description,
             onInsertFoodClick = {
-//                viewModel.insertFood(
-//                    description = state.description,
-//                    imageUri = state.imageUri
-//                )
-                onSuccess()
+                viewModel.insertFood(
+                    description = state.description,
+                    imageUri = state.imageUri
+                )
             },
             onUriChanged = { viewModel.updateImageUri(it) },
-            shouldShowButton = state.shouldShowButton
+            enabledAddFoodButton = state.enabledAddFoodButton,
+            loading = state.isLoading
         )
     }
 }
@@ -79,7 +81,8 @@ fun InsertFoodScreen(
     description: String,
     onInsertFoodClick: () -> Unit,
     onUriChanged: (Uri?) -> Unit,
-    shouldShowButton: Boolean
+    enabledAddFoodButton: Boolean,
+    loading: Boolean
 ) {
 
     BackgroundTopToBot(
@@ -101,11 +104,33 @@ fun InsertFoodScreen(
             onDescriptionChange = onDescriptionChange,
             description = description
         )
-        InsertFoodButton(
-            modifier = modifier,
-            onInsertFoodClick = onInsertFoodClick,
-            shouldShowButton = shouldShowButton
-        )
+        Row(
+            modifier = modifier
+                .padding(bottom = 32.dp, end = 24.dp)
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            LoadingButton(
+                onClick = onInsertFoodClick,
+                enabled = enabledAddFoodButton,
+                loading = loading,
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = "Add recipe",
+                        tint = MaterialTheme.colorScheme.onSecondary,
+                    )
+                    Text(
+                        stringResource(R.string.add_recipe),
+                        modifier = Modifier.padding(8.dp),
+                        color = MaterialTheme.colorScheme.onSecondary,
+                    )
+                }
+            }
+        }
     }
 
 }
@@ -213,6 +238,6 @@ fun InsertFoodButton(
             )
         }
     }
-
 }
+
 

@@ -8,6 +8,7 @@ import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.utils.State
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -40,11 +41,11 @@ class InsertFoodViewModel @Inject constructor(
     fun updateDescription(description: String) {
         if(description.length > 10 && state.value.imageUri != null) {
             _state.update {
-                it.copy(shouldShowButton = true)
+                it.copy(enabledAddFoodButton = true)
             }
         } else {
             _state.update {
-                it.copy(shouldShowButton = false)
+                it.copy(enabledAddFoodButton = false)
             }
         }
         _state.value = _state.value.copy(description = description)
@@ -53,6 +54,15 @@ class InsertFoodViewModel @Inject constructor(
     fun updateImageUri(uri: Uri?) {
         if (uri != null) {
             _state.value = _state.value.copy(imageUri = uri)
+            if(state.value.description.length > 10) {
+                _state.update {
+                    it.copy(enabledAddFoodButton = true)
+                }
+            } else {
+                _state.update {
+                    it.copy(enabledAddFoodButton = false)
+                }
+            }
         } else {
             _state.update {
                 it.copy(errorMessage = "Please select an image")
@@ -68,6 +78,11 @@ class InsertFoodViewModel @Inject constructor(
             it.copy(isLoading = true)
         }
         viewModelScope.launch {
+            delay(2000L)
+            _state.update {
+                it.copy(isLoading = false, errorMessage = null, insertFoodSuccess = true)
+            }
+            return@launch
             when (val result = insertFoodUseCase.execute(
                 food = Food(
                     description = description,
@@ -112,5 +127,5 @@ data class InsertFoodViewState(
     val imageUri: Uri? = null,
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
-    val shouldShowButton: Boolean = false
+    val enabledAddFoodButton: Boolean = false
 ) : ViewState(isLoading, errorMessage)
