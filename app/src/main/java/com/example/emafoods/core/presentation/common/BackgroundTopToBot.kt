@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.IntSize
 @Composable
 fun BackgroundTopToBot(
     modifier: Modifier = Modifier,
-    imageId: Int
+    imageId: Int,
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
@@ -55,3 +55,4 @@ fun BackgroundTopToBot(
         )
     }
 }
+

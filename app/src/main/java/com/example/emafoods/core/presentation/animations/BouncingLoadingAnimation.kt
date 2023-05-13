@@ -53,7 +53,8 @@ fun LoadingButton(
 
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier
+            .bounceClick(),
         enabled = enabled,
         colors = colors,
     ) {
