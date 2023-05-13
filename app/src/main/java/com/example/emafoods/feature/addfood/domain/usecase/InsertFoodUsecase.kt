@@ -13,11 +13,11 @@ class InsertFoodUseCase @Inject constructor(
 
     suspend fun execute(food: Food, imageUri: Uri?): State<Food> {
         if(!checkFieldsAreFilledUseCase.execute(food.description)) {
-            return State.failed("Te rog adauga titlu si o scurta descriere")
+            return State.failed("Te rog adauga o scurta descriere a retetei (minim 10 caractere)")
         }
 
         if(imageUri == null) {
-            return State.failed("Te rog adauga o poza cu reteta")
+            return State.failed("Te rog adauga o imagine a retetei")
         }
 
         foodRepository.addFood(food)
