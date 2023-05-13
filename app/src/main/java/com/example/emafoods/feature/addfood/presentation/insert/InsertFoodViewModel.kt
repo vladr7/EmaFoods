@@ -38,7 +38,7 @@ class InsertFoodViewModel @Inject constructor(
 //    }
 
     fun updateDescription(description: String) {
-        if(description.length > 10) {
+        if(description.length > 10 && state.value.imageUri != null) {
             _state.update {
                 it.copy(shouldShowButton = true)
             }
