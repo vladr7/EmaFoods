@@ -6,4 +6,13 @@
     <string name="login_button_text">"Conectează-te cu "</string>
     <string name="login_subtitle">"Găsește inspirație în zilele când nu știi ce să mănânci! "</string>
     <string name="generate_button_text">Generează</string>
+    <string name="title">Titlu</string>
+    <string name="description">Descriere</string>
+    <string name="add_image_title">Adaugă o rețetă nouă</string>
+    <string name="title_screen_title">Titlu rețetă</string>
+    <string name="title_input_label_text">Titlu</string>
+    <string name="description_input_label_text">Descriere</string>
+    <string name="description_empty_input_label_text">Descriere</string>
+    <string name="description_screen_title">Scurtă descriere</string>
+    <string name="add_recipe">Adaugă rețeta</string>
 </resources>

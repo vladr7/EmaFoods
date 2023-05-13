@@ -1,4 +1,4 @@
-package com.example.emafoods.ui
+package com.example.emafoods.navigation.signin
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -9,7 +9,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
 
-class EmaFoodsAppState(
+class SignInState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope
 ) {
@@ -19,11 +19,11 @@ class EmaFoodsAppState(
 }
 
 @Composable
-fun rememberEmaFoodsAppState(
+fun rememberSignInState(
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
-): EmaFoodsAppState {
+): SignInState {
     return remember(navController, coroutineScope) {
-        EmaFoodsAppState(navController, coroutineScope)
+        SignInState(navController, coroutineScope)
     }
 }

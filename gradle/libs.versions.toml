@@ -44,6 +44,7 @@ datastore = "1.0.0"
 play-services-barcode-scanner = "16.0.0"
 coil = "2.3.0"
 lottie = "6.0.0"
+image-compressor = "3.0.1"
 
 #Tests
 junit = "4.13.2"
@@ -66,6 +67,7 @@ compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "co
 navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 gms-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "gms-auth" }
+icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composematerial" }
 
 #Androidx dependencies;
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -141,8 +143,11 @@ playServiceCodeScanner = {module = "com.google.android.gms:play-services-code-sc
 #Lottie
 lottie = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie" }
 
+#Image compressor
+image-compressor = { module = "id.zelory:compressor", version.ref = "image-compressor" }
+
 [bundles]
-compose = ["compose-ui", "compose-material3", "compose-preview", "compose-material"]
+compose = ["compose-ui", "compose-material3", "compose-preview", "compose-material", "icons-extended"]
 accompanist = ["accompanist-pager-indicators", "accompanist-pager"]
 androidx = ["androidx-core", "androidx-lifecycle-runtime", "androidx-lifecycle-viewmodel", "androidx-lifecycle-viewmodelcompose", "androidx-lifecycle-runtime-compose", "androidx-activity", "androidx-activity-compose", "androidx-fragment", "androidx-datastore", "androidx-splashscreen", "androidx-savedstate"]
 firebase = ["firebase-core", "firebase-analytics", "firebase-crashlytics", "firebase-config", "firebase-auth", "firebase-firestore", "firebase-storage"]

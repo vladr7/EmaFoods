@@ -1,22 +1,20 @@
-package com.example.emafoods.ui
+package com.example.emafoods.navigation.home
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.emafoods.navigation.home.HomeBottomDestination
-import com.example.emafoods.navigation.home.HomeNavHost
 
 @Composable
 fun EmaFoodsNavigation(
@@ -27,10 +25,15 @@ fun EmaFoodsNavigation(
         HomeBottomDestination.ListFood,
         HomeBottomDestination.GenerateFood,
     )
+
     val navController = emaFoodsAppState.navController
+    val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
     Scaffold(
         bottomBar = {
-            BottomNavigation {
+            BottomNavigation(
+                modifier = Modifier
+                    .padding(bottom = systemBarsPadding.calculateBottomPadding())
+            ) {
                 items.forEach { destination ->
                     val selected =
                         emaFoodsAppState.currentDestination?.isTopLevelDestinationInHierarchy(destination) ?: false
@@ -61,7 +64,8 @@ fun EmaFoodsNavigation(
     ) { innerPadding ->
         HomeNavHost(
             navController = navController,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
         )
     }
 }

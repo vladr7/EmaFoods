@@ -3,7 +3,6 @@ package com.example.emafoods.feature.generatefood.presentation
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -34,7 +33,6 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -74,7 +72,6 @@ fun GenerateScreenRoute(
         onGenerateClick = {
             viewModel.generateFoodEvent()
         },
-        title = state.food.title,
         description = state.food.description,
         foodHasBeenGenerated = state.foodHasBeenGenerated,
     )
@@ -84,7 +81,6 @@ fun GenerateScreenRoute(
 fun GenerateScreen(
     generatedImagedRef: String,
     onGenerateClick: () -> Unit,
-    title: String,
     description: String,
     modifier: Modifier = Modifier,
     foodHasBeenGenerated: Boolean,
@@ -99,7 +95,6 @@ fun GenerateScreen(
             WaitingCookAnimation()
         } else {
             GenerateImage(generatedImagedRef = generatedImagedRef, modifier = modifier)
-            GenerateTitle(modifier, title)
             Divider(
                 color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
                 modifier = modifier
@@ -149,48 +144,6 @@ fun WaitingCookAnimation(
             progress = { progress },
         )
     }
-}
-
-@OptIn(ExperimentalTextApi::class)
-@Composable
-fun GenerateTitle(
-    modifier: Modifier = Modifier,
-    title: String,
-) {
-    var textToDisplay by remember {
-        mutableStateOf("")
-    }
-
-    LaunchedEffect(
-        key1 = title,
-    ) {
-        title.forEachIndexed { charIndex, _ ->
-            textToDisplay = title
-                .substring(
-                    startIndex = 0,
-                    endIndex = charIndex + 1,
-                )
-            delay(2)
-        }
-    }
-
-    Text(
-        text = textToDisplay,
-        fontSize = 36.sp,
-        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-        fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.onSurface
-                )
-            )
-        ),
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-    )
 }
 
 @OptIn(ExperimentalTextApi::class)
@@ -364,15 +317,6 @@ fun GenerateScreenBackground(
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
-    val gradient = Brush.verticalGradient(
-        colors = listOf(
-            Color.Transparent,
-            androidx.compose.material3.MaterialTheme.colorScheme.secondary
-        ),
-        startY = sizeImage.height.toFloat(),
-        endY = sizeImage.height.toFloat() / 4,
-    )
-
     Box() {
         Image(
             painter = painterResource(id = R.drawable.background),
@@ -385,11 +329,6 @@ fun GenerateScreenBackground(
                 .fillMaxSize(),
             alpha = 0.2f
         )
-        Box(
-            modifier = Modifier
-                .matchParentSize()
-                .alpha(0.7f)
-                .background(gradient)
-        )
     }
 }
+
