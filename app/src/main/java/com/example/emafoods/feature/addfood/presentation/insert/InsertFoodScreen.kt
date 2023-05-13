@@ -1,9 +1,6 @@
 package com.example.emafoods.feature.addfood.presentation.insert
 
 import android.net.Uri
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -52,7 +49,7 @@ fun InsertFoodRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if(state.insertFoodSuccess) {
+    if (state.insertFoodSuccess) {
         viewModel.resetState()
         onSuccess()
     } else {
@@ -194,31 +191,28 @@ fun InsertFoodButton(
     onInsertFoodClick: () -> Unit,
     shouldShowButton: Boolean = false
 ) {
-    AnimatedVisibility(visible = shouldShowButton,
-        enter = slideInHorizontally {
-            it
-        },
-        exit = slideOutHorizontally(
-            targetOffsetX = { it }
-        )
+    Row(
+        modifier = modifier
+            .padding(bottom = 32.dp, end = 24.dp)
     ) {
-        Row(
-            modifier = modifier
-                .padding(bottom = 32.dp, end = 24.dp),
+        Spacer(modifier = Modifier.weight(1f))
+        Button(
+            modifier = Modifier,
+            onClick = onInsertFoodClick,
+            enabled = shouldShowButton,
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            ExtendedFloatingActionButton(
-                modifier = Modifier,
-                onClick = onInsertFoodClick,
-                icon = {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = "Add recipe"
-                    )
-                },
-                text = { Text(stringResource(R.string.add_recipe)) }
+            Icon(
+                Icons.Filled.Add,
+                contentDescription = "Add recipe",
+                tint = MaterialTheme.colorScheme.onSecondary,
+            )
+            Text(
+                stringResource(R.string.add_recipe),
+                modifier = Modifier.padding(8.dp),
+                color = MaterialTheme.colorScheme.onSecondary,
             )
         }
     }
+
 }
 
