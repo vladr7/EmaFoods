@@ -1,6 +1,7 @@
 package com.example.emafoods.feature.addfood.presentation.insert
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,6 +49,7 @@ fun InsertFoodRoute(
     onSuccess: () -> Unit,
     viewModel: InsertFoodViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     if (state.insertFoodSuccess) {
@@ -66,10 +68,14 @@ fun InsertFoodRoute(
                 )
             },
             onUriChanged = { viewModel.updateImageUri(it) },
-            enabledAddFoodButton = state.enabledAddFoodButton,
             loading = state.isLoading
         )
     }
+    if(state.errorMessage?.isNotEmpty() == true) {
+        Toast.makeText(context, "${state.errorMessage}", Toast.LENGTH_LONG).show()
+        viewModel.hideError()
+    }
+
 }
 
 @Composable
@@ -80,7 +86,6 @@ fun InsertFoodScreen(
     description: String,
     onInsertFoodClick: () -> Unit,
     onUriChanged: (Uri?) -> Unit,
-    enabledAddFoodButton: Boolean,
     loading: Boolean
 ) {
 
@@ -110,7 +115,6 @@ fun InsertFoodScreen(
             Spacer(modifier = Modifier.weight(1f))
             LoadingButton(
                 onClick = onInsertFoodClick,
-                enabled = enabledAddFoodButton,
                 loading = loading,
             ) {
                 Row(

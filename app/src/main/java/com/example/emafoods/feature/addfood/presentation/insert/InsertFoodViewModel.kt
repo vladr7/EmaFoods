@@ -38,33 +38,15 @@ class InsertFoodViewModel @Inject constructor(
 //    }
 
     fun updateDescription(description: String) {
-        if(description.length > 10 && state.value.imageUri != null) {
-            _state.update {
-                it.copy(enabledAddFoodButton = true)
-            }
-        } else {
-            _state.update {
-                it.copy(enabledAddFoodButton = false)
-            }
-        }
         _state.value = _state.value.copy(description = description)
     }
 
     fun updateImageUri(uri: Uri?) {
         if (uri != null) {
             _state.value = _state.value.copy(imageUri = uri)
-            if(state.value.description.length > 10) {
-                _state.update {
-                    it.copy(enabledAddFoodButton = true)
-                }
-            } else {
-                _state.update {
-                    it.copy(enabledAddFoodButton = false)
-                }
-            }
         } else {
             _state.update {
-                it.copy(errorMessage = "Please select an image")
+                it.copy(errorMessage = "Te rog adauga o imagine a retetei")
             }
         }
     }
@@ -73,6 +55,9 @@ class InsertFoodViewModel @Inject constructor(
         description: String,
         imageUri: Uri?
     ) {
+        if(state.value.isLoading) {
+            return
+        }
         _state.update {
             it.copy(isLoading = true)
         }
@@ -113,6 +98,12 @@ class InsertFoodViewModel @Inject constructor(
             )
         }
     }
+
+    override fun hideError() {
+        _state.update {
+            it.copy(errorMessage = null)
+        }
+    }
 }
 
 data class InsertFoodViewState(
@@ -121,5 +112,4 @@ data class InsertFoodViewState(
     val imageUri: Uri? = null,
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
-    val enabledAddFoodButton: Boolean = false
 ) : ViewState(isLoading, errorMessage)
