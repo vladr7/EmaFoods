@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -61,13 +60,15 @@ fun InsertFoodRoute(
             onDescriptionChange = { viewModel.updateDescription(it) },
             description = state.description,
             onInsertFoodClick = {
-                viewModel.insertFood(
-                    description = state.description,
-                    imageUri = state.imageUri
-                )
+//                viewModel.insertFood(
+//                    description = state.description,
+//                    imageUri = state.imageUri
+//                )
+                onSuccess()
             },
             onUriChanged = { viewModel.updateImageUri(it) },
-            enabledAddFoodButton = state.enabledAddFoodButton,
+//            enabledAddFoodButton = state.enabledAddFoodButton,
+            enabledAddFoodButton = true,
             loading = state.isLoading
         )
     }
@@ -210,34 +211,6 @@ fun InsertFoodImage(
     }
 }
 
-@Composable
-fun InsertFoodButton(
-    modifier: Modifier = Modifier,
-    onInsertFoodClick: () -> Unit,
-    shouldShowButton: Boolean = false
-) {
-    Row(
-        modifier = modifier
-            .padding(bottom = 32.dp, end = 24.dp)
-    ) {
-        Spacer(modifier = Modifier.weight(1f))
-        Button(
-            modifier = Modifier,
-            onClick = onInsertFoodClick,
-            enabled = shouldShowButton,
-        ) {
-            Icon(
-                Icons.Filled.Add,
-                contentDescription = "Add recipe",
-                tint = MaterialTheme.colorScheme.onSecondary,
-            )
-            Text(
-                stringResource(R.string.add_recipe),
-                modifier = Modifier.padding(8.dp),
-                color = MaterialTheme.colorScheme.onSecondary,
-            )
-        }
-    }
-}
+
 
 

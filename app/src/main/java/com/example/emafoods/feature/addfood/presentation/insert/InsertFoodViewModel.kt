@@ -8,7 +8,6 @@ import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.utils.State
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -78,11 +77,6 @@ class InsertFoodViewModel @Inject constructor(
             it.copy(isLoading = true)
         }
         viewModelScope.launch {
-            delay(2000L)
-            _state.update {
-                it.copy(isLoading = false, errorMessage = null, insertFoodSuccess = true)
-            }
-            return@launch
             when (val result = insertFoodUseCase.execute(
                 food = Food(
                     description = description,
