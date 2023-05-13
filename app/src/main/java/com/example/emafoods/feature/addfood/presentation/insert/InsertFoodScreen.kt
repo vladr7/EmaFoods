@@ -60,15 +60,13 @@ fun InsertFoodRoute(
             onDescriptionChange = { viewModel.updateDescription(it) },
             description = state.description,
             onInsertFoodClick = {
-//                viewModel.insertFood(
-//                    description = state.description,
-//                    imageUri = state.imageUri
-//                )
-                onSuccess()
+                viewModel.insertFood(
+                    description = state.description,
+                    imageUri = state.imageUri
+                )
             },
             onUriChanged = { viewModel.updateImageUri(it) },
-//            enabledAddFoodButton = state.enabledAddFoodButton,
-            enabledAddFoodButton = true,
+            enabledAddFoodButton = state.enabledAddFoodButton,
             loading = state.isLoading
         )
     }
