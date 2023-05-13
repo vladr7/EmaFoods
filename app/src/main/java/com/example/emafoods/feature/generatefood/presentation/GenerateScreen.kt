@@ -327,7 +327,6 @@ fun GenerateScreenBackground(
                     sizeImage = it.size
                 }
                 .fillMaxSize(),
-            alpha = 0.2f
         )
     }
 }
