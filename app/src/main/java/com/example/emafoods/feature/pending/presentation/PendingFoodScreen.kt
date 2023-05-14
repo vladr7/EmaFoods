@@ -26,9 +26,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LunchDining
+import androidx.compose.material.icons.filled.SwipeLeft
+import androidx.compose.material.icons.filled.SwipeRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,6 +61,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.models.FoodViewData
 import kotlinx.coroutines.launch
 
@@ -101,6 +104,9 @@ fun PendingFoodScreen(
             modifier = modifier,
         )
         Spacer(modifier = Modifier.weight(1f))
+        PendingSwipeTips(
+            modifier = modifier,
+        )
         PendingSwipe(
             modifier = modifier,
             onSwipeRight = onSwipeRight,
@@ -144,6 +150,22 @@ fun FoodItem(
 }
 
 @Composable
+fun PendingSwipeTips(
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .offset(y = (100).dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        SwipeLeftTip()
+        SwipeRightTip()
+    }
+}
+
+@Composable
 fun PendingSwipe(
     modifier: Modifier = Modifier,
     onSwipeRight: () -> Unit,
@@ -166,9 +188,33 @@ fun PendingSwipe(
 }
 
 @Composable
+fun SwipeLeftTip() {
+    Icon(
+        Icons.Filled.SwipeLeft, contentDescription = "Swipe Left",
+        modifier = Modifier
+            .height(30.dp)
+            .width(30.dp)
+            .alpha(0.5f),
+        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
+    )
+}
+
+@Composable
+fun SwipeRightTip() {
+    Icon(
+        Icons.Filled.SwipeRight, contentDescription = "Swipe Right",
+        modifier = Modifier
+            .height(30.dp)
+            .width(30.dp)
+            .alpha(0.5f),
+        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
+    )
+}
+
+@Composable
 fun RejectFood() {
     Icon(
-        Icons.Filled.Delete, contentDescription = "Reject Food",
+        Icons.Filled.Close, contentDescription = "Reject Food",
         modifier = Modifier
             .height(50.dp)
             .width(50.dp),
@@ -190,6 +236,7 @@ fun SwipableFood(
     Icon(
         Icons.Filled.LunchDining, contentDescription = "Swipable Food",
         modifier = Modifier
+            .bounceClick()
             .offset(
                 x = (offsetX.value.toInt() * 2).dp,
             )
@@ -225,7 +272,7 @@ fun SwipableFood(
 @Composable
 fun AcceptFood() {
     Icon(
-        Icons.Filled.Favorite, contentDescription = "Accept Food",
+        Icons.Filled.Check, contentDescription = "Accept Food",
         modifier = Modifier
             .height(50.dp)
             .width(50.dp),
