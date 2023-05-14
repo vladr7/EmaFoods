@@ -12,6 +12,7 @@ import javax.inject.Inject
 class PendingFoodViewModel @Inject constructor(
 
 ) : ViewModel() {
+
     fun onSwipeLeft() {
 
     }
