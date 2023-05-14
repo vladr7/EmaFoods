@@ -6,6 +6,7 @@ import com.example.emafoods.core.presentation.models.helper.ViewData
 import javax.inject.Inject
 
 data class FoodViewData(
+    val author: String = "",
     val description: String = "",
     val imageRef: String = "",
 ): ViewData()
