@@ -18,9 +18,10 @@ class FoodMapper @Inject constructor(): DataModelMapper<Food, FoodViewData> {
     }
 
     override fun mapToViewData(model: Food): FoodViewData {
+        val author = model.author
         val description = model.description
         val imageRef = model.imageRef
-        return FoodViewData(description, imageRef)
+        return FoodViewData(description, imageRef, author)
     }
 
 }

@@ -11,6 +11,7 @@ import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.network.FirebaseService
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
+import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import dagger.Module
@@ -65,5 +66,10 @@ object CoreModule {
     @Provides
     fun bindStringDecoder(): StringDecoder = UriDecoder()
 
-    
+    @Provides
+    fun provideGetUserDetailsUseCase(
+        firebaseService: FirebaseService
+    ) = GetUserDetailsUseCase(
+        firebaseService = firebaseService
+    )
 }

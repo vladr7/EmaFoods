@@ -1,8 +1,9 @@
 package com.example.emafoods.feature.addfood.di
 
 import com.example.emafoods.core.domain.repository.FoodRepository
-import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.CheckFieldsAreFilledUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,9 +19,11 @@ object AddFoodModule {
     @Provides
     fun provideAddFoodUseCase(
         foodRepository: FoodRepository,
-        checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase
+        checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
+        getUserDetailsUseCase: GetUserDetailsUseCase
     ) = InsertFoodUseCase(
         foodRepository = foodRepository,
-        checkFieldsAreFilledUseCase = checkFieldsAreFilledUseCase
+        checkFieldsAreFilledUseCase = checkFieldsAreFilledUseCase,
+        getUserDetailsUseCase = getUserDetailsUseCase
     )
 }

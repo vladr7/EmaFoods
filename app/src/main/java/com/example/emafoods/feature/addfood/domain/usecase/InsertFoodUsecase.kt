@@ -3,12 +3,14 @@ package com.example.emafoods.feature.addfood.domain.usecase
 import android.net.Uri
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.domain.repository.FoodRepository
+import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.utils.State
 import javax.inject.Inject
 
 class InsertFoodUseCase @Inject constructor(
     private val checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
-    private val foodRepository: FoodRepository
+    private val foodRepository: FoodRepository,
+    private val getUserDetailsUseCase: GetUserDetailsUseCase
 ) {
 
     suspend fun execute(food: Food, imageUri: Uri?): State<Food> {
@@ -20,7 +22,14 @@ class InsertFoodUseCase @Inject constructor(
             return State.failed("Te rog adauga o imagine a retetei")
         }
 
-        foodRepository.addFood(food)
-        return foodRepository.addFoodImageToStorage(food, imageUri)
+       val user = getUserDetailsUseCase.execute()
+        val newFood = Food(
+            author = user.displayName,
+            description = food.description,
+            imageRef = food.imageRef,
+        )
+        
+        foodRepository.addFood(newFood)
+        return foodRepository.addFoodImageToStorage(newFood, imageUri)
     }
 }
