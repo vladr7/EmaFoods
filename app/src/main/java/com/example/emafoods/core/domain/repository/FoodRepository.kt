@@ -9,11 +9,15 @@ interface FoodRepository {
 
     val foods: Flow<List<Food>>
 
+    val pendingFoods: Flow<List<Food>>
+
     suspend fun refreshFoods()
 
     suspend fun addFood(food: Food): State<Food>
 
     suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food>
+
+    suspend fun refreshPendingFoods()
 
     suspend fun addPendingFood(food: Food): State<Food>
 

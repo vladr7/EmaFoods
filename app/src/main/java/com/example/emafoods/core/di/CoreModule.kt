@@ -11,8 +11,10 @@ import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.network.FirebaseService
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
+import com.example.emafoods.core.domain.usecase.GetAllPendingFoodsUseCase
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
+import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import dagger.Module
 import dagger.Provides
@@ -59,6 +61,20 @@ object CoreModule {
     fun provideRefreshFoodsUseCase(
         foodRepository: FoodRepository
     ) = RefreshFoodsUseCase(
+        foodRepository = foodRepository
+    )
+
+    @Provides
+    fun provideGetAllPendingFoodsUseCase(
+        foodRepository: FoodRepository
+    ) = GetAllPendingFoodsUseCase(
+        foodRepository = foodRepository
+    )
+
+    @Provides
+    fun provideRefreshPendingFoodsUseCase(
+        foodRepository: FoodRepository
+    ) = RefreshPendingFoodsUseCase(
         foodRepository = foodRepository
     )
 

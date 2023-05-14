@@ -270,7 +270,7 @@ fun SwipableFood(
                 ),
                 alpha = 0.5f,
             )
-            .padding(70.dp)
+            .padding(20.dp)
             .height(70.dp)
             .width(70.dp),
     )

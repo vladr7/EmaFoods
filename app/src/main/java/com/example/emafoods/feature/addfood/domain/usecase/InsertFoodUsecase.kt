@@ -27,7 +27,6 @@ class InsertFoodUseCase @Inject constructor(
         val newFood = Food(
             author = user.displayName,
             description = food.description,
-            imageRef = food.imageRef,
         )
 
         return when(user.userType) {
