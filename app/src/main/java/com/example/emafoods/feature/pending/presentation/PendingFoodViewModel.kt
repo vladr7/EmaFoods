@@ -1,92 +1,64 @@
 package com.example.emafoods.feature.pending.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.domain.usecase.GetAllPendingFoodsUseCase
+import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
+import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PendingFoodViewModel @Inject constructor(
-
+    private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
+    private val getAllPendingFoodsUseCase: GetAllPendingFoodsUseCase,
+    private val foodMapper: FoodMapper
 ) : ViewModel() {
 
     fun onSwipeLeft() {
-
+        _state.update {
+            it.copy(
+                food = if (it.pendingFoods.isNotEmpty()) it.pendingFoods.random() else FoodViewData()
+            )
+        }
     }
 
     fun onSwipeRight() {
-
+        _state.update {
+            it.copy(
+                food = if (it.pendingFoods.isNotEmpty()) it.pendingFoods.random() else FoodViewData()
+            )
+        }
     }
-
-    val dummyFoodsList = listOf<FoodViewData>(
-        FoodViewData(
-            author = "Author 1",
-            description = "Description 1",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 2",
-            description = "Description 2",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 3",
-            description = "Description 3",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 4",
-            description = "Description 4",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 5",
-            description = "Description 5",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 6",
-            description = "Description 6",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 7",
-            description = "Description 7",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 8",
-            description = "Description 8",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 9",
-            description = "Description 9",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-        FoodViewData(
-            author = "Author 10",
-            description = "Description 10",
-            imageRef = "https://picsum.photos/200/300",
-        ),
-    )
 
     private val _state: MutableStateFlow<PendingFoodState> = MutableStateFlow(PendingFoodState())
     val state get() = _state.asStateFlow()
 
     init {
-        _state.update {
-            it.copy(
-                food = dummyFoodsList.random(),
-            )
+        viewModelScope.launch {
+            refreshPendingFoodsUseCase.execute()
+        }
+        viewModelScope.launch {
+            getAllPendingFoodsUseCase.execute().collectLatest { foods ->
+                if (foods.isNotEmpty()) {
+                    _state.value = _state.value.copy(
+                        pendingFoods = foods.map { foodMapper.mapToViewData(it) },
+                        food = foodMapper.mapToViewData(foods.first())
+                    )
+                }
+            }
         }
     }
 }
 
 data class PendingFoodState(
+    val pendingFoods: List<FoodViewData> = emptyList(),
     val isLoading: Boolean = false,
     val error: String = "",
     val food: FoodViewData = FoodViewData(),

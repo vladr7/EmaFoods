@@ -21,7 +21,10 @@ class FoodMapper @Inject constructor(): DataModelMapper<Food, FoodViewData> {
         val author = model.author
         val description = model.description
         val imageRef = model.imageRef
-        return FoodViewData(description, imageRef, author)
+        return FoodViewData(
+            author = author,
+            description = description,
+            imageRef = imageRef
+        )
     }
-
 }
