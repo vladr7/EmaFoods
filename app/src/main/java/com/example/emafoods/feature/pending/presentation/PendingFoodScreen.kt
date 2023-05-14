@@ -28,10 +28,10 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.LunchDining
 import androidx.compose.material.icons.filled.SwipeLeft
 import androidx.compose.material.icons.filled.SwipeRight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -195,7 +195,7 @@ fun SwipeLeftTip() {
             .height(30.dp)
             .width(30.dp)
             .alpha(0.5f),
-        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
+        tint = MaterialTheme.colorScheme.onSecondary
     )
 }
 
@@ -207,7 +207,7 @@ fun SwipeRightTip() {
             .height(30.dp)
             .width(30.dp)
             .alpha(0.5f),
-        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
+        tint = MaterialTheme.colorScheme.onSecondary
     )
 }
 
@@ -218,7 +218,7 @@ fun RejectFood() {
         modifier = Modifier
             .height(50.dp)
             .width(50.dp),
-        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
+        tint = MaterialTheme.colorScheme.onSecondary
     )
 }
 
@@ -231,10 +231,9 @@ fun SwipableFood(
 
     val coroutineScope = rememberCoroutineScope()
     val offsetX = remember { Animatable(0f) }
-    println("vlad: ${offsetX.value}")
 
-    Icon(
-        Icons.Filled.LunchDining, contentDescription = "Swipable Food",
+    Image(
+        painterResource(id = R.drawable.foodswipe), contentDescription = "Swipable Food",
         modifier = Modifier
             .bounceClick()
             .offset(
@@ -262,10 +261,18 @@ fun SwipableFood(
                     }
                 }
             )
+            .background(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.secondary,
+                        Color.Transparent
+                    )
+                ),
+                alpha = 0.5f,
+            )
             .padding(70.dp)
             .height(70.dp)
             .width(70.dp),
-        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
     )
 }
 
@@ -276,7 +283,7 @@ fun AcceptFood() {
         modifier = Modifier
             .height(50.dp)
             .width(50.dp),
-        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
+        tint = MaterialTheme.colorScheme.onSecondary
     )
 }
 
@@ -290,13 +297,13 @@ fun PendingFoodAuthor(
         Spacer(modifier = modifier.weight(1f))
         Text(
             text = author,
-            fontFamily = androidx.compose.material3.MaterialTheme.typography.bodyMedium.fontFamily,
+            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
             fontWeight = FontWeight.Bold,
             style = TextStyle(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        androidx.compose.material3.MaterialTheme.colorScheme.onSecondary,
-                        androidx.compose.material3.MaterialTheme.colorScheme.onSecondary,
+                        MaterialTheme.colorScheme.onSecondary,
+                        MaterialTheme.colorScheme.onSecondary,
                     )
                 )
             ),
@@ -350,8 +357,8 @@ fun PendingFoodDescription(
         style = TextStyle(
             brush = Brush.linearGradient(
                 colors = listOf(
-                    androidx.compose.material3.MaterialTheme.colorScheme.onSecondary,
-                    androidx.compose.material3.MaterialTheme.colorScheme.onSecondary,
+                    MaterialTheme.colorScheme.onSecondary,
+                    MaterialTheme.colorScheme.onSecondary,
                 )
             )
         ),
