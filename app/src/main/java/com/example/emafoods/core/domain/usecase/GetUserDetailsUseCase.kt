@@ -22,7 +22,8 @@ class GetUserDetailsUseCase @Inject constructor(
     }
 
     private val privilegedUsers = listOf(
-        "ricean.vlad7@gmail.com",
-        "emanuela.ilie99@e-uvt.ro"
+//        "ricean.vlad7@gmail.com",
+//        "emanuela.ilie99@e-uvt.ro"
+    ""
     )
 }

@@ -2,6 +2,8 @@ package com.example.emafoods.feature.addfood.di
 
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToMainListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToPendingListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.CheckFieldsAreFilledUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import dagger.Module
@@ -18,12 +20,28 @@ object AddFoodModule {
 
     @Provides
     fun provideAddFoodUseCase(
-        foodRepository: FoodRepository,
+        getUserDetailsUseCase: GetUserDetailsUseCase,
         checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
-        getUserDetailsUseCase: GetUserDetailsUseCase
+        addFoodToMainListUseCase: AddFoodToMainListUseCase,
+        addFoodToPendingListUseCase: AddFoodToPendingListUseCase,
     ) = InsertFoodUseCase(
-        foodRepository = foodRepository,
+        getUserDetailsUseCase = getUserDetailsUseCase,
         checkFieldsAreFilledUseCase = checkFieldsAreFilledUseCase,
-        getUserDetailsUseCase = getUserDetailsUseCase
+        addFoodToMainListUseCase = addFoodToMainListUseCase,
+        addFoodToPendingListUseCase = addFoodToPendingListUseCase,
+    )
+
+    @Provides
+    fun provideAddFoodToMainListUseCase(
+        foodRepository: FoodRepository
+    ) = AddFoodToMainListUseCase(
+        foodRepository = foodRepository
+    )
+
+    @Provides
+    fun provideAddFoodToPendingListUseCase(
+        foodRepository: FoodRepository
+    ) = AddFoodToPendingListUseCase(
+        foodRepository = foodRepository
     )
 }

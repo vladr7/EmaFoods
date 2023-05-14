@@ -9,7 +9,10 @@ import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.utils.State
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -54,4 +57,15 @@ class DefaultFoodRepository @Inject constructor(
 
     override suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food> =
         foodDataSource.addFoodImageToStorage(food = food, fileUri = fileUri)
+
+    override suspend fun addPendingFood(food: Food): State<Food> =
+        foodDataSource.addPendingFood(food = food)
+
+
+    override suspend fun addPendingFoodImageToStorage(
+        food: Food,
+        fileUri: Uri
+    ): State<Food> =
+        foodDataSource.addPendingFoodImageToStorage(food = food, fileUri = fileUri)
+
 }

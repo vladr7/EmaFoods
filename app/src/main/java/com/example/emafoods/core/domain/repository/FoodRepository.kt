@@ -14,4 +14,8 @@ interface FoodRepository {
     suspend fun addFood(food: Food): State<Food>
 
     suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food>
+
+    suspend fun addPendingFood(food: Food): State<Food>
+
+    suspend fun addPendingFoodImageToStorage(food: Food, fileUri: Uri): State<Food>
 }
