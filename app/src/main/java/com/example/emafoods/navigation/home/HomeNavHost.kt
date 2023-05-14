@@ -17,7 +17,7 @@ import com.example.emafoods.feature.pending.presentation.navigation.pendingFoodS
 fun HomeNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = HomeBottomDestination.AddFood.route,
+    startDestination: String = HomeBottomDestination.PendingFood.route,
 ) {
     NavHost(
         navController = navController,
