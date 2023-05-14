@@ -6,14 +6,17 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -22,7 +25,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
@@ -32,18 +34,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -82,6 +91,7 @@ fun PendingFoodScreen(
     onSwipeLeft: () -> Unit,
     onSwipeRight: () -> Unit,
 ) {
+    PendingFoodBackground(imageId = R.drawable.pendingbackground)
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -107,7 +117,7 @@ fun FoodItem(
     modifier: Modifier = Modifier,
 ) {
     val color by animateColorAsState(
-        targetValue = MaterialTheme.colors.secondary
+        targetValue = androidx.compose.material3.MaterialTheme.colorScheme.secondary
     )
 
     Card(
@@ -161,7 +171,8 @@ fun RejectFood() {
         Icons.Filled.Delete, contentDescription = "Reject Food",
         modifier = Modifier
             .height(50.dp)
-            .width(50.dp)
+            .width(50.dp),
+        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
     )
 }
 
@@ -205,8 +216,9 @@ fun SwipableFood(
                 }
             )
             .padding(70.dp)
-            .height(50.dp)
-            .width(50.dp)
+            .height(70.dp)
+            .width(70.dp),
+        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
     )
 }
 
@@ -216,7 +228,8 @@ fun AcceptFood() {
         Icons.Filled.Favorite, contentDescription = "Accept Food",
         modifier = Modifier
             .height(50.dp)
-            .width(50.dp)
+            .width(50.dp),
+        tint = androidx.compose.material3.MaterialTheme.colorScheme.onSecondary
     )
 }
 
@@ -302,4 +315,41 @@ fun PendingFoodDescription(
                 start = 25.dp, end = 20.dp, top = 10.dp, bottom = 10.dp
             )
     )
+}
+
+@Composable
+fun PendingFoodBackground(
+    modifier: Modifier = Modifier,
+    imageId: Int,
+) {
+    var sizeImage by remember { mutableStateOf(IntSize.Zero) }
+
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            Color.Transparent,
+            androidx.compose.material3.MaterialTheme.colorScheme.secondary
+        ),
+        startY = 900f,
+        endY = sizeImage.height.toFloat(),
+    )
+
+    Box() {
+        Image(
+            painter = painterResource(id = imageId),
+            contentDescription = null,
+            contentScale = ContentScale.FillHeight,
+            modifier = modifier
+                .onGloballyPositioned {
+                    sizeImage = it.size
+                }
+                .fillMaxSize(),
+            alpha = 0.35f
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .alpha(0.90f)
+                .background(gradient)
+        )
+    }
 }
