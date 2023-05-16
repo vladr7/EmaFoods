@@ -137,24 +137,32 @@ class DefaultFoodDataSource : FoodDataSource {
         }.flowOn(Dispatchers.IO)
 
     override suspend fun deletePendingFood(food: Food): State<Food> {
-        val task = pendingFoodCollection.document(food.id).delete()
-        task.await()
-        return if (task.isSuccessful) {
-            State.success(food)
-        } else {
+        return try {
+            val task = pendingFoodCollection.document(food.id).delete()
+            task.await()
+            if (task.isSuccessful) {
+                State.success(food)
+            } else {
+                State.Failed("Could not delete food from firebase")
+            }
+        } catch (e: Exception) {
             State.Failed("Could not delete food from firebase")
         }
     }
 
     override suspend fun deletePendingFoodImage(food: Food): State<Food> {
-        val extension = ".jpg"
-        val refStorage =
-            FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/${food.id}$extension")
-        val task = refStorage.delete()
-        task.await()
-        return if (task.isSuccessful) {
-            State.success(food)
-        } else {
+        return try {
+            val extension = ".jpg"
+            val refStorage =
+                FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/${food.id}$extension")
+            val task = refStorage.delete()
+            task.await()
+            if (task.isSuccessful) {
+                State.success(food)
+            } else {
+                State.Failed("Could not delete food image from storage")
+            }
+        } catch (e: Exception) {
             State.Failed("Could not delete food image from storage")
         }
     }
