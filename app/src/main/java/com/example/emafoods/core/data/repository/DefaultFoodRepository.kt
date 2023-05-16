@@ -116,6 +116,7 @@ class DefaultFoodRepository @Inject constructor(
     override suspend fun movePendingFoodToAllFoods(food: Food): State<Food> {
         foodDataSource.addFood(food = food)
         foodDataSource.deletePendingFood(food = food)
+        database.foodDao.deletePendingFood(id = food.id)
         return foodDataSource.movePendingImageToAllImages(food = food)
     }
 
