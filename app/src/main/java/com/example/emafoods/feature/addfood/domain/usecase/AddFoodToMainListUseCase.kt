@@ -10,8 +10,8 @@ class AddFoodToMainListUseCase @Inject constructor(
     private val foodRepository: FoodRepository,
 ) {
 
-    suspend fun execute(food: Food, imageUri: Uri): State<Food> {
+    suspend fun execute(food: Food, fileUri: Uri): State<Food> {
         foodRepository.addFood(food)
-        return foodRepository.addFoodImageToStorage(food, fileUri =  imageUri)
+        return foodRepository.addFoodImageToStorage(food, fileUri)
     }
 }

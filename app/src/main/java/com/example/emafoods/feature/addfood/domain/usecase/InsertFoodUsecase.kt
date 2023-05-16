@@ -14,12 +14,12 @@ class InsertFoodUseCase @Inject constructor(
     private val addFoodToPendingListUseCase: AddFoodToPendingListUseCase,
 ) {
 
-    suspend fun execute(food: Food, imageUri: Uri?): State<Food> {
+    suspend fun execute(food: Food, fileUri: Uri): State<Food> {
         if(!checkFieldsAreFilledUseCase.execute(food.description)) {
             return State.failed("Te rog adauga o scurta descriere a retetei (minim 10 caractere)")
         }
 
-        if(imageUri == null) {
+        if(fileUri == Uri.EMPTY) {
             return State.failed("Te rog adauga o imagine a retetei")
         }
 
@@ -27,14 +27,15 @@ class InsertFoodUseCase @Inject constructor(
         val newFood = Food(
             author = user.displayName,
             description = food.description,
+            imageRef = fileUri.toString(),
         )
 
         return when(user.userType) {
             UserType.BASIC -> {
-                addFoodToPendingListUseCase.execute(newFood, imageUri)
+                addFoodToPendingListUseCase.execute(newFood)
             }
             UserType.ADMIN -> {
-                addFoodToMainListUseCase.execute(newFood, imageUri)
+                addFoodToMainListUseCase.execute(newFood, fileUri)
             }
         }
     }

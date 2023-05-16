@@ -64,6 +64,22 @@ class DefaultFoodDataSource : FoodDataSource {
         }
     }
 
+    override suspend fun addFoodImageBytesToStorage(
+        food: Food,
+        bytes: ByteArray
+    ): State<Food> {
+        val extension = ".jpg"
+        val refStorage =
+            FirebaseStorage.getInstance().reference.child("$STORAGE_FOODS/${food.id}$extension")
+        val task = refStorage.putBytes(bytes)
+        task.await()
+        return if (task.isSuccessful) {
+            State.success(food)
+        } else {
+            State.Failed("Could not add food image to storage")
+        }
+    }
+
     override fun getAllFoods() = callbackFlow<List<Food>> {
         val snapshotListener = foodCollection.addSnapshotListener { snapshot, error ->
             if (snapshot != null) {
@@ -167,6 +183,16 @@ class DefaultFoodDataSource : FoodDataSource {
         }
     }
 
+    override suspend fun movePendingImageToAllImages(food: Food): State<Food> {
+        // download image from food reference and add it to all images
+        val extension = ".jpg"
+        val refStorage =
+            FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/${food.id}$extension")
+        val data = refStorage.getBytes(5096 * 5096).await()
+        addFoodImageBytesToStorage(food, data)
+        return deletePendingFoodImage(food)
+    }
+
 
     override suspend fun addPendingFood(food: Food): State<Food> {
         val task = pendingFoodCollection.document(food.id).set(food)
@@ -180,8 +206,8 @@ class DefaultFoodDataSource : FoodDataSource {
 
     override suspend fun addPendingFoodImageToStorage(
         food: Food,
-        fileUri: Uri
     ): State<Food> {
+        val fileUri = Uri.parse(food.imageRef)
         val extension = ".jpg"
         val refStorage =
             FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/${food.id}$extension")
