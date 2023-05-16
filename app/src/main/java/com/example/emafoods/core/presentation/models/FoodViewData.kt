@@ -6,6 +6,7 @@ import com.example.emafoods.core.presentation.models.helper.ViewData
 import javax.inject.Inject
 
 data class FoodViewData(
+    val id: String = "",
     val author: String = "",
     val description: String = "",
     val imageRef: String = "",
@@ -14,14 +15,25 @@ data class FoodViewData(
 class FoodMapper @Inject constructor(): DataModelMapper<Food, FoodViewData> {
 
     override fun mapToModel(viewData: FoodViewData): Food {
-        TODO("Not yet implemented")
+        val id = viewData.id
+        val author = viewData.author
+        val description = viewData.description
+        val imageRef = viewData.imageRef
+        return Food(
+            id = id,
+            author = author,
+            description = description,
+            imageRef = imageRef
+        )
     }
 
     override fun mapToViewData(model: Food): FoodViewData {
+        val id = model.id
         val author = model.author
         val description = model.description
         val imageRef = model.imageRef
         return FoodViewData(
+            id = id,
             author = author,
             description = description,
             imageRef = imageRef

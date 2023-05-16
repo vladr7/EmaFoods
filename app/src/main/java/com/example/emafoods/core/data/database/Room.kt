@@ -18,6 +18,9 @@ interface FoodDao{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAllPendingFoods(foods: List<DatabasePendingFood>)
+
+    @Query("delete from databasependingfood where id = :id")
+    fun deletePendingFood(id: String)
 }
 
 @Database(entities = [DatabaseFood::class, DatabasePendingFood::class], version = 1)
