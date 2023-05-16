@@ -68,7 +68,7 @@ class InsertFoodViewModel @Inject constructor(
                 food = Food(
                     description = description,
                 ),
-                imageUri = imageUri
+                fileUri = imageUri ?: Uri.EMPTY
             )) {
                 is State.Failed -> _state.update {
                     it.copy(isLoading = false, errorMessage = result.message)

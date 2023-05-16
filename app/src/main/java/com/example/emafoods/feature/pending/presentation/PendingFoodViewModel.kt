@@ -2,17 +2,18 @@ package com.example.emafoods.feature.pending.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.pending.domain.usecase.DeletePendingFoodUseCase
 import com.example.emafoods.feature.pending.domain.usecase.GetAllPendingFoodsUseCase
+import com.example.emafoods.feature.pending.domain.usecase.MovePendingFoodToAllFoodsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +22,8 @@ class PendingFoodViewModel @Inject constructor(
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
     private val getAllPendingFoodsUseCase: GetAllPendingFoodsUseCase,
     private val deletePendingFoodUseCase: DeletePendingFoodUseCase,
+    private val refreshFoodsUseCase: RefreshFoodsUseCase,
+    private val movePendingFoodToAllFoodsUseCase: MovePendingFoodToAllFoodsUseCase,
     private val foodMapper: FoodMapper
 ) : ViewModel() {
 
@@ -56,10 +59,10 @@ class PendingFoodViewModel @Inject constructor(
     }
 
     fun onSwipeRight() {
-        _state.update {
-            it.copy(
-                currentFood = if (it.pendingFoods.isNotEmpty()) it.pendingFoods.random() else FoodViewData()
-            )
+        val currentFood = _state.value.currentFood
+        viewModelScope.launch(Dispatchers.IO) {
+            movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))
+            refreshFoodsUseCase.execute()
         }
     }
 }
