@@ -46,6 +46,11 @@ class PendingFoodViewModel @Inject constructor(
                     pendingFoods = foods.map { foodMapper.mapToViewData(it) },
                     currentFood = foodMapper.mapToViewData(foods.first())
                 )
+            } else {
+                _state.value = _state.value.copy(
+                    pendingFoods = emptyList(),
+                    currentFood = FoodViewData()
+                )
             }
         }
     }
@@ -62,7 +67,7 @@ class PendingFoodViewModel @Inject constructor(
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
             movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))
-            refreshFoodsUseCase.execute()
+            refreshPendingFoodsUseCase.execute()
         }
     }
 }
