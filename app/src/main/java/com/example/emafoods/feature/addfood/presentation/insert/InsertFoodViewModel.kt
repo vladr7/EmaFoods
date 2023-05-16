@@ -3,6 +3,7 @@ package com.example.emafoods.feature.addfood.presentation.insert
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.utils.State
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class InsertFoodViewModel @Inject constructor(
 //    savedStateHandle: SavedStateHandle,
 //    stringDecoder: StringDecoder,
-    private val insertFoodUseCase: InsertFoodUseCase
+    private val insertFoodUseCase: InsertFoodUseCase,
+    private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase
 ) : BaseViewModel() {
 
 //    private val insertFoodArgs: InsertFoodArguments =
@@ -82,6 +84,7 @@ class InsertFoodViewModel @Inject constructor(
                     _state.update {
                         it.copy(isLoading = false, errorMessage = null, insertFoodSuccess = true)
                     }
+                    refreshPendingFoodsUseCase.execute()
                 }
             }
         }

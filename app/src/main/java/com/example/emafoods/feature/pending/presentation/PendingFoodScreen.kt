@@ -75,7 +75,7 @@ fun PendingFoodRoute(
 
     PendingFoodScreen(
         modifier = modifier,
-        food = state.food,
+        food = state.currentFood,
         onSwipeLeft = {
             viewModel.onSwipeLeft()
             Toast.makeText(context, "Delete", Toast.LENGTH_SHORT).show()

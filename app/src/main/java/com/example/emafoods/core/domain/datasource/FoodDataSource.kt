@@ -23,4 +23,8 @@ interface FoodDataSource {
     fun getAllPendingFoods(): Flow<List<Food>>
 
     fun getAllPendingFoodImages(): Flow<List<FoodImage>>
+
+    suspend fun deletePendingFood(food: Food): State<Food>
+
+    suspend fun deletePendingFoodImage(food: Food): State<Food>
 }

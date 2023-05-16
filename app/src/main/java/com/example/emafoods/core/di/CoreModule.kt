@@ -11,7 +11,7 @@ import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.network.FirebaseService
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
-import com.example.emafoods.core.domain.usecase.GetAllPendingFoodsUseCase
+import com.example.emafoods.feature.pending.domain.usecase.GetAllPendingFoodsUseCase
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
