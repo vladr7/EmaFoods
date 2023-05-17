@@ -12,7 +12,23 @@ interface FoodDataSource {
 
     suspend fun addFoodImageToStorage(food: Food, fileUri: Uri): State<Food>
 
+    suspend fun addFoodImageBytesToStorage(food: Food, bytes: ByteArray): State<Food>
+
+    suspend fun addPendingFood(food: Food): State<Food>
+
+    suspend fun addPendingFoodImageToStorage(food: Food): State<Food>
+
     fun getAllFoods(): Flow<List<Food>>
 
     fun getAllFoodImages(): Flow<List<FoodImage>>
+
+    fun getAllPendingFoods(): Flow<List<Food>>
+
+    fun getAllPendingFoodImages(): Flow<List<FoodImage>>
+
+    suspend fun deletePendingFood(food: Food): State<Food>
+
+    suspend fun deletePendingFoodImage(food: Food): State<Food>
+
+    suspend fun movePendingImageToAllImages(food: Food): State<Food>
 }
