@@ -41,5 +41,11 @@ sealed class HomeBottomDestination(
         R.string.pending_food
     )
 
+    object Profile : HomeBottomDestination(
+        selectedIcon = Icons.Filled.Search,
+        unselectedIcon = Icons.Filled.Close,
+        "profile",
+        R.string.profile
+    )
 }
 
