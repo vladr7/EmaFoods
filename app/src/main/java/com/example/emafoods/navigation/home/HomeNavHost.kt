@@ -12,6 +12,7 @@ import com.example.emafoods.feature.addfood.presentation.insert.navigation.inser
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
 import com.example.emafoods.feature.listfood.navigation.listFoodScreen
 import com.example.emafoods.feature.pending.presentation.navigation.pendingFoodScreen
+import com.example.emafoods.feature.profile.navigation.profileScreen
 
 @Composable
 fun HomeNavHost(
@@ -58,6 +59,7 @@ fun HomeNavHost(
         listFoodScreen()
         generateFoodScreen()
         pendingFoodScreen()
+        profileScreen()
     }
 }
 
