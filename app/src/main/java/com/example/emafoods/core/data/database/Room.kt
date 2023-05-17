@@ -12,9 +12,18 @@ interface FoodDao{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(foods: List<DatabaseFood>)
+
+    @Query("select * from databasependingfood")
+    fun getPendingFoods(): Flow<List<DatabasePendingFood>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAllPendingFoods(foods: List<DatabasePendingFood>)
+
+    @Query("delete from databasependingfood where id = :id")
+    fun deletePendingFood(id: String)
 }
 
-@Database(entities = [DatabaseFood::class], version = 1)
+@Database(entities = [DatabaseFood::class, DatabasePendingFood::class], version = 1)
 abstract class FoodDatabase: RoomDatabase() {
     abstract val foodDao: FoodDao
 }

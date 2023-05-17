@@ -11,12 +11,13 @@ import com.example.emafoods.feature.addfood.presentation.congratulation.navigati
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
 import com.example.emafoods.feature.listfood.navigation.listFoodScreen
+import com.example.emafoods.feature.pending.presentation.navigation.pendingFoodScreen
 
 @Composable
 fun HomeNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = HomeBottomDestination.AddFood.route,
+    startDestination: String = HomeBottomDestination.PendingFood.route,
 ) {
     NavHost(
         navController = navController,
@@ -56,6 +57,7 @@ fun HomeNavHost(
         }
         listFoodScreen()
         generateFoodScreen()
+        pendingFoodScreen()
     }
 }
 

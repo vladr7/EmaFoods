@@ -22,8 +22,8 @@ fun EmaFoodsNavigation(
 ) {
     val items = listOf(
         HomeBottomDestination.AddFood,
-        HomeBottomDestination.ListFood,
         HomeBottomDestination.GenerateFood,
+        HomeBottomDestination.PendingFood
     )
 
     val navController = emaFoodsAppState.navController

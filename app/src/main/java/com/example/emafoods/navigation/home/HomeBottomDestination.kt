@@ -34,5 +34,12 @@ sealed class HomeBottomDestination(
         R.string.generate_food
     )
 
+    object PendingFood : HomeBottomDestination(
+        selectedIcon = Icons.Filled.Search,
+        unselectedIcon = Icons.Filled.Close,
+        "pending_food",
+        R.string.pending_food
+    )
+
 }
 

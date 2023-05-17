@@ -2,25 +2,41 @@ package com.example.emafoods.feature.addfood.domain.usecase
 
 import android.net.Uri
 import com.example.emafoods.core.data.models.Food
-import com.example.emafoods.core.domain.repository.FoodRepository
+import com.example.emafoods.core.domain.models.UserType
+import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.utils.State
 import javax.inject.Inject
 
 class InsertFoodUseCase @Inject constructor(
     private val checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
-    private val foodRepository: FoodRepository
+    private val getUserDetailsUseCase: GetUserDetailsUseCase,
+    private val addFoodToMainListUseCase: AddFoodToMainListUseCase,
+    private val addFoodToPendingListUseCase: AddFoodToPendingListUseCase,
 ) {
 
-    suspend fun execute(food: Food, imageUri: Uri?): State<Food> {
+    suspend fun execute(food: Food, fileUri: Uri): State<Food> {
         if(!checkFieldsAreFilledUseCase.execute(food.description)) {
             return State.failed("Te rog adauga o scurta descriere a retetei (minim 10 caractere)")
         }
 
-        if(imageUri == null) {
+        if(fileUri == Uri.EMPTY) {
             return State.failed("Te rog adauga o imagine a retetei")
         }
 
-        foodRepository.addFood(food)
-        return foodRepository.addFoodImageToStorage(food, imageUri)
+       val user = getUserDetailsUseCase.execute()
+        val newFood = Food(
+            author = user.displayName,
+            description = food.description,
+            imageRef = fileUri.toString(),
+        )
+
+        return when(user.userType) {
+            UserType.BASIC -> {
+                addFoodToPendingListUseCase.execute(newFood)
+            }
+            UserType.ADMIN -> {
+                addFoodToMainListUseCase.execute(newFood, fileUri)
+            }
+        }
     }
 }
