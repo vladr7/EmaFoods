@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,6 +39,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.emafoods.R
@@ -50,6 +53,12 @@ fun ProfileRoute(
         modifier = modifier,
         onReviewClick = {
 
+        },
+        onLevelUpClick = {
+
+        },
+        onSignOutClick = {
+
         }
     )
 }
@@ -58,6 +67,8 @@ fun ProfileRoute(
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     onReviewClick: () -> Unit,
+    onLevelUpClick: () -> Unit,
+    onSignOutClick: () -> Unit,
 ) {
     ProfileBackground()
     Column(
@@ -66,10 +77,51 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        ProfileHeader(modifier = Modifier.padding(bottom = 16.dp))
-        Spacer(modifier = Modifier.weight(1f))
+        ProfileHeader()
         ProfileReview(onReviewClick = onReviewClick)
         Spacer(modifier = Modifier.weight(1f))
+        ProfileLevelUp(onLevelUpClick = onLevelUpClick)
+        ProfileSignOut(onSignOutClick = onSignOutClick)
+    }
+}
+
+@Composable
+fun ProfileSignOut(
+    modifier: Modifier = Modifier,
+    onSignOutClick: () -> Unit
+) {
+    Button(
+        onClick = onSignOutClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, bottom = 30.dp, top = 20.dp),
+    ) {
+        Text(
+            text = "Sign Out",
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(8.dp),
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun ProfileLevelUp(
+    modifier: Modifier = Modifier,
+    onLevelUpClick: () -> Unit,
+) {
+    Button(
+        onClick = onLevelUpClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+    ) {
+        Text(
+            text = "Level Up",
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(8.dp),
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -79,7 +131,7 @@ fun ProfileHeader(
 ) {
     Row(
         modifier = modifier
-            .padding(16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 36.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
