@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.signin.utils
+package com.example.emafoods.feature.signin.presentation
 
 import android.content.Context
 import com.example.emafoods.R

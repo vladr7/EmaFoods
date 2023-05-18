@@ -9,7 +9,7 @@ import com.example.emafoods.core.data.database.asDomainPendingModel
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.repository.FoodRepository
-import com.example.emafoods.core.utils.State
+import com.example.emafoods.core.domain.models.State
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect

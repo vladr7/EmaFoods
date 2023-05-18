@@ -1,9 +1,12 @@
 package com.example.emafoods.core.domain.network
 
+import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.models.UserData
 
-interface FirebaseService {
+interface AuthService {
 
     fun isUserSignedIn(): Boolean
     fun getUserDetails(): UserData
+    fun signOut()
+    suspend fun signIn(idToken: String): State<Unit>
 }

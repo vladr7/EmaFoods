@@ -4,7 +4,7 @@ import android.net.Uri
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.domain.models.UserType
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
-import com.example.emafoods.core.utils.State
+import com.example.emafoods.core.domain.models.State
 import javax.inject.Inject
 
 class InsertFoodUseCase @Inject constructor(

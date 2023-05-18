@@ -4,7 +4,7 @@ import android.net.Uri
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.data.models.FoodImage
 import com.example.emafoods.core.domain.datasource.FoodDataSource
-import com.example.emafoods.core.utils.State
+import com.example.emafoods.core.domain.models.State
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
