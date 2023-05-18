@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.google.android.play.core.review.ReviewManagerFactory
 
 @Composable
@@ -81,9 +82,17 @@ fun ProfileRoute(
 
         },
         onSignOutClick = {
-
+            viewModel.onSignOutClick()
+        },
+        onDismiss = {
+            viewModel.onDismissSignOutAlert()
+        },
+        onConfirm = {
+            viewModel.onConfirmSignOut()
+            activity?.finish()
         },
         userName = state.userName,
+        showSignOutAlert = state.showSignOutAlert
     )
 }
 
@@ -93,7 +102,10 @@ fun ProfileScreen(
     onReviewClick: () -> Unit,
     onLevelUpClick: () -> Unit,
     onSignOutClick: () -> Unit,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
     userName: String,
+    showSignOutAlert: Boolean,
 ) {
     ProfileBackground()
     Column(
@@ -102,12 +114,35 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        if (showSignOutAlert) {
+            SignOutAlert(
+                onDismiss = onDismiss,
+                onConfirm = onConfirm
+            )
+        }
         ProfileHeader(userName = userName)
         ProfileReview(onReviewClick = onReviewClick)
         Spacer(modifier = Modifier.weight(1f))
         ProfileLevelUp(onLevelUpClick = onLevelUpClick)
         ProfileSignOut(onSignOutClick = onSignOutClick)
     }
+}
+
+@Composable
+fun SignOutAlert(
+    modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    AlertDialog2Buttons(
+        modifier = modifier,
+        showAlert = true,
+        title = "Are you sure you want to sign out?",
+        dismissText = "Cancel",
+        confirmText = "Sign out",
+        onDismissClick = onDismiss,
+        onConfirmClick = onConfirm
+    )
 }
 
 @Composable

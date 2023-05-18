@@ -9,9 +9,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
-class DefaultAuthService @Inject constructor(
-
-) : AuthService {
+class DefaultAuthService @Inject constructor() : AuthService {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
 
@@ -25,7 +23,7 @@ class DefaultAuthService @Inject constructor(
         )
 
     override fun signOut() {
-        TODO("Not yet implemented")
+        firebaseAuth.signOut()
     }
 
     override suspend fun signIn(idToken: String): State<Unit> {
