@@ -45,6 +45,8 @@ play-services-barcode-scanner = "16.0.0"
 coil = "2.3.0"
 lottie = "6.0.0"
 image-compressor = "3.0.1"
+play-review = "2.0.1"
+play-review-ktx = "2.0.1"
 
 #Tests
 junit = "4.13.2"
@@ -68,6 +70,8 @@ navigation = { module = "androidx.navigation:navigation-compose", version.ref = 
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 gms-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "gms-auth" }
 icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composematerial" }
+play-review = { module = "com.google.android.play:review", version.ref = "play-review" }
+play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "play-review-ktx" }
 
 #Androidx dependencies;
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -154,6 +158,7 @@ firebase = ["firebase-core", "firebase-analytics", "firebase-crashlytics", "fire
 retrofitAndSerialization = ["squareup-retrofit", "retrofit-converter", "kotlinx-serialization"]
 hilt = ["google-hilt", "hilt-navigation-compose"]
 testing = ["mockk", "mockito-kotlin", "hilt-android-testing", "mockito-inline", "core-testing"]
+review = ["play-review", "play-review-ktx"]
 
 
 [plugins]

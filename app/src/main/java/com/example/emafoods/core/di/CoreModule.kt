@@ -4,11 +4,11 @@ import android.content.Context
 import com.example.emafoods.core.data.database.FoodDatabase
 import com.example.emafoods.core.data.database.getFoodDatabase
 import com.example.emafoods.core.data.datasource.DefaultFoodDataSource
-import com.example.emafoods.core.data.network.DefaultFirebaseService
+import com.example.emafoods.core.data.network.DefaultAuthService
 import com.example.emafoods.core.data.repository.DefaultFoodRepository
 import com.example.emafoods.core.data.stringdecoder.UriDecoder
 import com.example.emafoods.core.domain.datasource.FoodDataSource
-import com.example.emafoods.core.domain.network.FirebaseService
+import com.example.emafoods.core.domain.network.AuthService
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
@@ -27,8 +27,8 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseService():
-            FirebaseService = DefaultFirebaseService()
+    fun provideAuthService():
+            AuthService = DefaultAuthService()
 
     @Singleton
     @Provides
@@ -68,8 +68,8 @@ object CoreModule {
 
     @Provides
     fun provideGetUserDetailsUseCase(
-        firebaseService: FirebaseService
+        authService: AuthService
     ) = GetUserDetailsUseCase(
-        firebaseService = firebaseService
+        authService = authService
     )
 }

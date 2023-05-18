@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.example.emafoods.feature.signin.SignInRoute
+import com.example.emafoods.feature.signin.presentation.SignInRoute
 
 const val signInNavigationRoute = "sign_in_route"
 

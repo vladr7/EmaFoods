@@ -3,7 +3,7 @@ package com.example.emafoods.core.domain.datasource
 import android.net.Uri
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.data.models.FoodImage
-import com.example.emafoods.core.utils.State
+import com.example.emafoods.core.domain.models.State
 import kotlinx.coroutines.flow.Flow
 
 interface FoodDataSource {
