@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -42,12 +41,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 
 @Composable
 fun ProfileRoute(
     modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     ProfileScreen(
         modifier = modifier,
@@ -59,7 +62,8 @@ fun ProfileRoute(
         },
         onSignOutClick = {
 
-        }
+        },
+        userName = state.userName,
     )
 }
 
@@ -69,6 +73,7 @@ fun ProfileScreen(
     onReviewClick: () -> Unit,
     onLevelUpClick: () -> Unit,
     onSignOutClick: () -> Unit,
+    userName: String,
 ) {
     ProfileBackground()
     Column(
@@ -77,7 +82,7 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        ProfileHeader()
+        ProfileHeader(userName = userName)
         ProfileReview(onReviewClick = onReviewClick)
         Spacer(modifier = Modifier.weight(1f))
         ProfileLevelUp(onLevelUpClick = onLevelUpClick)
@@ -128,6 +133,7 @@ fun ProfileLevelUp(
 @Composable
 fun ProfileHeader(
     modifier: Modifier = Modifier,
+    userName: String,
 ) {
     Row(
         modifier = modifier
@@ -154,7 +160,7 @@ fun ProfileHeader(
             )
             Row {
                 Text(
-                    text = "Emanuela Maria",
+                    text = userName,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )

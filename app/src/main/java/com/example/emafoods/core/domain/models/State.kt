@@ -1,4 +1,4 @@
-package com.example.emafoods.core.utils
+package com.example.emafoods.core.domain.models
 
 sealed class State<T> {
     class Loading<T> : State<T>()
