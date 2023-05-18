@@ -6,12 +6,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,27 +42,46 @@ import androidx.compose.ui.unit.dp
 import com.example.emafoods.R
 
 @Composable
-fun ProfileRoute() {
+fun ProfileRoute(
+    modifier: Modifier = Modifier,
+) {
 
-    ProfileScreen()
+    ProfileScreen(
+        modifier = modifier,
+        onReviewClick = {
+
+        }
+    )
 }
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    modifier: Modifier = Modifier,
+    onReviewClick: () -> Unit,
+) {
     ProfileBackground()
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize(),
-        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        ProfileHeader()
+        ProfileHeader(modifier = Modifier.padding(bottom = 16.dp))
+        Spacer(modifier = Modifier.weight(1f))
+        ProfileReview(onReviewClick = onReviewClick)
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
 @Composable
-fun ProfileHeader() {
-    Row() {
+fun ProfileHeader(
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Image(
             painter = painterResource(id = R.drawable.profilepic1),
             contentDescription = null,
@@ -104,6 +128,77 @@ fun ProfileHeader() {
                 )
             }
 
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileReview(
+    modifier: Modifier = Modifier,
+    onReviewClick: () -> Unit
+) {
+    Card(
+        onClick = onReviewClick,
+        shape = RoundedCornerShape(16.dp),
+        modifier = modifier
+            .padding(20.dp)
+            .fillMaxWidth()
+            .alpha(0.9f)
+    ) {
+        Row(
+            modifier = modifier
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.reviewhand),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = "Care e ideea ta de a imbunatati aplicatia?",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Row(
+                    modifier = Modifier
+                        .padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Te apreciem!", style = MaterialTheme.typography.bodySmall,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                            .graphicsLayer(alpha = 0.99f)
+                            .drawWithCache {
+                                onDrawWithContent {
+                                    drawContent()
+                                    drawRect(
+                                        Brush.horizontalGradient(
+                                            listOf(
+                                                Color.White,
+                                                Color.Red,
+                                            )
+                                        ), blendMode = BlendMode.SrcAtop
+                                    )
+                                }
+                            },
+                    )
+                }
+            }
         }
     }
 }
