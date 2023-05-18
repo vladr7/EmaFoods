@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.signin
+package com.example.emafoods.feature.signin.presentation
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.animateContentSize
@@ -56,7 +56,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.emafoods.R
-import com.example.emafoods.feature.signin.utils.AuthResultContract
 import com.example.emafoods.navigation.home.EmaFoodsNavigation
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
@@ -80,8 +79,6 @@ fun SignInRoute(
                 } else {
                     coroutineScope.launch {
                         viewModel.signIn(
-                            email = account.email.toString(),
-                            displayName = account.displayName.toString(),
                             idToken = account.idToken ?: ""
                         )
                     }

@@ -3,10 +3,10 @@ package com.example.emafoods.feature.addfood.presentation.insert
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
-import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,12 +72,6 @@ class InsertFoodViewModel @Inject constructor(
             )) {
                 is State.Failed -> _state.update {
                     it.copy(isLoading = false, errorMessage = result.message)
-                }
-
-                is State.Loading -> {
-                    _state.update {
-                        it.copy(isLoading = true)
-                    }
                 }
 
                 is State.Success -> {

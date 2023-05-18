@@ -2,14 +2,14 @@ package com.example.emafoods.core.domain.usecase
 
 import com.example.emafoods.core.domain.models.UserData
 import com.example.emafoods.core.domain.models.UserType
-import com.example.emafoods.core.domain.network.FirebaseService
+import com.example.emafoods.core.domain.network.AuthService
 import javax.inject.Inject
 
 class GetUserDetailsUseCase @Inject constructor(
-    private val firebaseService: FirebaseService
+    private val authService: AuthService
 ) {
     fun execute(): UserData {
-        val user = firebaseService.getUserDetails()
+        val user = authService.getUserDetails()
         return UserData(
             email = user.email,
             displayName = user.displayName,
