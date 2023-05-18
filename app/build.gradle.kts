@@ -90,6 +90,8 @@ dependencies {
     kapt(libs.google.hiltandroidcompiler)
     implementation(libs.lottie)
     implementation(libs.image.compressor)
+    implementation(libs.play.review)
+    implementation(libs.play.review.ktx)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.junit)

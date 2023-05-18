@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.profile.presentation
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
@@ -44,18 +46,36 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.google.android.play.core.review.ReviewManagerFactory
 
 @Composable
 fun ProfileRoute(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val activity = (LocalContext.current as? Activity)
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val manager = ReviewManagerFactory.create(context)
 
     ProfileScreen(
         modifier = modifier,
         onReviewClick = {
-
+            // can be tested after app is published (or in internal testing)
+            val request = manager.requestReviewFlow()
+            request.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val reviewInfo = task.result
+                    val flow = activity?.let { manager.launchReviewFlow(it, reviewInfo) }
+                    flow?.addOnCompleteListener {
+                        // The flow has finished. The API does not indicate whether the user
+                        // reviewed or not, or even whether the review dialog was shown. Thus, no
+                        // matter the result, we continue our app flow.
+                    }
+                } else {
+                    // There was some problem, log or handle the error code.
+                }
+            }
         },
         onLevelUpClick = {
 
@@ -223,7 +243,7 @@ fun ProfileReview(
                     .align(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = "Care e ideea ta de a imbunatati aplicatia?",
+                    text = "Apreciem opinia ta a aplicatiei!",
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Row(
@@ -232,8 +252,8 @@ fun ProfileReview(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Te apreciem!", style = MaterialTheme.typography.bodySmall,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                        text = "Te pretuim!", style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
                     )
                     Icon(
                         imageVector = Icons.Filled.Favorite,
