@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val getUserDetailsUseCase: GetUserDetailsUseCase
+    private val getUserDetailsUseCase: GetUserDetailsUseCase,
 ): BaseViewModel() {
 
     private val _state = MutableStateFlow<ProfileViewState>(ProfileViewState())
