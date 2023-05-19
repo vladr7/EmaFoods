@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.profile.presentation.game
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,8 +41,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.emafoods.R
@@ -52,12 +55,26 @@ import com.example.emafoods.feature.profile.presentation.game.model.Permission
 fun GameRoute(
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
     GameScreen(
         modifier = modifier,
         userName = "User Name",
-        level = "Nivel 1",
-        onLevelClick = {
-
+        userLevel = "Nivel 1",
+        onLevelClick = { level ->
+            if (level.remainingXpNeeded == 0) {
+                Toast.makeText(
+                    context,
+                    "Ai deblocat nivelul ${level.levelNumber}!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    context,
+                    "Mai ai nevoie de ${level.remainingXpNeeded} XP pentru a debloca acest nivel!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     )
 }
@@ -66,7 +83,7 @@ fun GameRoute(
 fun GameScreen(
     modifier: Modifier = Modifier,
     userName: String,
-    level: String,
+    userLevel: String,
     onLevelClick: (Level) -> Unit
 ) {
     GameBackground()
@@ -79,7 +96,7 @@ fun GameScreen(
         GameHeader(
             modifier = modifier,
             userName = userName,
-            level = level
+            userLevel = userLevel
         )
         LevelList(
             modifier = modifier,
@@ -98,14 +115,17 @@ fun LevelUpButton(modifier: Modifier) {
     Button(
         onClick = { },
         modifier = modifier
-            .padding(36.dp)
+            .padding(start = 20.dp, end = 20.dp, bottom = 36.dp)
             .fillMaxWidth()
     ) {
+
         Text(
-            text = stringResource(R.string.how_to_gain_xp),
+            text = stringResource(id = R.string.how_to_gain_xp),
             color = MaterialTheme.colorScheme.onSecondary,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
             modifier = modifier
-                .padding(16.dp)
+                .padding(8.dp)
         )
     }
 }
@@ -116,12 +136,15 @@ fun LevelItem(
     level: Level,
     onLevelClick: (Level) -> Unit
 ) {
+    val alpha = if (level.hasAccess) 1f else 0.5f
+
     Box(
         modifier = modifier
             .padding(bottom = 16.dp)
     ) {
         Column(
             modifier = Modifier
+                .alpha(alpha)
                 .clickable {
                     onLevelClick(level)
                 }
@@ -138,7 +161,7 @@ fun LevelItem(
                 .fillMaxWidth()
         ) {
             Text(
-                text = level.name,
+                text = level.levelNumber.toString(),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSecondary,
                 modifier = modifier
@@ -204,30 +227,59 @@ fun PermissionItem(
 fun LevelList(
     modifier: Modifier,
     levels: List<Level> = listOf(
-        Level("Nivel 1", listOf(Permission.GENERATE, Permission.ADD_TO_PENDING)),
-        Level("Nivel 2", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
-        Level("Nivel 3", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
-        Level("Nivel 4", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
-        Level("Nivel 5", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
+        Level(
+            levelNumber = 1,
+            remainingXpNeeded = 100,
+            hasAccess = true,
+            permissions = listOf(
+                Permission.MAIN_LIST_VISIBLE,
+                Permission.EDIT_MAIN,
+            )
+        ),
+        Level(
+            levelNumber = 1,
+            remainingXpNeeded = 100,
+            hasAccess = true,
+            permissions = listOf(
+                Permission.MAIN_LIST_VISIBLE,
+                Permission.EDIT_MAIN,
+            )
+        ),
+        Level(
+            levelNumber = 1,
+            remainingXpNeeded = 100,
+            hasAccess = true,
+            permissions = listOf(
+                Permission.MAIN_LIST_VISIBLE,
+                Permission.EDIT_MAIN,
+            )
+        ),
+        Level(
+            levelNumber = 1,
+            remainingXpNeeded = 100,
+            hasAccess = true,
+            permissions = listOf(
+                Permission.MAIN_LIST_VISIBLE,
+                Permission.EDIT_MAIN,
+            )
+        ),
     ),
     onLevelClick: (Level) -> Unit
 ) {
-
-        Column(
-            modifier = modifier
-                .height(400.dp)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
-        ) {
-            levels.forEach { level ->
-                LevelItem(
-                    modifier = modifier,
-                    level = level,
-                    onLevelClick = onLevelClick
-                )
-            }
+    Column(
+        modifier = modifier
+            .height(400.dp)
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+    ) {
+        levels.forEach { level ->
+            LevelItem(
+                modifier = modifier,
+                level = level,
+                onLevelClick = onLevelClick
+            )
         }
-
+    }
 }
 
 
@@ -235,7 +287,7 @@ fun LevelList(
 fun GameHeader(
     modifier: Modifier,
     userName: String,
-    level: String
+    userLevel: String
 ) {
     Row(
         modifier = modifier
@@ -256,7 +308,7 @@ fun GameHeader(
                 .align(Alignment.CenterVertically)
         ) {
             Text(
-                text = level,
+                text = userLevel,
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onSecondary
             )
