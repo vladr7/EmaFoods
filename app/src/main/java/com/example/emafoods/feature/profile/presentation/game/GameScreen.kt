@@ -2,16 +2,22 @@ package com.example.emafoods.feature.profile.presentation.game
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,9 +38,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.example.emafoods.R
+import com.example.emafoods.feature.profile.presentation.game.model.Level
+import com.example.emafoods.feature.profile.presentation.game.model.Permission
 
 @Composable
 fun GameRoute(
@@ -43,7 +52,10 @@ fun GameRoute(
     GameScreen(
         modifier = modifier,
         userName = "User Name",
-        level = "Nivel 1"
+        level = "Nivel 1",
+        onLevelClick = {
+
+        }
     )
 }
 
@@ -51,7 +63,8 @@ fun GameRoute(
 fun GameScreen(
     modifier: Modifier = Modifier,
     userName: String,
-    level: String
+    level: String,
+    onLevelClick: (Level) -> Unit
 ) {
     GameBackground()
     Column(
@@ -65,9 +78,150 @@ fun GameScreen(
             userName = userName,
             level = level
         )
+        LevelList(
+            modifier = modifier,
+            onLevelClick = onLevelClick
+        )
+        Spacer(modifier = modifier.weight(1f))
+        LevelUpButton(
+            modifier = modifier
+        )
     }
 
 }
+
+@Composable
+fun LevelUpButton(modifier: Modifier) {
+    Button(
+        onClick = { },
+        modifier = modifier
+            .padding(36.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(R.string.how_to_gain_xp),
+            color = MaterialTheme.colorScheme.onSecondary,
+            modifier = modifier
+                .padding(16.dp)
+        )
+    }
+}
+
+@Composable
+fun LevelItem(
+    modifier: Modifier,
+    level: Level,
+    onLevelClick: (Level) -> Unit
+) {
+    Box(
+        modifier = modifier
+            .padding(bottom = 16.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .clickable {
+                    onLevelClick(level)
+                }
+                .background(
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.secondary,
+                            MaterialTheme.colorScheme.tertiary
+                        ),
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .padding(12.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = level.name,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSecondary,
+                modifier = modifier
+                    .padding(bottom = 4.dp)
+            )
+            Column(
+                modifier = modifier
+                    .padding(start = 16.dp)
+            ) {
+                level.permissions.forEach { permission ->
+                    PermissionItem(
+                        modifier = modifier,
+                        permission = permission
+                    )
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun PermissionItem(
+    modifier: Modifier,
+    permission: Permission
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val onSecondary = MaterialTheme.colorScheme.onSecondary
+        val onTertiary = MaterialTheme.colorScheme.onTertiary
+        Icon(
+            imageVector = Icons.Filled.Circle,
+            contentDescription = null,
+            modifier = Modifier
+                .size(16.dp)
+                .padding(start = 4.dp)
+                .graphicsLayer(alpha = 0.99f)
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    onSecondary,
+                                    onTertiary
+                                )
+                            ), blendMode = BlendMode.SrcAtop
+                        )
+                    }
+                },
+        )
+        Text(
+            text = permission.value,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSecondary,
+            modifier = modifier.padding(start = 8.dp)
+        )
+    }
+}
+
+@Composable
+fun LevelList(
+    modifier: Modifier,
+    levels: List<Level> = listOf(
+        Level("Nivel 1", listOf(Permission.GENERATE, Permission.ADD_TO_PENDING)),
+        Level("Nivel 2", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
+        Level("Nivel 3", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
+    ),
+    onLevelClick: (Level) -> Unit
+) {
+
+    Column(
+        modifier = modifier
+            .padding(16.dp)
+    ) {
+        levels.forEach { level ->
+            LevelItem(
+                modifier = modifier,
+                level = level,
+                onLevelClick = onLevelClick
+            )
+        }
+    }
+}
+
 
 @Composable
 fun GameHeader(
