@@ -11,8 +11,8 @@ fun NavController.navigateToProfile(navOptions: NavOptions? = null) {
     this.navigate(ProfileDestinations.Profile.route, navOptions)
 }
 
-fun NavGraphBuilder.profileScreen() {
+fun NavGraphBuilder.profileScreen(onGameClick: () -> Unit) {
     composable(route = ProfileDestinations.Profile.route) {
-        ProfileRoute()
+        ProfileRoute(onGameClick = onGameClick)
     }
 }

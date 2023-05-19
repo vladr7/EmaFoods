@@ -52,7 +52,8 @@ import com.google.android.play.core.review.ReviewManagerFactory
 @Composable
 fun ProfileRoute(
     modifier: Modifier = Modifier,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onGameClick: () -> Unit
 ) {
     val activity = (LocalContext.current as? Activity)
     val context = LocalContext.current
@@ -78,9 +79,7 @@ fun ProfileRoute(
                 }
             }
         },
-        onLevelUpClick = {
-
-        },
+        onLevelUpClick = onGameClick,
         onSignOutClick = {
             viewModel.onSignOutClick()
         },
