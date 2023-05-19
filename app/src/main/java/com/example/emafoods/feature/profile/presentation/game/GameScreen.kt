@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Favorite
@@ -204,22 +207,27 @@ fun LevelList(
         Level("Nivel 1", listOf(Permission.GENERATE, Permission.ADD_TO_PENDING)),
         Level("Nivel 2", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
         Level("Nivel 3", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
+        Level("Nivel 4", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
+        Level("Nivel 5", listOf(Permission.GENERATE, Permission.MAIN_LIST_VISIBLE)),
     ),
     onLevelClick: (Level) -> Unit
 ) {
 
-    Column(
-        modifier = modifier
-            .padding(16.dp)
-    ) {
-        levels.forEach { level ->
-            LevelItem(
-                modifier = modifier,
-                level = level,
-                onLevelClick = onLevelClick
-            )
+        Column(
+            modifier = modifier
+                .height(400.dp)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            levels.forEach { level ->
+                LevelItem(
+                    modifier = modifier,
+                    level = level,
+                    onLevelClick = onLevelClick
+                )
+            }
         }
-    }
+
 }
 
 
