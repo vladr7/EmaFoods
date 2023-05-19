@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.profile.presentation
+package com.example.emafoods.feature.profile.presentation.profile
 
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.extension.capitalizeWords
