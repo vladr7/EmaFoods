@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.profile.presentation
+package com.example.emafoods.feature.profile.presentation.profile
 
 import android.app.Activity
 import androidx.compose.foundation.Image
