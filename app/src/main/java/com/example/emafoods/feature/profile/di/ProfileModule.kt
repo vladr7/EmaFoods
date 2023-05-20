@@ -1,12 +1,13 @@
 package com.example.emafoods.feature.profile.di
 
+import com.example.emafoods.core.data.localstorage.LocalStorage
 import com.example.emafoods.core.domain.network.AuthService
 import com.example.emafoods.feature.profile.data.datasource.DefaultGameDataSource
 import com.example.emafoods.feature.profile.data.datasource.GameDataSource
 import com.example.emafoods.feature.profile.data.repository.DefaultGameRepository
+import com.example.emafoods.feature.profile.domain.repository.GameRepository
 import com.example.emafoods.feature.profile.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.profile.domain.usecase.SignOutUseCase
-import com.example.emafoods.feature.profile.domain.repository.GameRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,13 +28,17 @@ object ProfileModule {
 
     @Provides
     @Singleton
-    fun provideGameDataSource(): GameDataSource = DefaultGameDataSource ()
+    fun provideGameDataSource(
+        localStorage: LocalStorage
+    ): GameDataSource = DefaultGameDataSource(
+        localStorage = localStorage
+    )
 
     @Provides
     @Singleton
     fun provideGameRepository(
         gameDataSource: GameDataSource
-    ): GameRepository = DefaultGameRepository (
+    ): GameRepository = DefaultGameRepository(
         gameDataSource = gameDataSource
     )
 

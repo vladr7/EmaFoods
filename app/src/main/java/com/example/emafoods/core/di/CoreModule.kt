@@ -4,6 +4,8 @@ import android.content.Context
 import com.example.emafoods.core.data.database.FoodDatabase
 import com.example.emafoods.core.data.database.getFoodDatabase
 import com.example.emafoods.core.data.datasource.DefaultFoodDataSource
+import com.example.emafoods.core.data.localstorage.DefaultDataStore
+import com.example.emafoods.core.data.localstorage.LocalStorage
 import com.example.emafoods.core.data.network.DefaultAuthService
 import com.example.emafoods.core.data.repository.DefaultFoodRepository
 import com.example.emafoods.core.data.stringdecoder.UriDecoder
@@ -71,5 +73,12 @@ object CoreModule {
         authService: AuthService
     ) = GetUserDetailsUseCase(
         authService = authService
+    )
+
+    @Provides
+    fun provideLocalStorage(
+        @ApplicationContext context: Context
+    ): LocalStorage = DefaultDataStore(
+        context = context
     )
 }

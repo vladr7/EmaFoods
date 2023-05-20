@@ -5,5 +5,6 @@ import com.example.emafoods.feature.profile.domain.model.UserLevel
 interface GameDataSource {
 
     fun listOfXpActions(): List<String>
-    fun userLevel(): UserLevel
+    suspend fun userLevel(): UserLevel
+    suspend fun storeUserLevel(userLevel: UserLevel)
 }
