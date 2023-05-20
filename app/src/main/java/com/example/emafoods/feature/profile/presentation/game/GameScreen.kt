@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +48,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.feature.profile.presentation.game.model.Level
 import com.example.emafoods.feature.profile.presentation.game.model.Permission
@@ -54,13 +58,17 @@ import com.example.emafoods.feature.profile.presentation.game.model.Permission
 @Composable
 fun GameRoute(
     modifier: Modifier = Modifier,
+    viewModel: GameViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val state = viewModel.state.collectAsStateWithLifecycle()
 
     GameScreen(
         modifier = modifier,
         userName = "User Name",
         userLevel = "Nivel 1",
+        displayXpAlert = state.value.displayXpAlert,
+        listOfXpActions = state.value.listOfXpActions,
         onLevelClick = { level ->
             if (level.remainingXpNeeded == 0) {
                 Toast.makeText(
@@ -75,6 +83,12 @@ fun GameRoute(
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        },
+        onIncreaseXpClick = {
+            viewModel.onIncreaseXpClick()
+        },
+        onDismissXpAlertClick = {
+            viewModel.onDismissXpAlertClick()
         }
     )
 }
@@ -84,9 +98,21 @@ fun GameScreen(
     modifier: Modifier = Modifier,
     userName: String,
     userLevel: String,
-    onLevelClick: (Level) -> Unit
+    onLevelClick: (Level) -> Unit,
+    onIncreaseXpClick: () -> Unit,
+    displayXpAlert: Boolean,
+    onDismissXpAlertClick: () -> Unit,
+    listOfXpActions: List<String>,
 ) {
     GameBackground()
+    if (displayXpAlert) {
+        AlertListOfActionsToGainXp(
+            title = "Primesti XP pentru urmatoarele actiuni:",
+            onDismissClick = onDismissXpAlertClick,
+            list = listOfXpActions,
+            dismissText = "OK"
+        )
+    }
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -103,17 +129,21 @@ fun GameScreen(
             onLevelClick = onLevelClick
         )
         Spacer(modifier = modifier.weight(1f))
-        LevelUpButton(
-            modifier = modifier
+        IncreaseXpButton(
+            modifier = modifier,
+            onIncreaseXpClick = onIncreaseXpClick
         )
     }
 
 }
 
 @Composable
-fun LevelUpButton(modifier: Modifier) {
+fun IncreaseXpButton(
+    modifier: Modifier,
+    onIncreaseXpClick: () -> Unit,
+) {
     Button(
-        onClick = { },
+        onClick = onIncreaseXpClick,
         modifier = modifier
             .padding(start = 20.dp, end = 20.dp, bottom = 36.dp)
             .fillMaxWidth()
@@ -375,4 +405,64 @@ fun GameBackground(
                 .background(gradient)
         )
     }
+}
+
+@Composable
+fun AlertListOfActionsToGainXp(
+    modifier: Modifier = Modifier,
+    title: String,
+    dismissText: String,
+    onDismissClick: () -> Unit = {},
+    list: List<String>
+) {
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        iconContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        textContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = modifier,
+        onDismissRequest = { onDismissClick() },
+        title = {
+            Text(
+                text = title,
+                fontSize = 20.sp,
+            )
+        },
+        confirmButton = {
+            Text(
+                text = dismissText,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .clickable { onDismissClick() }
+                    .padding(bottom = 16.dp, end = 16.dp)
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                list.forEach { item ->
+                    Row(
+                        modifier = Modifier.padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Circle,
+                            contentDescription = null,
+                            modifier = Modifier.size(10.dp)
+
+                        )
+                        Text(
+                            text = item,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(start = 12.dp)
+                        )
+                    }
+
+                }
+            }
+        },
+    )
 }
