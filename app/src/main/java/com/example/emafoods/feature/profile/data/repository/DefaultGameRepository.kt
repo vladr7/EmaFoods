@@ -12,6 +12,9 @@ class DefaultGameRepository @Inject constructor(
     override fun listOfXpActions(): List<String> =
         gameDataSource.listOfXpActions()
 
-    override fun userLevel(): UserLevel =
+    override suspend fun storeUserLevel(userLevel: UserLevel) =
+        gameDataSource.storeUserLevel(userLevel)
+
+    override suspend fun userLevel(): UserLevel =
         gameDataSource.userLevel()
 }
