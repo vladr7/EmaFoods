@@ -52,7 +52,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
-import com.example.emafoods.feature.profile.presentation.game.model.Level
 import com.example.emafoods.feature.profile.presentation.game.model.Permission
 
 @Composable
@@ -68,18 +67,19 @@ fun GameRoute(
         userName = state.value.userName,
         userLevel = state.value.userLevel,
         displayXpAlert = state.value.displayXpAlert,
-        listOfXpActions = state.value.listOfXpActions,
+        xpList = state.value.listOfXpActions,
+        levelDataList = state.value.listOfLevelPermission,
         onLevelClick = { level ->
-            if (level.remainingXpNeeded == 0) {
+            if (level.remainingXp <= 0) {
                 Toast.makeText(
                     context,
-                    "Ai deblocat nivelul ${level.levelNumber}!",
+                    "Ai deblocat deja acest level!",
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
                 Toast.makeText(
                     context,
-                    "Mai ai nevoie de ${level.remainingXpNeeded} XP pentru a debloca acest nivel!",
+                    "Mai ai nevoie de ${level.remainingXp} XP pentru a debloca ${level.levelName}!",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -98,18 +98,19 @@ fun GameScreen(
     modifier: Modifier = Modifier,
     userName: String,
     userLevel: String,
-    onLevelClick: (Level) -> Unit,
+    onLevelClick: (ViewDataLevelPermission) -> Unit,
     onIncreaseXpClick: () -> Unit,
     displayXpAlert: Boolean,
     onDismissXpAlertClick: () -> Unit,
-    listOfXpActions: List<String>,
+    xpList: List<String>,
+    levelDataList: List<ViewDataLevelPermission>,
 ) {
     GameBackground()
     if (displayXpAlert) {
         AlertListOfActionsToGainXp(
             title = "Primesti XP pentru urmatoarele actiuni:",
             onDismissClick = onDismissXpAlertClick,
-            list = listOfXpActions,
+            list = xpList,
             dismissText = "OK"
         )
     }
@@ -126,7 +127,8 @@ fun GameScreen(
         )
         LevelList(
             modifier = modifier,
-            onLevelClick = onLevelClick
+            onLevelClick = onLevelClick,
+            levelDataList = levelDataList
         )
         Spacer(modifier = modifier.weight(1f))
         IncreaseXpButton(
@@ -163,10 +165,10 @@ fun IncreaseXpButton(
 @Composable
 fun LevelItem(
     modifier: Modifier,
-    level: Level,
-    onLevelClick: (Level) -> Unit
+    levelData: ViewDataLevelPermission,
+    onLevelClick: (ViewDataLevelPermission) -> Unit
 ) {
-    val alpha = if (level.hasAccess) 1f else 0.5f
+    val alpha = if (levelData.hasAccess) 1f else 0.5f
 
     Box(
         modifier = modifier
@@ -176,7 +178,7 @@ fun LevelItem(
             modifier = Modifier
                 .alpha(alpha)
                 .clickable {
-                    onLevelClick(level)
+                    onLevelClick(levelData)
                 }
                 .background(
                     brush = Brush.horizontalGradient(
@@ -191,7 +193,7 @@ fun LevelItem(
                 .fillMaxWidth()
         ) {
             Text(
-                text = level.levelNumber.toString(),
+                text = levelData.levelName,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSecondary,
                 modifier = modifier
@@ -201,7 +203,7 @@ fun LevelItem(
                 modifier = modifier
                     .padding(start = 16.dp)
             ) {
-                level.permissions.forEach { permission ->
+                levelData.permissions.forEach { permission ->
                     PermissionItem(
                         modifier = modifier,
                         permission = permission
@@ -256,45 +258,8 @@ fun PermissionItem(
 @Composable
 fun LevelList(
     modifier: Modifier,
-    levels: List<Level> = listOf(
-        Level(
-            levelNumber = 1,
-            remainingXpNeeded = 100,
-            hasAccess = true,
-            permissions = listOf(
-                Permission.MAIN_LIST_VISIBLE,
-                Permission.EDIT_MAIN,
-            )
-        ),
-        Level(
-            levelNumber = 1,
-            remainingXpNeeded = 100,
-            hasAccess = true,
-            permissions = listOf(
-                Permission.MAIN_LIST_VISIBLE,
-                Permission.EDIT_MAIN,
-            )
-        ),
-        Level(
-            levelNumber = 1,
-            remainingXpNeeded = 100,
-            hasAccess = true,
-            permissions = listOf(
-                Permission.MAIN_LIST_VISIBLE,
-                Permission.EDIT_MAIN,
-            )
-        ),
-        Level(
-            levelNumber = 1,
-            remainingXpNeeded = 100,
-            hasAccess = true,
-            permissions = listOf(
-                Permission.MAIN_LIST_VISIBLE,
-                Permission.EDIT_MAIN,
-            )
-        ),
-    ),
-    onLevelClick: (Level) -> Unit
+    onLevelClick: (ViewDataLevelPermission) -> Unit,
+    levelDataList: List<ViewDataLevelPermission>
 ) {
     Column(
         modifier = modifier
@@ -302,10 +267,10 @@ fun LevelList(
             .padding(16.dp)
             .verticalScroll(rememberScrollState()),
     ) {
-        levels.forEach { level ->
+        levelDataList.forEach { level ->
             LevelItem(
                 modifier = modifier,
-                level = level,
+                levelData = level,
                 onLevelClick = onLevelClick
             )
         }
