@@ -1,20 +1,20 @@
 package com.example.emafoods.feature.profile.domain.model
 
-enum class UserLevel(val string: String) {
-    PLEB("Level 1"),
-    ADD_DECLINE("Level 2"),
-    READ_ALL_LIST("Level 3"),
-    EDIT_LIST("Level 4"),
-    FULL_ACCESS("Level 5"), ;
+enum class UserLevel(val string: String, val xp: Int) {
+    LEVEL_1(string = "Level 1", xp = 0), // pleb
+    LEVEL_2(string = "Level 2", xp = 10000), // add/ decline
+    LEVEL_3(string = "Level 3", xp = 20000), // read all list
+    LEVEL_4(string = "Level 4", xp = 30000), // edit list
+    LEVEL_5(string = "Level 5", xp = 50000),;  // full access
 
     companion object {
         fun fromString(userLevelString: String): UserLevel =
             when (userLevelString) {
-                PLEB.string -> PLEB
-                ADD_DECLINE.string -> ADD_DECLINE
-                READ_ALL_LIST.string -> READ_ALL_LIST
-                EDIT_LIST.string -> EDIT_LIST
-                FULL_ACCESS.string -> FULL_ACCESS
+                LEVEL_1.string -> LEVEL_1
+                LEVEL_2.string -> LEVEL_2
+                LEVEL_3.string -> LEVEL_3
+                LEVEL_4.string -> LEVEL_4
+                LEVEL_5.string -> LEVEL_5
                 else -> {
                     throw IllegalArgumentException("UserLevel not found")
                 }

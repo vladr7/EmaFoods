@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.extension.capitalizeWords
+import com.example.emafoods.feature.profile.domain.mapper.MapLevelPermissionToViewData
 import com.example.emafoods.feature.profile.domain.model.UserLevel
+import com.example.emafoods.feature.profile.domain.usecase.GetLevelPermissionsUseCase
 import com.example.emafoods.feature.profile.domain.usecase.GetListOfXpActionsUseCase
-import com.example.emafoods.feature.profile.domain.usecase.GetUserLevelUseCase
+import com.example.emafoods.feature.profile.domain.usecase.GetUserGameDetailsUseCase
 import com.example.emafoods.feature.profile.domain.usecase.StoreUserLevelUseCase
+import com.example.emafoods.feature.profile.presentation.game.model.Permission
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +22,10 @@ import javax.inject.Inject
 class GameViewModel @Inject constructor(
     private val getListOfXpActionsUseCase: GetListOfXpActionsUseCase,
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
-    private val getUserLevelUseCase: GetUserLevelUseCase,
+    private val getLevelPermissionsUseCase: GetLevelPermissionsUseCase,
+    private val mapLevelPermissionToViewData: MapLevelPermissionToViewData,
+    private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase,
+    private val storeUserLevelUseCase: StoreUserLevelUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow<GameViewState>(GameViewState())
@@ -27,14 +33,19 @@ class GameViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            storeUserLevelUseCase.execute(userLevel = UserLevel.LEVEL_1)
+            val levelPermissions = mapLevelPermissionToViewData.execute(
+                getLevelPermissionsUseCase.execute()
+            )
+            val userGameDetails = getUserGameDetailsUseCase.execute()
             val userDetails = getUserDetailsUseCase.execute()
-            val userLevel = getUserLevelUseCase.execute()
             val listOfXpActions = getListOfXpActionsUseCase.execute()
             _state.update {
                 it.copy(
                     userName = userDetails.displayName.capitalizeWords(),
-                    userLevel = userLevel.string,
-                    listOfXpActions = listOfXpActions
+                    userLevel = userGameDetails.userLevel.string,
+                    listOfXpActions = listOfXpActions,
+                    listOfLevelPermission = levelPermissions
                 )
             }
         }
@@ -58,5 +69,12 @@ data class GameViewState(
     val listOfXpActions: List<String> = listOf(),
     val userName: String = "",
     val userLevel: String = "",
+    val listOfLevelPermission: List<ViewDataLevelPermission> = listOf(),
 )
 
+data class ViewDataLevelPermission(
+    val levelName: String,
+    val permissions: List<Permission>,
+    val hasAccess: Boolean,
+    val remainingXp: Int
+)

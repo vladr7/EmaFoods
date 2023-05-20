@@ -1,13 +1,13 @@
 package com.example.emafoods.feature.profile.domain.usecase
 
-import com.example.emafoods.feature.profile.domain.model.UserLevel
+import com.example.emafoods.feature.profile.domain.model.UserGameDetails
 import com.example.emafoods.feature.profile.domain.repository.GameRepository
 import javax.inject.Inject
 
-class GetUserLevelUseCase @Inject constructor(
+class GetUserGameDetailsUseCase @Inject constructor(
     private val gameRepository: GameRepository
 ) {
 
-    suspend fun execute(): UserLevel =
-        gameRepository.userLevel()
+    suspend fun execute(): UserGameDetails =
+        gameRepository.userDetails()
 }
