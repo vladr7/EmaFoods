@@ -6,7 +6,7 @@ import com.example.emafoods.feature.profile.data.datasource.GameDataSource
 import com.example.emafoods.feature.profile.data.repository.DefaultGameRepository
 import com.example.emafoods.feature.profile.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.profile.domain.usecase.SignOutUseCase
-import com.example.emafoods.feature.profile.domain.usecase.repository.GameRepository
+import com.example.emafoods.feature.profile.domain.repository.GameRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

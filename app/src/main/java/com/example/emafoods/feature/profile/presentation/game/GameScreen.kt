@@ -65,8 +65,8 @@ fun GameRoute(
 
     GameScreen(
         modifier = modifier,
-        userName = "User Name",
-        userLevel = "Nivel 1",
+        userName = state.value.userName,
+        userLevel = state.value.userLevel,
         displayXpAlert = state.value.displayXpAlert,
         listOfXpActions = state.value.listOfXpActions,
         onLevelClick = { level ->
