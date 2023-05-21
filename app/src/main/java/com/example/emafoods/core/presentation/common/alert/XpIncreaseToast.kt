@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.emafoods.feature.game.presentation.model.IncreaseXpActionType
+import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 
 @Composable
 fun XpIncreaseToast(

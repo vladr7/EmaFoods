@@ -11,6 +11,7 @@ import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCas
 import com.example.emafoods.feature.game.domain.usecase.GetNextLevelUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
+import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserLevelUseCase
@@ -119,5 +120,19 @@ object GameModule {
         gameRepository: GameRepository
     ) = ResetUnspentUserXpUseCase(
         gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideIncreaseXpUseCase(
+        storeUnspentUserXpUseCase: StoreUnspentUserXpUseCase,
+        getUnspentUserXpUseCase: GetUnspentUserXpUseCase,
+        storeUserXpUseCase: StoreUserXpUseCase,
+        resetUnspentUserXpUseCase: ResetUnspentUserXpUseCase,
+    ) = IncreaseXpUseCase(
+        storeUnspentUserXpUseCase = storeUnspentUserXpUseCase,
+        getUnspentUserXpUseCase = getUnspentUserXpUseCase,
+        storeUserXpUseCase = storeUserXpUseCase,
+        resetUnspentUserXpUseCase = resetUnspentUserXpUseCase
     )
 }
