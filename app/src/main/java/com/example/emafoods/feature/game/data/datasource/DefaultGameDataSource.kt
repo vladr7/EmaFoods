@@ -63,7 +63,7 @@ class DefaultGameDataSource @Inject constructor(
     override suspend fun userDetails(): UserGameDetails {
         return UserGameDetails(
             userLevel = userLevel(),
-            userXP = userXP(),
+            userXp = userXP(),
         )
     }
 

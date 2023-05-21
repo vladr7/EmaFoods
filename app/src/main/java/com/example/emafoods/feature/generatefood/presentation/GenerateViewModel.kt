@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
@@ -52,7 +53,7 @@ class GenerateViewModel @Inject constructor(
     fun onXpIncrease() {
         viewModelScope.launch {
             when (val result = increaseXpUseCase.execute(IncreaseXpActionType.GENERATE_RECIPE)) {
-                is IncreaseXpResult.ExceededThreshold -> {
+                is IncreaseXpResult.ExceededUnspentThreshold -> {
                     _state.update {
                         it.copy(
                             showXpIncreaseToast = true,
@@ -61,11 +62,20 @@ class GenerateViewModel @Inject constructor(
                     }
                 }
 
-                is IncreaseXpResult.NotExceededThreshold -> {
+                is IncreaseXpResult.NotExceededUnspentThreshold -> {
                     _state.update {
                         it.copy(
                             showXpIncreaseToast = false,
                             xpIncreased = 0
+                        )
+                    }
+                }
+
+                is IncreaseXpResult.LeveledUp -> {
+                    _state.update {
+                        it.copy(
+                            leveledUpEvent = true,
+                            newLevel = result.levelAcquired
                         )
                     }
                 }
@@ -81,6 +91,15 @@ class GenerateViewModel @Inject constructor(
             )
         }
     }
+
+    fun onDismissLevelUp() {
+        _state.update {
+            it.copy(
+                leveledUpEvent = false,
+                newLevel = null
+            )
+        }
+    }
 }
 
 data class GenerateViewState(
@@ -89,4 +108,6 @@ data class GenerateViewState(
     val foodHasBeenGenerated: Boolean = false,
     val showXpIncreaseToast: Boolean = false,
     val xpIncreased: Int = 0,
+    val leveledUpEvent: Boolean = false,
+    val newLevel: UserLevel? = null
 )

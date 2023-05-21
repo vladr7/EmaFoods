@@ -10,17 +10,26 @@ class IncreaseXpUseCase @Inject constructor(
     private val getUnspentUserXpUseCase: GetUnspentUserXpUseCase,
     private val storeUserXpUseCase: StoreUserXpUseCase,
     private val resetUnspentUserXpUseCase: ResetUnspentUserXpUseCase,
+    private val checkUserLeveledUpUseCase: CheckUserLeveledUpUseCase,
+    private val storeUserLevelUseCase: StoreUserLevelUseCase,
+    private val nextLevelUseCase: GetNextLevelUseCase
 ) {
 
     suspend fun execute(increaseXpActionType: IncreaseXpActionType): IncreaseXpResult<Int> {
         storeUnspentUserXpUseCase.execute(increaseXpActionType.xp)
         val unspentUserXp = getUnspentUserXpUseCase.execute()
-        return if(unspentUserXp >= XP_INCREASE_THRESHOLD) {
+        if (checkUserLeveledUpUseCase.execute(unspentUserXp)) {
+            val nextLevel = nextLevelUseCase.execute()
+            storeUserXpUseCase.execute(unspentUserXp)
+            storeUserLevelUseCase.execute(nextLevel)
+            resetUnspentUserXpUseCase.execute()
+            return IncreaseXpResult.LeveledUp(nextLevel)
+        }
+        if (unspentUserXp >= XP_INCREASE_THRESHOLD) {
             storeUserXpUseCase.execute(unspentUserXp)
             resetUnspentUserXpUseCase.execute()
-            IncreaseXpResult.ExceededThreshold(unspentUserXp)
-        } else {
-            IncreaseXpResult.NotExceededThreshold(unspentUserXp)
+            return IncreaseXpResult.ExceededUnspentThreshold(unspentUserXp)
         }
+        return IncreaseXpResult.NotExceededUnspentThreshold(unspentUserXp)
     }
 }

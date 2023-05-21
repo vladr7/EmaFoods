@@ -6,6 +6,7 @@ import com.example.emafoods.feature.game.data.datasource.GameDataSource
 import com.example.emafoods.feature.game.data.repository.DefaultGameRepository
 import com.example.emafoods.feature.game.domain.mapper.MapLevelPermissionToViewData
 import com.example.emafoods.feature.game.domain.repository.GameRepository
+import com.example.emafoods.feature.game.domain.usecase.CheckUserLeveledUpUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetNextLevelUseCase
@@ -124,15 +125,31 @@ object GameModule {
 
     @Provides
     @Singleton
+    fun provideCheckUserLeveledUpUseCase(
+        getUserGameDetailsUseCase: GetUserGameDetailsUseCase,
+        nextLevelUseCase: GetNextLevelUseCase
+    ) = CheckUserLeveledUpUseCase(
+        getUserGameDetailsUseCase = getUserGameDetailsUseCase,
+        nextLevelUseCase = nextLevelUseCase
+    )
+
+    @Provides
+    @Singleton
     fun provideIncreaseXpUseCase(
         storeUnspentUserXpUseCase: StoreUnspentUserXpUseCase,
         getUnspentUserXpUseCase: GetUnspentUserXpUseCase,
         storeUserXpUseCase: StoreUserXpUseCase,
         resetUnspentUserXpUseCase: ResetUnspentUserXpUseCase,
+        checkUserLeveledUpUseCase: CheckUserLeveledUpUseCase,
+        storeUserLevelUseCase: StoreUserLevelUseCase,
+        nextLevelUseCase: GetNextLevelUseCase
     ) = IncreaseXpUseCase(
         storeUnspentUserXpUseCase = storeUnspentUserXpUseCase,
         getUnspentUserXpUseCase = getUnspentUserXpUseCase,
         storeUserXpUseCase = storeUserXpUseCase,
-        resetUnspentUserXpUseCase = resetUnspentUserXpUseCase
+        resetUnspentUserXpUseCase = resetUnspentUserXpUseCase,
+        checkUserLeveledUpUseCase = checkUserLeveledUpUseCase,
+        storeUserLevelUseCase = storeUserLevelUseCase,
+        nextLevelUseCase = nextLevelUseCase
     )
 }
