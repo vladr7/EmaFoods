@@ -41,10 +41,10 @@ class DefaultDataStore @Inject constructor (
         }
     }
 
-    override suspend fun getInt(key: String, defaultValue: Int): Int? {
+    override suspend fun getInt(key: String, defaultValue: Int): Int {
         val prefKey = stringPreferencesKey(key)
         val preferences = context.dataStore.data.first()
-        return preferences[prefKey]?.toInt()
+        return preferences[prefKey]?.toInt() ?: defaultValue
     }
 
     override suspend fun putLong(key: String, value: Long) {
@@ -54,10 +54,10 @@ class DefaultDataStore @Inject constructor (
         }
     }
 
-    override suspend fun getLong(key: String, defaultValue: Long): Long? {
+    override suspend fun getLong(key: String, defaultValue: Long): Long {
         val prefKey = stringPreferencesKey(key)
         val preferences = context.dataStore.data.first()
-        return preferences[prefKey]?.toLong()
+        return preferences[prefKey]?.toLong() ?: defaultValue
     }
 
     override suspend fun putBoolean(key: String, value: Boolean) {
@@ -67,10 +67,10 @@ class DefaultDataStore @Inject constructor (
         }
     }
 
-    override suspend fun getBoolean(key: String, defaultValue: Boolean): Boolean? {
+    override suspend fun getBoolean(key: String, defaultValue: Boolean): Boolean {
         val prefKey = stringPreferencesKey(key)
         val preferences = context.dataStore.data.first()
-        return preferences[prefKey]?.toBoolean()
+        return preferences[prefKey]?.toBoolean() ?: defaultValue
     }
 
     override suspend fun putFloat(key: String, value: Float) {
@@ -80,10 +80,10 @@ class DefaultDataStore @Inject constructor (
         }
     }
 
-    override suspend fun getFloat(key: String, defaultValue: Float): Float? {
+    override suspend fun getFloat(key: String, defaultValue: Float): Float {
         val prefKey = stringPreferencesKey(key)
         val preferences = context.dataStore.data.first()
-        return preferences[prefKey]?.toFloat()
+        return preferences[prefKey]?.toFloat() ?: defaultValue
     }
 
     override suspend fun clearData() {

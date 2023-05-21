@@ -26,4 +26,14 @@ class DefaultGameRepository @Inject constructor(
 
     override suspend fun userDetails(): UserGameDetails =
         gameDataSource.userDetails()
+
+    override suspend fun storeXpToUnspent(xp: Int) =
+        gameDataSource.storeXpToUnspent(xp)
+
+    override suspend fun unspentUserXP(): Int =
+        gameDataSource.unspentUserXP()
+
+    override suspend fun resetUnspentXp() {
+        gameDataSource.resetUnspentXp()
+    }
 }

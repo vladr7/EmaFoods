@@ -60,10 +60,6 @@ class DefaultGameDataSource @Inject constructor(
             )
         )
 
-    override suspend fun storeUserXP(xp: Int) {
-        localStorage.putInt(LocalStorageKeys.USER_XP, xp)
-    }
-
     override suspend fun userDetails(): UserGameDetails {
         return UserGameDetails(
             userLevel = userLevel(),
@@ -71,8 +67,25 @@ class DefaultGameDataSource @Inject constructor(
         )
     }
 
+    override suspend fun storeXpToUnspent(xp: Int) {
+        val currentUnspentXp = unspentUserXP()
+        localStorage.putInt(LocalStorageKeys.XP_TO_UNSPENT, xp + currentUnspentXp)
+    }
+
+    override suspend fun unspentUserXP(): Int =
+        localStorage.getInt(LocalStorageKeys.XP_TO_UNSPENT, defaultValue = 0)
+
+    override suspend fun resetUnspentXp() {
+        localStorage.putInt(LocalStorageKeys.XP_TO_UNSPENT, 0)
+    }
+
+    override suspend fun storeUserXP(xp: Int) {
+        val currentXp = userXP()
+        localStorage.putInt(LocalStorageKeys.USER_XP, xp + currentXp)
+    }
+
     private suspend fun userXP(): Int {
-        return localStorage.getInt(LocalStorageKeys.USER_XP, defaultValue = 0) ?: 0
+        return localStorage.getInt(LocalStorageKeys.USER_XP, defaultValue = 0)
     }
 
     private suspend fun userLevel(): UserLevel {

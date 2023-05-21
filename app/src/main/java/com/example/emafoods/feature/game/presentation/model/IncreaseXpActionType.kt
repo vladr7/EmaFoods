@@ -8,3 +8,4 @@ enum class IncreaseXpActionType(val xp: Int) {
     FIRST_TIME_OPENING_APP(xp = 200),
     ADMIN_ACCEPTS_DECLINES_RECIPE(xp = 50),
 }
+

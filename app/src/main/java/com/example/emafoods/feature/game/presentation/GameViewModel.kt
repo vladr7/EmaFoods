@@ -33,7 +33,6 @@ class GameViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            storeUserLevelUseCase.execute(userLevel = UserLevel.LEVEL_1)
             val levelPermissions = mapLevelPermissionToViewData.execute(
                 getLevelPermissionsUseCase.execute()
             )

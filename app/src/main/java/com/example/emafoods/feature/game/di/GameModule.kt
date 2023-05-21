@@ -9,8 +9,12 @@ import com.example.emafoods.feature.game.domain.repository.GameRepository
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetNextLevelUseCase
+import com.example.emafoods.feature.game.domain.usecase.GetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
+import com.example.emafoods.feature.game.domain.usecase.ResetUnspentUserXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.StoreUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserLevelUseCase
+import com.example.emafoods.feature.game.domain.usecase.StoreUserXpUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -83,5 +87,37 @@ object GameModule {
         getUserGameDetailsUseCase: GetUserGameDetailsUseCase
     ) = MapLevelPermissionToViewData(
         getUserGameDetailsUseCase = getUserGameDetailsUseCase
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetUnspentUserXpUseCase(
+        gameRepository: GameRepository
+    ) = GetUnspentUserXpUseCase(
+        gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideStoreUnspentUserXpUseCase(
+        gameRepository: GameRepository
+    ) = StoreUnspentUserXpUseCase(
+        gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideStoreUserXpUseCase(
+        gameRepository: GameRepository
+    ) = StoreUserXpUseCase(
+        gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideResetUnspentUserXpUseCase(
+        gameRepository: GameRepository
+    ) = ResetUnspentUserXpUseCase(
+        gameRepository
     )
 }
