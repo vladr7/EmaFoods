@@ -13,9 +13,9 @@ import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
 import com.example.emafoods.feature.listfood.navigation.listFoodScreen
 import com.example.emafoods.feature.pending.presentation.navigation.pendingFoodScreen
 import com.example.emafoods.feature.profile.navigation.ProfileDestinations
-import com.example.emafoods.feature.profile.presentation.game.navigation.gameScreen
-import com.example.emafoods.feature.profile.presentation.game.navigation.navigateToGame
-import com.example.emafoods.feature.profile.presentation.profile.navigation.profileScreen
+import com.example.emafoods.feature.game.presentation.navigation.gameScreen
+import com.example.emafoods.feature.game.presentation.navigation.navigateToGame
+import com.example.emafoods.feature.profile.presentation.navigation.profileScreen
 
 @Composable
 fun HomeNavHost(
