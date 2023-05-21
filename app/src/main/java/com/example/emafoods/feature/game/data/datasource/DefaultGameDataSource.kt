@@ -79,6 +79,21 @@ class DefaultGameDataSource @Inject constructor(
         localStorage.putInt(LocalStorageKeys.XP_TO_UNSPENT, 0)
     }
 
+    override suspend fun checkAppOpenedToday(): Boolean {
+        val lastOpened = localStorage.getLong(LocalStorageKeys.LAST_OPENED_APP, defaultValue = 0L)
+        val currentTime = System.currentTimeMillis()
+        return currentTime - lastOpened < 24 * 60 * 60 * 1000
+    }
+
+    override suspend fun setAppOpenedToday() {
+        localStorage.putLong(LocalStorageKeys.LAST_OPENED_APP, System.currentTimeMillis())
+    }
+
+    override suspend fun appHasBeenOpenedEver(): Boolean {
+        val lastOpened = localStorage.getLong(LocalStorageKeys.LAST_OPENED_APP, defaultValue = 0L)
+        return lastOpened != 0L
+    }
+
     override suspend fun storeUserXP(xp: Int) {
         val currentXp = userXP()
         localStorage.putInt(LocalStorageKeys.USER_XP, xp + currentXp)
