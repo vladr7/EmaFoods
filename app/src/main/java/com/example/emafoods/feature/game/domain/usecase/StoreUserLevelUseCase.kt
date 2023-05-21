@@ -5,9 +5,10 @@ import com.example.emafoods.feature.game.domain.repository.GameRepository
 import javax.inject.Inject
 
 class StoreUserLevelUseCase @Inject constructor(
-    private val gameRepository: GameRepository
+    private val gameRepository: GameRepository,
 ) {
 
-    suspend fun execute(userLevel: UserLevel) =
+    suspend fun execute(userLevel: UserLevel) {
         gameRepository.storeUserLevel(userLevel)
+    }
 }

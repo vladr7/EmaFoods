@@ -13,7 +13,7 @@ class MapLevelPermissionToViewData @Inject constructor(
     suspend fun execute(levelPermissions: List<LevelPermission>): List<ViewDataLevelPermission> {
         val userGameDetails = getUserGameDetailsUseCase.execute()
         return levelPermissions.map { levelPermission ->
-            val remainingXP = getLevelFromPermissionLevel(levelPermission).xp - userGameDetails.userXP
+            val remainingXP = getLevelFromPermissionLevel(levelPermission).xp - userGameDetails.userXp
             ViewDataLevelPermission(
                 levelName = levelPermission.levelName,
                 permissions = levelPermission.permissions,

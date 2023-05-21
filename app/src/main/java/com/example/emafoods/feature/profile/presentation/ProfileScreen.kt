@@ -1,6 +1,7 @@
 package com.example.emafoods.feature.profile.presentation
 
 import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +48,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
+import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.google.android.play.core.review.ReviewManagerFactory
 
 @Composable
@@ -73,6 +76,7 @@ fun ProfileRoute(
                         // The flow has finished. The API does not indicate whether the user
                         // reviewed or not, or even whether the review dialog was shown. Thus, no
                         // matter the result, we continue our app flow.
+                        viewModel.onXpIncrease()
                     }
                 } else {
                     // There was some problem, log or handle the error code.
@@ -91,7 +95,12 @@ fun ProfileRoute(
             activity?.finish()
         },
         userName = state.userName,
-        showSignOutAlert = state.showSignOutAlert
+        showSignOutAlert = state.showSignOutAlert,
+        showXpIncreaseToast = state.showXpIncreaseToast,
+        context = context,
+        onIncreaseXpToastShown = {
+            viewModel.onXpIncreaseToastShown()
+        }
     )
 }
 
@@ -105,7 +114,17 @@ fun ProfileScreen(
     onConfirm: () -> Unit,
     userName: String,
     showSignOutAlert: Boolean,
+    showXpIncreaseToast: Boolean,
+    onIncreaseXpToastShown: () -> Unit,
+    context: Context
 ) {
+    if(showXpIncreaseToast) {
+        XpIncreaseToast(
+            increaseXpActionType = IncreaseXpActionType.ADD_REVIEW,
+            onToastShown = onIncreaseXpToastShown,
+            context = context,
+        )
+    }
     ProfileBackground()
     Column(
         modifier = modifier
@@ -135,7 +154,6 @@ fun SignOutAlert(
 ) {
     AlertDialog2Buttons(
         modifier = modifier,
-        showAlert = true,
         title = "Are you sure you want to sign out?",
         dismissText = "Cancel",
         confirmText = "Sign out",

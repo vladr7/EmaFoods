@@ -56,7 +56,9 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -82,7 +84,12 @@ fun GenerateScreenRoute(
         showXpIncreaseToast = state.showXpIncreaseToast,
         xpIncreased = state.xpIncreased,
         onToastShown = { viewModel.onXpIncreaseToastShown() },
-        context = context
+        context = context,
+        leveledUpEvent = state.leveledUpEvent,
+        newLevel = state.newLevel,
+        onDismissLevelUp = {
+            viewModel.onDismissLevelUp()
+        }
     )
 }
 
@@ -96,8 +103,17 @@ fun GenerateScreen(
     showXpIncreaseToast: Boolean,
     onToastShown: () -> Unit,
     context: Context,
-    xpIncreased: Int
+    xpIncreased: Int,
+    leveledUpEvent: Boolean,
+    newLevel: UserLevel?,
+    onDismissLevelUp: () -> Unit ,
 ) {
+    if(leveledUpEvent) {
+        LevelUpDialog(
+            newLevel = newLevel,
+            onDismiss = onDismissLevelUp,
+        )
+    }
     if(showXpIncreaseToast) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.GENERATE_RECIPE,
