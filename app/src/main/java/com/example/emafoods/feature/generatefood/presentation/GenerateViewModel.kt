@@ -39,9 +39,18 @@ class GenerateViewModel @Inject constructor(
             _state.update {
                 it.copy(
                     food = foodMapper.mapToViewData(food),
+                    showXpIncreaseToast = true,
                     foodHasBeenGenerated = true,
                 )
             }
+        }
+    }
+
+    fun onXpIncreaseToastShown() {
+        _state.update {
+            it.copy(
+                showXpIncreaseToast = false
+            )
         }
     }
 }
@@ -50,4 +59,5 @@ data class GenerateViewState(
     val food: FoodViewData = FoodViewData(),
     val isNetworkAvailable: Boolean? = null,
     val foodHasBeenGenerated: Boolean = false,
+    val showXpIncreaseToast: Boolean = false,
 )
