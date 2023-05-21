@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.generatefood.presentation
 
+import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -55,6 +56,8 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.feature.game.presentation.model.IncreaseXpActionType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -64,16 +67,21 @@ fun GenerateScreenRoute(
     viewModel: GenerateViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     GenerateScreenBackground()
     GenerateScreen(
         generatedImagedRef = state.food.imageRef,
         modifier = modifier,
         onGenerateClick = {
+            viewModel.onXpIncreaseToastShown()
             viewModel.generateFoodEvent()
         },
         description = state.food.description,
         foodHasBeenGenerated = state.foodHasBeenGenerated,
+        showXpIncreaseToast = state.showXpIncreaseToast,
+        onToastShown = { viewModel.onXpIncreaseToastShown() },
+        context = context
     )
 }
 
@@ -84,7 +92,17 @@ fun GenerateScreen(
     description: String,
     modifier: Modifier = Modifier,
     foodHasBeenGenerated: Boolean,
+    showXpIncreaseToast: Boolean,
+    onToastShown: () -> Unit,
+    context: Context
 ) {
+    if(showXpIncreaseToast) {
+        XpIncreaseToast(
+            increaseXpActionType = IncreaseXpActionType.GENERATE_RECIPE,
+            onToastShown = onToastShown,
+            context = context
+        )
+    }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
