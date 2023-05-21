@@ -12,4 +12,7 @@ open class BaseViewModel: ViewModel() {
 
     open fun hideLoading() {}
 
+    open fun onXpIncrease() {}
+
+    open fun onXpIncreaseToastShown() {}
 }

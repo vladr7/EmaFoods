@@ -10,7 +10,7 @@ import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 fun XpIncreaseToast(
     modifier: Modifier = Modifier,
     increaseXpActionType: IncreaseXpActionType,
-    onToastShown: () -> Unit,
+    onToastShown: () -> Unit = {},
     context: Context,
     customXP: Int = 0
 ) {
@@ -23,4 +23,4 @@ fun XpIncreaseToast(
     onToastShown()
 }
 
-const val XP_INCREASE_THRESHOLD = 20 // show toast every 'X' xp
+const val XP_INCREASE_THRESHOLD = 200 // show toast every 'X' xp
