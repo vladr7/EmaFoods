@@ -8,8 +8,8 @@ import com.example.emafoods.core.data.database.asDomainModel
 import com.example.emafoods.core.data.database.asDomainPendingModel
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.domain.datasource.FoodDataSource
-import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.models.State
+import com.example.emafoods.core.domain.repository.FoodRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -43,6 +43,7 @@ class DefaultFoodRepository @Inject constructor(
                         val newFood = Food(
                             id = food.id,
                             author = food.author,
+                            authorUid = food.authorUid,
                             description = food.description,
                             imageRef = image?.imageRef ?: "",
                             addedDateInSeconds = food.addedDateInSeconds,
@@ -81,6 +82,7 @@ class DefaultFoodRepository @Inject constructor(
                         val newFood = Food(
                             id = food.id,
                             author = food.author,
+                            authorUid = food.authorUid,
                             description = food.description,
                             imageRef = image?.imageRef ?: "",
                             addedDateInSeconds = food.addedDateInSeconds,
