@@ -41,7 +41,7 @@ import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
-import com.example.emafoods.feature.game.presentation.model.IncreaseXpActionType
+import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 
 

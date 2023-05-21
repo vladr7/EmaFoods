@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.game.presentation.model
+package com.example.emafoods.feature.game.presentation.enums
 
 enum class IncreaseXpActionType(val xp: Int) {
     ADD_RECIPE(xp = 50),

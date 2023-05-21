@@ -57,7 +57,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
-import com.example.emafoods.feature.game.presentation.model.IncreaseXpActionType
+import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
