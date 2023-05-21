@@ -3,6 +3,7 @@ package com.example.emafoods.feature.signin.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.models.State
+import com.example.emafoods.feature.signin.domain.usecase.AddUserDataToRemoteDatabaseUseCase
 import com.example.emafoods.feature.signin.domain.usecase.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
+    private val addUserDataToRemoteDatabaseUseCase: AddUserDataToRemoteDatabaseUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<LoginViewState>(LoginViewState())
@@ -36,6 +38,7 @@ class SignInViewModel @Inject constructor(
                             signInSuccess = true
                         )
                     }
+                    addUserDataToRemoteDatabaseUseCase.execute()
                 }
             }
         }

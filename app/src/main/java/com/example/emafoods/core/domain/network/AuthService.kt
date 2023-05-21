@@ -9,4 +9,5 @@ interface AuthService {
     fun getUserDetails(): UserData
     fun signOut()
     suspend fun signIn(idToken: String): State<Unit>
+    suspend fun addUserDataToFirestore(userData: UserData)
 }
