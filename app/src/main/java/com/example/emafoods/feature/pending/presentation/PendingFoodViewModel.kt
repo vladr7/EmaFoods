@@ -67,7 +67,12 @@ class PendingFoodViewModel @Inject constructor(
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
             movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))
-            refreshPendingFoodsUseCase.execute()
+            launch {
+                refreshPendingFoodsUseCase.execute()
+            }
+            launch {
+                refreshFoodsUseCase.execute()
+            }
         }
     }
 }

@@ -25,8 +25,9 @@ class DefaultAuthService @Inject constructor() : AuthService {
 
     override fun getUserDetails(): UserData =
         UserData(
-            firebaseAuth.currentUser?.email ?: "",
-            firebaseAuth.currentUser?.displayName ?: "",
+            uid = firebaseAuth.currentUser?.uid ?: "",
+            email = firebaseAuth.currentUser?.email ?: "",
+            displayName = firebaseAuth.currentUser?.displayName ?: "",
         )
 
     override fun signOut() {
