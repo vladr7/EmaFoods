@@ -55,10 +55,10 @@ fun InsertFoodRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     if (state.insertFoodSuccess) {
+        viewModel.onXpIncrease()
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.ADD_RECIPE,
-            context = context,
-            onToastShown = {  }
+            context = context
         )
         viewModel.resetState()
         onSuccess()

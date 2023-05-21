@@ -8,6 +8,8 @@ import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
+import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +22,8 @@ class InsertFoodViewModel @Inject constructor(
 //    savedStateHandle: SavedStateHandle,
 //    stringDecoder: StringDecoder,
     private val insertFoodUseCase: InsertFoodUseCase,
-    private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase
+    private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
+    private val increaseXpUseCase: IncreaseXpUseCase
 ) : BaseViewModel() {
 
 //    private val insertFoodArgs: InsertFoodArguments =
@@ -57,7 +60,7 @@ class InsertFoodViewModel @Inject constructor(
         description: String,
         imageUri: Uri?
     ) {
-        if(state.value.isLoading) {
+        if (state.value.isLoading) {
             return
         }
         _state.update {
@@ -99,6 +102,12 @@ class InsertFoodViewModel @Inject constructor(
     override fun hideError() {
         _state.update {
             it.copy(errorMessage = null)
+        }
+    }
+
+    override fun onXpIncrease() {
+        viewModelScope.launch {
+            increaseXpUseCase.execute(IncreaseXpActionType.ADD_RECIPE)
         }
     }
 }
