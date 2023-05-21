@@ -6,7 +6,9 @@ import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.game.domain.model.UserLevel
+import com.example.emafoods.feature.game.domain.usecase.CheckAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.SetAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
@@ -22,14 +24,28 @@ class GenerateViewModel @Inject constructor(
     private val foodMapper: FoodMapper,
     private val generateFoodUseCase: GenerateFoodUseCase,
     private val refreshFoodsUseCase: RefreshFoodsUseCase,
-    private val increaseXpUseCase: IncreaseXpUseCase
+    private val increaseXpUseCase: IncreaseXpUseCase,
+    private val checkAppOpenedTodayUseCase: CheckAppOpenedTodayUseCase,
+    private val setAppOpenedTodayUseCase: SetAppOpenedTodayUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
     val state: StateFlow<GenerateViewState> = _state
 
     init {
+        checkAppOpenedToday()
         refreshFoodsFromRepository()
+    }
+
+    private fun checkAppOpenedToday() {
+        viewModelScope.launch {
+            val appOpenedToday = checkAppOpenedTodayUseCase.execute()
+            _state.update {
+                it.copy(
+                    appOpenedToday = appOpenedToday
+                )
+            }
+        }
     }
 
     private fun refreshFoodsFromRepository() {
@@ -100,6 +116,17 @@ class GenerateViewModel @Inject constructor(
             )
         }
     }
+
+    fun onShownAppOpenedTodayToast() {
+        _state.update {
+            it.copy(
+                appOpenedToday = true
+            )
+        }
+        viewModelScope.launch {
+            setAppOpenedTodayUseCase.execute()
+        }
+    }
 }
 
 data class GenerateViewState(
@@ -109,5 +136,6 @@ data class GenerateViewState(
     val showXpIncreaseToast: Boolean = false,
     val xpIncreased: Int = 0,
     val leveledUpEvent: Boolean = false,
-    val newLevel: UserLevel? = null
+    val newLevel: UserLevel? = null,
+    val appOpenedToday: Boolean = true,
 )

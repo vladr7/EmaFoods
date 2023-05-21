@@ -14,4 +14,7 @@ interface GameRepository {
     suspend fun storeXpToUnspent(xp: Int)
     suspend fun unspentUserXP(): Int
     suspend fun resetUnspentXp()
+    suspend fun checkAppOpenedToday(): Boolean
+    suspend fun setAppOpenedToday()
+    suspend fun appHasBeenOpenedEver(): Boolean
 }

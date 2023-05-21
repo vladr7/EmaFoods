@@ -36,4 +36,15 @@ class DefaultGameRepository @Inject constructor(
     override suspend fun resetUnspentXp() {
         gameDataSource.resetUnspentXp()
     }
+
+    override suspend fun checkAppOpenedToday(): Boolean =
+        gameDataSource.checkAppOpenedToday()
+
+    override suspend fun setAppOpenedToday() {
+        gameDataSource.setAppOpenedToday()
+    }
+
+    override suspend fun appHasBeenOpenedEver(): Boolean {
+        return gameDataSource.appHasBeenOpenedEver()
+    }
 }

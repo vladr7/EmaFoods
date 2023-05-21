@@ -89,7 +89,9 @@ fun GenerateScreenRoute(
         newLevel = state.newLevel,
         onDismissLevelUp = {
             viewModel.onDismissLevelUp()
-        }
+        },
+        appOpenedToday = state.appOpenedToday,
+        onShownAppOpenedTodayToast = { viewModel.onShownAppOpenedTodayToast() },
     )
 }
 
@@ -106,8 +108,17 @@ fun GenerateScreen(
     xpIncreased: Int,
     leveledUpEvent: Boolean,
     newLevel: UserLevel?,
-    onDismissLevelUp: () -> Unit ,
+    onDismissLevelUp: () -> Unit,
+    appOpenedToday: Boolean,
+    onShownAppOpenedTodayToast: () -> Unit,
 ) {
+    if(!appOpenedToday) {
+        XpIncreaseToast(
+            increaseXpActionType = IncreaseXpActionType.FIRST_TIME_OPENING_APP_TODAY,
+            context = context,
+            onToastShown = onShownAppOpenedTodayToast,
+        )
+    }
     if(leveledUpEvent) {
         LevelUpDialog(
             newLevel = newLevel,
