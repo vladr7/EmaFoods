@@ -12,7 +12,15 @@ fun XpIncreaseToast(
     increaseXpActionType: IncreaseXpActionType,
     onToastShown: () -> Unit,
     context: Context,
+    customXP: Int = 0
 ) {
+    if (increaseXpActionType == IncreaseXpActionType.GENERATE_RECIPE) {
+        Toast.makeText(context, "Ai acumulat $customXP puncte de experienta!", Toast.LENGTH_SHORT).show()
+        onToastShown()
+        return
+    }
     Toast.makeText(context, "Ai acumulat ${increaseXpActionType.xp} puncte de experienta!", Toast.LENGTH_SHORT).show()
     onToastShown()
 }
+
+const val XP_INCREASE_THRESHOLD = 20 // show toast every 'X' xp

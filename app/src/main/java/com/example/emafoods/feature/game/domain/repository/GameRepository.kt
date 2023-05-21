@@ -11,4 +11,7 @@ interface GameRepository {
     fun levelPermissions(): List<LevelPermission>
     suspend fun storeUserXP(xp: Int)
     suspend fun userDetails(): UserGameDetails
+    suspend fun storeXpToUnspent(xp: Int)
+    suspend fun unspentUserXP(): Int
+    suspend fun resetUnspentXp()
 }

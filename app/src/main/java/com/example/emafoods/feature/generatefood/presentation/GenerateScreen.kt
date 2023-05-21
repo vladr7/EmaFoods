@@ -74,12 +74,13 @@ fun GenerateScreenRoute(
         generatedImagedRef = state.food.imageRef,
         modifier = modifier,
         onGenerateClick = {
-            viewModel.onXpIncreaseToastShown()
+            viewModel.onXpIncrease()
             viewModel.generateFoodEvent()
         },
         description = state.food.description,
         foodHasBeenGenerated = state.foodHasBeenGenerated,
         showXpIncreaseToast = state.showXpIncreaseToast,
+        xpIncreased = state.xpIncreased,
         onToastShown = { viewModel.onXpIncreaseToastShown() },
         context = context
     )
@@ -94,13 +95,15 @@ fun GenerateScreen(
     foodHasBeenGenerated: Boolean,
     showXpIncreaseToast: Boolean,
     onToastShown: () -> Unit,
-    context: Context
+    context: Context,
+    xpIncreased: Int
 ) {
     if(showXpIncreaseToast) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.GENERATE_RECIPE,
             onToastShown = onToastShown,
-            context = context
+            context = context,
+            customXP = xpIncreased
         )
     }
     Column(
