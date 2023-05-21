@@ -1,11 +1,13 @@
 package com.example.emafoods.feature.game.di
 
 import com.example.emafoods.core.data.localstorage.LocalStorage
+import com.example.emafoods.core.domain.network.AuthService
 import com.example.emafoods.feature.game.data.datasource.DefaultGameDataSource
 import com.example.emafoods.feature.game.data.datasource.GameDataSource
 import com.example.emafoods.feature.game.data.repository.DefaultGameRepository
 import com.example.emafoods.feature.game.domain.mapper.MapLevelPermissionToViewData
 import com.example.emafoods.feature.game.domain.repository.GameRepository
+import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckUserLeveledUpUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
@@ -32,9 +34,11 @@ object GameModule {
     @Provides
     @Singleton
     fun provideGameDataSource(
-        localStorage: LocalStorage
+        localStorage: LocalStorage,
+        authService: AuthService
     ): GameDataSource = DefaultGameDataSource(
-        localStorage = localStorage
+        localStorage = localStorage,
+        authService = authService
     )
 
     @Provides
@@ -148,6 +152,14 @@ object GameModule {
     fun provideSetAppOpenedTodayUseCase(
         gameRepository: GameRepository
     ) = SetAppOpenedTodayUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideAddRewardToUserAcceptedRecipeUseCase(
+        gameRepository: GameRepository
+    ) = AddRewardToUserAcceptedRecipeUseCase(
         gameRepository = gameRepository
     )
 

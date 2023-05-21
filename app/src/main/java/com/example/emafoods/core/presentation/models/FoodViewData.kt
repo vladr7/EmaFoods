@@ -8,6 +8,7 @@ import javax.inject.Inject
 data class FoodViewData(
     val id: String = "",
     val author: String = "",
+    val authorUid: String = "",
     val description: String = "",
     val imageRef: String = "",
 ): ViewData()
@@ -19,9 +20,11 @@ class FoodMapper @Inject constructor(): DataModelMapper<Food, FoodViewData> {
         val author = viewData.author
         val description = viewData.description
         val imageRef = viewData.imageRef
+        val authorUid = viewData.authorUid
         return Food(
             id = id,
             author = author,
+            authorUid = authorUid,
             description = description,
             imageRef = imageRef
         )
@@ -35,6 +38,7 @@ class FoodMapper @Inject constructor(): DataModelMapper<Food, FoodViewData> {
         return FoodViewData(
             id = id,
             author = author,
+            authorUid = model.authorUid,
             description = description,
             imageRef = imageRef
         )

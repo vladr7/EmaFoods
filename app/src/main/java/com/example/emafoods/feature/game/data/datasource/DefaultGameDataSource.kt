@@ -2,6 +2,7 @@ package com.example.emafoods.feature.game.data.datasource
 
 import com.example.emafoods.core.data.localstorage.LocalStorage
 import com.example.emafoods.core.data.localstorage.LocalStorageKeys
+import com.example.emafoods.core.domain.network.AuthService
 import com.example.emafoods.feature.game.domain.model.UserGameDetails
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.model.LevelPermission
@@ -9,7 +10,8 @@ import com.example.emafoods.feature.game.presentation.model.Permission
 import javax.inject.Inject
 
 class DefaultGameDataSource @Inject constructor(
-    private val localStorage: LocalStorage
+    private val localStorage: LocalStorage,
+    private val authService: AuthService
 ) : GameDataSource {
     override fun listOfXpActions() =
         listOf<String>(
@@ -92,6 +94,10 @@ class DefaultGameDataSource @Inject constructor(
     override suspend fun appHasBeenOpenedEver(): Boolean {
         val lastOpened = localStorage.getLong(LocalStorageKeys.LAST_OPENED_APP, defaultValue = 0L)
         return lastOpened != 0L
+    }
+
+    override suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String) {
+        authService.addRewardToUser(rewardedUserUid)
     }
 
     override suspend fun storeUserXP(xp: Int) {

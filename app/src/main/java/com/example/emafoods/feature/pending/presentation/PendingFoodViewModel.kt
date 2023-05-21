@@ -6,6 +6,7 @@ import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
 import com.example.emafoods.feature.pending.domain.usecase.DeletePendingFoodUseCase
 import com.example.emafoods.feature.pending.domain.usecase.GetAllPendingFoodsUseCase
 import com.example.emafoods.feature.pending.domain.usecase.MovePendingFoodToAllFoodsUseCase
@@ -24,7 +25,8 @@ class PendingFoodViewModel @Inject constructor(
     private val deletePendingFoodUseCase: DeletePendingFoodUseCase,
     private val refreshFoodsUseCase: RefreshFoodsUseCase,
     private val movePendingFoodToAllFoodsUseCase: MovePendingFoodToAllFoodsUseCase,
-    private val foodMapper: FoodMapper
+    private val foodMapper: FoodMapper,
+    private val addRewardToUserAcceptedRecipeUseCase: AddRewardToUserAcceptedRecipeUseCase,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<PendingFoodState> = MutableStateFlow(PendingFoodState())
@@ -67,6 +69,7 @@ class PendingFoodViewModel @Inject constructor(
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
             movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))
+            addRewardToUserAcceptedRecipeUseCase.execute(foodMapper.mapToModel(currentFood))
             launch {
                 refreshPendingFoodsUseCase.execute()
             }

@@ -47,4 +47,8 @@ class DefaultGameRepository @Inject constructor(
     override suspend fun appHasBeenOpenedEver(): Boolean {
         return gameDataSource.appHasBeenOpenedEver()
     }
+
+    override suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String) {
+        gameDataSource.addRewardToUserAcceptedRecipe(rewardedUserUid)
+    }
 }
