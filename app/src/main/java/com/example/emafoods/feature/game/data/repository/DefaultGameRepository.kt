@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class DefaultGameRepository @Inject constructor(
     private val gameDataSource: GameDataSource
-): GameRepository {
+) : GameRepository {
 
     override fun listOfXpActions(): List<String> =
         gameDataSource.listOfXpActions()
@@ -45,6 +45,18 @@ class DefaultGameRepository @Inject constructor(
         gameDataSource.setAppOpenedToday()
     }
 
+    override suspend fun consecutiveDaysAppOpened(): Int {
+        return gameDataSource.consecutiveDaysAppOpened()
+    }
+
+    override suspend fun updateConsecutiveDaysAppOpened() {
+        gameDataSource.updateConsecutiveDaysAppOpened()
+    }
+
+    override suspend fun resetConsecutiveDaysAppOpened() {
+        gameDataSource.resetConsecutiveDaysAppOpened()
+    }
+
     override suspend fun appHasBeenOpenedEver(): Boolean {
         return gameDataSource.appHasBeenOpenedEver()
     }
@@ -54,10 +66,11 @@ class DefaultGameRepository @Inject constructor(
     }
 
     override suspend fun getUserRewards(): Long =
-        when(val result = gameDataSource.getUserRewards()) {
+        when (val result = gameDataSource.getUserRewards()) {
             is State.Failed -> {
                 0L
             }
+
             is State.Success -> {
                 result.data
             }

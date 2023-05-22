@@ -93,6 +93,18 @@ class DefaultGameDataSource @Inject constructor(
         localStorage.putLong(LocalStorageKeys.LAST_OPENED_APP, System.currentTimeMillis())
     }
 
+    override suspend fun consecutiveDaysAppOpened(): Int =
+        localStorage.getInt(LocalStorageKeys.CONSECUTIVE_DAYS_APP_OPENED, defaultValue = 1)
+
+    override suspend fun updateConsecutiveDaysAppOpened() {
+        val currentConsecutiveDays = consecutiveDaysAppOpened()
+        localStorage.putInt(LocalStorageKeys.CONSECUTIVE_DAYS_APP_OPENED, currentConsecutiveDays + 1)
+    }
+
+    override suspend fun resetConsecutiveDaysAppOpened() {
+        localStorage.putInt(LocalStorageKeys.CONSECUTIVE_DAYS_APP_OPENED, 1)
+    }
+
     override suspend fun appHasBeenOpenedEver(): Boolean {
         val lastOpened = localStorage.getLong(LocalStorageKeys.LAST_OPENED_APP, defaultValue = 0L)
         return lastOpened != 0L

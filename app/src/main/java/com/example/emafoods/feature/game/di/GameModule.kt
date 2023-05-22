@@ -10,6 +10,7 @@ import com.example.emafoods.feature.game.domain.repository.GameRepository
 import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckUserLeveledUpUseCase
+import com.example.emafoods.feature.game.domain.usecase.GetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetNextLevelUseCase
@@ -17,12 +18,14 @@ import com.example.emafoods.feature.game.domain.usecase.GetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.ResetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.SetAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserLevelUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.UpdateConsecutiveDaysAppOpenedUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -178,6 +181,30 @@ object GameModule {
     fun provideResetUserRewardsUseCase(
         gameRepository: GameRepository
     ) = ResetUserRewardsUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideResetConsecutiveDaysAppOpenedUseCase(
+        gameRepository: GameRepository
+    ) = ResetConsecutiveDaysAppOpenedUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideUpdateConsecutiveDaysAppOpenedUseCase(
+        gameRepository: GameRepository
+    ) = UpdateConsecutiveDaysAppOpenedUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetConsecutiveDaysAppOpenedUseCase(
+        gameRepository: GameRepository
+    ) = GetConsecutiveDaysAppOpenedUseCase(
         gameRepository = gameRepository
     )
 
