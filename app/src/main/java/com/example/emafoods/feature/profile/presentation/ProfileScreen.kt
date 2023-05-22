@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -42,10 +43,16 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
@@ -100,7 +107,8 @@ fun ProfileRoute(
         context = context,
         onIncreaseXpToastShown = {
             viewModel.onXpIncreaseToastShown()
-        }
+        },
+        streaks = state.streaks,
     )
 }
 
@@ -116,9 +124,10 @@ fun ProfileScreen(
     showSignOutAlert: Boolean,
     showXpIncreaseToast: Boolean,
     onIncreaseXpToastShown: () -> Unit,
-    context: Context
+    context: Context,
+    streaks: Int,
 ) {
-    if(showXpIncreaseToast) {
+    if (showXpIncreaseToast) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.ADD_REVIEW,
             onToastShown = onIncreaseXpToastShown,
@@ -138,12 +147,29 @@ fun ProfileScreen(
                 onConfirm = onConfirm
             )
         }
-        ProfileHeader(userName = userName)
+        ProfileHeader(userName = userName, streaks = streaks)
         ProfileReview(onReviewClick = onReviewClick)
         Spacer(modifier = Modifier.weight(1f))
         ProfileLevelUp(onLevelUpClick = onLevelUpClick)
         ProfileSignOut(onSignOutClick = onSignOutClick)
     }
+}
+
+@Composable
+fun FireStreakAnimation(
+    modifier: Modifier = Modifier,
+) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.firestreak))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
+        speed = 1f
+    )
+    LottieAnimation(
+        modifier = modifier,
+        composition = composition,
+        progress = { progress },
+    )
 }
 
 @Composable
@@ -206,58 +232,85 @@ fun ProfileLevelUp(
 fun ProfileHeader(
     modifier: Modifier = Modifier,
     userName: String,
+    streaks: Int,
 ) {
-    Row(
+
+    Box(
         modifier = modifier
-            .padding(start = 16.dp, end = 16.dp, top = 36.dp, bottom = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 20.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.profilepic1),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-        )
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .align(Alignment.CenterVertically)
+        Row (
+            modifier = modifier
+                .align(Alignment.TopEnd),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Salut!",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSecondary
+                text = "$streaks", style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSecondary,
+                textAlign = TextAlign.Center,
+                modifier = modifier
+                    .offset(y = 5.dp)
             )
-            Row {
+            FireStreakAnimation(
+                modifier = modifier
+                    .size(35.dp)
+            )
+        }
+
+        Row(
+            modifier = modifier
+                .padding(start = 16.dp, end = 16.dp, top = 36.dp, bottom = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.profilepic1),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+            )
+            Column(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .align(Alignment.CenterVertically)
+            ) {
                 Text(
-                    text = userName,
-                    style = MaterialTheme.typography.bodyLarge,
+                    text = "Salut!",
+                    style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .graphicsLayer(alpha = 0.99f)
-                        .drawWithCache {
-                            onDrawWithContent {
-                                drawContent()
-                                drawRect(
-                                    Brush.horizontalGradient(
-                                        listOf(
-                                            Color.Red,
-                                            Color.White
-                                        )
-                                    ), blendMode = BlendMode.SrcAtop
-                                )
-                            }
-                        },
-                )
-            }
+                Row {
+                    Text(
+                        text = userName,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                            .graphicsLayer(alpha = 0.99f)
+                            .drawWithCache {
+                                onDrawWithContent {
+                                    drawContent()
+                                    drawRect(
+                                        Brush.horizontalGradient(
+                                            listOf(
+                                                Color.Red,
+                                                Color.White
+                                            )
+                                        ), blendMode = BlendMode.SrcAtop
+                                    )
+                                }
+                            },
+                    )
+                }
 
+            }
         }
     }
 }

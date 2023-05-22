@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.extension.capitalizeWords
 import com.example.emafoods.core.presentation.base.BaseViewModel
+import com.example.emafoods.feature.game.domain.usecase.GetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
@@ -19,18 +20,35 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
     private val signOutUseCase: SignOutUseCase,
-    private val increaseXpUseCase: IncreaseXpUseCase
+    private val increaseXpUseCase: IncreaseXpUseCase,
+    private val consecutiveDaysAppOpenedUseCase: GetConsecutiveDaysAppOpenedUseCase
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<ProfileViewState>(ProfileViewState())
     val state: StateFlow<ProfileViewState> = _state
 
     init {
+        getUserName()
+        getStreaks()
+    }
+
+    private fun getUserName() {
         val userDetails = getUserDetailsUseCase.execute()
         _state.update {
             it.copy(
                 userName = userDetails.displayName.capitalizeWords()
             )
+        }
+    }
+
+    private fun getStreaks() {
+        viewModelScope.launch {
+            val streaks = consecutiveDaysAppOpenedUseCase.execute()
+            _state.update {
+                it.copy(
+                    streaks = streaks
+                )
+            }
         }
     }
 
@@ -101,4 +119,5 @@ data class ProfileViewState(
     val userName: String = "",
     val showXpIncreaseToast: Boolean = false,
     val xpIncreased: Int = 0,
+    val streaks: Int = 1
 )

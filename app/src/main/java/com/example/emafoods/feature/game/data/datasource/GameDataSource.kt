@@ -17,6 +17,9 @@ interface GameDataSource {
     suspend fun resetUnspentXp()
     suspend fun checkAppOpenedToday(): Boolean
     suspend fun setAppOpenedToday()
+    suspend fun consecutiveDaysAppOpened(): Int
+    suspend fun updateConsecutiveDaysAppOpened()
+    suspend fun resetConsecutiveDaysAppOpened()
     suspend fun appHasBeenOpenedEver(): Boolean
     suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String)
     suspend fun getUserRewards(): State<Long>
