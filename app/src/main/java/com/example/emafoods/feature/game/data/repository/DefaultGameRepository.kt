@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.game.data.repository
 
+import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.feature.game.data.datasource.GameDataSource
 import com.example.emafoods.feature.game.domain.model.UserGameDetails
 import com.example.emafoods.feature.game.domain.model.UserLevel
@@ -51,4 +52,19 @@ class DefaultGameRepository @Inject constructor(
     override suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String) {
         gameDataSource.addRewardToUserAcceptedRecipe(rewardedUserUid)
     }
+
+    override suspend fun getUserRewards(): Long =
+        when(val result = gameDataSource.getUserRewards()) {
+            is State.Failed -> {
+                0L
+            }
+            is State.Success -> {
+                result.data
+            }
+        }
+
+    override suspend fun resetUserRewards() {
+        gameDataSource.resetUserRewards()
+    }
+
 }

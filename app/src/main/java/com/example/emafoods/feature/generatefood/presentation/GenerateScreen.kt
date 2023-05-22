@@ -38,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -56,6 +57,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
 import com.example.emafoods.feature.game.domain.model.UserLevel
@@ -92,6 +94,11 @@ fun GenerateScreenRoute(
         },
         appOpenedToday = state.appOpenedToday,
         onShownAppOpenedTodayToast = { viewModel.onShownAppOpenedTodayToast() },
+        showRewardsAlert = state.showRewardsAlert,
+        nrOfRewards = state.nrOfRewards,
+        onDismissRewardsAlert = {
+            viewModel.onDismissRewardsAlert()
+        }
     )
 }
 
@@ -111,21 +118,30 @@ fun GenerateScreen(
     onDismissLevelUp: () -> Unit,
     appOpenedToday: Boolean,
     onShownAppOpenedTodayToast: () -> Unit,
+    showRewardsAlert: Boolean,
+    nrOfRewards: Int,
+    onDismissRewardsAlert: () -> Unit,
 ) {
-    if(!appOpenedToday) {
+    if (showRewardsAlert) {
+        RewardsAcquiredAlert(
+            nrOfRewards = nrOfRewards,
+            onDismiss = onDismissRewardsAlert
+        )
+    }
+    if (!appOpenedToday) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.FIRST_TIME_OPENING_APP_TODAY,
             context = context,
             onToastShown = onShownAppOpenedTodayToast,
         )
     }
-    if(leveledUpEvent) {
+    if (leveledUpEvent) {
         LevelUpDialog(
             newLevel = newLevel,
             onDismiss = onDismissLevelUp,
         )
     }
-    if(showXpIncreaseToast) {
+    if (showXpIncreaseToast) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.GENERATE_RECIPE,
             onToastShown = onToastShown,
@@ -157,6 +173,28 @@ fun GenerateScreen(
             onGenerateClick = onGenerateClick
         )
     }
+}
+
+@Composable
+fun RewardsAcquiredAlert(
+    nrOfRewards: Int,
+    onDismiss: () -> Unit
+) {
+    val title = if(nrOfRewards == 1) stringResource(
+        R.string.your_recipe_has_been_accepted,
+        nrOfRewards,
+        nrOfRewards * IncreaseXpActionType.RECIPE_ACCEPTED.xp
+    )
+    else stringResource(
+        R.string.your_receipes_have_been_accepted,
+        nrOfRewards,
+        nrOfRewards * IncreaseXpActionType.RECIPE_ACCEPTED.xp
+    )
+    AlertDialog2Buttons(
+        title = title,
+        confirmText = "YAY!",
+        onConfirmClick = { onDismiss() },
+    )
 }
 
 @Composable

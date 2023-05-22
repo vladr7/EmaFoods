@@ -18,4 +18,6 @@ interface GameRepository {
     suspend fun setAppOpenedToday()
     suspend fun appHasBeenOpenedEver(): Boolean
     suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String)
+    suspend fun getUserRewards(): Long
+    suspend fun resetUserRewards()
 }

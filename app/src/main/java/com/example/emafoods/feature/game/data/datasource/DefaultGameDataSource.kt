@@ -2,6 +2,7 @@ package com.example.emafoods.feature.game.data.datasource
 
 import com.example.emafoods.core.data.localstorage.LocalStorage
 import com.example.emafoods.core.data.localstorage.LocalStorageKeys
+import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.network.AuthService
 import com.example.emafoods.feature.game.domain.model.UserGameDetails
 import com.example.emafoods.feature.game.domain.model.UserLevel
@@ -13,6 +14,7 @@ class DefaultGameDataSource @Inject constructor(
     private val localStorage: LocalStorage,
     private val authService: AuthService
 ) : GameDataSource {
+
     override fun listOfXpActions() =
         listOf<String>(
             "Generare reteta",
@@ -98,6 +100,14 @@ class DefaultGameDataSource @Inject constructor(
 
     override suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String) {
         authService.addRewardToUser(rewardedUserUid)
+    }
+
+    override suspend fun getUserRewards(): State<Long> {
+        return authService.getUserRewards()
+    }
+
+    override suspend fun resetUserRewards() {
+        authService.resetUserRewards()
     }
 
     override suspend fun storeUserXP(xp: Int) {
