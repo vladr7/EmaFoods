@@ -15,8 +15,10 @@ import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCas
 import com.example.emafoods.feature.game.domain.usecase.GetNextLevelUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
+import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUnspentUserXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.ResetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.SetAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserLevelUseCase
@@ -160,6 +162,22 @@ object GameModule {
     fun provideAddRewardToUserAcceptedRecipeUseCase(
         gameRepository: GameRepository
     ) = AddRewardToUserAcceptedRecipeUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetUserRewardsUseCase(
+        gameRepository: GameRepository
+    ) = GetUserRewardsUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideResetUserRewardsUseCase(
+        gameRepository: GameRepository
+    ) = ResetUserRewardsUseCase(
         gameRepository = gameRepository
     )
 

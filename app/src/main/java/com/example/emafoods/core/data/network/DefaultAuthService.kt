@@ -68,4 +68,27 @@ class DefaultAuthService @Inject constructor() : AuthService {
             Log.d("DefaultAuthService", "addRewardToUser: ${e.localizedMessage}")
         }
     }
+
+    override suspend fun getUserRewards(): State<Long> {
+        val uid = firebaseAuth.currentUser?.uid
+        return try {
+            val awaitingRewards = usersCollection.document(uid ?: "").get().await().get(
+                FIRESTORE_USER_AWAITING_REWARDS
+            )
+            val currentRewards = if (awaitingRewards != null) awaitingRewards as Long else 0L
+            State.success(currentRewards)
+        } catch (e: Exception) {
+            State.failed(e.localizedMessage ?: "")
+        }
+    }
+
+    override suspend fun resetUserRewards() {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update(FIRESTORE_USER_AWAITING_REWARDS, 0L)
+        } catch (e: Exception) {
+            Log.d("DefaultAuthService", "resetUserRewards: ${e.localizedMessage}")
+        }
+    }
 }

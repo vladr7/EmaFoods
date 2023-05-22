@@ -7,7 +7,9 @@ import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.domain.usecase.CheckAppOpenedTodayUseCase
+import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.ResetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.SetAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
@@ -26,15 +28,34 @@ class GenerateViewModel @Inject constructor(
     private val refreshFoodsUseCase: RefreshFoodsUseCase,
     private val increaseXpUseCase: IncreaseXpUseCase,
     private val checkAppOpenedTodayUseCase: CheckAppOpenedTodayUseCase,
-    private val setAppOpenedTodayUseCase: SetAppOpenedTodayUseCase
+    private val setAppOpenedTodayUseCase: SetAppOpenedTodayUseCase,
+    private val getUserRewardsUseCase: GetUserRewardsUseCase,
+    private val resetUserRewardsUseCase: ResetUserRewardsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
     val state: StateFlow<GenerateViewState> = _state
 
     init {
+        checkForAwaitingRewards()
         checkAppOpenedToday()
         refreshFoodsFromRepository()
+    }
+
+    private fun checkForAwaitingRewards() {
+        viewModelScope.launch {
+            val rewards = getUserRewardsUseCase.execute().toInt()
+            if (rewards != 0) {
+                onXpIncrease()
+                _state.update {
+                    it.copy(
+                        showRewardsAlert = true,
+                        nrOfRewards = rewards
+                    )
+                }
+                resetUserRewardsUseCase.execute()
+            }
+        }
     }
 
     private fun checkAppOpenedToday() {
@@ -127,6 +148,15 @@ class GenerateViewModel @Inject constructor(
             setAppOpenedTodayUseCase.execute()
         }
     }
+
+    fun onDismissRewardsAlert() {
+        _state.update {
+            it.copy(
+                showRewardsAlert = false,
+                nrOfRewards = 0
+            )
+        }
+    }
 }
 
 data class GenerateViewState(
@@ -138,4 +168,6 @@ data class GenerateViewState(
     val leveledUpEvent: Boolean = false,
     val newLevel: UserLevel? = null,
     val appOpenedToday: Boolean = true,
+    val showRewardsAlert: Boolean = false,
+    val nrOfRewards: Int = 0,
 )
