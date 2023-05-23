@@ -4,15 +4,16 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -30,12 +31,14 @@ fun EmaFoodsNavigation(
 
     val navController = emaFoodsAppState.navController
     val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
+
     Scaffold(
         bottomBar = {
-            BottomNavigation(
+            NavigationBar(
                 modifier = Modifier
-                    .padding(bottom = systemBarsPadding.calculateBottomPadding()),
-                backgroundColor = MaterialTheme.colorScheme.secondary,
+                    .padding(bottom = 8.dp),
+                containerColor = MaterialTheme.colorScheme.secondary,
+                contentColor = MaterialTheme.colorScheme.onSecondary,
                 ) {
                 items.forEach { destination ->
                     val selected =
