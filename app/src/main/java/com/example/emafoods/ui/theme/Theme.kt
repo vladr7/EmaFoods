@@ -82,10 +82,9 @@ fun EmaTheme(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val context = LocalContext.current
             if (darkTheme) {
-                systemUiController.setSystemBarsColor(
-                    color = MaterialTheme.colorScheme.secondary,
-                    darkIcons = true
-                )
+//                systemUiController.setSystemBarsColor(
+//                    color = MaterialTheme.colorScheme.secondary,
+//                )
                 dynamicDarkColorScheme(context)
             }
             else {
