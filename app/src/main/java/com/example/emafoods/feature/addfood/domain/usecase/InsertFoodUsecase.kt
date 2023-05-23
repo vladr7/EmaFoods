@@ -2,9 +2,9 @@ package com.example.emafoods.feature.addfood.domain.usecase
 
 import android.net.Uri
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.models.UserType
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
-import com.example.emafoods.core.domain.models.State
 import javax.inject.Inject
 
 class InsertFoodUseCase @Inject constructor(
@@ -25,11 +25,13 @@ class InsertFoodUseCase @Inject constructor(
 
        val user = getUserDetailsUseCase.execute()
         val newFood = Food(
+            authorUid = user.uid,
             author = user.displayName,
             description = food.description,
             imageRef = fileUri.toString(),
         )
 
+        // todo check for level insted of thid -> deprecated
         return when(user.userType) {
             UserType.BASIC -> {
                 addFoodToPendingListUseCase.execute(newFood)

@@ -12,7 +12,10 @@ import com.example.emafoods.feature.addfood.presentation.insert.navigation.inser
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
 import com.example.emafoods.feature.listfood.navigation.listFoodScreen
 import com.example.emafoods.feature.pending.presentation.navigation.pendingFoodScreen
-import com.example.emafoods.feature.profile.navigation.profileScreen
+import com.example.emafoods.feature.profile.navigation.ProfileDestinations
+import com.example.emafoods.feature.game.presentation.navigation.gameScreen
+import com.example.emafoods.feature.game.presentation.navigation.navigateToGame
+import com.example.emafoods.feature.profile.presentation.navigation.profileScreen
 
 @Composable
 fun HomeNavHost(
@@ -59,7 +62,17 @@ fun HomeNavHost(
         listFoodScreen()
         generateFoodScreen()
         pendingFoodScreen()
-        profileScreen()
+        navigation(
+            route = HomeBottomDestination.Profile.route,
+            startDestination = ProfileDestinations.Profile.route
+        ) {
+            profileScreen(
+                onGameClick = {
+                    navController.navigateToGame()
+                }
+            )
+            gameScreen()
+        }
     }
 }
 
