@@ -84,28 +84,35 @@ fun EmaTheme(
             if (darkTheme) {
 //                systemUiController.setSystemBarsColor(
 //                    color = MaterialTheme.colorScheme.secondary,
+//                    darkIcons = false,
 //                )
+                systemUiController.setStatusBarColor(
+                    color = MaterialTheme.colorScheme.secondary,
+                    darkIcons = false,)
                 dynamicDarkColorScheme(context)
             }
             else {
-                systemUiController.setSystemBarsColor(
+                systemUiController.setStatusBarColor(
                     color = MaterialTheme.colorScheme.secondary,
-                    darkIcons = false
-                )
+                    darkIcons = true,)
+//                systemUiController.setSystemBarsColor(
+//                    color = MaterialTheme.colorScheme.secondary,
+//                    darkIcons = true,
+//                )
                 dynamicLightColorScheme(context)
             }
         } else {
             if (darkTheme) {
-                systemUiController.setSystemBarsColor(
-                    color = MaterialTheme.colorScheme.secondary,
-                    darkIcons = true
-                )
+//                systemUiController.setSystemBarsColor(
+//                    color = MaterialTheme.colorScheme.secondary,
+//                    darkIcons = false,
+//                )
                 DarkColors
             } else {
-                systemUiController.setSystemBarsColor(
-                    color = MaterialTheme.colorScheme.secondary,
-                    darkIcons = false
-                )
+//                systemUiController.setSystemBarsColor(
+//                    color = MaterialTheme.colorScheme.secondary,
+//                    darkIcons = true,
+//                )
                 LightColors
             }
         }
