@@ -92,8 +92,6 @@ fun GenerateScreenRoute(
         onDismissLevelUp = {
             viewModel.onDismissLevelUp()
         },
-        appOpenedToday = state.appOpenedToday,
-        onShownAppOpenedTodayToast = { viewModel.onShownAppOpenedTodayToast() },
         showRewardsAlert = state.showRewardsAlert,
         nrOfRewards = state.nrOfRewards,
         onDismissRewardsAlert = {
@@ -116,8 +114,6 @@ fun GenerateScreen(
     leveledUpEvent: Boolean,
     newLevel: UserLevel?,
     onDismissLevelUp: () -> Unit,
-    appOpenedToday: Boolean,
-    onShownAppOpenedTodayToast: () -> Unit,
     showRewardsAlert: Boolean,
     nrOfRewards: Int,
     onDismissRewardsAlert: () -> Unit,
@@ -126,13 +122,6 @@ fun GenerateScreen(
         RewardsAcquiredAlert(
             nrOfRewards = nrOfRewards,
             onDismiss = onDismissRewardsAlert
-        )
-    }
-    if (!appOpenedToday) {
-        XpIncreaseToast(
-            increaseXpActionType = IncreaseXpActionType.FIRST_TIME_OPENING_APP_TODAY,
-            context = context,
-            onToastShown = onShownAppOpenedTodayToast,
         )
     }
     if (leveledUpEvent) {
