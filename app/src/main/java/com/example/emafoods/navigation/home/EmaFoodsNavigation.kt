@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,11 +34,14 @@ fun EmaFoodsNavigation(
         bottomBar = {
             BottomNavigation(
                 modifier = Modifier
-                    .padding(bottom = systemBarsPadding.calculateBottomPadding())
-            ) {
+                    .padding(bottom = systemBarsPadding.calculateBottomPadding()),
+                backgroundColor = MaterialTheme.colorScheme.secondary,
+                ) {
                 items.forEach { destination ->
                     val selected =
-                        emaFoodsAppState.currentDestination?.isTopLevelDestinationInHierarchy(destination) ?: false
+                        emaFoodsAppState.currentDestination?.isTopLevelDestinationInHierarchy(
+                            destination
+                        ) ?: false
                     BottomNavigationItem(
                         icon = {
                             val imageVector = if (selected) {
