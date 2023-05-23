@@ -2,6 +2,7 @@ package com.example.emafoods.navigation.home
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.BottomNavigationItem
@@ -36,7 +37,7 @@ fun EmaFoodsNavigation(
         bottomBar = {
             NavigationBar(
                 modifier = Modifier
-                    .padding(bottom = 8.dp),
+                    .height(106.dp),
                 containerColor = MaterialTheme.colorScheme.secondary,
                 contentColor = MaterialTheme.colorScheme.onSecondary,
                 ) {
