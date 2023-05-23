@@ -50,7 +50,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -113,9 +112,11 @@ fun SignInScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
+        Spacer(modifier = modifier.weight(0.05f))
         SignInTopBar()
-        Spacer(modifier = Modifier.size(300.dp))
+        Spacer(modifier = modifier.weight(0.2f))
         SignInButton(
+            modifier = modifier,
             loadingText = "Signing in...",
             isLoading = isLoading,
             icon = painterResource(id = R.drawable.ic_google_logo),
@@ -124,6 +125,7 @@ fun SignInScreen(
                 onSignInClick()
             },
         )
+        Spacer(modifier = modifier.weight(0.2f))
     }
 }
 
@@ -165,7 +167,6 @@ fun SignInTopBar(
 ) {
     Column(
         modifier = modifier
-            .padding(top = 32.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.vegetables1), contentDescription = null,
@@ -218,6 +219,7 @@ fun SignInTopBar(
 
 @Composable
 fun SignInButton(
+    modifier: Modifier = Modifier,
     loadingText: String = "Signing in...",
     icon: Painter,
     isLoading: Boolean = false,
@@ -225,10 +227,10 @@ fun SignInButton(
     borderColor: Color = Color.LightGray,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .clickable(
                 enabled = !isLoading,
                 onClick = onClick
@@ -347,13 +349,3 @@ fun SignInButtonText(
 
 }
 
-@Composable
-@Preview
-fun SignInButtonPreview() {
-    SignInButton(
-        loadingText = "Signing in...",
-        isLoading = false,
-        icon = painterResource(id = R.drawable.ic_google_logo),
-        onClick = { }
-    )
-}
