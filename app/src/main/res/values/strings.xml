@@ -17,4 +17,7 @@
     <string name="add_recipe">Adaugă rețeta</string>
     <string name="pending_food">Ast</string>
     <string name="profile">Cont</string>
+    <string name="how_to_gain_xp">Cum pot sa cresc nivelul?</string>
+    <string name="your_recipe_has_been_accepted">Ti-a fost acceptata %1$s reteta! 🥳 Ai primit %2$s XP!</string>
+    <string name="your_receipes_have_been_accepted">Ti-au fost acceptate %1$s retete! 🥳 Ai primit %2$s XP!</string>
 </resources>

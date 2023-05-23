@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.generatefood.presentation
 
+import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -37,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -55,6 +57,11 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
+import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
+import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.feature.game.domain.model.UserLevel
+import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -64,16 +71,32 @@ fun GenerateScreenRoute(
     viewModel: GenerateViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     GenerateScreenBackground()
     GenerateScreen(
         generatedImagedRef = state.food.imageRef,
         modifier = modifier,
         onGenerateClick = {
+            viewModel.onXpIncrease()
             viewModel.generateFoodEvent()
         },
         description = state.food.description,
         foodHasBeenGenerated = state.foodHasBeenGenerated,
+        showXpIncreaseToast = state.showXpIncreaseToast,
+        xpIncreased = state.xpIncreased,
+        onToastShown = { viewModel.onXpIncreaseToastShown() },
+        context = context,
+        leveledUpEvent = state.leveledUpEvent,
+        newLevel = state.newLevel,
+        onDismissLevelUp = {
+            viewModel.onDismissLevelUp()
+        },
+        showRewardsAlert = state.showRewardsAlert,
+        nrOfRewards = state.nrOfRewards,
+        onDismissRewardsAlert = {
+            viewModel.onDismissRewardsAlert()
+        }
     )
 }
 
@@ -84,7 +107,37 @@ fun GenerateScreen(
     description: String,
     modifier: Modifier = Modifier,
     foodHasBeenGenerated: Boolean,
+    showXpIncreaseToast: Boolean,
+    onToastShown: () -> Unit,
+    context: Context,
+    xpIncreased: Int,
+    leveledUpEvent: Boolean,
+    newLevel: UserLevel?,
+    onDismissLevelUp: () -> Unit,
+    showRewardsAlert: Boolean,
+    nrOfRewards: Int,
+    onDismissRewardsAlert: () -> Unit,
 ) {
+    if (showRewardsAlert) {
+        RewardsAcquiredAlert(
+            nrOfRewards = nrOfRewards,
+            onDismiss = onDismissRewardsAlert
+        )
+    }
+    if (leveledUpEvent) {
+        LevelUpDialog(
+            newLevel = newLevel,
+            onDismiss = onDismissLevelUp,
+        )
+    }
+    if (showXpIncreaseToast) {
+        XpIncreaseToast(
+            increaseXpActionType = IncreaseXpActionType.GENERATE_RECIPE,
+            onToastShown = onToastShown,
+            context = context,
+            customXP = xpIncreased
+        )
+    }
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
@@ -109,6 +162,28 @@ fun GenerateScreen(
             onGenerateClick = onGenerateClick
         )
     }
+}
+
+@Composable
+fun RewardsAcquiredAlert(
+    nrOfRewards: Int,
+    onDismiss: () -> Unit
+) {
+    val title = if(nrOfRewards == 1) stringResource(
+        R.string.your_recipe_has_been_accepted,
+        nrOfRewards,
+        nrOfRewards * IncreaseXpActionType.RECIPE_ACCEPTED.xp
+    )
+    else stringResource(
+        R.string.your_receipes_have_been_accepted,
+        nrOfRewards,
+        nrOfRewards * IncreaseXpActionType.RECIPE_ACCEPTED.xp
+    )
+    AlertDialog2Buttons(
+        title = title,
+        confirmText = "YAY!",
+        onConfirmClick = { onDismiss() },
+    )
 }
 
 @Composable

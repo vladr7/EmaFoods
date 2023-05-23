@@ -44,7 +44,7 @@ sealed class HomeBottomDestination(
     object Profile : HomeBottomDestination(
         selectedIcon = Icons.Filled.Search,
         unselectedIcon = Icons.Filled.Close,
-        "profile",
+        "home_profile",
         R.string.profile
     )
 }
