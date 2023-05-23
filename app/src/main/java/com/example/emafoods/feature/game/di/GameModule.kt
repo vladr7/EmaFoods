@@ -8,9 +8,7 @@ import com.example.emafoods.feature.game.data.repository.DefaultGameRepository
 import com.example.emafoods.feature.game.domain.mapper.MapLevelPermissionToViewData
 import com.example.emafoods.feature.game.domain.repository.GameRepository
 import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
-import com.example.emafoods.feature.game.domain.usecase.CheckAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckUserLeveledUpUseCase
-import com.example.emafoods.feature.game.domain.usecase.GetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetNextLevelUseCase
@@ -18,14 +16,15 @@ import com.example.emafoods.feature.game.domain.usecase.GetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.LastTimeUserOpenedAppUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUserRewardsUseCase
-import com.example.emafoods.feature.game.domain.usecase.SetAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserLevelUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateConsecutiveDaysAppOpenedUseCase
+import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserOpenedAppUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -146,22 +145,6 @@ object GameModule {
 
     @Provides
     @Singleton
-    fun provideCheckAppOpenedTodayUseCase(
-        gameRepository: GameRepository
-    ) = CheckAppOpenedTodayUseCase(
-        gameRepository = gameRepository
-    )
-
-    @Provides
-    @Singleton
-    fun provideSetAppOpenedTodayUseCase(
-        gameRepository: GameRepository
-    ) = SetAppOpenedTodayUseCase(
-        gameRepository = gameRepository
-    )
-
-    @Provides
-    @Singleton
     fun provideAddRewardToUserAcceptedRecipeUseCase(
         gameRepository: GameRepository
     ) = AddRewardToUserAcceptedRecipeUseCase(
@@ -202,9 +185,17 @@ object GameModule {
 
     @Provides
     @Singleton
-    fun provideGetConsecutiveDaysAppOpenedUseCase(
+    fun provideLastTimeUserOpenedAppUseCase(
         gameRepository: GameRepository
-    ) = GetConsecutiveDaysAppOpenedUseCase(
+    ) = LastTimeUserOpenedAppUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideUpdateLastTimeUserOpenedAppUseCase(
+        gameRepository: GameRepository
+    ) = UpdateLastTimeUserOpenedAppUseCase(
         gameRepository = gameRepository
     )
 

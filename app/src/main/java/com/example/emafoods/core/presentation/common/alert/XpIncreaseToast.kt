@@ -15,10 +15,6 @@ fun XpIncreaseToast(
     customXP: Int = 0
 ) {
     when(increaseXpActionType) {
-        IncreaseXpActionType.FIRST_TIME_OPENING_APP_TODAY -> {
-            Toast.makeText(context, "Salut din nou! Ai acumulat ${increaseXpActionType.xp} puncte de experienta!", Toast.LENGTH_SHORT).show()
-            onToastShown()
-        }
         IncreaseXpActionType.GENERATE_RECIPE -> {
             Toast.makeText(context, "Ai acumulat $customXP puncte de experienta!", Toast.LENGTH_SHORT).show()
             onToastShown()

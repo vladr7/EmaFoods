@@ -6,11 +6,10 @@ import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.game.domain.model.UserLevel
-import com.example.emafoods.feature.game.domain.usecase.CheckAppOpenedTodayUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUserRewardsUseCase
-import com.example.emafoods.feature.game.domain.usecase.SetAppOpenedTodayUseCase
+import com.example.emafoods.feature.game.domain.usecase.UpdateFireStreaksUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
@@ -27,18 +26,19 @@ class GenerateViewModel @Inject constructor(
     private val generateFoodUseCase: GenerateFoodUseCase,
     private val refreshFoodsUseCase: RefreshFoodsUseCase,
     private val increaseXpUseCase: IncreaseXpUseCase,
-    private val checkAppOpenedTodayUseCase: CheckAppOpenedTodayUseCase,
-    private val setAppOpenedTodayUseCase: SetAppOpenedTodayUseCase,
     private val getUserRewardsUseCase: GetUserRewardsUseCase,
-    private val resetUserRewardsUseCase: ResetUserRewardsUseCase
+    private val resetUserRewardsUseCase: ResetUserRewardsUseCase,
+    private val updateFireStreaksUseCase: UpdateFireStreaksUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
     val state: StateFlow<GenerateViewState> = _state
 
     init {
+        viewModelScope.launch {
+            updateFireStreaksUseCase.execute()
+        }
         checkForAwaitingRewards()
-        checkAppOpenedToday()
         refreshFoodsFromRepository()
     }
 
@@ -54,17 +54,6 @@ class GenerateViewModel @Inject constructor(
                     )
                 }
                 resetUserRewardsUseCase.execute()
-            }
-        }
-    }
-
-    private fun checkAppOpenedToday() {
-        viewModelScope.launch {
-            val appOpenedToday = checkAppOpenedTodayUseCase.execute()
-            _state.update {
-                it.copy(
-                    appOpenedToday = appOpenedToday
-                )
             }
         }
     }
@@ -135,17 +124,6 @@ class GenerateViewModel @Inject constructor(
                 leveledUpEvent = false,
                 newLevel = null
             )
-        }
-    }
-
-    fun onShownAppOpenedTodayToast() {
-        _state.update {
-            it.copy(
-                appOpenedToday = true
-            )
-        }
-        viewModelScope.launch {
-            setAppOpenedTodayUseCase.execute()
         }
     }
 

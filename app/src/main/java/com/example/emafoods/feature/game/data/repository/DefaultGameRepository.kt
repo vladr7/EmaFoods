@@ -38,13 +38,6 @@ class DefaultGameRepository @Inject constructor(
         gameDataSource.resetUnspentXp()
     }
 
-    override suspend fun checkAppOpenedToday(): Boolean =
-        gameDataSource.checkAppOpenedToday()
-
-    override suspend fun setAppOpenedToday() {
-        gameDataSource.setAppOpenedToday()
-    }
-
     override suspend fun consecutiveDaysAppOpened(): Int {
         return gameDataSource.consecutiveDaysAppOpened()
     }
@@ -55,10 +48,6 @@ class DefaultGameRepository @Inject constructor(
 
     override suspend fun resetConsecutiveDaysAppOpened() {
         gameDataSource.resetConsecutiveDaysAppOpened()
-    }
-
-    override suspend fun appHasBeenOpenedEver(): Boolean {
-        return gameDataSource.appHasBeenOpenedEver()
     }
 
     override suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String) {
@@ -79,5 +68,14 @@ class DefaultGameRepository @Inject constructor(
     override suspend fun resetUserRewards() {
         gameDataSource.resetUserRewards()
     }
+
+    override suspend fun lastTimeUserOpenedApp(): Long {
+        return gameDataSource.lastTimeUserOpenedApp()
+    }
+
+    override suspend fun updateLastTimeUserOpenedApp() {
+        gameDataSource.updateLastTimeUserOpenedApp()
+    }
+
 
 }

@@ -83,16 +83,6 @@ class DefaultGameDataSource @Inject constructor(
         localStorage.putInt(LocalStorageKeys.XP_TO_UNSPENT, 0)
     }
 
-    override suspend fun checkAppOpenedToday(): Boolean {
-        val lastOpened = localStorage.getLong(LocalStorageKeys.LAST_OPENED_APP, defaultValue = 0L)
-        val currentTime = System.currentTimeMillis()
-        return currentTime - lastOpened < 24 * 60 * 60 * 1000
-    }
-
-    override suspend fun setAppOpenedToday() {
-        localStorage.putLong(LocalStorageKeys.LAST_OPENED_APP, System.currentTimeMillis())
-    }
-
     override suspend fun consecutiveDaysAppOpened(): Int =
         localStorage.getInt(LocalStorageKeys.CONSECUTIVE_DAYS_APP_OPENED, defaultValue = 1)
 
@@ -105,11 +95,6 @@ class DefaultGameDataSource @Inject constructor(
         localStorage.putInt(LocalStorageKeys.CONSECUTIVE_DAYS_APP_OPENED, 1)
     }
 
-    override suspend fun appHasBeenOpenedEver(): Boolean {
-        val lastOpened = localStorage.getLong(LocalStorageKeys.LAST_OPENED_APP, defaultValue = 0L)
-        return lastOpened != 0L
-    }
-
     override suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String) {
         authService.addRewardToUser(rewardedUserUid)
     }
@@ -120,6 +105,14 @@ class DefaultGameDataSource @Inject constructor(
 
     override suspend fun resetUserRewards() {
         authService.resetUserRewards()
+    }
+
+    override suspend fun lastTimeUserOpenedApp(): Long {
+        return localStorage.getLong(LocalStorageKeys.LAST_TIME_OPENED_APP, defaultValue = 0L)
+    }
+
+    override suspend fun updateLastTimeUserOpenedApp() {
+        localStorage.putLong(LocalStorageKeys.LAST_TIME_OPENED_APP, System.currentTimeMillis())
     }
 
     override suspend fun storeUserXP(xp: Int) {
