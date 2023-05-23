@@ -82,37 +82,29 @@ fun EmaTheme(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val context = LocalContext.current
             if (darkTheme) {
-//                systemUiController.setSystemBarsColor(
-//                    color = MaterialTheme.colorScheme.secondary,
-//                    darkIcons = false,
-//                )
-                systemUiController.setStatusBarColor(
-                    color = MaterialTheme.colorScheme.secondary,
-                    darkIcons = false,)
+                systemUiController.setSystemBarsColor(
+                    color = MaterialTheme.colorScheme.secondary, // see also MainActivity
+                )
                 dynamicDarkColorScheme(context)
             }
             else {
-                systemUiController.setStatusBarColor(
+                systemUiController.setSystemBarsColor(
                     color = MaterialTheme.colorScheme.secondary,
-                    darkIcons = true,)
-//                systemUiController.setSystemBarsColor(
-//                    color = MaterialTheme.colorScheme.secondary,
-//                    darkIcons = true,
-//                )
+                )
                 dynamicLightColorScheme(context)
             }
         } else {
             if (darkTheme) {
-//                systemUiController.setSystemBarsColor(
-//                    color = MaterialTheme.colorScheme.secondary,
-//                    darkIcons = false,
-//                )
+                systemUiController.setSystemBarsColor(
+                    color = MaterialTheme.colorScheme.secondary,
+                    darkIcons = false,
+                )
                 DarkColors
             } else {
-//                systemUiController.setSystemBarsColor(
-//                    color = MaterialTheme.colorScheme.secondary,
-//                    darkIcons = true,
-//                )
+                systemUiController.setSystemBarsColor(
+                    color = MaterialTheme.colorScheme.secondary,
+                    darkIcons = true,
+                )
                 LightColors
             }
         }
