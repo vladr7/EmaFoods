@@ -1,6 +1,5 @@
 package com.example.emafoods.feature.game.domain.mapper
 
-import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
 import com.example.emafoods.feature.game.presentation.ViewDataLevelPermission
 import com.example.emafoods.feature.game.presentation.model.LevelPermission
@@ -13,24 +12,13 @@ class MapLevelPermissionToViewData @Inject constructor(
     suspend fun execute(levelPermissions: List<LevelPermission>): List<ViewDataLevelPermission> {
         val userGameDetails = getUserGameDetailsUseCase.execute()
         return levelPermissions.map { levelPermission ->
-            val remainingXP = getLevelFromPermissionLevel(levelPermission).xp - userGameDetails.userXp
+            val remainingXP = levelPermission.level.xp - userGameDetails.userXp
             ViewDataLevelPermission(
-                levelName = levelPermission.levelName,
+                level = levelPermission.level,
                 permissions = levelPermission.permissions,
-                hasAccess = userGameDetails.userLevel.string == levelPermission.levelName,
+                hasAccess = levelPermission.level.xp <= userGameDetails.userXp,
                 remainingXp = remainingXP
             )
-        }
-    }
-
-    private fun getLevelFromPermissionLevel(permissionLevel: LevelPermission): UserLevel {
-        return when(permissionLevel.levelName) {
-            UserLevel.LEVEL_1.string -> UserLevel.LEVEL_1
-            UserLevel.LEVEL_2.string -> UserLevel.LEVEL_2
-            UserLevel.LEVEL_3.string -> UserLevel.LEVEL_3
-            UserLevel.LEVEL_4.string -> UserLevel.LEVEL_4
-            UserLevel.LEVEL_5.string -> UserLevel.LEVEL_5
-            else -> UserLevel.LEVEL_1
         }
     }
 }
