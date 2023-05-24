@@ -5,6 +5,6 @@ enum class Permission(val value: String) {
     ADD_TO_PENDING("Adauga la retetele in asteptare"),
     ACCEPT_DENY_FROM_PENDING("Accepta/Respinge reteta"),
     MAIN_LIST_VISIBLE("Vizualizeaza lista principala"),
-    EDIT_MAIN("Editeaza lista principala"),
+    EDIT_PENDING("Editeaza reteta din asteptare"),
     SURPRISE("Surpriza!")
 }
