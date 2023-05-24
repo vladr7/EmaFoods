@@ -1,6 +1,9 @@
 package com.example.emafoods.feature.generatefood.presentation
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -92,6 +95,14 @@ fun GenerateScreenRoute(
         newLevel = state.newLevel,
         onDismissLevelUp = {
             viewModel.onDismissLevelUp()
+            val packageManager: PackageManager = context.packageManager
+            val intent: Intent? = packageManager.getLaunchIntentForPackage(context.packageName)
+            val componentName: ComponentName? = intent?.component
+            componentName?.let {
+                val restartIntent: Intent = Intent.makeRestartActivityTask(componentName)
+                context.startActivity(restartIntent)
+                Runtime.getRuntime().exit(0)
+            }
         },
         showRewardsAlert = state.showRewardsAlert,
         nrOfRewards = state.nrOfRewards,
@@ -330,7 +341,7 @@ fun GenerateButton(
 
                 },
                 onDragStopped = {
-                    if (offsetY.value < -40f) {
+                    if (offsetY.value < -30f) {
                         onGenerateClick()
                     }
                     coroutineScope.launch {

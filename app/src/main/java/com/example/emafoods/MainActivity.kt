@@ -35,7 +35,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     if (state.value.isUserSignedIn) {
-                        EmaFoodsNavigation()
+                        EmaFoodsNavigation(
+                            userLevel = state.value.userLevel
+                        )
                     } else {
                         SignInNavigation()
                     }
