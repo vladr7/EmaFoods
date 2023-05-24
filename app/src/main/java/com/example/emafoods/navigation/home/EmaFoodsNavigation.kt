@@ -1,11 +1,8 @@
 package com.example.emafoods.navigation.home
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,20 +16,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.example.emafoods.feature.game.domain.model.UserLevel
 
 @Composable
 fun EmaFoodsNavigation(
-    emaFoodsAppState: EmaFoodsAppState = rememberEmaFoodsAppState()
+    emaFoodsAppState: EmaFoodsAppState = rememberEmaFoodsAppState(),
+    userLevel: UserLevel = UserLevel.LEVEL_1,
 ) {
-    val items = listOf(
-        HomeBottomDestination.AddFood,
-        HomeBottomDestination.GenerateFood,
-        HomeBottomDestination.PendingFood,
-        HomeBottomDestination.Profile,
-    )
 
+    val items = getBottomNavItems(userLevel = userLevel)
     val navController = emaFoodsAppState.navController
-    val systemBarsPadding = WindowInsets.systemBars.asPaddingValues()
 
     Scaffold(
         bottomBar = {
@@ -95,3 +88,50 @@ private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: HomeBo
     this?.hierarchy?.any {
         it.route?.contains(destination.route, true) ?: false
     } ?: false
+
+private fun getBottomNavItems(userLevel: UserLevel): List<HomeBottomDestination> =
+    when (userLevel) {
+        UserLevel.LEVEL_1 -> {
+            listOf(
+                HomeBottomDestination.AddFood,
+                HomeBottomDestination.GenerateFood,
+                HomeBottomDestination.Profile,
+            )
+        }
+
+        UserLevel.LEVEL_2 -> {
+            listOf(
+                HomeBottomDestination.AddFood,
+                HomeBottomDestination.GenerateFood,
+                HomeBottomDestination.Profile,
+            )
+        }
+
+        UserLevel.LEVEL_3 -> {
+            listOf(
+                HomeBottomDestination.AddFood,
+                HomeBottomDestination.GenerateFood,
+                HomeBottomDestination.PendingFood,
+                HomeBottomDestination.Profile,
+            )
+
+        }
+
+        UserLevel.LEVEL_4 -> {
+            listOf(
+                HomeBottomDestination.AddFood,
+                HomeBottomDestination.GenerateFood,
+                HomeBottomDestination.PendingFood,
+                HomeBottomDestination.Profile,
+            )
+        }
+
+        UserLevel.LEVEL_5 -> {
+            listOf(
+                HomeBottomDestination.AddFood,
+                HomeBottomDestination.GenerateFood,
+                HomeBottomDestination.PendingFood,
+                HomeBottomDestination.Profile,
+            )
+        }
+    }

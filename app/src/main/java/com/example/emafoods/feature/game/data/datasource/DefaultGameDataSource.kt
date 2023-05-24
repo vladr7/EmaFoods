@@ -18,11 +18,11 @@ class DefaultGameDataSource @Inject constructor(
     override fun listOfXpActions() =
         listOf<String>(
             "Generare reteta",
-            "Reteta adaugata",
+            "Reteta adaugata la retetele in asteptare",
             "Reteta acceptata de admin",
             "Review aplicatie",
             "Deschizi aplicatia pentru prima data pe ziua respectiva",
-            "Accepti/respingi o reteta (admin)",
+            "Accepti/respingi o reteta (Admin)",
         )
 
     override suspend fun storeUserLevel(userLevel: UserLevel) {
@@ -41,19 +41,19 @@ class DefaultGameDataSource @Inject constructor(
             LevelPermission(
                 levelName = UserLevel.LEVEL_2.string,
                 permissions = listOf(
-                    Permission.ACCEPT_DENY_FROM_PENDING
+                    Permission.MAIN_LIST_VISIBLE
                 )
             ),
             LevelPermission(
                 levelName = UserLevel.LEVEL_3.string,
                 permissions = listOf(
-                    Permission.MAIN_LIST_VISIBLE
+                    Permission.ACCEPT_DENY_FROM_PENDING
                 )
             ),
             LevelPermission(
                 levelName = UserLevel.LEVEL_4.string,
                 permissions = listOf(
-                    Permission.EDIT_MAIN
+                    Permission.EDIT_PENDING
                 )
             ),
             LevelPermission(
