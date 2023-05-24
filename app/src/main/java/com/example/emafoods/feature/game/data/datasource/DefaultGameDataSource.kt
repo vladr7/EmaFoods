@@ -32,32 +32,32 @@ class DefaultGameDataSource @Inject constructor(
     override fun levelPermissions(): List<LevelPermission> =
         listOf(
             LevelPermission(
-                levelName = UserLevel.LEVEL_1.string,
+                level = UserLevel.LEVEL_1,
                 permissions = listOf(
                     Permission.GENERATE,
                     Permission.ADD_TO_PENDING
                 )
             ),
             LevelPermission(
-                levelName = UserLevel.LEVEL_2.string,
+                level = UserLevel.LEVEL_2,
                 permissions = listOf(
                     Permission.MAIN_LIST_VISIBLE
                 )
             ),
             LevelPermission(
-                levelName = UserLevel.LEVEL_3.string,
+                level = UserLevel.LEVEL_3,
                 permissions = listOf(
                     Permission.ACCEPT_DENY_FROM_PENDING
                 )
             ),
             LevelPermission(
-                levelName = UserLevel.LEVEL_4.string,
+                level = UserLevel.LEVEL_4,
                 permissions = listOf(
                     Permission.EDIT_PENDING
                 )
             ),
             LevelPermission(
-                levelName = UserLevel.LEVEL_5.string,
+                level = UserLevel.LEVEL_5,
                 permissions = listOf(
                     Permission.SURPRISE
                 )
