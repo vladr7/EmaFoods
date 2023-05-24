@@ -1,51 +1,50 @@
 package com.example.emafoods.navigation.home
 
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.PendingActions
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AddCircleOutline
+import androidx.compose.material.icons.outlined.PendingActions
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Restaurant
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.emafoods.R
 
 sealed class HomeBottomDestination(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
     val route: String,
-    @StringRes val resourceId: Int
 ) {
     object AddFood : HomeBottomDestination(
-        selectedIcon = Icons.Filled.Favorite,
-        unselectedIcon = Icons.Filled.Close,
+        selectedIcon = Icons.Filled.AddCircle,
+        unselectedIcon = Icons.Outlined.AddCircleOutline,
         route = "add_food",
-        resourceId = R.string.add_food
     )
 
     object ListFood : HomeBottomDestination(
         selectedIcon = Icons.Filled.Search,
         unselectedIcon = Icons.Filled.Close,
         "list_food",
-        R.string.foods_list
     )
     object GenerateFood : HomeBottomDestination(
-        selectedIcon = Icons.Filled.Search,
-        unselectedIcon = Icons.Filled.Close,
+        selectedIcon = Icons.Filled.Restaurant,
+        unselectedIcon = Icons.Outlined.Restaurant,
         "generate_food",
-        R.string.generate_food
     )
 
     object PendingFood : HomeBottomDestination(
-        selectedIcon = Icons.Filled.Search,
-        unselectedIcon = Icons.Filled.Close,
+        selectedIcon = Icons.Filled.PendingActions,
+        unselectedIcon = Icons.Outlined.PendingActions,
         "pending_food",
-        R.string.pending_food
     )
 
     object Profile : HomeBottomDestination(
-        selectedIcon = Icons.Filled.Search,
-        unselectedIcon = Icons.Filled.Close,
+        selectedIcon = Icons.Filled.Person,
+        unselectedIcon = Icons.Outlined.Person,
         "home_profile",
-        R.string.profile
     )
 }
 
