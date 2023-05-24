@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.image.compressor)
     implementation(libs.play.review)
     implementation(libs.play.review.ktx)
+    implementation(libs.bundles.accompanist)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.junit)
