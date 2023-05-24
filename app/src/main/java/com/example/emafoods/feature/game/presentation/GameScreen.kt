@@ -69,8 +69,8 @@ fun GameRoute(
         displayXpAlert = state.value.displayXpAlert,
         xpList = state.value.listOfXpActions,
         levelDataList = state.value.listOfLevelPermission,
-        onLevelClick = { level ->
-            if (level.remainingXp <= 0) {
+        onLevelClick = { levelPermission ->
+            if (levelPermission.remainingXp <= 0) {
                 Toast.makeText(
                     context,
                     "Ai deblocat deja acest level!",
@@ -79,7 +79,7 @@ fun GameRoute(
             } else {
                 Toast.makeText(
                     context,
-                    "Mai ai nevoie de ${level.remainingXp} XP pentru a debloca ${level.levelName}!",
+                    "Mai ai nevoie de ${levelPermission.remainingXp} XP pentru a debloca ${levelPermission.level.string}!",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -110,7 +110,7 @@ fun GameScreen(
         AlertListOfActionsToGainXp(
             title = "Primesti XP pentru urmatoarele actiuni:",
             onDismissClick = onDismissXpAlertClick,
-            list = xpList,
+            xpList = xpList,
             dismissText = "OK"
         )
     }
@@ -193,7 +193,7 @@ fun LevelItem(
                 .fillMaxWidth()
         ) {
             Text(
-                text = levelData.levelName,
+                text = levelData.level.string,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSecondary,
                 modifier = modifier
@@ -378,7 +378,7 @@ fun AlertListOfActionsToGainXp(
     title: String,
     dismissText: String,
     onDismissClick: () -> Unit = {},
-    list: List<String>
+    xpList: List<String>
 ) {
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -408,7 +408,7 @@ fun AlertListOfActionsToGainXp(
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                list.forEach { item ->
+                xpList.forEach { item ->
                     Row(
                         modifier = Modifier.padding(8.dp),
                         verticalAlignment = Alignment.CenterVertically

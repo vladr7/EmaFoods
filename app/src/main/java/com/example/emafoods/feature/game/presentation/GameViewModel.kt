@@ -72,7 +72,7 @@ data class GameViewState(
 )
 
 data class ViewDataLevelPermission(
-    val levelName: String,
+    val level: UserLevel,
     val permissions: List<Permission>,
     val hasAccess: Boolean,
     val remainingXp: Int
