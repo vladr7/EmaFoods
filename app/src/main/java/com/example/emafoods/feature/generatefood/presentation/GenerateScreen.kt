@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -34,12 +35,12 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -221,7 +222,6 @@ fun WaitingCookAnimation(
     }
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun GenerateDescription(
     modifier: Modifier,
@@ -251,8 +251,8 @@ fun GenerateDescription(
         style = TextStyle(
             brush = Brush.linearGradient(
                 colors = listOf(
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.tertiary,
+                    MaterialTheme.colorScheme.onSecondary,
+                    MaterialTheme.colorScheme.onSecondary,
                 )
             )
         ),
@@ -388,13 +388,22 @@ private fun ArcComposable(modifier: Modifier = Modifier) {
 
 @Composable
 fun GenerateScreenBackground(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
+    val gradient = Brush.verticalGradient(
+        colors = listOf(
+            Color.Transparent,
+            MaterialTheme.colorScheme.secondary
+        ),
+        startY = sizeImage.height.toFloat(),
+        endY = 900f,
+    )
+
     Box() {
         Image(
-            painter = painterResource(id = R.drawable.background),
+            painter = painterResource(R.drawable.generetebk),
             contentDescription = null,
             contentScale = ContentScale.FillHeight,
             modifier = modifier
@@ -402,7 +411,13 @@ fun GenerateScreenBackground(
                     sizeImage = it.size
                 }
                 .fillMaxSize(),
+            alpha = 0.35f
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .alpha(0.90f)
+                .background(gradient)
         )
     }
 }
-

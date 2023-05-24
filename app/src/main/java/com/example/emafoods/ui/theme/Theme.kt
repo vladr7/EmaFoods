@@ -9,6 +9,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -76,12 +77,36 @@ fun EmaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val systemUiController = rememberSystemUiController()
     val colorScheme =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (darkTheme) {
+                systemUiController.setSystemBarsColor(
+                    color = MaterialTheme.colorScheme.secondary, // see also MainActivity
+                )
+                dynamicDarkColorScheme(context)
+            }
+            else {
+                systemUiController.setSystemBarsColor(
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+                dynamicLightColorScheme(context)
+            }
         } else {
-            if (darkTheme) DarkColors else LightColors
+            if (darkTheme) {
+                systemUiController.setSystemBarsColor(
+                    color = MaterialTheme.colorScheme.secondary,
+                    darkIcons = false,
+                )
+                DarkColors
+            } else {
+                systemUiController.setSystemBarsColor(
+                    color = MaterialTheme.colorScheme.secondary,
+                    darkIcons = true,
+                )
+                LightColors
+            }
         }
 
     MaterialTheme(

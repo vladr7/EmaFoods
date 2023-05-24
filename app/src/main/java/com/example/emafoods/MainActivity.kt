@@ -1,7 +1,6 @@
 package com.example.emafoods
 
 import android.os.Bundle
-import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.emafoods.navigation.home.EmaFoodsNavigation
@@ -26,6 +26,10 @@ class MainActivity : ComponentActivity() {
             val viewModel: MainViewModel = hiltViewModel()
             val state = viewModel.state.collectAsState()
             EmaTheme {
+                window?.statusBarColor =
+                    MaterialTheme.colorScheme.secondary.toArgb()
+                window?.navigationBarColor =
+                    MaterialTheme.colorScheme.secondary.toArgb()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
