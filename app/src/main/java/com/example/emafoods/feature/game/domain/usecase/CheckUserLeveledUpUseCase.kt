@@ -10,6 +10,7 @@ class CheckUserLeveledUpUseCase @Inject constructor(
         val userGameDetails = getUserGameDetailsUseCase.execute()
         val currentUserXp = userGameDetails.userXp
         val nextLevel = nextLevelUseCase.execute()
+        if(nextLevel == userGameDetails.userLevel) return false
         return currentUserXp + unspentXp >= nextLevel.xp
     }
 }
