@@ -1,13 +1,16 @@
 package com.example.emafoods.feature.addfood.presentation.insert
 
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
+import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,28 +22,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InsertFoodViewModel @Inject constructor(
-//    savedStateHandle: SavedStateHandle,
-//    stringDecoder: StringDecoder,
+    savedStateHandle: SavedStateHandle,
+    stringDecoder: StringDecoder,
     private val insertFoodUseCase: InsertFoodUseCase,
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
     private val increaseXpUseCase: IncreaseXpUseCase
 ) : BaseViewModel() {
 
-//    private val insertFoodArgs: InsertFoodArguments =
-//        InsertFoodArguments(savedStateHandle, stringDecoder)
-//    private val uriId = insertFoodArgs.uri
-//    private val descriptionId = insertFoodArgs.description
+    private val insertFoodArgs: InsertFoodArguments =
+        InsertFoodArguments(savedStateHandle, stringDecoder)
+    private val uriId = insertFoodArgs.uri
+    private val descriptionId = insertFoodArgs.description
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
     )
     val state: StateFlow<InsertFoodViewState> = _state
 
-//    init {
-//        _state.update {
-//            it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
-//        }
-//    }
+    init {
+        _state.update {
+            it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
+        }
+    }
 
     fun updateDescription(description: String) {
         _state.value = _state.value.copy(description = description)

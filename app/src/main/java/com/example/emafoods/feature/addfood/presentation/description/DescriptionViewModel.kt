@@ -19,7 +19,7 @@ class DescriptionViewModel @Inject constructor(
     ) : BaseViewModel() {
 
     private val descriptionArgs: DescriptionArguments = DescriptionArguments(savedStateHandle, stringDecoder)
-    private val uriId = descriptionArgs.uriId
+    private val uriId = descriptionArgs.uri
 
     private val _state = MutableStateFlow<DescriptionViewState>(
         DescriptionViewState()

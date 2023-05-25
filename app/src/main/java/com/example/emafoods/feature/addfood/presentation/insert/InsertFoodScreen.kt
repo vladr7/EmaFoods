@@ -151,6 +151,8 @@ fun InsertFoodImage(
     modifier: Modifier = Modifier,
     onUriChanged: (Uri?) -> Unit
 ) {
+    val context = LocalContext.current
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -160,7 +162,7 @@ fun InsertFoodImage(
     ) {
         SubcomposeAsyncImage(
             modifier = modifier,
-            model = ImageRequest.Builder(LocalContext.current)
+            model = ImageRequest.Builder(context)
                 .data(imageUri ?: R.drawable.background)
                 .crossfade(true)
                 .build(),
