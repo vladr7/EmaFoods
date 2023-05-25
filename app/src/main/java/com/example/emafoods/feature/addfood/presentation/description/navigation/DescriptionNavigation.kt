@@ -33,7 +33,9 @@ fun NavGraphBuilder.descriptionScreen(onConfirmedClick: (InsertFoodArguments) ->
     composable(
         route = "${AddFoodDestinations.Description.route}/{$UriIdArg}",
         arguments = listOf(
-            navArgument(UriIdArg) { type = NavType.StringType },
+            navArgument(UriIdArg) {
+                type = NavType.StringType
+            },
         ),
     ) {
         DescriptionRoute(onConfirmedClick = onConfirmedClick)

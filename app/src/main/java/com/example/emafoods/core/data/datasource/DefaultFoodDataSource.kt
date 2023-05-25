@@ -5,6 +5,7 @@ import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.data.models.FoodImage
 import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.models.State
+import com.google.android.gms.tasks.Continuation
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ class DefaultFoodDataSource : FoodDataSource {
         const val FIRESTORE_PENDING_FOODS_COLLECTION = "PENDINGFOODS"
         const val STORAGE_FOODS = "ALLFOODS"
         const val STORAGE_PENDING_FOODS = "PENDINGFOODS"
+        const val STORAGE_PENDING_FOODS_TEMPORARY_FOLDER = "TEMPORARY"
         const val FIREBASE_BUCKET_NAME = "emafoods-16e9e.appspot.com"
     }
 
@@ -217,6 +219,22 @@ class DefaultFoodDataSource : FoodDataSource {
             State.success(food)
         } else {
             State.Failed("Could not add food image to storage")
+        }
+    }
+
+    override suspend fun addPendingFoodImageToTemporaryStorage(food: Food): State<Food> {
+        val fileUri = Uri.parse(food.imageRef)
+        val extension = ".jpg"
+        val refStorage =
+            FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/$STORAGE_PENDING_FOODS_TEMPORARY_FOLDER/${food.authorUid}$extension")
+        val task = refStorage.delete().continueWithTask(Continuation {
+            refStorage.putFile(fileUri)
+        })
+        task.await()
+        return if (task.isSuccessful) {
+            State.success(food)
+        } else {
+            State.Failed("Could not add food image to temporary storage")
         }
     }
 }

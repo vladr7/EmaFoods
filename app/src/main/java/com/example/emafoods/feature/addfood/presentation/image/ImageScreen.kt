@@ -34,7 +34,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,30 +50,36 @@ import com.example.emafoods.feature.addfood.presentation.description.navigation.
 
 @Composable
 fun ImageRoute(
-    onHasImage: (DescriptionArguments) -> Unit,
+    onHasImage: (DescriptionArguments?) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if (state.hasImage) {
+    if (state.hasTakePictureImage) {
         onHasImage(
             DescriptionArguments(
-                uri = state.imageUri
+                uri = state.takePictureUri
             )
         )
+    } else if (state.hasChooseFilesImage) {
+        onHasImage(null)
     } else {
         ImageScreen(
-            errorMessage = state.errorMessage,
             context = context,
-            onUriRetrieved = { uri ->
+            onChoosePictureUriRetrieved = { uri ->
                 uri?.let { imageUri ->
-                    viewModel.updateImageUri(imageUri.toString())
-                    viewModel.updateHasImage(true)
+                    viewModel.addPendingImageToTemporarilySavedImages(imageUri)
                 }
             },
-            modifier = modifier
+            modifier = modifier,
+            onTakePictureUriRetrieved = { uri ->
+                uri?.let { imageUri ->
+                    viewModel.updateTakePictureImageUri(imageUri.toString())
+                    viewModel.updateHasTakePictureImage(true)
+                }
+            }
         )
     }
 }
@@ -82,21 +87,20 @@ fun ImageRoute(
 @Composable
 fun ImageScreen(
     modifier: Modifier = Modifier,
-    context: Context = LocalContext.current,
-    errorMessage: String? = null,
-    imageUri: Uri? = null,
-    onUriRetrieved: (Uri?) -> Unit
+    context: Context,
+    onChoosePictureUriRetrieved: (Uri?) -> Unit,
+    onTakePictureUriRetrieved: (Uri?) -> Unit
 ) {
     ImageScreenBackground()
     AddImageTitle()
     AddImageOptions(
         modifier = modifier,
-        onUriRetrieved = onUriRetrieved
+        onChoosePictureUriRetrieved = onChoosePictureUriRetrieved,
+        onTakePictureUriRetrieved = onTakePictureUriRetrieved
     )
 
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun AddImageTitle(
     modifier: Modifier = Modifier,
@@ -138,7 +142,8 @@ fun AddImageTitle(
 @Composable
 fun AddImageOptions(
     modifier: Modifier = Modifier,
-    onUriRetrieved: (Uri?) -> Unit
+    onChoosePictureUriRetrieved: (Uri?) -> Unit,
+    onTakePictureUriRetrieved: (Uri?) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -150,10 +155,10 @@ fun AddImageOptions(
                 .padding(16.dp),
         ) {
             AttachFileIcon(
-                onUriRetrieved = onUriRetrieved
+                onUriRetrieved = onChoosePictureUriRetrieved
             )
             TakePictureIcon(
-                onUriRetrieved = onUriRetrieved
+                onUriRetrieved = onTakePictureUriRetrieved
             )
         }
     }
@@ -165,7 +170,6 @@ fun AttachFileIcon(
     onUriRetrieved: (Uri?) -> Unit,
     tint: Color = MaterialTheme.colorScheme.onSecondary
 ) {
-
 
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),

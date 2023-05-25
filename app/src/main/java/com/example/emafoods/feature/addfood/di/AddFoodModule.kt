@@ -4,6 +4,7 @@ import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToMainListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToPendingListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.AddPendingImageToTemporaryRemoteStorageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.CheckFieldsAreFilledUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import dagger.Module
@@ -43,5 +44,14 @@ object AddFoodModule {
         foodRepository: FoodRepository
     ) = AddFoodToPendingListUseCase(
         foodRepository = foodRepository
+    )
+
+    @Provides
+    fun provideAddPendingImageToTemporaryRemoteStorageUseCase(
+        foodRepository: FoodRepository,
+        getUserDetailsUseCase: GetUserDetailsUseCase
+    ) = AddPendingImageToTemporaryRemoteStorageUseCase(
+        foodRepository = foodRepository,
+        getUserDetailsUseCase = getUserDetailsUseCase
     )
 }
