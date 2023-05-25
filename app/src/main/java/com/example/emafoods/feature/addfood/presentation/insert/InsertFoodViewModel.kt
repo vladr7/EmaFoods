@@ -9,6 +9,7 @@ import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
@@ -26,7 +27,8 @@ class InsertFoodViewModel @Inject constructor(
     stringDecoder: StringDecoder,
     private val insertFoodUseCase: InsertFoodUseCase,
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
-    private val increaseXpUseCase: IncreaseXpUseCase
+    private val increaseXpUseCase: IncreaseXpUseCase,
+    private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase
 ) : BaseViewModel() {
 
     private val insertFoodArgs: InsertFoodArguments =
@@ -40,8 +42,25 @@ class InsertFoodViewModel @Inject constructor(
     val state: StateFlow<InsertFoodViewState> = _state
 
     init {
-        _state.update {
-            it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
+        if(uriId == "empty") {
+            viewModelScope.launch {
+                when(val result = getTemporaryPendingImageUseCase.execute()) {
+                    is State.Failed -> {
+                        _state.update {
+                            it.copy(errorMessage = result.message)
+                        }
+                    }
+                    is State.Success -> {
+                        _state.update {
+                            it.copy(imageUri = result.data)
+                        }
+                    }
+                }
+            }
+        } else {
+            _state.update {
+                it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
+            }
         }
     }
 
