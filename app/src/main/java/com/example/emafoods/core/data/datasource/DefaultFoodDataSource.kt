@@ -237,4 +237,22 @@ class DefaultFoodDataSource : FoodDataSource {
             State.Failed("Could not add food image to temporary storage")
         }
     }
+
+    override suspend fun getPendingFoodImageFromTemporaryStorage(authorUid: String): State<Uri> {
+        val extension = ".jpg"
+        return try {
+            val refStorage =
+                FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/$STORAGE_PENDING_FOODS_TEMPORARY_FOLDER/$authorUid$extension")
+            val task = refStorage.downloadUrl
+            task.await()
+
+            if (task.isSuccessful) {
+                State.success(task.result)
+            } else {
+                State.Failed("Could not get food image from temporary storage")
+            }
+        } catch (e: Exception) {
+            State.Failed("Could not get food image from temporary storage")
+        }
+    }
 }

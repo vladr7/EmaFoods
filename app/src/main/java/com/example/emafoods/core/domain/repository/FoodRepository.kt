@@ -25,6 +25,8 @@ interface FoodRepository {
 
     suspend fun addPendingFoodImageToTemporaryStorage(food: Food): State<Food>
 
+    suspend fun getPendingFoodImageFromTemporaryStorage(authorUid: String): State<Uri>
+
     suspend fun deletePendingFood(food: Food): State<Food>
 
     suspend fun movePendingFoodToAllFoods(food: Food): State<Food>
