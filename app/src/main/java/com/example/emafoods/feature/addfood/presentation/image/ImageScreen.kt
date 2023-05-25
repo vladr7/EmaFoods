@@ -61,7 +61,7 @@ fun ImageRoute(
     if (state.hasImage) {
         onHasImage(
             DescriptionArguments(
-                uriId = state.imageUri
+                uri = state.imageUri
             )
         )
     } else {
@@ -69,9 +69,9 @@ fun ImageRoute(
             errorMessage = state.errorMessage,
             context = context,
             onUriRetrieved = { uri ->
-                uri?.let {
+                uri?.let { imageUri ->
+                    viewModel.updateImageUri(imageUri.toString())
                     viewModel.updateHasImage(true)
-                    viewModel.updateImageUri(it.toString())
                 }
             },
             modifier = modifier

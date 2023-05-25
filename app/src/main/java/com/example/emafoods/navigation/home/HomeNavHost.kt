@@ -8,7 +8,11 @@ import androidx.navigation.navigation
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.congratulation.navigation.congratulationScreen
 import com.example.emafoods.feature.addfood.presentation.congratulation.navigation.navigateToCongratulation
+import com.example.emafoods.feature.addfood.presentation.description.navigation.descriptionScreen
+import com.example.emafoods.feature.addfood.presentation.description.navigation.navigateToDescription
+import com.example.emafoods.feature.addfood.presentation.image.navigation.imageScreen
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.navigateToInsertFood
 import com.example.emafoods.feature.game.presentation.navigation.gameScreen
 import com.example.emafoods.feature.game.presentation.navigation.navigateToGame
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
@@ -31,23 +35,23 @@ fun HomeNavHost(
 
         navigation(
             route = HomeBottomDestination.AddFood.route,
-            startDestination = AddFoodDestinations.InsertFood.route
+            startDestination = AddFoodDestinations.Image.route
         ) {
-//            imageScreen(
-//                onHasImage = {
-//                    navController.navigateToDescription(
-//                        it.uriId
-//                    )
-//                }
-//            )
-//            descriptionScreen(
-//                onConfirmedClick = {
-//                    navController.navigateToInsertFood(
-//                        uriId = it.uri,
-//                        descriptionId = it.description
-//                    )
-//                },
-//            )
+            imageScreen(
+                onHasImage = { descriptionArguments ->
+                    navController.navigateToDescription(
+                        descriptionArguments.uri
+                    )
+                }
+            )
+            descriptionScreen(
+                onConfirmedClick = {
+                    navController.navigateToInsertFood(
+                        uriId = it.uri,
+                        descriptionId = it.description
+                    )
+                },
+            )
             insertFoodScreen(
                 onSuccess = {
                     navController.navigateToCongratulation()
