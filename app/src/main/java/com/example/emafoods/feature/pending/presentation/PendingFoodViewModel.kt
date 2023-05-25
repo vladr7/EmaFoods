@@ -2,6 +2,7 @@ package com.example.emafoods.feature.pending.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -60,22 +62,60 @@ class PendingFoodViewModel @Inject constructor(
     fun onSwipeLeft() {
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
-            deletePendingFoodUseCase.execute(foodMapper.mapToModel(currentFood))
-            refreshPendingFoodsUseCase.execute()
+            when(val result = deletePendingFoodUseCase.execute(foodMapper.mapToModel(currentFood))) {
+                is State.Failed -> {
+                    if (result.message.isNotEmpty()) _state.update {
+                        it.copy(error = result.message, showError = true)
+                    }
+                }
+
+                is State.Success -> {
+                    _state.update {
+                        it.copy(showDeleteSuccessfully = true)
+                    }
+                    launch {
+                        refreshPendingFoodsUseCase.execute()
+                    }
+                }
+            }
         }
     }
 
     fun onSwipeRight() {
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
-            movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))
-            addRewardToUserAcceptedRecipeUseCase.execute(foodMapper.mapToModel(currentFood))
-            launch {
-                refreshPendingFoodsUseCase.execute()
+            when (val result =
+                movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))) {
+                is State.Failed -> {
+                    if (result.message.isNotEmpty()) _state.update {
+                        it.copy(error = result.message, showError = true)
+                    }
+                }
+
+                is State.Success -> {
+                    _state.update {
+                        it.copy(showMovedSuccessfully = true)
+                    }
+                    addRewardToUserAcceptedRecipeUseCase.execute(foodMapper.mapToModel(currentFood))
+                    launch {
+                        refreshPendingFoodsUseCase.execute()
+                    }
+                    launch {
+                        refreshFoodsUseCase.execute()
+                    }
+                }
             }
-            launch {
-                refreshFoodsUseCase.execute()
-            }
+        }
+    }
+
+    fun onResetMessageStates() {
+        _state.update {
+            it.copy(
+                error = "",
+                showError = false,
+                showMovedSuccessfully = false,
+                showDeleteSuccessfully = false
+            )
         }
     }
 }
@@ -83,6 +123,9 @@ class PendingFoodViewModel @Inject constructor(
 data class PendingFoodState(
     val pendingFoods: List<FoodViewData> = emptyList(),
     val isLoading: Boolean = false,
+    val showError: Boolean = false,
     val error: String = "",
     val currentFood: FoodViewData = FoodViewData(),
+    val showMovedSuccessfully: Boolean = false,
+    val showDeleteSuccessfully: Boolean = false
 )
