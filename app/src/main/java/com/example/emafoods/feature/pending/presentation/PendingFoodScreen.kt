@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.pending.presentation
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -34,7 +35,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
@@ -71,19 +72,25 @@ fun PendingFoodRoute(
     viewModel: PendingFoodViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     PendingFoodScreen(
         modifier = modifier,
         food = state.currentFood,
+        error = state.error,
+        showError = state.showError,
         onSwipeLeft = {
             viewModel.onSwipeLeft()
-            Toast.makeText(context, "Delete", Toast.LENGTH_SHORT).show()
         },
         onSwipeRight = {
-            Toast.makeText(context, "Accept", Toast.LENGTH_SHORT).show()
             viewModel.onSwipeRight()
-        }
+        },
+        context = context,
+        onErrorShown = {
+            viewModel.onResetMessageStates()
+        },
+        showMovedSuccessfully = state.showMovedSuccessfully,
+        showDeletedSuccessfully = state.showDeleteSuccessfully,
     )
 }
 
@@ -93,7 +100,25 @@ fun PendingFoodScreen(
     food: FoodViewData,
     onSwipeLeft: () -> Unit,
     onSwipeRight: () -> Unit,
+    error: String,
+    context: Context,
+    showError: Boolean,
+    onErrorShown: () -> Unit,
+    showMovedSuccessfully: Boolean,
+    showDeletedSuccessfully: Boolean,
 ) {
+    if(showError) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        onErrorShown()
+    }
+    if(showMovedSuccessfully) {
+        Toast.makeText(context, "Reteta a fost acceptata!", Toast.LENGTH_SHORT).show()
+        onErrorShown()
+    }
+    if(showDeletedSuccessfully) {
+        Toast.makeText(context, "Reteta a fost respinsa!", Toast.LENGTH_SHORT).show()
+        onErrorShown()
+    }
     PendingFoodBackground(imageId = R.drawable.pendingbackground)
     Column(
         verticalArrangement = Arrangement.Center,
@@ -123,7 +148,7 @@ fun FoodItem(
     modifier: Modifier = Modifier,
 ) {
     val color by animateColorAsState(
-        targetValue = androidx.compose.material3.MaterialTheme.colorScheme.secondary
+        targetValue = MaterialTheme.colorScheme.secondary, label = ""
     )
 
     Card(
@@ -381,7 +406,7 @@ fun PendingFoodBackground(
     val gradient = Brush.verticalGradient(
         colors = listOf(
             Color.Transparent,
-            androidx.compose.material3.MaterialTheme.colorScheme.secondary
+            MaterialTheme.colorScheme.secondary
         ),
         startY = 900f,
         endY = sizeImage.height.toFloat(),
