@@ -40,7 +40,7 @@ fun HomeNavHost(
             imageScreen(
                 onHasImage = { descriptionArguments ->
                     navController.navigateToDescription(
-                        descriptionArguments.uri
+                        uriId = descriptionArguments?.uri ?: "empty"
                     )
                 }
             )
