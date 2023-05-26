@@ -1,13 +1,17 @@
 package com.example.emafoods.feature.addfood.presentation.insert
 
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
+import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,28 +23,46 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InsertFoodViewModel @Inject constructor(
-//    savedStateHandle: SavedStateHandle,
-//    stringDecoder: StringDecoder,
+    savedStateHandle: SavedStateHandle,
+    stringDecoder: StringDecoder,
     private val insertFoodUseCase: InsertFoodUseCase,
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
-    private val increaseXpUseCase: IncreaseXpUseCase
+    private val increaseXpUseCase: IncreaseXpUseCase,
+    private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase
 ) : BaseViewModel() {
 
-//    private val insertFoodArgs: InsertFoodArguments =
-//        InsertFoodArguments(savedStateHandle, stringDecoder)
-//    private val uriId = insertFoodArgs.uri
-//    private val descriptionId = insertFoodArgs.description
+    private val insertFoodArgs: InsertFoodArguments =
+        InsertFoodArguments(savedStateHandle, stringDecoder)
+    private val uriId = insertFoodArgs.uri
+    private val descriptionId = insertFoodArgs.description
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
     )
     val state: StateFlow<InsertFoodViewState> = _state
 
-//    init {
-//        _state.update {
-//            it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
-//        }
-//    }
+    init {
+        if(uriId == "empty") {
+            viewModelScope.launch {
+                when(val result = getTemporaryPendingImageUseCase.execute()) {
+                    is State.Failed -> {
+                        _state.update {
+                            it.copy(errorMessage = result.message, description = descriptionId)
+                        }
+                    }
+                    is State.Success -> {
+                        _state.update {
+                            it.copy(shouldAddImageFromTemporary = true, imageUri = result.data, description = descriptionId)
+                        }
+                    }
+                }
+            }
+        } else {
+            _state.update {
+                it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
+            }
+        }
+    }
 
     fun updateDescription(description: String) {
         _state.value = _state.value.copy(description = description)
@@ -71,7 +93,8 @@ class InsertFoodViewModel @Inject constructor(
                 food = Food(
                     description = description,
                 ),
-                fileUri = imageUri ?: Uri.EMPTY
+                fileUri = imageUri ?: Uri.EMPTY,
+                shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary
             )) {
                 is State.Failed -> _state.update {
                     it.copy(isLoading = false, errorMessage = result.message)
@@ -110,6 +133,12 @@ class InsertFoodViewModel @Inject constructor(
             increaseXpUseCase.execute(IncreaseXpActionType.ADD_RECIPE)
         }
     }
+
+    fun onSelectedNewImage() {
+        _state.update {
+            it.copy(shouldAddImageFromTemporary = false)
+        }
+    }
 }
 
 data class InsertFoodViewState(
@@ -118,4 +147,5 @@ data class InsertFoodViewState(
     val imageUri: Uri? = null,
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
+    val shouldAddImageFromTemporary: Boolean = false,
 ) : ViewState(isLoading, errorMessage)

@@ -1,30 +1,48 @@
 package com.example.emafoods.feature.addfood.presentation.image
 
+import android.net.Uri
+import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
+import com.example.emafoods.feature.addfood.domain.usecase.AddTemporaryPendingImageToRemoteStorageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddImageViewModel @Inject constructor(
-
-): BaseViewModel() {
+    private val addTemporaryPendingImageToRemoteStorageUseCase: AddTemporaryPendingImageToRemoteStorageUseCase,
+) : BaseViewModel() {
 
     private val _state = MutableStateFlow<ImageViewState>(ImageViewState())
     val state: StateFlow<ImageViewState> = _state
 
-    fun updateImageUri(imageUri: String) {
+    fun updateTakePictureImageUri(imageUri: String) {
         _state.update {
-            it.copy(imageUri = imageUri)
+            it.copy(takePictureUri = imageUri)
         }
     }
 
-    fun updateHasImage(hasImage: Boolean) {
+    fun updateHasTakePictureImage(hasImage: Boolean) {
         _state.update {
-            it.copy(hasImage = hasImage)
+            it.copy(hasTakePictureImage = hasImage)
+        }
+    }
+
+    fun addPendingImageToTemporarilySavedImages(imageUri: Uri) {
+        viewModelScope.launch {
+            addTemporaryPendingImageToRemoteStorageUseCase.execute(
+                food = Food(
+                    imageRef = imageUri.toString()
+                )
+            )
+        }
+        _state.update {
+            it.copy(hasChooseFilesImage = true)
         }
     }
 
@@ -56,6 +74,7 @@ class AddImageViewModel @Inject constructor(
 data class ImageViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
-    val hasImage: Boolean = false,
-    val imageUri: String = "",
+    val hasTakePictureImage: Boolean = false,
+    val hasChooseFilesImage: Boolean = false,
+    val takePictureUri: String = "",
 ) : ViewState(isLoading, errorMessage)

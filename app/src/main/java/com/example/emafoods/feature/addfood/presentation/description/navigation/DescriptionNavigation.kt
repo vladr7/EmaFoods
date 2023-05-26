@@ -10,11 +10,12 @@ import androidx.navigation.navArgument
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionRoute
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 
 const val UriIdArg = "UriIdArg"
 
 data class DescriptionArguments(
-    val uriId: String,
+    val uri: String,
 ) {
     constructor(savedStateHandle: SavedStateHandle, stringDecoder: StringDecoder) : this(
         stringDecoder.decodeString(
@@ -24,19 +25,20 @@ data class DescriptionArguments(
 }
 
 fun NavController.navigateToDescription(uriId: String) {
+    this.popBackStack()
     val uri = Uri.encode(uriId)
     this.navigate("${AddFoodDestinations.Description.route}/$uri")
 }
 
-//fun NavGraphBuilder.descriptionScreen(onConfirmedClick: (InsertFoodArguments) -> Unit) {
-fun NavGraphBuilder.descriptionScreen(onConfirmedClick: () -> Unit) {
+fun NavGraphBuilder.descriptionScreen(onConfirmedClick: (InsertFoodArguments) -> Unit) {
     composable(
         route = "${AddFoodDestinations.Description.route}/{$UriIdArg}",
         arguments = listOf(
-            navArgument(UriIdArg) { type = NavType.StringType },
+            navArgument(UriIdArg) {
+                type = NavType.StringType
+            },
         ),
     ) {
-//        DescriptionRoute(onConfirmedClick = onConfirmedClick)
-        DescriptionRoute()
+        DescriptionRoute(onConfirmedClick = onConfirmedClick)
     }
 }
