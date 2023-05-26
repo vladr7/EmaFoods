@@ -25,6 +25,7 @@ data class DescriptionArguments(
 }
 
 fun NavController.navigateToDescription(uriId: String) {
+    this.popBackStack()
     val uri = Uri.encode(uriId)
     this.navigate("${AddFoodDestinations.Description.route}/$uri")
 }
