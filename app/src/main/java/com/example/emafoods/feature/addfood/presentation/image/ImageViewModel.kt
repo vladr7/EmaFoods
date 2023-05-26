@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
-import com.example.emafoods.feature.addfood.domain.usecase.AddPendingImageToTemporaryRemoteStorageUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.AddTemporaryPendingImageToRemoteStorageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddImageViewModel @Inject constructor(
-    private val addPendingImageToTemporaryRemoteStorageUseCase: AddPendingImageToTemporaryRemoteStorageUseCase,
+    private val addTemporaryPendingImageToRemoteStorageUseCase: AddTemporaryPendingImageToRemoteStorageUseCase,
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<ImageViewState>(ImageViewState())
@@ -35,7 +35,7 @@ class AddImageViewModel @Inject constructor(
 
     fun addPendingImageToTemporarilySavedImages(imageUri: Uri) {
         viewModelScope.launch {
-            addPendingImageToTemporaryRemoteStorageUseCase.execute(
+            addTemporaryPendingImageToRemoteStorageUseCase.execute(
                 food = Food(
                     imageRef = imageUri.toString()
                 )

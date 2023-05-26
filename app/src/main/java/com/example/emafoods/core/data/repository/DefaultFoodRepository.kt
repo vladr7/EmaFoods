@@ -117,6 +117,10 @@ class DefaultFoodRepository @Inject constructor(
         return foodDataSource.getPendingFoodImageFromTemporaryStorage(authorUid = authorUid)
     }
 
+    override suspend fun moveTemporaryImageToPending(food: Food): State<Food> {
+        return foodDataSource.moveTemporaryImageToPending(food = food)
+    }
+
     override suspend fun deletePendingFood(food: Food): State<Food> {
         database.foodDao.deletePendingFood(id = food.id)
         foodDataSource.deletePendingFood(food = food)
