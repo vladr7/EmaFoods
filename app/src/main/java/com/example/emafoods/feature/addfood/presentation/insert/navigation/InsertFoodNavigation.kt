@@ -32,6 +32,7 @@ class InsertFoodArguments(
 }
 
 fun NavController.navigateToInsertFood(uriId: String, descriptionId: String) {
+    this.popBackStack()
     val uri = Uri.encode(uriId)
     val description = Uri.encode(descriptionId)
     this.navigate("${AddFoodDestinations.InsertFood.route}/$uri&$description")
