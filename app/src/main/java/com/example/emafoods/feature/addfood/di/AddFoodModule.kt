@@ -4,10 +4,11 @@ import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToMainListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToPendingListUseCase
-import com.example.emafoods.feature.addfood.domain.usecase.AddPendingImageToTemporaryRemoteStorageUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.AddTemporaryPendingImageToRemoteStorageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.CheckFieldsAreFilledUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.MoveTempImageToPendingUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,16 +43,18 @@ object AddFoodModule {
 
     @Provides
     fun provideAddFoodToPendingListUseCase(
-        foodRepository: FoodRepository
+        foodRepository: FoodRepository,
+        moveTempImageToPendingUseCase: MoveTempImageToPendingUseCase
     ) = AddFoodToPendingListUseCase(
-        foodRepository = foodRepository
+        foodRepository = foodRepository,
+        moveTempImageToPendingUseCase = moveTempImageToPendingUseCase
     )
 
     @Provides
-    fun provideAddPendingImageToTemporaryRemoteStorageUseCase(
+    fun provideAddTemporaryPendingImageToRemoteStorageUseCase(
         foodRepository: FoodRepository,
         getUserDetailsUseCase: GetUserDetailsUseCase
-    ) = AddPendingImageToTemporaryRemoteStorageUseCase(
+    ) = AddTemporaryPendingImageToRemoteStorageUseCase(
         foodRepository = foodRepository,
         getUserDetailsUseCase = getUserDetailsUseCase
     )
@@ -63,5 +66,12 @@ object AddFoodModule {
     ) = GetTemporaryPendingImageUseCase(
         foodRepository = foodRepository,
         getUserDetailsUseCase = getUserDetailsUseCase
+    )
+
+    @Provides
+    fun provideMoveTempImageToPendingUseCase(
+        foodRepository: FoodRepository,
+    ) = MoveTempImageToPendingUseCase(
+        foodRepository = foodRepository,
     )
 }

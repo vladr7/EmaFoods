@@ -74,7 +74,10 @@ fun InsertFoodRoute(
                     imageUri = state.imageUri
                 )
             },
-            onUriChanged = { viewModel.updateImageUri(it) },
+            onUriChanged = {
+                viewModel.onSelectedNewImage()
+                viewModel.updateImageUri(it)
+            },
             loading = state.isLoading
         )
     }

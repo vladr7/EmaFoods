@@ -5,7 +5,7 @@ import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import javax.inject.Inject
 
-class AddPendingImageToTemporaryRemoteStorageUseCase @Inject constructor(
+class AddTemporaryPendingImageToRemoteStorageUseCase @Inject constructor(
     private val foodRepository: FoodRepository,
     private val getUserDetailsUseCase: GetUserDetailsUseCase
 ) {

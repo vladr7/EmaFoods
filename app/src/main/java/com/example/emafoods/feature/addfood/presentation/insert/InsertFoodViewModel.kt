@@ -47,12 +47,12 @@ class InsertFoodViewModel @Inject constructor(
                 when(val result = getTemporaryPendingImageUseCase.execute()) {
                     is State.Failed -> {
                         _state.update {
-                            it.copy(errorMessage = result.message)
+                            it.copy(errorMessage = result.message, description = descriptionId)
                         }
                     }
                     is State.Success -> {
                         _state.update {
-                            it.copy(imageUri = result.data)
+                            it.copy(shouldAddImageFromTemporary = true, imageUri = result.data, description = descriptionId)
                         }
                     }
                 }
@@ -93,7 +93,8 @@ class InsertFoodViewModel @Inject constructor(
                 food = Food(
                     description = description,
                 ),
-                fileUri = imageUri ?: Uri.EMPTY
+                fileUri = imageUri ?: Uri.EMPTY,
+                shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary
             )) {
                 is State.Failed -> _state.update {
                     it.copy(isLoading = false, errorMessage = result.message)
@@ -132,6 +133,12 @@ class InsertFoodViewModel @Inject constructor(
             increaseXpUseCase.execute(IncreaseXpActionType.ADD_RECIPE)
         }
     }
+
+    fun onSelectedNewImage() {
+        _state.update {
+            it.copy(shouldAddImageFromTemporary = false)
+        }
+    }
 }
 
 data class InsertFoodViewState(
@@ -140,4 +147,5 @@ data class InsertFoodViewState(
     val imageUri: Uri? = null,
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
+    val shouldAddImageFromTemporary: Boolean = false,
 ) : ViewState(isLoading, errorMessage)
