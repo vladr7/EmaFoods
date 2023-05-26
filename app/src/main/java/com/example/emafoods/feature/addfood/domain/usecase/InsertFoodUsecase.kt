@@ -14,7 +14,7 @@ class InsertFoodUseCase @Inject constructor(
     private val addFoodToPendingListUseCase: AddFoodToPendingListUseCase,
 ) {
 
-    suspend fun execute(food: Food, fileUri: Uri): State<Food> {
+    suspend fun execute(food: Food, fileUri: Uri, shouldAddImageFromTemporary: Boolean): State<Food> {
         if(!checkFieldsAreFilledUseCase.execute(food.description)) {
             return State.failed("Te rog adauga o scurta descriere a retetei (minim 10 caractere)")
         }
@@ -34,7 +34,7 @@ class InsertFoodUseCase @Inject constructor(
         // todo check for level insted of thid -> deprecated
         return when(user.userType) {
             UserType.BASIC -> {
-                addFoodToPendingListUseCase.execute(newFood)
+                addFoodToPendingListUseCase.execute(newFood, shouldAddImageFromTemporary)
             }
             UserType.ADMIN -> {
                 addFoodToMainListUseCase.execute(newFood, fileUri)

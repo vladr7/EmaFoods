@@ -5,6 +5,7 @@ import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.data.models.FoodImage
 import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.models.State
+import com.google.android.gms.tasks.Continuation
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ class DefaultFoodDataSource : FoodDataSource {
         const val FIRESTORE_PENDING_FOODS_COLLECTION = "PENDINGFOODS"
         const val STORAGE_FOODS = "ALLFOODS"
         const val STORAGE_PENDING_FOODS = "PENDINGFOODS"
+        const val STORAGE_PENDING_FOODS_TEMPORARY_FOLDER = "TEMPORARY"
         const val FIREBASE_BUCKET_NAME = "emafoods-16e9e.appspot.com"
     }
 
@@ -217,6 +219,78 @@ class DefaultFoodDataSource : FoodDataSource {
             State.success(food)
         } else {
             State.Failed("Could not add food image to storage")
+        }
+    }
+
+    override suspend fun addPendingFoodImageByteArrayToStorage(
+        food: Food,
+        data: ByteArray
+    ): State<Food> {
+        val extension = ".jpg"
+        val refStorage =
+            FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/${food.id}$extension")
+        val task = refStorage.putBytes(data)
+        task.await()
+        return if (task.isSuccessful) {
+            State.success(food)
+        } else {
+            State.Failed("Could not add food image to storage")
+        }
+    }
+
+    override suspend fun addPendingFoodImageToTemporaryStorage(food: Food): State<Food> {
+        val fileUri = Uri.parse(food.imageRef)
+        val extension = ".jpg"
+        val refStorage =
+            FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/$STORAGE_PENDING_FOODS_TEMPORARY_FOLDER/${food.authorUid}$extension")
+        val task = refStorage.delete().continueWithTask(Continuation {
+            refStorage.putFile(fileUri)
+        })
+        task.await()
+        return if (task.isSuccessful) {
+            State.success(food)
+        } else {
+            State.Failed("Could not add food image to temporary storage")
+        }
+    }
+
+    override suspend fun getPendingFoodImageFromTemporaryStorage(authorUid: String): State<Uri> {
+        val extension = ".jpg"
+        return try {
+            val refStorage =
+                FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/$STORAGE_PENDING_FOODS_TEMPORARY_FOLDER/$authorUid$extension")
+            val task = refStorage.downloadUrl
+            task.await()
+
+            if (task.isSuccessful) {
+                State.success(task.result)
+            } else {
+                State.Failed("Could not get food image from temporary storage")
+            }
+        } catch (e: Exception) {
+            State.Failed("Could not get food image from temporary storage")
+        }
+    }
+
+    override suspend fun moveTemporaryImageToPending(food: Food): State<Food> {
+        val extension = ".jpg"
+        val refStorage =
+            FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/$STORAGE_PENDING_FOODS_TEMPORARY_FOLDER/${food.authorUid}$extension")
+        val data = refStorage.getBytes(5096 * 5096).await()
+        addPendingFoodImageByteArrayToStorage(food, data)
+        return deleteTemporaryFoodImage(food)
+    }
+
+    private suspend fun deleteTemporaryFoodImage(food: Food): State<Food> {
+        val extension = ".jpg"
+        val refStorage =
+            FirebaseStorage.getInstance().reference.child("$STORAGE_PENDING_FOODS/$STORAGE_PENDING_FOODS_TEMPORARY_FOLDER/${food.authorUid}$extension")
+        val task = refStorage.delete()
+        task.await()
+        return if (task.isSuccessful) {
+            State.success(food)
+        } else {
+            State.Failed("Could not delete food image from temporary storage")
         }
     }
 }

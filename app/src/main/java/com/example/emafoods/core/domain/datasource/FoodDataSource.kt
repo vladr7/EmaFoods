@@ -18,6 +18,14 @@ interface FoodDataSource {
 
     suspend fun addPendingFoodImageToStorage(food: Food): State<Food>
 
+    suspend fun addPendingFoodImageByteArrayToStorage(food: Food, data: ByteArray): State<Food>
+
+    suspend fun addPendingFoodImageToTemporaryStorage(food: Food): State<Food>
+
+    suspend fun getPendingFoodImageFromTemporaryStorage(authorUid: String): State<Uri>
+
+    suspend fun moveTemporaryImageToPending(food: Food): State<Food>
+
     fun getAllFoods(): Flow<List<Food>>
 
     fun getAllFoodImages(): Flow<List<FoodImage>>
