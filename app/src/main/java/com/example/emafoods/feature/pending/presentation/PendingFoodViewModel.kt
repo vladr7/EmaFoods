@@ -64,9 +64,7 @@ class PendingFoodViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             when(val result = deletePendingFoodUseCase.execute(foodMapper.mapToModel(currentFood))) {
                 is State.Failed -> {
-                    if (result.message.isNotEmpty()) _state.update {
-                        it.copy(error = result.message, showError = true)
-                    }
+
                 }
 
                 is State.Success -> {
@@ -87,9 +85,7 @@ class PendingFoodViewModel @Inject constructor(
             when (val result =
                 movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))) {
                 is State.Failed -> {
-                    if (result.message.isNotEmpty()) _state.update {
-                        it.copy(error = result.message, showError = true)
-                    }
+
                 }
 
                 is State.Success -> {

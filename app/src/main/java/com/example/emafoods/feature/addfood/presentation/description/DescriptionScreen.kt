@@ -113,8 +113,8 @@ fun DescriptionScreenInput(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(0.5f)
-            .padding(top = 0.dp, start = 24.dp, end = 24.dp, bottom = 16.dp),
-    ) {
+            .padding(top = 0.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
+        ) {
         OutlinedTextField(
             value = description,
             onValueChange = {
