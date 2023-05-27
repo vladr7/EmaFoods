@@ -37,11 +37,9 @@ import coil.request.ImageRequest
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.LoadingButton
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
-import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
-import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 
 
@@ -56,10 +54,6 @@ fun InsertFoodRoute(
 
     if (state.insertFoodSuccess) {
         viewModel.onXpIncrease()
-        XpIncreaseToast(
-            increaseXpActionType = IncreaseXpActionType.ADD_RECIPE,
-            context = context
-        )
         viewModel.resetState()
         onSuccess()
     } else {
