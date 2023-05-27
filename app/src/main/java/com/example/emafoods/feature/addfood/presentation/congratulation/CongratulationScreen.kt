@@ -34,12 +34,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
@@ -70,8 +67,12 @@ fun CongratulationScreen(
     onMessagesShown: () -> Unit,
     context: Context,
 ) {
-    if(showMessage) {
-        Toast.makeText(context, stringResource(id = R.string.recipe_added_on_the_waiting_list), Toast.LENGTH_SHORT).show()
+    if (showMessage) {
+        Toast.makeText(
+            context,
+            stringResource(id = R.string.recipe_added_on_the_waiting_list),
+            Toast.LENGTH_SHORT
+        ).show()
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.ADD_RECIPE,
             context = context
@@ -83,10 +84,14 @@ fun CongratulationScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
-        CongratulationsAnimation(
+        LottieAnimationContent(
             modifier = Modifier
                 .fillMaxSize()
-                .align(Alignment.Center)
+                .align(Alignment.Center),
+            animationId = R.raw.congratulationanimation,
+            speed = 1f,
+            iterations = LottieConstants.IterateForever
+
         )
         InsertNewFoodButton(
             modifier = Modifier
@@ -124,23 +129,6 @@ fun InsertNewFoodButton(
             )
         }
     }
-}
-
-@Composable
-fun CongratulationsAnimation(
-    modifier: Modifier = Modifier,
-) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.congratulationanimation))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever,
-        speed = 1f
-    )
-    LottieAnimation(
-        modifier = modifier,
-        composition = composition,
-        progress = { progress },
-    )
 }
 
 @Composable
