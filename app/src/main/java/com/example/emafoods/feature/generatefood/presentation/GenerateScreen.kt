@@ -1,9 +1,6 @@
 package com.example.emafoods.feature.generatefood.presentation
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -61,6 +58,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.extension.restartApp
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
@@ -95,14 +93,7 @@ fun GenerateScreenRoute(
         newLevel = state.newLevel,
         onDismissLevelUp = {
             viewModel.onDismissLevelUp()
-            val packageManager: PackageManager = context.packageManager
-            val intent: Intent? = packageManager.getLaunchIntentForPackage(context.packageName)
-            val componentName: ComponentName? = intent?.component
-            componentName?.let {
-                val restartIntent: Intent = Intent.makeRestartActivityTask(componentName)
-                context.startActivity(restartIntent)
-                Runtime.getRuntime().exit(0)
-            }
+            context.restartApp()
         },
         showRewardsAlert = state.showRewardsAlert,
         nrOfRewards = state.nrOfRewards,
