@@ -127,7 +127,7 @@ fun GenerateScreen(
             onDismiss = onDismissRewardsAlert
         )
     }
-    if (leveledUpEvent) {
+    if (leveledUpEvent && !showRewardsAlert) {
         LevelUpDialog(
             newLevel = newLevel,
             onDismiss = onDismissLevelUp,

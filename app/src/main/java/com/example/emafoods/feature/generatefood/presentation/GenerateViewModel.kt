@@ -46,7 +46,7 @@ class GenerateViewModel @Inject constructor(
         viewModelScope.launch {
             val rewards = getUserRewardsUseCase.execute().toInt()
             if (rewards != 0) {
-                onXpIncrease(customXp = rewards)
+                onXpIncrease(nrOfRewards = rewards)
                 _state.update {
                     it.copy(
                         showRewardsAlert = true,
@@ -76,10 +76,10 @@ class GenerateViewModel @Inject constructor(
         }
     }
 
-    fun onXpIncrease(customXp: Int? = null) {
+    fun onXpIncrease(nrOfRewards: Int? = null) {
         viewModelScope.launch {
-            val increaseXpActionType = customXp?.let { IncreaseXpActionType.RECIPE_ACCEPTED } ?: IncreaseXpActionType.GENERATE_RECIPE
-            when (val result = increaseXpUseCase.execute(increaseXpActionType, customXp ?: 0)) {
+            val increaseXpActionType = nrOfRewards?.let { IncreaseXpActionType.RECIPE_ACCEPTED } ?: IncreaseXpActionType.GENERATE_RECIPE
+            when (val result = increaseXpUseCase.execute(increaseXpActionType, nrOfRewards ?: 0)) {
                 is IncreaseXpResult.ExceededUnspentThreshold -> {
                     _state.update {
                         it.copy(
