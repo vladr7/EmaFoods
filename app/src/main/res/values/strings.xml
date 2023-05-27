@@ -18,4 +18,5 @@
     <string name="your_recipe_has_been_accepted">Ti-a fost acceptata %1$s reteta! 🥳 Ai primit %2$s XP!</string>
     <string name="your_receipes_have_been_accepted">Ti-au fost acceptate %1$s retete! 🥳 Ai primit %2$s XP!</string>
     <string name="for_the_moment_there_are_no_more_pending_foods">Momentan nu mai sunt retete in asteptare :D</string>
+    <string name="recipe_added_on_the_waiting_list">Reteta a fost adaugata in lista de asteptare</string>
 </resources>
