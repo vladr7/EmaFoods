@@ -11,7 +11,7 @@ class GetFilteredPendingFoodsUseCase @Inject constructor(
     private val getUserDetailsUseCase: GetUserDetailsUseCase
 ) {
 
-    fun execute() : Flow<List<Food>> {
+    suspend fun execute() : Flow<List<Food>> {
         val userUid = getUserDetailsUseCase.execute().uid
         return getAllPendingFoodsUseCase.execute().map { foods ->
             foods.filter { it.authorUid != userUid }

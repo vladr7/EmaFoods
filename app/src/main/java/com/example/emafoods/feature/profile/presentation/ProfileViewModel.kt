@@ -34,11 +34,13 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun getUserName() {
-        val userDetails = getUserDetailsUseCase.execute()
-        _state.update {
-            it.copy(
-                userName = userDetails.displayName.capitalizeWords()
-            )
+        viewModelScope.launch {
+            val userDetails = getUserDetailsUseCase.execute()
+            _state.update {
+                it.copy(
+                    userName = userDetails.displayName.capitalizeWords()
+                )
+            }
         }
     }
 
@@ -135,7 +137,7 @@ data class ProfileViewState(
     val showSignOutAlert: Boolean = false,
     val userName: String = "",
     val showXpIncreaseToast: Boolean = false,
-    val xpIncreased: Int = 0,
+    val xpIncreased: Long = 0,
     val streaks: Int = 1,
     val leveledUpEvent: Boolean = false,
     val newLevel: UserLevel? = null,

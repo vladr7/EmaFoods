@@ -14,34 +14,40 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val authService: AuthService,
-    private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase
+    private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase,
 ): ViewModel() {
 
     private val _state = MutableStateFlow<MainViewState>(MainViewState())
     val state: StateFlow<MainViewState> = _state
 
     init {
-        checkIfUserIsSignedIn()
-        checkUserLevel()
+        checkUserState()
     }
 
-    private fun checkUserLevel() {
+    private fun checkUserState() {
         viewModelScope.launch {
             val userLevel = getUserGameDetailsUseCase.execute().userLevel
+            val isUserSignedIn = authService.isUserSignedIn()
+            val userSignInState = if (isUserSignedIn) {
+                UserSignInState.SIGNED_IN
+            } else {
+                UserSignInState.NOT_SIGNED_IN
+            }
             _state.value = _state.value.copy(
-                userLevel = userLevel
+                userLevel = userLevel,
+                userSignInState = userSignInState
             )
         }
-    }
-
-    private fun checkIfUserIsSignedIn() {
-        _state.value = _state.value.copy(
-            isUserSignedIn = authService.isUserSignedIn()
-        )
     }
 }
 
 data class MainViewState(
-    val isUserSignedIn: Boolean = false,
+    val userSignInState: UserSignInState = UserSignInState.LOADING,
     val userLevel: UserLevel = UserLevel.LEVEL_1
 )
+
+enum class UserSignInState {
+    SIGNED_IN,
+    NOT_SIGNED_IN,
+    LOADING
+}

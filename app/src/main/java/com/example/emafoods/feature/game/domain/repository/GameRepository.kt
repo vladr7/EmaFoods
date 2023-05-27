@@ -9,10 +9,11 @@ interface GameRepository {
     fun listOfXpActions(): List<String>
     suspend fun storeUserLevel(userLevel: UserLevel)
     fun levelPermissions(): List<LevelPermission>
-    suspend fun storeUserXP(xp: Int)
+    suspend fun storeUserXP(xp: Long)
+    suspend fun refreshUserXP()
     suspend fun userDetails(): UserGameDetails
-    suspend fun storeXpToUnspent(xp: Int)
-    suspend fun unspentUserXP(): Int
+    suspend fun storeXpToUnspent(xp: Long)
+    suspend fun unspentUserXP(): Long
     suspend fun resetUnspentXp()
     suspend fun consecutiveDaysAppOpened(): Int
     suspend fun updateConsecutiveDaysAppOpened()

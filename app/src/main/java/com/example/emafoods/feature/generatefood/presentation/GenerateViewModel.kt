@@ -143,7 +143,7 @@ data class GenerateViewState(
     val isNetworkAvailable: Boolean? = null,
     val foodHasBeenGenerated: Boolean = false,
     val showXpIncreaseToast: Boolean = false,
-    val xpIncreased: Int = 0,
+    val xpIncreased: Long = 0,
     val leveledUpEvent: Boolean = false,
     val newLevel: UserLevel? = null,
     val appOpenedToday: Boolean = true,

@@ -12,7 +12,7 @@ fun XpIncreaseToast(
     increaseXpActionType: IncreaseXpActionType,
     onToastShown: () -> Unit = {},
     context: Context,
-    customXP: Int = 0
+    customXP: Long = 0
 ) {
     when(increaseXpActionType) {
         IncreaseXpActionType.GENERATE_RECIPE -> {

@@ -75,5 +75,5 @@ data class ViewDataLevelPermission(
     val level: UserLevel,
     val permissions: List<Permission>,
     val hasAccess: Boolean,
-    val remainingXp: Int
+    val remainingXp: Long
 )
