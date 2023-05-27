@@ -24,4 +24,6 @@ interface GameDataSource {
     suspend fun resetUserRewards()
     suspend fun lastTimeUserOpenedApp(): Long
     suspend fun updateLastTimeUserOpenedApp()
+    suspend fun getLastTimeUserReviewedApp(): Long
+    suspend fun updateLastTimeUserReviewedApp()
 }

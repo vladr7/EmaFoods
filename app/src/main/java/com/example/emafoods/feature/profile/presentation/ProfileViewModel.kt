@@ -5,8 +5,10 @@ import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.extension.capitalizeWords
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.feature.game.domain.model.UserLevel
+import com.example.emafoods.feature.game.domain.usecase.CheckXNrOfDaysPassedSinceLastReviewUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserReviewedUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
 import com.example.emafoods.feature.profile.domain.usecase.SignOutUseCase
@@ -22,7 +24,9 @@ class ProfileViewModel @Inject constructor(
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val increaseXpUseCase: IncreaseXpUseCase,
-    private val consecutiveDaysAppOpenedUseCase: GetConsecutiveDaysAppOpenedUseCase
+    private val consecutiveDaysAppOpenedUseCase: GetConsecutiveDaysAppOpenedUseCase,
+    private val checkXNrOfDaysPassedSinceLastReviewUseCase: CheckXNrOfDaysPassedSinceLastReviewUseCase,
+    private val updateLastTimeUserReviewedUseCase: UpdateLastTimeUserReviewedUseCase
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<ProfileViewState>(ProfileViewState())
@@ -82,31 +86,34 @@ class ProfileViewModel @Inject constructor(
 
     override fun onXpIncrease() {
         viewModelScope.launch {
-            when (val result = increaseXpUseCase.execute(IncreaseXpActionType.ADD_REVIEW)) {
-                is IncreaseXpResult.ExceededUnspentThreshold -> {
-                    _state.update {
-                        it.copy(
-                            showXpIncreaseToast = true,
-                            xpIncreased = result.data
-                        )
+            if(checkXNrOfDaysPassedSinceLastReviewUseCase.execute(7)) {
+                updateLastTimeUserReviewedUseCase.execute()
+                when (val result = increaseXpUseCase.execute(IncreaseXpActionType.ADD_REVIEW)) {
+                    is IncreaseXpResult.ExceededUnspentThreshold -> {
+                        _state.update {
+                            it.copy(
+                                showXpIncreaseToast = true,
+                                xpIncreased = result.data
+                            )
+                        }
                     }
-                }
 
-                is IncreaseXpResult.NotExceededUnspentThreshold -> {
-                    _state.update {
-                        it.copy(
-                            showXpIncreaseToast = false,
-                            xpIncreased = 0
-                        )
+                    is IncreaseXpResult.NotExceededUnspentThreshold -> {
+                        _state.update {
+                            it.copy(
+                                showXpIncreaseToast = false,
+                                xpIncreased = 0
+                            )
+                        }
                     }
-                }
 
-                is IncreaseXpResult.LeveledUp -> {
-                    _state.update {
-                        it.copy(
-                            leveledUpEvent = true,
-                            newLevel = result.levelAcquired
-                        )
+                    is IncreaseXpResult.LeveledUp -> {
+                        _state.update {
+                            it.copy(
+                                leveledUpEvent = true,
+                                newLevel = result.levelAcquired
+                            )
+                        }
                     }
                 }
             }

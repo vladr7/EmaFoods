@@ -10,6 +10,7 @@ import com.example.emafoods.feature.game.domain.repository.GameRepository
 import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
 import com.example.emafoods.feature.game.domain.usecase.CalculateUserLevelFromXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckUserLeveledUpUseCase
+import com.example.emafoods.feature.game.domain.usecase.CheckXNrOfDaysPassedSinceLastReviewUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetNextLevelUseCase
@@ -27,6 +28,7 @@ import com.example.emafoods.feature.game.domain.usecase.StoreUserLevelUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserOpenedAppUseCase
+import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserReviewedUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -233,5 +235,21 @@ object GameModule {
     @Singleton
     fun provideCalculateUserLevelFromXpUseCase(
     ) = CalculateUserLevelFromXpUseCase(
+    )
+
+    @Provides
+    @Singleton
+    fun provideCheckXNrOfDaysPassedSinceLastReviewUseCase(
+        gameRepository: GameRepository
+    ) = CheckXNrOfDaysPassedSinceLastReviewUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideUpdateLastTimeUserReviewedUseCase(
+        gameRepository: GameRepository
+    ) = UpdateLastTimeUserReviewedUseCase(
+        gameRepository = gameRepository
     )
 }

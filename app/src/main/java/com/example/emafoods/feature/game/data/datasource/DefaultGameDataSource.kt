@@ -111,6 +111,15 @@ class DefaultGameDataSource @Inject constructor(
         localStorage.putLong(LocalStorageKeys.LAST_TIME_OPENED_APP, System.currentTimeMillis())
     }
 
+    override suspend fun getLastTimeUserReviewedApp(): Long {
+        return localStorage.getLong(LocalStorageKeys.LAST_TIME_USER_REVIEWED_APP, defaultValue = 0L)
+    }
+
+    override suspend fun updateLastTimeUserReviewedApp() {
+        localStorage.putLong(LocalStorageKeys.LAST_TIME_USER_REVIEWED_APP, System.currentTimeMillis())
+    }
+
+
     override suspend fun storeUserXP(xp: Long) {
         val currentXp = userXP()
         val xpToBeStored = currentXp + xp
