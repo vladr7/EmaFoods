@@ -1,6 +1,9 @@
 package com.example.emafoods.feature.game.presentation
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.AlertDialog
@@ -261,22 +266,54 @@ fun LevelList(
     onLevelClick: (ViewDataLevelPermission) -> Unit,
     levelDataList: List<ViewDataLevelPermission>
 ) {
-    Column(
+    Box(
         modifier = modifier
             .height(400.dp)
             .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
     ) {
-        levelDataList.forEach { level ->
-            LevelItem(
-                modifier = modifier,
-                levelData = level,
-                onLevelClick = onLevelClick
-            )
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = modifier
+                .verticalScroll(scrollState),
+        ) {
+            levelDataList.forEach { level ->
+                LevelItem(
+                    modifier = modifier,
+                    levelData = level,
+                    onLevelClick = onLevelClick
+                )
+            }
         }
+            ScrollArrow(
+                modifier = modifier
+                    .offset(y = 16.dp)
+                    .align(Alignment.BottomCenter)
+                    .padding(top = 16.dp)
+                    .alpha(0.8f)
+                    .size(64.dp),
+                visible = scrollState.value == 0
+            )
     }
 }
 
+@Composable
+fun ScrollArrow(
+    modifier: Modifier,
+    visible: Boolean = false
+) {
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically(),
+        exit = slideOutVertically(),
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = "",
+            tint = MaterialTheme.colorScheme.onSecondary
+        )
+    }
+}
 
 @Composable
 fun GameHeader(
