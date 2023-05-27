@@ -81,5 +81,11 @@ class DefaultGameRepository @Inject constructor(
         gameDataSource.updateLastTimeUserOpenedApp()
     }
 
+    override suspend fun getLastTimeUserReviewedApp(): Long {
+        return gameDataSource.getLastTimeUserReviewedApp()
+    }
 
+    override suspend fun updateLastTimeUserReviewedApp() {
+        gameDataSource.updateLastTimeUserReviewedApp()
+    }
 }
