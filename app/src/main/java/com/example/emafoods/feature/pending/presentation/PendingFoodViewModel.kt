@@ -62,10 +62,13 @@ class PendingFoodViewModel @Inject constructor(
     fun onSwipeLeft() {
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
-            when(val result = deletePendingFoodUseCase.execute(foodMapper.mapToModel(currentFood))) {
-                is State.Failed -> {
-
+            if(state.value.pendingFoods.isNotEmpty()) {
+                _state.update {
+                    it.copy(showMovedSuccessfully = true)
                 }
+            }
+            when(val result = deletePendingFoodUseCase.execute(foodMapper.mapToModel(currentFood))) {
+                is State.Failed -> {}
 
                 is State.Success -> {
                     _state.update {
@@ -82,16 +85,16 @@ class PendingFoodViewModel @Inject constructor(
     fun onSwipeRight() {
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
+            if(state.value.pendingFoods.isNotEmpty()) {
+                _state.update {
+                    it.copy(showMovedSuccessfully = true)
+                }
+            }
             when (val result =
                 movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))) {
-                is State.Failed -> {
-
-                }
+                is State.Failed -> {}
 
                 is State.Success -> {
-                    _state.update {
-                        it.copy(showMovedSuccessfully = true)
-                    }
                     addRewardToUserAcceptedRecipeUseCase.execute(foodMapper.mapToModel(currentFood))
                     launch {
                         refreshPendingFoodsUseCase.execute()
