@@ -1,11 +1,11 @@
 package com.example.emafoods.feature.game.domain.model
 
-enum class UserLevel(val string: String, val xp: Int) {
-    LEVEL_1(string = "LEVEL_1", xp = 0), // pleb
-    LEVEL_2(string = "LEVEL_2", xp = 10000), // read all list
-    LEVEL_3(string = "LEVEL_3", xp = 20000), // add/ decline
-    LEVEL_4(string = "LEVEL_4", xp = 30000), // edit pending food before added
-    LEVEL_5(string = "LEVEL_5", xp = 100000),;  // suprize
+enum class UserLevel(val string: String, val xp: Int, val uiString: String) {
+    LEVEL_1(string = "LEVEL_1", uiString = "Nivel 1", xp = 0), // pleb
+    LEVEL_2(string = "LEVEL_2", uiString = "Nivel 2", xp = 10000), // read all list
+    LEVEL_3(string = "LEVEL_3", uiString = "Nivel 3", xp = 20000), // add/ decline
+    LEVEL_4(string = "LEVEL_4", uiString = "Nivel 4", xp = 30000), // edit pending food before added
+    LEVEL_5(string = "LEVEL_5", uiString = "Nivel 5", xp = 100000), ;  // suprize
 
     companion object {
         fun fromString(userLevelString: String): UserLevel =
@@ -19,7 +19,6 @@ enum class UserLevel(val string: String, val xp: Int) {
                     throw IllegalArgumentException("UserLevel not found")
                 }
             }
-
     }
 }
 

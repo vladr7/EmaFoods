@@ -42,7 +42,7 @@ class GameViewModel @Inject constructor(
             _state.update {
                 it.copy(
                     userName = userDetails.displayName.capitalizeWords(),
-                    userLevel = userGameDetails.userLevel.string,
+                    userLevel = userGameDetails.userLevel.uiString,
                     listOfXpActions = listOfXpActions,
                     listOfLevelPermission = levelPermissions
                 )
