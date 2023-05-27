@@ -123,14 +123,14 @@ fun DescriptionScreenInput(
                 }
             },
             label = {
-                if (description.isEmpty()) {
+                if (description.length <= 10) {
                     Text(
-                        text = stringResource(id = R.string.description_empty_input_label_text),
+                        text = stringResource(id = R.string.description_empty_input_label_text_min_chars),
                         color = MaterialTheme.colorScheme.onSecondary,
                     )
                 } else {
                     Text(
-                        text = stringResource(id = R.string.description_input_label_text),
+                        text = stringResource(id = R.string.description_empty_input_label_text),
                         color = MaterialTheme.colorScheme.onSecondary,
                     )
                 }
