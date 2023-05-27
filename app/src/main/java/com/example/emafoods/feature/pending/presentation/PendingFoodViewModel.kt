@@ -24,6 +24,7 @@ import javax.inject.Inject
 class PendingFoodViewModel @Inject constructor(
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
     private val getAllPendingFoodsUseCase: GetAllPendingFoodsUseCase,
+//    private val getFilteredPendingFoodsUseCase: GetFilteredPendingFoodsUseCase, // todo uncomment
     private val deletePendingFoodUseCase: DeletePendingFoodUseCase,
     private val refreshFoodsUseCase: RefreshFoodsUseCase,
     private val movePendingFoodToAllFoodsUseCase: MovePendingFoodToAllFoodsUseCase,
