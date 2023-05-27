@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
@@ -191,11 +193,19 @@ fun AddImageOptions(
     Box(
         modifier = modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
     ) {
+        LottieAnimationContent(
+            animationId = R.raw.addimageplant,
+            modifier = modifier
+                .size(250.dp)
+                .align(Alignment.BottomStart)
+                .padding(bottom = 16.dp)
+                .offset(x = (-20).dp)
+        )
         Column(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(16.dp)
+                .align(Alignment.BottomEnd),
         ) {
             AttachFileIcon(
                 onUriRetrieved = onChoosePictureUriRetrieved
@@ -225,7 +235,7 @@ fun AttachFileIcon(
         imageVector = Icons.Filled.AttachFile, contentDescription = null,
         modifier = modifier
             .padding(16.dp)
-            .size(150.dp)
+            .size(80.dp)
             .bounceClick()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -257,7 +267,7 @@ fun TakePictureIcon(
         contentDescription = null,
         modifier = modifier
             .padding(16.dp)
-            .size(150.dp)
+            .size(80.dp)
             .bounceClick()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },

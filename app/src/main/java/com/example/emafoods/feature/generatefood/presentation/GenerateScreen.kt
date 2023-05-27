@@ -92,6 +92,7 @@ fun GenerateScreenRoute(
         newLevel = state.newLevel,
         onDismissLevelUp = {
             viewModel.onDismissLevelUp()
+            // todo: restart app
 //            context.restartApp()
         },
         showRewardsAlert = state.showRewardsAlert,
