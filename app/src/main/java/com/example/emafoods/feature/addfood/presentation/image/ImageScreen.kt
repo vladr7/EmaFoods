@@ -10,13 +10,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,59 +51,97 @@ import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
+import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
 
 
 @Composable
 fun ImageRoute(
-    onHasImage: (DescriptionArguments?) -> Unit,
+    onNextClicked: (DescriptionArguments?) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if (state.hasTakePictureImage) {
-        onHasImage(
-            DescriptionArguments(
-                uri = state.takePictureUri
-            )
-        )
-    } else if (state.hasChooseFilesImage) {
-        onHasImage(null)
-    } else {
-        ImageScreen(
-            context = context,
-            onChoosePictureUriRetrieved = { uri ->
-                uri?.let { imageUri ->
-                    viewModel.addPendingImageToTemporarilySavedImages(imageUri)
-                }
-            },
-            modifier = modifier,
-            onTakePictureUriRetrieved = { uri ->
-                uri?.let { imageUri ->
-                    viewModel.updateTakePictureImageUri(imageUri.toString())
-                    viewModel.updateHasTakePictureImage(true)
-                }
+    ImageScreen(
+        onChoosePictureUriRetrieved = { uri ->
+            uri?.let { imageUri ->
+                viewModel.updateImageUri(imageUri.toString())
+                viewModel.addPendingImageToTemporarilySavedImages(imageUri)
             }
-        )
-    }
+        },
+        modifier = modifier,
+        onTakePictureUriRetrieved = { uri ->
+            uri?.let { imageUri ->
+                viewModel.updateImageUri(imageUri.toString())
+                viewModel.updateHasTakePictureImage(true)
+            }
+        },
+        hasTakePictureImage = state.hasTakePictureImage,
+        hasChooseFilesImage = state.hasChooseFilesImage,
+        onNextClicked = onNextClicked,
+        imageUri = Uri.parse(state.imageUri)
+    )
 }
 
 @Composable
 fun ImageScreen(
     modifier: Modifier = Modifier,
-    context: Context,
     onChoosePictureUriRetrieved: (Uri?) -> Unit,
-    onTakePictureUriRetrieved: (Uri?) -> Unit
+    onTakePictureUriRetrieved: (Uri?) -> Unit,
+    hasTakePictureImage: Boolean,
+    hasChooseFilesImage: Boolean,
+    imageUri: Uri,
+    onNextClicked: (DescriptionArguments?) -> Unit
 ) {
     ImageScreenBackground()
-    AddImageTitle()
-    AddImageOptions(
-        modifier = modifier,
-        onChoosePictureUriRetrieved = onChoosePictureUriRetrieved,
-        onTakePictureUriRetrieved = onTakePictureUriRetrieved
-    )
+    if (hasTakePictureImage || hasChooseFilesImage) {
+        Column {
+            InsertFoodImage(
+                imageUri = imageUri,
+                modifier = modifier,
+                onUriChangedChoseFile = onChoosePictureUriRetrieved,
+                onUriChangedTakePicture = onTakePictureUriRetrieved
+            )
+            ConfirmImageButton(
+                modifier = modifier,
+                onConfirmedClick = {
+                    if (hasTakePictureImage) {
+                        onNextClicked(DescriptionArguments(imageUri.toString()))
+                    } else {
+                        onNextClicked(null)
+                    }
+                }
+            )
+        }
+    } else {
+        AddImageTitle()
+        AddImageOptions(
+            modifier = modifier,
+            onChoosePictureUriRetrieved = onChoosePictureUriRetrieved,
+            onTakePictureUriRetrieved = onTakePictureUriRetrieved
+        )
+    }
+}
 
+@Composable
+fun ConfirmImageButton(
+    modifier: Modifier = Modifier,
+    onConfirmedClick: () -> Unit
+) {
+    Row {
+        Spacer(modifier = modifier.weight(1f))
+        FloatingActionButton(
+            modifier = modifier
+                .padding(end = 24.dp),
+            onClick = onConfirmedClick,
+            shape = CircleShape,
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = Icons.Rounded.Check,
+                contentDescription = "Add Image"
+            )
+        }
+    }
 }
 
 @Composable
