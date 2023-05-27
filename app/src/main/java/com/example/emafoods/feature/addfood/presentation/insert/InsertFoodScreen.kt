@@ -104,7 +104,8 @@ fun InsertFoodScreen(
         InsertFoodImage(
             imageUri = imageUri,
             modifier = modifier,
-            onUriChanged = onUriChanged
+            onUriChangedChoseFile = onUriChanged,
+            onUriChangedTakePicture = onUriChanged
         )
         DescriptionScreenInput(
             modifier = modifier
@@ -146,7 +147,8 @@ fun InsertFoodScreen(
 fun InsertFoodImage(
     imageUri: Uri?,
     modifier: Modifier = Modifier,
-    onUriChanged: (Uri?) -> Unit
+    onUriChangedChoseFile: (Uri?) -> Unit,
+    onUriChangedTakePicture: (Uri?) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -186,7 +188,7 @@ fun InsertFoodImage(
         ) {
             AttachFileIcon(
                 onUriRetrieved = {
-                    onUriChanged(it)
+                    onUriChangedChoseFile(it)
                 },
                 modifier = Modifier
                     .size(90.dp)
@@ -201,7 +203,7 @@ fun InsertFoodImage(
             )
             TakePictureIcon(
                 onUriRetrieved = {
-                    onUriChanged(it)
+                    onUriChangedTakePicture(it)
                 },
                 modifier = Modifier
                     .size(90.dp)
