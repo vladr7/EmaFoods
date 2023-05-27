@@ -95,7 +95,9 @@ fun SignInRoute(
     )
 
     if (state.signInSuccess) {
-        EmaFoodsNavigation()
+        EmaFoodsNavigation(
+            userLevel = state.userLevel,
+        )
     }
 }
 

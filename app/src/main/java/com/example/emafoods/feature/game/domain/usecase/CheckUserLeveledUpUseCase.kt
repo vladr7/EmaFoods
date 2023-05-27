@@ -6,7 +6,7 @@ class CheckUserLeveledUpUseCase @Inject constructor(
     private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase,
     private val nextLevelUseCase: GetNextLevelUseCase
 ) {
-    suspend fun execute(unspentXp: Int): Boolean {
+    suspend fun execute(unspentXp: Long): Boolean {
         val userGameDetails = getUserGameDetailsUseCase.execute()
         val currentUserXp = userGameDetails.userXp
         val nextLevel = nextLevelUseCase.execute()

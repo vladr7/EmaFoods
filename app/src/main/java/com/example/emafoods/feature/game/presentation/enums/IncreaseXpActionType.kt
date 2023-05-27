@@ -1,6 +1,6 @@
 package com.example.emafoods.feature.game.presentation.enums
 
-enum class IncreaseXpActionType(val xp: Int) {
+enum class IncreaseXpActionType(val xp: Long) {
     ADD_RECIPE(xp = 50),
     ADD_REVIEW(xp = 1000),
     GENERATE_RECIPE(xp = 10000),

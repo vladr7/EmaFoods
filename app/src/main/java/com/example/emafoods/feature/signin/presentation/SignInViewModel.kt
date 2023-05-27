@@ -3,6 +3,9 @@ package com.example.emafoods.feature.signin.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.models.State
+import com.example.emafoods.feature.game.domain.model.UserLevel
+import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
+import com.example.emafoods.feature.game.domain.usecase.RefreshUserGameDetailsUseCase
 import com.example.emafoods.feature.signin.domain.usecase.AddUserDataToRemoteDatabaseUseCase
 import com.example.emafoods.feature.signin.domain.usecase.SignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
-    private val addUserDataToRemoteDatabaseUseCase: AddUserDataToRemoteDatabaseUseCase
+    private val addUserDataToRemoteDatabaseUseCase: AddUserDataToRemoteDatabaseUseCase,
+    private val refreshUserGameDetailsUseCase: RefreshUserGameDetailsUseCase,
+    private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<LoginViewState>(LoginViewState())
@@ -33,12 +38,15 @@ class SignInViewModel @Inject constructor(
                     }
                 }
                 is State.Success -> {
+                    refreshUserGameDetailsUseCase.execute()
+                    val userLevel = getUserGameDetailsUseCase.execute().userLevel
+                    addUserDataToRemoteDatabaseUseCase.execute()
                     _state.update {
                         it.copy(
-                            signInSuccess = true
+                            signInSuccess = true,
+                            userLevel = userLevel
                         )
                     }
-                    addUserDataToRemoteDatabaseUseCase.execute()
                 }
             }
         }
@@ -47,4 +55,5 @@ class SignInViewModel @Inject constructor(
 
 data class LoginViewState(
     val signInSuccess: Boolean = false,
+    val userLevel: UserLevel = UserLevel.LEVEL_1
 )

@@ -34,12 +34,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    if (state.value.isUserSignedIn) {
-                        EmaFoodsNavigation(
-                            userLevel = state.value.userLevel
-                        )
-                    } else {
-                        SignInNavigation()
+                    when(state.value.userSignInState) {
+                        UserSignInState.LOADING -> {
+//                            LoadingScreen()
+                        }
+                        UserSignInState.SIGNED_IN -> {
+                            EmaFoodsNavigation(
+                                userLevel = state.value.userLevel
+                            )
+                        }
+                        UserSignInState.NOT_SIGNED_IN -> {
+                            SignInNavigation()
+                        }
                     }
                 }
             }

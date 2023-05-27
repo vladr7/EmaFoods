@@ -21,17 +21,21 @@ class DefaultGameRepository @Inject constructor(
     override fun levelPermissions(): List<LevelPermission> =
         gameDataSource.levelPermissions()
 
-    override suspend fun storeUserXP(xp: Int) {
+    override suspend fun storeUserXP(xp: Long) {
         gameDataSource.storeUserXP(xp)
+    }
+
+    override suspend fun refreshUserXP() {
+        gameDataSource.refreshUserXp()
     }
 
     override suspend fun userDetails(): UserGameDetails =
         gameDataSource.userDetails()
 
-    override suspend fun storeXpToUnspent(xp: Int) =
+    override suspend fun storeXpToUnspent(xp: Long) =
         gameDataSource.storeXpToUnspent(xp)
 
-    override suspend fun unspentUserXP(): Int =
+    override suspend fun unspentUserXP(): Long =
         gameDataSource.unspentUserXP()
 
     override suspend fun resetUnspentXp() {
