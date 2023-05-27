@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.extension.capitalizeWords
 import com.example.emafoods.core.presentation.base.BaseViewModel
+import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.domain.usecase.GetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
@@ -98,7 +99,14 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
 
-                is IncreaseXpResult.LeveledUp -> TODO()
+                is IncreaseXpResult.LeveledUp -> {
+                    _state.update {
+                        it.copy(
+                            leveledUpEvent = true,
+                            newLevel = result.levelAcquired
+                        )
+                    }
+                }
             }
         }
     }
@@ -111,6 +119,15 @@ class ProfileViewModel @Inject constructor(
             )
         }
     }
+
+    fun onDismissLevelUp() {
+        _state.update {
+            it.copy(
+                leveledUpEvent = false,
+                newLevel = null
+            )
+        }
+    }
 }
 
 data class ProfileViewState(
@@ -119,5 +136,7 @@ data class ProfileViewState(
     val userName: String = "",
     val showXpIncreaseToast: Boolean = false,
     val xpIncreased: Int = 0,
-    val streaks: Int = 1
+    val streaks: Int = 1,
+    val leveledUpEvent: Boolean = false,
+    val newLevel: UserLevel? = null,
 )

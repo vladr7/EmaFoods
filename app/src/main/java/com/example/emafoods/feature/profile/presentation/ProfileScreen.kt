@@ -54,8 +54,11 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.extension.restartApp
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
+import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.google.android.play.core.review.ReviewManagerFactory
 
@@ -109,6 +112,12 @@ fun ProfileRoute(
             viewModel.onXpIncreaseToastShown()
         },
         streaks = state.streaks,
+        newLevel = state.newLevel,
+        leveledUpEvent = state.leveledUpEvent,
+        onDismissLevelUp = {
+            viewModel.onDismissLevelUp()
+            context.restartApp()
+        },
     )
 }
 
@@ -126,7 +135,16 @@ fun ProfileScreen(
     onIncreaseXpToastShown: () -> Unit,
     context: Context,
     streaks: Int,
-) {
+    newLevel: UserLevel?,
+    leveledUpEvent: Boolean,
+    onDismissLevelUp: () -> Unit,
+    ) {
+    if (leveledUpEvent) {
+        LevelUpDialog(
+            newLevel = newLevel,
+            onDismiss = onDismissLevelUp,
+        )
+    }
     if (showXpIncreaseToast) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.ADD_REVIEW,
