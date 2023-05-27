@@ -79,7 +79,7 @@ fun GameRoute(
             } else {
                 Toast.makeText(
                     context,
-                    "Mai ai nevoie de ${levelPermission.remainingXp} XP pentru a debloca ${levelPermission.level.string}!",
+                    "Mai ai nevoie de ${levelPermission.remainingXp} XP pentru a debloca ${levelPermission.level.uiString}!",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -193,7 +193,7 @@ fun LevelItem(
                 .fillMaxWidth()
         ) {
             Text(
-                text = levelData.level.string,
+                text = levelData.level.uiString,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSecondary,
                 modifier = modifier
