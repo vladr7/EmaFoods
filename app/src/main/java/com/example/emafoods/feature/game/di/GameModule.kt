@@ -8,7 +8,9 @@ import com.example.emafoods.feature.game.data.repository.DefaultGameRepository
 import com.example.emafoods.feature.game.domain.mapper.MapLevelPermissionToViewData
 import com.example.emafoods.feature.game.domain.repository.GameRepository
 import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
+import com.example.emafoods.feature.game.domain.usecase.CalculateUserLevelFromXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckUserLeveledUpUseCase
+import com.example.emafoods.feature.game.domain.usecase.CheckXNrOfDaysPassedSinceLastReviewUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetNextLevelUseCase
@@ -17,6 +19,7 @@ import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCas
 import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.LastTimeUserOpenedAppUseCase
+import com.example.emafoods.feature.game.domain.usecase.RefreshUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUnspentUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUserRewardsUseCase
@@ -25,6 +28,7 @@ import com.example.emafoods.feature.game.domain.usecase.StoreUserLevelUseCase
 import com.example.emafoods.feature.game.domain.usecase.StoreUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserOpenedAppUseCase
+import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserReviewedUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -217,5 +221,35 @@ object GameModule {
         checkUserLeveledUpUseCase = checkUserLeveledUpUseCase,
         storeUserLevelUseCase = storeUserLevelUseCase,
         nextLevelUseCase = nextLevelUseCase
+    )
+
+    @Provides
+    @Singleton
+    fun provideRefreshUserXpUseCase(
+        gameRepository: GameRepository
+    ) = RefreshUserXpUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideCalculateUserLevelFromXpUseCase(
+    ) = CalculateUserLevelFromXpUseCase(
+    )
+
+    @Provides
+    @Singleton
+    fun provideCheckXNrOfDaysPassedSinceLastReviewUseCase(
+        gameRepository: GameRepository
+    ) = CheckXNrOfDaysPassedSinceLastReviewUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideUpdateLastTimeUserReviewedUseCase(
+        gameRepository: GameRepository
+    ) = UpdateLastTimeUserReviewedUseCase(
+        gameRepository = gameRepository
     )
 }

@@ -36,12 +36,11 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.LoadingButton
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
-import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
-import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 
 
@@ -56,10 +55,6 @@ fun InsertFoodRoute(
 
     if (state.insertFoodSuccess) {
         viewModel.onXpIncrease()
-        XpIncreaseToast(
-            increaseXpActionType = IncreaseXpActionType.ADD_RECIPE,
-            context = context
-        )
         viewModel.resetState()
         onSuccess()
     } else {
@@ -110,7 +105,8 @@ fun InsertFoodScreen(
         InsertFoodImage(
             imageUri = imageUri,
             modifier = modifier,
-            onUriChanged = onUriChanged
+            onUriChangedChoseFile = onUriChanged,
+            onUriChangedTakePicture = onUriChanged
         )
         DescriptionScreenInput(
             modifier = modifier
@@ -123,6 +119,15 @@ fun InsertFoodScreen(
                 .padding(bottom = 32.dp, end = 24.dp)
         ) {
             Spacer(modifier = Modifier.weight(1f))
+            LottieAnimationContent(
+                animationId = R.raw.insertfoodplant,
+                modifier = modifier
+                    .size(50.dp)
+                    .padding(end = 8.dp),
+                color = MaterialTheme.colorScheme.onSecondary,
+                speed = 0.3f,
+                iterations = 1
+            )
             LoadingButton(
                 onClick = onInsertFoodClick,
                 loading = loading,
@@ -152,7 +157,8 @@ fun InsertFoodScreen(
 fun InsertFoodImage(
     imageUri: Uri?,
     modifier: Modifier = Modifier,
-    onUriChanged: (Uri?) -> Unit
+    onUriChangedChoseFile: (Uri?) -> Unit,
+    onUriChangedTakePicture: (Uri?) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -192,7 +198,7 @@ fun InsertFoodImage(
         ) {
             AttachFileIcon(
                 onUriRetrieved = {
-                    onUriChanged(it)
+                    onUriChangedChoseFile(it)
                 },
                 modifier = Modifier
                     .size(90.dp)
@@ -207,7 +213,7 @@ fun InsertFoodImage(
             )
             TakePictureIcon(
                 onUriRetrieved = {
-                    onUriChanged(it)
+                    onUriChangedTakePicture(it)
                 },
                 modifier = Modifier
                     .size(90.dp)

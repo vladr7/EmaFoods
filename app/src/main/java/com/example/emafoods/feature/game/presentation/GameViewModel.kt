@@ -42,7 +42,7 @@ class GameViewModel @Inject constructor(
             _state.update {
                 it.copy(
                     userName = userDetails.displayName.capitalizeWords(),
-                    userLevel = userGameDetails.userLevel.string,
+                    userLevel = userGameDetails.userLevel.uiString,
                     listOfXpActions = listOfXpActions,
                     listOfLevelPermission = levelPermissions
                 )
@@ -75,5 +75,5 @@ data class ViewDataLevelPermission(
     val level: UserLevel,
     val permissions: List<Permission>,
     val hasAccess: Boolean,
-    val remainingXp: Int
+    val remainingXp: Long
 )

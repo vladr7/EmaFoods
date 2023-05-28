@@ -50,6 +50,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -355,7 +356,7 @@ fun PendingFoodImage(
             .padding(10.dp)
             .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
         model = ImageRequest.Builder(LocalContext.current)
-            .data(imageUri.ifEmpty { R.drawable.cutecelebrationbackgr })
+            .data(imageUri.ifEmpty { R.drawable.radish })
             .crossfade(true)
             .build(),
         contentDescription = null,
@@ -369,15 +370,14 @@ fun PendingFoodImage(
     )
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun PendingFoodDescription(
     description: String,
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = description,
-        fontFamily = androidx.compose.material3.MaterialTheme.typography.titleSmall.fontFamily,
+        text = description.ifEmpty { stringResource(R.string.for_the_moment_there_are_no_more_pending_foods) },
+        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
         style = TextStyle(
             brush = Brush.linearGradient(

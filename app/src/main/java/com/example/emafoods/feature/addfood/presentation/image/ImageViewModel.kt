@@ -21,15 +21,18 @@ class AddImageViewModel @Inject constructor(
     private val _state = MutableStateFlow<ImageViewState>(ImageViewState())
     val state: StateFlow<ImageViewState> = _state
 
-    fun updateTakePictureImageUri(imageUri: String) {
+    fun updateImageUri(imageUri: String) {
         _state.update {
-            it.copy(takePictureUri = imageUri)
+            it.copy(imageUri = imageUri)
         }
     }
 
     fun updateHasTakePictureImage(hasImage: Boolean) {
         _state.update {
-            it.copy(hasTakePictureImage = hasImage)
+            it.copy(
+                hasTakePictureImage = hasImage,
+                hasChooseFilesImage = false
+            )
         }
     }
 
@@ -42,7 +45,10 @@ class AddImageViewModel @Inject constructor(
             )
         }
         _state.update {
-            it.copy(hasChooseFilesImage = true)
+            it.copy(
+                hasChooseFilesImage = true,
+                hasTakePictureImage = false
+            )
         }
     }
 
@@ -76,5 +82,5 @@ data class ImageViewState(
     override val errorMessage: String? = null,
     val hasTakePictureImage: Boolean = false,
     val hasChooseFilesImage: Boolean = false,
-    val takePictureUri: String = "",
+    val imageUri: String = Uri.EMPTY.toString(),
 ) : ViewState(isLoading, errorMessage)

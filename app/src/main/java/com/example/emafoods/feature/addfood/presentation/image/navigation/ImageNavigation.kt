@@ -8,7 +8,7 @@ import com.example.emafoods.feature.addfood.presentation.image.ImageRoute
 
 fun NavGraphBuilder.imageScreen(onHasImage: (DescriptionArguments?) -> Unit) {
     composable(route = AddFoodDestinations.Image.route) {
-        ImageRoute(onHasImage = onHasImage)
+        ImageRoute(onNextClicked = onHasImage)
     }
 }
 

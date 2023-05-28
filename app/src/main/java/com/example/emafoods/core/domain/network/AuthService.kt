@@ -13,4 +13,6 @@ interface AuthService {
     suspend fun addRewardToUser(rewardedUserUid: String)
     suspend fun getUserRewards(): State<Long>
     suspend fun resetUserRewards()
+    suspend fun storeUserXP(xpToBeStored: Long)
+    suspend fun getUserXP(): Long
 }
