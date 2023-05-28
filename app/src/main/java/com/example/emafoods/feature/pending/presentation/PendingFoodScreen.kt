@@ -113,11 +113,12 @@ fun PendingFoodScreen(
         onErrorShown()
     }
     if(showMovedSuccessfully) {
-        Toast.makeText(context, "Reteta a fost acceptata!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, stringResource(R.string.recipe_has_been_accepted), Toast.LENGTH_SHORT).show()
         onErrorShown()
     }
     if(showDeletedSuccessfully) {
-        Toast.makeText(context, "Reteta a fost respinsa!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context,
+            stringResource(R.string.recipe_has_been_declined), Toast.LENGTH_SHORT).show()
         onErrorShown()
     }
     PendingFoodBackground(imageId = R.drawable.pendingbackground)

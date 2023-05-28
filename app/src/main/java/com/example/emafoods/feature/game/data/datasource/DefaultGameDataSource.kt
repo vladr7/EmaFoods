@@ -17,12 +17,12 @@ class DefaultGameDataSource @Inject constructor(
 
     override fun listOfXpActions() =
         listOf<String>(
-            "Generare reteta",
-            "Reteta adaugata la retetele in asteptare",
-            "Reteta acceptata de admin",
-            "Review aplicatie",
-            "Deschizi aplicatia pentru prima data pe ziua respectiva",
-            "Accepti/respingi o reteta (Admin)",
+            "Generare rețete",
+            "Retete adăugate",
+            "Rețete acceptate de Admin",
+            "Recenzie aplicație",
+            "Numărul de foculețe",
+            "Acceptare/Respingere rețete (Admin)",
         )
 
     override fun levelPermissions(): List<LevelPermission> =
@@ -124,7 +124,6 @@ class DefaultGameDataSource @Inject constructor(
         val currentXp = userXP()
         val xpToBeStored = currentXp + xp
         localStorage.putLong(LocalStorageKeys.USER_XP, xpToBeStored)
-        println("vlad: $xpToBeStored")
         authService.storeUserXP(xpToBeStored)
     }
 
