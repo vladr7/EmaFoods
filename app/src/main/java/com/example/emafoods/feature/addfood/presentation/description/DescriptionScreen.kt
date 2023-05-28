@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.core.presentation.features.addfood.TitleComponent
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
@@ -97,6 +99,13 @@ fun DescriptionScreen(
             onConfirmedClick = onConfirmedClick,
             showNextButton = showNextButton
         )
+        Spacer(modifier = modifier.weight(1f))
+        LottieAnimationContent(
+            animationId = R.raw.descriptionplants,
+            color = MaterialTheme.colorScheme.onSecondary,
+            modifier = modifier
+                .offset(y= 85.dp)
+        )
     }
 }
 
@@ -114,7 +123,7 @@ fun DescriptionScreenInput(
             .fillMaxWidth()
             .fillMaxHeight(0.5f)
             .padding(top = 0.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
-        ) {
+    ) {
         OutlinedTextField(
             value = description,
             onValueChange = {
