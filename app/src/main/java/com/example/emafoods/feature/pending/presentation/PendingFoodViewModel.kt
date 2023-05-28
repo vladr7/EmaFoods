@@ -63,11 +63,6 @@ class PendingFoodViewModel @Inject constructor(
     fun onSwipeLeft() {
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
-            if(state.value.pendingFoods.isNotEmpty()) {
-                _state.update {
-                    it.copy(showMovedSuccessfully = true)
-                }
-            }
             when(val result = deletePendingFoodUseCase.execute(foodMapper.mapToModel(currentFood))) {
                 is State.Failed -> {}
 

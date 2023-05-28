@@ -44,7 +44,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -120,7 +119,7 @@ fun SignInScreen(
         Spacer(modifier = modifier.weight(0.2f))
         SignInButton(
             modifier = modifier,
-            loadingText = "Signing in...",
+            loadingText = stringResource(R.string.signing_in),
             isLoading = isLoading,
             icon = painterResource(id = R.drawable.ic_google_logo),
             onClick = {
@@ -218,7 +217,7 @@ fun SignInTopBar(
 @Composable
 fun SignInButton(
     modifier: Modifier = Modifier,
-    loadingText: String = "Signing in...",
+    loadingText: String = stringResource(R.string.sigining_in),
     icon: Painter,
     isLoading: Boolean = false,
     shape: Shape = RoundedCornerShape(8.dp),
