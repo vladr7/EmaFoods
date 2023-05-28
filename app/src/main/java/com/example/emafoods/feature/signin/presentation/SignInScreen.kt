@@ -34,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -162,7 +163,6 @@ fun SignInBackground(
     }
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun SignInTopBar(
     modifier: Modifier = Modifier,
@@ -171,15 +171,11 @@ fun SignInTopBar(
         modifier = modifier
     ) {
         Image(
-            painter = painterResource(id = R.drawable.vegetables1), contentDescription = null,
+            painter = painterResource(id = R.drawable.chefgirlcircle), contentDescription = null,
             modifier = modifier
                 .size(150.dp, 150.dp)
                 .align(Alignment.CenterHorizontally)
-                .padding(16.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape,
-                ),
+                .clip(CircleShape),
         )
         Text(
             text = stringResource(id = R.string.app_name),
