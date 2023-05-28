@@ -10,13 +10,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,63 +48,132 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
+import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
 
 
 @Composable
 fun ImageRoute(
-    onHasImage: (DescriptionArguments?) -> Unit,
+    onNextClicked: (DescriptionArguments?) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if (state.hasTakePictureImage) {
-        onHasImage(
-            DescriptionArguments(
-                uri = state.takePictureUri
-            )
-        )
-    } else if (state.hasChooseFilesImage) {
-        onHasImage(null)
-    } else {
-        ImageScreen(
-            context = context,
-            onChoosePictureUriRetrieved = { uri ->
-                uri?.let { imageUri ->
-                    viewModel.addPendingImageToTemporarilySavedImages(imageUri)
-                }
-            },
-            modifier = modifier,
-            onTakePictureUriRetrieved = { uri ->
-                uri?.let { imageUri ->
-                    viewModel.updateTakePictureImageUri(imageUri.toString())
-                    viewModel.updateHasTakePictureImage(true)
-                }
+    ImageScreen(
+        onChoosePictureUriRetrieved = { uri ->
+            uri?.let { imageUri ->
+                viewModel.updateImageUri(imageUri.toString())
+                viewModel.addPendingImageToTemporarilySavedImages(imageUri)
             }
-        )
-    }
+        },
+        modifier = modifier,
+        onTakePictureUriRetrieved = { uri ->
+            uri?.let { imageUri ->
+                viewModel.updateImageUri(imageUri.toString())
+                viewModel.updateHasTakePictureImage(true)
+            }
+        },
+        hasTakePictureImage = state.hasTakePictureImage,
+        hasChooseFilesImage = state.hasChooseFilesImage,
+        onNextClicked = onNextClicked,
+        imageUri = Uri.parse(state.imageUri)
+    )
 }
 
 @Composable
 fun ImageScreen(
     modifier: Modifier = Modifier,
-    context: Context,
     onChoosePictureUriRetrieved: (Uri?) -> Unit,
-    onTakePictureUriRetrieved: (Uri?) -> Unit
+    onTakePictureUriRetrieved: (Uri?) -> Unit,
+    hasTakePictureImage: Boolean,
+    hasChooseFilesImage: Boolean,
+    imageUri: Uri,
+    onNextClicked: (DescriptionArguments?) -> Unit
 ) {
     ImageScreenBackground()
-    AddImageTitle()
-    AddImageOptions(
-        modifier = modifier,
-        onChoosePictureUriRetrieved = onChoosePictureUriRetrieved,
-        onTakePictureUriRetrieved = onTakePictureUriRetrieved
-    )
+    if (hasTakePictureImage || hasChooseFilesImage) {
+        Column {
+            InsertFoodImage(
+                imageUri = imageUri,
+                modifier = modifier,
+                onUriChangedChoseFile = onChoosePictureUriRetrieved,
+                onUriChangedTakePicture = onTakePictureUriRetrieved
+            )
+            ConfirmImageButton(
+                modifier = modifier,
+                onConfirmedClick = {
+                    if (hasTakePictureImage) {
+                        onNextClicked(DescriptionArguments(imageUri.toString()))
+                    } else {
+                        onNextClicked(null)
+                    }
+                }
+            )
+            HangingPlantAnimation(
+                modifier = modifier
+            )
+        }
+    } else {
+        AddImageTitle()
+        AddImageOptions(
+            modifier = modifier,
+            onChoosePictureUriRetrieved = onChoosePictureUriRetrieved,
+            onTakePictureUriRetrieved = onTakePictureUriRetrieved
+        )
+    }
+}
 
+@Composable
+fun HangingPlantAnimation(
+    modifier: Modifier = Modifier
+) {
+    Row() {
+        Spacer(modifier = modifier.weight(1f))
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.hangingplant))
+        val progress by animateLottieCompositionAsState(
+            composition = composition,
+            iterations = LottieConstants.IterateForever,
+            speed = 1f
+        )
+        LottieAnimation(
+            modifier = modifier
+                .offset(y = (-50).dp, x = (73).dp)
+                .size(250.dp),
+            composition = composition,
+            progress = { progress },
+        )
+    }
+}
+
+@Composable
+fun ConfirmImageButton(
+    modifier: Modifier = Modifier,
+    onConfirmedClick: () -> Unit
+) {
+    Row {
+        Spacer(modifier = modifier.weight(1f))
+        FloatingActionButton(
+            modifier = modifier
+                .padding(end = 24.dp),
+            onClick = onConfirmedClick,
+            shape = CircleShape,
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = Icons.Rounded.Check,
+                contentDescription = "Add Image"
+            )
+        }
+    }
 }
 
 @Composable
@@ -148,11 +223,20 @@ fun AddImageOptions(
     Box(
         modifier = modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
     ) {
+        LottieAnimationContent(
+            animationId = R.raw.addimageplant,
+            modifier = modifier
+                .size(250.dp)
+                .align(Alignment.BottomStart)
+                .padding(bottom = 16.dp)
+                .offset(x = (-20).dp),
+            color = MaterialTheme.colorScheme.onSecondary
+        )
         Column(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(16.dp)
+                .align(Alignment.BottomEnd),
         ) {
             AttachFileIcon(
                 onUriRetrieved = onChoosePictureUriRetrieved
@@ -182,7 +266,7 @@ fun AttachFileIcon(
         imageVector = Icons.Filled.AttachFile, contentDescription = null,
         modifier = modifier
             .padding(16.dp)
-            .size(150.dp)
+            .size(80.dp)
             .bounceClick()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -214,7 +298,7 @@ fun TakePictureIcon(
         contentDescription = null,
         modifier = modifier
             .padding(16.dp)
-            .size(150.dp)
+            .size(80.dp)
             .bounceClick()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },

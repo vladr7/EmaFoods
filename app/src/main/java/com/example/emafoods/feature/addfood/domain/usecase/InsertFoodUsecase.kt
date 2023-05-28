@@ -3,7 +3,6 @@ package com.example.emafoods.feature.addfood.domain.usecase
 import android.net.Uri
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.domain.models.State
-import com.example.emafoods.core.domain.models.UserType
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import javax.inject.Inject
 
@@ -14,16 +13,20 @@ class InsertFoodUseCase @Inject constructor(
     private val addFoodToPendingListUseCase: AddFoodToPendingListUseCase,
 ) {
 
-    suspend fun execute(food: Food, fileUri: Uri, shouldAddImageFromTemporary: Boolean): State<Food> {
-        if(!checkFieldsAreFilledUseCase.execute(food.description)) {
+    suspend fun execute(
+        food: Food,
+        fileUri: Uri,
+        shouldAddImageFromTemporary: Boolean
+    ): State<Food> {
+        if (!checkFieldsAreFilledUseCase.execute(food.description)) {
             return State.failed("Te rog adauga o scurta descriere a retetei (minim 10 caractere)")
         }
 
-        if(fileUri == Uri.EMPTY) {
+        if (fileUri == Uri.EMPTY) {
             return State.failed("Te rog adauga o imagine a retetei")
         }
 
-       val user = getUserDetailsUseCase.execute()
+        val user = getUserDetailsUseCase.execute()
         val newFood = Food(
             authorUid = user.uid,
             author = user.displayName,
@@ -31,14 +34,7 @@ class InsertFoodUseCase @Inject constructor(
             imageRef = fileUri.toString(),
         )
 
-        // todo check for level insted of thid -> deprecated
-        return when(user.userType) {
-            UserType.BASIC -> {
-                addFoodToPendingListUseCase.execute(newFood, shouldAddImageFromTemporary)
-            }
-            UserType.ADMIN -> {
-                addFoodToMainListUseCase.execute(newFood, fileUri)
-            }
-        }
+        return addFoodToPendingListUseCase.execute(newFood, shouldAddImageFromTemporary)
     }
 }
+

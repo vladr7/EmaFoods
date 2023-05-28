@@ -2,6 +2,7 @@ package com.example.emafoods.core.data.localstorage
 
 object LocalStorageKeys {
 
+    const val LAST_TIME_USER_REVIEWED_APP = "LAST_TIME_USER_REVIEWED_APP"
     const val LAST_TIME_OPENED_APP = "LAST_TIME_OPENED_APP"
     const val USER_XP = "USER_XP"
     const val XP_TO_UNSPENT = "XP_TO_UNSPENT"

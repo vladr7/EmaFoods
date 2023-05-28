@@ -1,9 +1,6 @@
 package com.example.emafoods.feature.generatefood.presentation
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -95,14 +92,8 @@ fun GenerateScreenRoute(
         newLevel = state.newLevel,
         onDismissLevelUp = {
             viewModel.onDismissLevelUp()
-            val packageManager: PackageManager = context.packageManager
-            val intent: Intent? = packageManager.getLaunchIntentForPackage(context.packageName)
-            val componentName: ComponentName? = intent?.component
-            componentName?.let {
-                val restartIntent: Intent = Intent.makeRestartActivityTask(componentName)
-                context.startActivity(restartIntent)
-                Runtime.getRuntime().exit(0)
-            }
+            // todo: restart app
+//            context.restartApp()
         },
         showRewardsAlert = state.showRewardsAlert,
         nrOfRewards = state.nrOfRewards,
@@ -122,7 +113,7 @@ fun GenerateScreen(
     showXpIncreaseToast: Boolean,
     onToastShown: () -> Unit,
     context: Context,
-    xpIncreased: Int,
+    xpIncreased: Long,
     leveledUpEvent: Boolean,
     newLevel: UserLevel?,
     onDismissLevelUp: () -> Unit,
@@ -136,7 +127,7 @@ fun GenerateScreen(
             onDismiss = onDismissRewardsAlert
         )
     }
-    if (leveledUpEvent) {
+    if (leveledUpEvent && !showRewardsAlert) {
         LevelUpDialog(
             newLevel = newLevel,
             onDismiss = onDismissLevelUp,

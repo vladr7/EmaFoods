@@ -7,7 +7,7 @@ import com.example.emafoods.feature.game.domain.model.UserLevel
 fun LevelUpDialog(newLevel: UserLevel?, onDismiss: () -> Unit) {
 
     AlertDialog2Buttons(
-        title = "Nivel nou deblocat: ${newLevel?.string}!",
+        title = "Nivel nou deblocat: ${newLevel?.uiString}!",
         confirmText = "OK",
         onConfirmClick = { onDismiss() },
     )

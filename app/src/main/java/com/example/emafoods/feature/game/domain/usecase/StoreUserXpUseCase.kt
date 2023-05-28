@@ -7,7 +7,7 @@ class StoreUserXpUseCase @Inject constructor(
     private val gameRepository: GameRepository
 ) {
 
-    suspend fun execute(userXp: Int) {
+    suspend fun execute(userXp: Long) {
         gameRepository.storeUserXP(userXp)
     }
 }

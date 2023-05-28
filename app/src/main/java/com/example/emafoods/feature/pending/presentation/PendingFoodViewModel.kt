@@ -24,6 +24,7 @@ import javax.inject.Inject
 class PendingFoodViewModel @Inject constructor(
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
     private val getAllPendingFoodsUseCase: GetAllPendingFoodsUseCase,
+//    private val getFilteredPendingFoodsUseCase: GetFilteredPendingFoodsUseCase, // todo uncomment
     private val deletePendingFoodUseCase: DeletePendingFoodUseCase,
     private val refreshFoodsUseCase: RefreshFoodsUseCase,
     private val movePendingFoodToAllFoodsUseCase: MovePendingFoodToAllFoodsUseCase,
@@ -62,12 +63,13 @@ class PendingFoodViewModel @Inject constructor(
     fun onSwipeLeft() {
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
-            when(val result = deletePendingFoodUseCase.execute(foodMapper.mapToModel(currentFood))) {
-                is State.Failed -> {
-                    if (result.message.isNotEmpty()) _state.update {
-                        it.copy(error = result.message, showError = true)
-                    }
+            if(state.value.pendingFoods.isNotEmpty()) {
+                _state.update {
+                    it.copy(showMovedSuccessfully = true)
                 }
+            }
+            when(val result = deletePendingFoodUseCase.execute(foodMapper.mapToModel(currentFood))) {
+                is State.Failed -> {}
 
                 is State.Success -> {
                     _state.update {
@@ -84,18 +86,16 @@ class PendingFoodViewModel @Inject constructor(
     fun onSwipeRight() {
         val currentFood = _state.value.currentFood
         viewModelScope.launch(Dispatchers.IO) {
+            if(state.value.pendingFoods.isNotEmpty()) {
+                _state.update {
+                    it.copy(showMovedSuccessfully = true)
+                }
+            }
             when (val result =
                 movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))) {
-                is State.Failed -> {
-                    if (result.message.isNotEmpty()) _state.update {
-                        it.copy(error = result.message, showError = true)
-                    }
-                }
+                is State.Failed -> {}
 
                 is State.Success -> {
-                    _state.update {
-                        it.copy(showMovedSuccessfully = true)
-                    }
                     addRewardToUserAcceptedRecipeUseCase.execute(foodMapper.mapToModel(currentFood))
                     launch {
                         refreshPendingFoodsUseCase.execute()

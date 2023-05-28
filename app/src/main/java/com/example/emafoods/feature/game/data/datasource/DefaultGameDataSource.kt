@@ -25,10 +25,6 @@ class DefaultGameDataSource @Inject constructor(
             "Accepti/respingi o reteta (Admin)",
         )
 
-    override suspend fun storeUserLevel(userLevel: UserLevel) {
-        localStorage.putString(LocalStorageKeys.USER_LEVEL, userLevel.string)
-    }
-
     override fun levelPermissions(): List<LevelPermission> =
         listOf(
             LevelPermission(
@@ -71,13 +67,13 @@ class DefaultGameDataSource @Inject constructor(
         )
     }
 
-    override suspend fun storeXpToUnspent(xp: Int) {
+    override suspend fun storeXpToUnspent(xp: Long) {
         val currentUnspentXp = unspentUserXP()
-        localStorage.putInt(LocalStorageKeys.XP_TO_UNSPENT, xp + currentUnspentXp)
+        localStorage.putLong(LocalStorageKeys.XP_TO_UNSPENT, xp + currentUnspentXp)
     }
 
-    override suspend fun unspentUserXP(): Int =
-        localStorage.getInt(LocalStorageKeys.XP_TO_UNSPENT, defaultValue = 0)
+    override suspend fun unspentUserXP(): Long =
+        localStorage.getLong(LocalStorageKeys.XP_TO_UNSPENT, defaultValue = 0L)
 
     override suspend fun resetUnspentXp() {
         localStorage.putInt(LocalStorageKeys.XP_TO_UNSPENT, 0)
@@ -115,13 +111,36 @@ class DefaultGameDataSource @Inject constructor(
         localStorage.putLong(LocalStorageKeys.LAST_TIME_OPENED_APP, System.currentTimeMillis())
     }
 
-    override suspend fun storeUserXP(xp: Int) {
-        val currentXp = userXP()
-        localStorage.putInt(LocalStorageKeys.USER_XP, xp + currentXp)
+    override suspend fun getLastTimeUserReviewedApp(): Long {
+        return localStorage.getLong(LocalStorageKeys.LAST_TIME_USER_REVIEWED_APP, defaultValue = 0L)
     }
 
-    private suspend fun userXP(): Int {
-        return localStorage.getInt(LocalStorageKeys.USER_XP, defaultValue = 0)
+    override suspend fun updateLastTimeUserReviewedApp() {
+        localStorage.putLong(LocalStorageKeys.LAST_TIME_USER_REVIEWED_APP, System.currentTimeMillis())
+    }
+
+
+    override suspend fun storeUserXP(xp: Long) {
+        val currentXp = userXP()
+        val xpToBeStored = currentXp + xp
+        localStorage.putLong(LocalStorageKeys.USER_XP, xpToBeStored)
+        println("vlad: $xpToBeStored")
+        authService.storeUserXP(xpToBeStored)
+    }
+
+    override suspend fun refreshUserXp() {
+        val userXp = authService.getUserXP()
+        if(userXp > 0L) {
+            localStorage.putLong(LocalStorageKeys.USER_XP, userXp)
+        }
+    }
+
+    private suspend fun userXP(): Long {
+        return localStorage.getLong(LocalStorageKeys.USER_XP, defaultValue = 0L)
+    }
+
+    override suspend fun storeUserLevel(userLevel: UserLevel) {
+        localStorage.putString(LocalStorageKeys.USER_LEVEL, userLevel.string)
     }
 
     private suspend fun userLevel(): UserLevel {

@@ -1,5 +1,7 @@
 package com.example.emafoods.feature.addfood.presentation.congratulation
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -25,18 +27,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
+import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 
 @Composable
 fun CongratulationRoute(
@@ -44,10 +47,15 @@ fun CongratulationRoute(
     onInsertNewFoodClick: () -> Unit,
     viewModel: CongratulationViewModel = hiltViewModel(),
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     CongratulationScreen(
         modifier = modifier,
-        onInsertFoodClick = onInsertNewFoodClick
+        onInsertFoodClick = onInsertNewFoodClick,
+        showMessage = state.showMessages,
+        onMessagesShown = viewModel::onMessagesShown,
+        context = context
     )
 }
 
@@ -55,17 +63,35 @@ fun CongratulationRoute(
 fun CongratulationScreen(
     modifier: Modifier = Modifier,
     onInsertFoodClick: () -> Unit,
+    showMessage: Boolean,
+    onMessagesShown: () -> Unit,
+    context: Context,
 ) {
-
+    if (showMessage) {
+        Toast.makeText(
+            context,
+            stringResource(id = R.string.recipe_added_on_the_waiting_list),
+            Toast.LENGTH_SHORT
+        ).show()
+        XpIncreaseToast(
+            increaseXpActionType = IncreaseXpActionType.ADD_RECIPE,
+            context = context
+        )
+        onMessagesShown()
+    }
     CongratulationBackground(imageId = R.drawable.cutecelebrationbackgr)
     Box(
         modifier = modifier
             .fillMaxSize()
     ) {
-        CongratulationsAnimation(
+        LottieAnimationContent(
             modifier = Modifier
                 .fillMaxSize()
-                .align(Alignment.Center)
+                .align(Alignment.Center),
+            animationId = R.raw.congratulationanimation,
+            speed = 1f,
+            iterations = LottieConstants.IterateForever
+
         )
         InsertNewFoodButton(
             modifier = Modifier
@@ -103,23 +129,6 @@ fun InsertNewFoodButton(
             )
         }
     }
-}
-
-@Composable
-fun CongratulationsAnimation(
-    modifier: Modifier = Modifier,
-) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.congratulationanimation))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever,
-        speed = 1f
-    )
-    LottieAnimation(
-        modifier = modifier,
-        composition = composition,
-        progress = { progress },
-    )
 }
 
 @Composable

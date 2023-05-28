@@ -15,8 +15,8 @@ class IncreaseXpUseCase @Inject constructor(
     private val nextLevelUseCase: GetNextLevelUseCase
 ) {
 
-    suspend fun execute(increaseXpActionType: IncreaseXpActionType, customXp: Int = 0): IncreaseXpResult<Int> {
-        val xpToBeAdded = if(customXp != 0) customXp else increaseXpActionType.xp
+    suspend fun execute(increaseXpActionType: IncreaseXpActionType, nrOfRewards: Int = 0): IncreaseXpResult<Long> {
+        val xpToBeAdded = if(nrOfRewards != 0) nrOfRewards * increaseXpActionType.xp else increaseXpActionType.xp
         storeUnspentUserXpUseCase.execute(xpToBeAdded)
         val unspentUserXp = getUnspentUserXpUseCase.execute()
         if (checkUserLeveledUpUseCase.execute(unspentUserXp)) {

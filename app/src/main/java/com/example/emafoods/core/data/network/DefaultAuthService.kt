@@ -91,4 +91,25 @@ class DefaultAuthService @Inject constructor() : AuthService {
             Log.d("DefaultAuthService", "resetUserRewards: ${e.localizedMessage}")
         }
     }
+
+    override suspend fun storeUserXP(xpToBeStored: Long) {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update("userXp", xpToBeStored)
+        } catch (e: Exception) {
+            Log.d("DefaultAuthService", "storeUserXP: ${e.localizedMessage}")
+        }
+    }
+
+    override suspend fun getUserXP(): Long {
+        val uid = firebaseAuth.currentUser?.uid
+        return try {
+            val userXp = usersCollection.document(uid ?: "").get().await().get("userXp")
+            if (userXp != null) userXp as Long else 0L
+        } catch (e: Exception) {
+            Log.d("DefaultAuthService", "getUserXP: ${e.localizedMessage}")
+            0
+        }
+    }
 }
