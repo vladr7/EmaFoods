@@ -48,6 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
@@ -114,6 +119,9 @@ fun ImageScreen(
                     }
                 }
             )
+            HangingPlantAnimation(
+                modifier = modifier
+            )
         }
     } else {
         AddImageTitle()
@@ -121,6 +129,28 @@ fun ImageScreen(
             modifier = modifier,
             onChoosePictureUriRetrieved = onChoosePictureUriRetrieved,
             onTakePictureUriRetrieved = onTakePictureUriRetrieved
+        )
+    }
+}
+
+@Composable
+fun HangingPlantAnimation(
+    modifier: Modifier = Modifier
+) {
+    Row() {
+        Spacer(modifier = modifier.weight(1f))
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.hangingplant))
+        val progress by animateLottieCompositionAsState(
+            composition = composition,
+            iterations = LottieConstants.IterateForever,
+            speed = 1f
+        )
+        LottieAnimation(
+            modifier = modifier
+                .offset(y = (-50).dp, x = (73).dp)
+                .size(250.dp),
+            composition = composition,
+            progress = { progress },
         )
     }
 }
@@ -200,7 +230,8 @@ fun AddImageOptions(
                 .size(250.dp)
                 .align(Alignment.BottomStart)
                 .padding(bottom = 16.dp)
-                .offset(x = (-20).dp)
+                .offset(x = (-20).dp),
+            color = MaterialTheme.colorScheme.onSecondary
         )
         Column(
             modifier = Modifier
