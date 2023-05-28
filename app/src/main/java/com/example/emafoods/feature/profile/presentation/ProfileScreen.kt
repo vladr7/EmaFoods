@@ -48,13 +48,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
 import com.example.emafoods.core.extension.restartApp
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
@@ -174,23 +170,6 @@ fun ProfileScreen(
 }
 
 @Composable
-fun FireStreakAnimation(
-    modifier: Modifier = Modifier,
-) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.firestreak))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever,
-        speed = 1f
-    )
-    LottieAnimation(
-        modifier = modifier,
-        composition = composition,
-        progress = { progress },
-    )
-}
-
-@Composable
 fun SignOutAlert(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
@@ -271,10 +250,7 @@ fun ProfileHeader(
                 modifier = modifier
                     .offset(y = 5.dp)
             )
-            FireStreakAnimation(
-                modifier = modifier
-                    .size(35.dp)
-            )
+            LottieAnimationContent(animationId = R.raw.firestreak, modifier = modifier.size(35.dp))
         }
 
         Row(
