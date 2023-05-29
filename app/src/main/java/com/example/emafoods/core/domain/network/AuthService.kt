@@ -7,7 +7,7 @@ import com.example.emafoods.feature.game.domain.model.UserLevel
 interface AuthService {
 
     fun isUserSignedIn(): Boolean
-    fun getUserDetails(): UserData
+    suspend fun getUserDetails(): UserData
     fun signOut()
     suspend fun signIn(idToken: String): State<Unit>
     suspend fun addUserDataToFirestore(userData: UserData)

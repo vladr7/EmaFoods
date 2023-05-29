@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                         }
                         UserSignInState.SIGNED_IN -> {
                             EmaFoodsNavigation(
-                                userLevel = state.value.userLevel
+                                isAdmin = state.value.isAdmin
                             )
                         }
                         UserSignInState.NOT_SIGNED_IN -> {
