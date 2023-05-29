@@ -25,7 +25,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.EmojiNature
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -113,7 +113,7 @@ fun GameScreen(
     GameBackground()
     if (displayXpAlert) {
         AlertListOfActionsToGainXp(
-            title = "Primesti XP pentru urmatoarele actiuni:",
+            title = stringResource(R.string.get_xp_from_following_actions),
             onDismissClick = onDismissXpAlertClick,
             xpList = xpList,
             dismissText = "OK"
@@ -351,7 +351,7 @@ fun GameHeader(
                     color = MaterialTheme.colorScheme.onSecondary
                 )
                 Icon(
-                    imageVector = Icons.Filled.Favorite,
+                    imageVector = Icons.Filled.EmojiNature,
                     contentDescription = null,
                     modifier = Modifier
                         .padding(start = 4.dp)
@@ -362,7 +362,7 @@ fun GameHeader(
                                 drawRect(
                                     Brush.horizontalGradient(
                                         listOf(
-                                            Color.Red,
+                                            Color.Yellow,
                                             Color.White
                                         )
                                     ), blendMode = BlendMode.SrcAtop

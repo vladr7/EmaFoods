@@ -4,6 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.emafoods.R
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 
 @Composable
@@ -15,12 +17,13 @@ fun XpIncreaseToast(
     customXP: Long = 0
 ) {
     when(increaseXpActionType) {
-        IncreaseXpActionType.GENERATE_RECIPE -> {
-            Toast.makeText(context, "Ai acumulat $customXP puncte de experienta!", Toast.LENGTH_SHORT).show()
+        IncreaseXpActionType.RECIPE_ACCEPTED -> {
+            Toast.makeText(context,
+                stringResource(R.string.you_gained_points, customXP), Toast.LENGTH_SHORT).show()
             onToastShown()
         }
         else -> {
-            Toast.makeText(context, "Ai acumulat ${increaseXpActionType.xp} puncte de experienta!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, stringResource(R.string.you_gained_points, increaseXpActionType.xp), Toast.LENGTH_SHORT).show()
             onToastShown()
         }
     }

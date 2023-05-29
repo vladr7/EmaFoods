@@ -231,7 +231,6 @@ fun AddImageOptions(
                 .align(Alignment.BottomStart)
                 .padding(bottom = 16.dp)
                 .offset(x = (-20).dp),
-            color = MaterialTheme.colorScheme.onSecondary
         )
         Column(
             modifier = Modifier

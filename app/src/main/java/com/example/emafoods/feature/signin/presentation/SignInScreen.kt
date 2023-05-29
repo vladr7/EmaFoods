@@ -34,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -43,7 +44,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -119,7 +119,7 @@ fun SignInScreen(
         Spacer(modifier = modifier.weight(0.2f))
         SignInButton(
             modifier = modifier,
-            loadingText = "Signing in...",
+            loadingText = stringResource(R.string.signing_in),
             isLoading = isLoading,
             icon = painterResource(id = R.drawable.ic_google_logo),
             onClick = {
@@ -162,7 +162,6 @@ fun SignInBackground(
     }
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun SignInTopBar(
     modifier: Modifier = Modifier,
@@ -171,15 +170,11 @@ fun SignInTopBar(
         modifier = modifier
     ) {
         Image(
-            painter = painterResource(id = R.drawable.vegetables1), contentDescription = null,
+            painter = painterResource(id = R.drawable.chefgirlcircle), contentDescription = null,
             modifier = modifier
                 .size(150.dp, 150.dp)
                 .align(Alignment.CenterHorizontally)
-                .padding(16.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = CircleShape,
-                ),
+                .clip(CircleShape),
         )
         Text(
             text = stringResource(id = R.string.app_name),
@@ -222,7 +217,7 @@ fun SignInTopBar(
 @Composable
 fun SignInButton(
     modifier: Modifier = Modifier,
-    loadingText: String = "Signing in...",
+    loadingText: String = stringResource(R.string.sigining_in),
     icon: Painter,
     isLoading: Boolean = false,
     shape: Shape = RoundedCornerShape(8.dp),
