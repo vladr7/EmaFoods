@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.signin.presentation
 
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -42,6 +43,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -64,17 +66,18 @@ fun SignInRoute(
     modifier: Modifier = Modifier,
     viewModel: SignInViewModel = hiltViewModel(),
 ) {
-
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val state by viewModel.state.collectAsState()
-    var text by remember { mutableStateOf<String?>(null) }
+    val signInFailedText = stringResource(R.string.sign_in_failed)
     val signInRequestCode = 1
     val authResultLauncher =
         rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
             try {
                 val account = task?.getResult(ApiException::class.java)
                 if (account == null) {
-                    text = "Google sign in failed"
+                    Toast.makeText(context, signInFailedText, Toast.LENGTH_SHORT).show()
+                    viewModel.updateSignInLoading(false)
                 } else {
                     coroutineScope.launch {
                         viewModel.signIn(
@@ -83,15 +86,18 @@ fun SignInRoute(
                     }
                 }
             } catch (e: ApiException) {
-                text = "Google sign in failed"
+                Toast.makeText(context, signInFailedText, Toast.LENGTH_SHORT).show()
+                viewModel.updateSignInLoading(false)
             }
         }
 
     SignInScreen(
         modifier = modifier,
         onSignInClick = {
+            viewModel.updateSignInLoading(true)
             authResultLauncher.launch(signInRequestCode)
-        }
+        },
+        signInLoading = state.signInLoading,
     )
 
     if (state.signInSuccess) {
@@ -104,10 +110,9 @@ fun SignInRoute(
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
-    onSignInClick: () -> Unit
+    onSignInClick: () -> Unit,
+    signInLoading: Boolean,
 ) {
-    var isLoading by remember { mutableStateOf(false) }
-
     SignInBackground(modifier = modifier)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,10 +125,9 @@ fun SignInScreen(
         SignInButton(
             modifier = modifier,
             loadingText = stringResource(R.string.signing_in),
-            isLoading = isLoading,
+            isLoading = signInLoading,
             icon = painterResource(id = R.drawable.ic_google_logo),
             onClick = {
-                isLoading = true
                 onSignInClick()
             },
         )
