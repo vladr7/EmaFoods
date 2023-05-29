@@ -140,6 +140,7 @@ class DefaultGameDataSource @Inject constructor(
 
     override suspend fun storeUserLevel(userLevel: UserLevel) {
         localStorage.putString(LocalStorageKeys.USER_LEVEL, userLevel.string)
+        authService.storeUserLevel(userLevel)
     }
 
     private suspend fun userLevel(): UserLevel {

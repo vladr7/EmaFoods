@@ -2,6 +2,7 @@ package com.example.emafoods.core.domain.network
 
 import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.models.UserData
+import com.example.emafoods.feature.game.domain.model.UserLevel
 
 interface AuthService {
 
@@ -15,4 +16,5 @@ interface AuthService {
     suspend fun resetUserRewards()
     suspend fun storeUserXP(xpToBeStored: Long)
     suspend fun getUserXP(): Long
+    suspend fun storeUserLevel(userLevel: UserLevel)
 }
