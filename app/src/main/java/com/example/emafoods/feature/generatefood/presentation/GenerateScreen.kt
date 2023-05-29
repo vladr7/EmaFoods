@@ -174,7 +174,6 @@ fun RewardsAcquiredAlert(
 ) {
     val title = if(nrOfRewards == 1) stringResource(
         R.string.your_recipe_has_been_accepted,
-        nrOfRewards,
         nrOfRewards * IncreaseXpActionType.RECIPE_ACCEPTED.xp
     )
     else stringResource(

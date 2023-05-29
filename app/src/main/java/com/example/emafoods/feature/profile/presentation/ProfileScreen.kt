@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiNature
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -42,6 +43,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
@@ -177,9 +179,9 @@ fun SignOutAlert(
 ) {
     AlertDialog2Buttons(
         modifier = modifier,
-        title = "Are you sure you want to sign out?",
-        dismissText = "Cancel",
-        confirmText = "Sign out",
+        title = stringResource(R.string.logout_popup_title),
+        dismissText = stringResource(R.string.logout_popup_cancel),
+        confirmText = stringResource(R.string.logout_button),
         onDismissClick = onDismiss,
         onConfirmClick = onConfirm
     )
@@ -197,7 +199,7 @@ fun ProfileSignOut(
             .padding(start = 20.dp, end = 20.dp, bottom = 30.dp, top = 20.dp),
     ) {
         Text(
-            text = "Sign Out",
+            text = stringResource(R.string.logout_button),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(8.dp),
             fontWeight = FontWeight.Bold
@@ -217,7 +219,7 @@ fun ProfileLevelUp(
             .padding(20.dp),
     ) {
         Text(
-            text = "Level Up",
+            text = stringResource(R.string.level_up_button),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(8.dp),
             fontWeight = FontWeight.Bold
@@ -272,18 +274,18 @@ fun ProfileHeader(
                     .align(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = "Salut!",
+                    text = stringResource(R.string.profile_hello),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
                 Row {
                     Text(
-                        text = userName,
+                        text = "$userName!",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSecondary
                     )
                     Icon(
-                        imageVector = Icons.Filled.Favorite,
+                        imageVector = Icons.Filled.EmojiNature,
                         contentDescription = null,
                         modifier = Modifier
                             .padding(start = 4.dp)
@@ -294,7 +296,7 @@ fun ProfileHeader(
                                     drawRect(
                                         Brush.horizontalGradient(
                                             listOf(
-                                                Color.Red,
+                                                Color.Yellow,
                                                 Color.White
                                             )
                                         ), blendMode = BlendMode.SrcAtop
@@ -342,7 +344,7 @@ fun ProfileReview(
                     .align(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = "Apreciem opinia ta a aplicatiei!",
+                    text = stringResource(R.string.review_description),
                     style = MaterialTheme.typography.bodyLarge,
                 )
                 Row(
@@ -351,7 +353,7 @@ fun ProfileReview(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Te pretuim!", style = MaterialTheme.typography.bodySmall,
+                        text = stringResource(R.string.review_bold_description), style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold
                     )
                     Icon(
