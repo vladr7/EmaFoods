@@ -27,12 +27,24 @@ class DefaultAuthService @Inject constructor() : AuthService {
     override fun isUserSignedIn(): Boolean =
         firebaseAuth.currentUser != null
 
-    override fun getUserDetails(): UserData =
-        UserData(
-            uid = firebaseAuth.currentUser?.uid ?: "",
-            email = firebaseAuth.currentUser?.email ?: "",
-            displayName = firebaseAuth.currentUser?.displayName ?: "",
-        )
+    override suspend fun getUserDetails(): UserData {
+        val uid = firebaseAuth.currentUser?.uid
+        return try {
+            val documentSnapshot = usersCollection.document(uid ?: "").get().await()
+            val userData = documentSnapshot.toObject(UserData::class.java)
+            userData ?: UserData(
+                uid = firebaseAuth.currentUser?.uid ?: "",
+                email = firebaseAuth.currentUser?.email ?: "",
+                displayName = firebaseAuth.currentUser?.displayName ?: "",
+            )
+        } catch (e: Exception) {
+            UserData(
+                uid = firebaseAuth.currentUser?.uid ?: "",
+                email = firebaseAuth.currentUser?.email ?: "",
+                displayName = firebaseAuth.currentUser?.displayName ?: "",
+            )
+        }
+    }
 
     override fun signOut() {
         firebaseAuth.signOut()

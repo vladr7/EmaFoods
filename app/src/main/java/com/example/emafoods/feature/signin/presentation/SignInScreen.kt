@@ -102,7 +102,7 @@ fun SignInRoute(
 
     if (state.signInSuccess) {
         EmaFoodsNavigation(
-            userLevel = state.userLevel,
+            isAdmin = state.isAdmin,
         )
     }
 }
