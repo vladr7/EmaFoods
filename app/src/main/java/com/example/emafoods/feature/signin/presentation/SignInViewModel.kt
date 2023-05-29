@@ -51,9 +51,18 @@ class SignInViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateSignInLoading(isLoading: Boolean) {
+        _state.update {
+            it.copy(
+                signInLoading = isLoading
+            )
+        }
+    }
 }
 
 data class LoginViewState(
     val signInSuccess: Boolean = false,
-    val userLevel: UserLevel = UserLevel.LEVEL_1
+    val userLevel: UserLevel = UserLevel.LEVEL_1,
+    val signInLoading: Boolean = false
 )
