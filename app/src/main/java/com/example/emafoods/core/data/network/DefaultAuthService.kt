@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.models.UserData
 import com.example.emafoods.core.domain.network.AuthService
+import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -110,6 +111,16 @@ class DefaultAuthService @Inject constructor() : AuthService {
         } catch (e: Exception) {
             Log.d("DefaultAuthService", "getUserXP: ${e.localizedMessage}")
             0
+        }
+    }
+
+    override suspend fun storeUserLevel(userLevel: UserLevel) {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update("userLevel", userLevel.string)
+        } catch (e: Exception) {
+            Log.d("DefaultAuthService", "storeUserLevel: ${e.localizedMessage}")
         }
     }
 }
