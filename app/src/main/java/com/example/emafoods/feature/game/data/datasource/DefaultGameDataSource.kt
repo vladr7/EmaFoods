@@ -119,6 +119,10 @@ class DefaultGameDataSource @Inject constructor(
         localStorage.putLong(LocalStorageKeys.LAST_TIME_USER_REVIEWED_APP, System.currentTimeMillis())
     }
 
+    override suspend fun upgradeBasicUserToAdmin() {
+        authService.upgradeBasicUserToAdmin()
+    }
+
 
     override suspend fun storeUserXP(xp: Long) {
         val currentXp = userXP()

@@ -88,4 +88,8 @@ class DefaultGameRepository @Inject constructor(
     override suspend fun updateLastTimeUserReviewedApp() {
         gameDataSource.updateLastTimeUserReviewedApp()
     }
+
+    override suspend fun upgradeBasicUserToAdmin() {
+        gameDataSource.upgradeBasicUserToAdmin()
+    }
 }

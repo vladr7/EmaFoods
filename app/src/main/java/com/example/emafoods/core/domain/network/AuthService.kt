@@ -17,4 +17,5 @@ interface AuthService {
     suspend fun storeUserXP(xpToBeStored: Long)
     suspend fun getUserXP(): Long
     suspend fun storeUserLevel(userLevel: UserLevel)
+    suspend fun upgradeBasicUserToAdmin()
 }
