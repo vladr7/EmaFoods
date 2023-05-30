@@ -61,6 +61,27 @@ class GameViewModel @Inject constructor(
             it.copy(displayXpAlert = false)
         }
     }
+
+    fun onLadyBugIconClick() {
+        _state.update {
+            it.copy(showEnterAdminCode = true)
+        }
+    }
+
+    fun onCodeAlertDimiss() {
+        _state.update {
+            it.copy(showEnterAdminCode = false)
+        }
+    }
+
+    fun onCodeEntered(code: String) {
+        _state.update {
+            it.copy(showEnterAdminCode = false)
+        }
+        viewModelScope.launch {
+
+        }
+    }
 }
 
 data class GameViewState(
@@ -69,6 +90,7 @@ data class GameViewState(
     val userName: String = "",
     val userLevel: String = "",
     val listOfLevelPermission: List<ViewDataLevelPermission> = listOf(),
+    val showEnterAdminCode: Boolean = false,
 )
 
 data class ViewDataLevelPermission(
