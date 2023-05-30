@@ -135,4 +135,14 @@ class DefaultAuthService @Inject constructor() : AuthService {
             Log.d("DefaultAuthService", "storeUserLevel: ${e.localizedMessage}")
         }
     }
+
+    override suspend fun upgradeBasicUserToAdmin() {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update("admin", true)
+        } catch (e: Exception) {
+            Log.d("DefaultAuthService", "upgradeBasicUserToAdmin: ${e.localizedMessage}")
+        }
+    }
 }

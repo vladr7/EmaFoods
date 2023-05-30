@@ -35,4 +35,5 @@
     <string name="sign_in_failed">Conectarea a eșuat, verifică conexiunea de internet!</string>
     <string name="introduce_code">Introduceți codul</string>
     <string name="confirmed">Confirmare</string>
+    <string name="promoted_successfully">Promovare cu succes! Aplicația se va reporni în 5 secunde!</string>
 </resources>

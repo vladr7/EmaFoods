@@ -25,4 +25,5 @@ interface GameRepository {
     suspend fun updateLastTimeUserOpenedApp()
     suspend fun getLastTimeUserReviewedApp(): Long
     suspend fun updateLastTimeUserReviewedApp()
+    suspend fun upgradeBasicUserToAdmin()
 }

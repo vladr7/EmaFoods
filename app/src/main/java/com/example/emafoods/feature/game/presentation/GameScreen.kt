@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.game.presentation
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -33,9 +34,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +61,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.extension.restartApp
 import com.example.emafoods.feature.game.presentation.model.Permission
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun GameRoute(
@@ -67,6 +74,7 @@ fun GameRoute(
 ) {
     val context = LocalContext.current
     val state = viewModel.state.collectAsStateWithLifecycle()
+    val coroutine = rememberCoroutineScope()
 
     GameScreen(
         modifier = modifier,
@@ -105,7 +113,10 @@ fun GameRoute(
         },
         onCodeDismiss = {
             viewModel.onCodeAlertDimiss()
-        }
+        },
+        showUpgradedToAdminAlert = state.value.showUpgradedToAdminAlert,
+        context = context,
+        coroutine = coroutine
     )
 }
 
@@ -124,8 +135,20 @@ fun GameScreen(
     showEnterAdminCode: Boolean,
     onCodeConfirmClick: (String) -> Unit,
     onCodeDismiss: () -> Unit,
+    showUpgradedToAdminAlert: Boolean,
+    context: Context,
+    coroutine: CoroutineScope
 ) {
     GameBackground()
+    if(showUpgradedToAdminAlert) {
+        Toast.makeText(context, stringResource(R.string.promoted_successfully), Toast.LENGTH_LONG).show()
+        LaunchedEffect(key1 = true) {
+            coroutine.launch {
+                delay(5000)
+                context.restartApp()
+            }
+        }
+    }
     if (showEnterAdminCode) {
         EnterAdminCodeDialog(
             onDismissClick = onCodeDismiss,
