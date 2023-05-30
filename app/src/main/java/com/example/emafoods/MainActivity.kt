@@ -2,6 +2,7 @@ package com.example.emafoods
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +18,9 @@ import com.example.emafoods.navigation.signin.SignInNavigation
 import com.example.emafoods.ui.theme.EmaTheme
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,11 +28,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var appUpdateManager: AppUpdateManager
-    private val updateType = AppUpdateType.IMMEDIATE
+    private val updateType = AppUpdateType.FLEXIBLE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        if(updateType == AppUpdateType.FLEXIBLE) {
+            appUpdateManager.registerListener(installStateUpdatedListener)
+        }
         checkForAppUpdate()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -46,9 +52,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     when (state.value.userSignInState) {
-                        UserSignInState.LOADING -> {
-//                            LoadingScreen()
-                        }
+                        UserSignInState.LOADING -> {}
 
                         UserSignInState.SIGNED_IN -> {
                             EmaFoodsNavigation(
@@ -62,6 +66,16 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            Toast.makeText(
+                applicationContext,
+                "Update descărcat cu succes, restartează aplicația pentru ca schimbările să aibă efect!",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -81,6 +95,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability()
+                == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+            ) {
+                appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    updateType,
+                    this,
+                    APP_UPDATE_REQUEST_CODE
+                )
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == APP_UPDATE_REQUEST_CODE) {
@@ -89,6 +119,13 @@ class MainActivity : ComponentActivity() {
             } else {
                 println("Update flow complete! Result code: $resultCode")
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(updateType == AppUpdateType.FLEXIBLE) {
+            appUpdateManager.unregisterListener(installStateUpdatedListener)
         }
     }
 
