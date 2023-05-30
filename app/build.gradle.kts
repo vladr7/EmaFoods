@@ -93,6 +93,7 @@ dependencies {
     implementation(libs.play.review)
     implementation(libs.play.review.ktx)
     implementation(libs.bundles.accompanist)
+    implementation(libs.bundles.appupdate)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.junit)
