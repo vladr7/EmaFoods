@@ -13,7 +13,7 @@ android {
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.example.emafoods"
+        applicationId = "com.riviem.emafoods"
         minSdk = 26
         targetSdk = 33
         versionCode = (findProperty("versionCode") as? String)?.toIntOrNull() ?: 1

@@ -25,7 +25,7 @@
         </activity>
         <provider
             android:name=".feature.addfood.data.composefileprovider.ComposeFileProvider"
-            android:authorities="com.example.emafoods.fileprovider"
+            android:authorities="com.riviem.emafoods.fileprovider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data
