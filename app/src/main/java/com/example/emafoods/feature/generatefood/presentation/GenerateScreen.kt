@@ -172,7 +172,7 @@ fun RewardsAcquiredAlert(
     nrOfRewards: Int,
     onDismiss: () -> Unit
 ) {
-    val title = if(nrOfRewards == 1) stringResource(
+    val title = if (nrOfRewards == 1) stringResource(
         R.string.your_recipe_has_been_accepted,
         nrOfRewards * IncreaseXpActionType.RECIPE_ACCEPTED.xp
     )
@@ -308,7 +308,7 @@ fun GenerateButton(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val offsetY = remember { Animatable(0f) }
-
+    val threshold = -20f
     Box(
         modifier = modifier
             .offset(
@@ -331,24 +331,31 @@ fun GenerateButton(
 
                 },
                 onDragStopped = {
-                    if (offsetY.value < -30f) {
+                    if (offsetY.value < threshold) {
                         onGenerateClick()
                     }
                     coroutineScope.launch {
                         offsetY.animateTo(0f)
                     }
-                }
+                },
             ),
         contentAlignment = Alignment.Center
     ) {
-        ArcComposable(modifier = modifier)
+        ArcComposable(
+            modifier = modifier,
+            exceededThreshold = offsetY.value < threshold
+        )
     }
 
 }
 
 @Composable
-private fun ArcComposable(modifier: Modifier = Modifier) {
-    val color1 = MaterialTheme.colorScheme.primary
+private fun ArcComposable(
+    modifier: Modifier = Modifier,
+    exceededThreshold: Boolean = false,
+) {
+    val color1 =
+        if (!exceededThreshold) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
     val color2 = MaterialTheme.colorScheme.secondary
     val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
     Canvas(
