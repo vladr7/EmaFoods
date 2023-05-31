@@ -1,6 +1,6 @@
 package com.example.emafoods.feature.game.di
 
-import com.example.emafoods.core.data.localstorage.LocalStorage
+import com.example.emafoods.core.domain.localstorage.LocalStorage
 import com.example.emafoods.core.domain.network.AuthService
 import com.example.emafoods.feature.game.data.datasource.DefaultGameDataSource
 import com.example.emafoods.feature.game.data.datasource.GameDataSource

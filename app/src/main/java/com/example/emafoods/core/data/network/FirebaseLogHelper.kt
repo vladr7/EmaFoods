@@ -1,14 +1,27 @@
 package com.example.emafoods.core.data.network
 
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
+import com.example.emafoods.core.domain.constants.AnalyticsConstants.TIMESTAMP
+import com.example.emafoods.core.domain.localstorage.DeviceUtils
 import com.example.emafoods.core.domain.network.LogHelper
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import javax.inject.Inject
 
 class FirebaseLogHelper @Inject constructor(
-    private val firebaseCrashlytics: FirebaseCrashlytics
-): LogHelper {
+    private val firebaseCrashlytics: FirebaseCrashlytics,
+    private val firebaseAnalytics: FirebaseAnalytics,
+    private val deviceUtils: DeviceUtils
+) : LogHelper {
 
-    override fun log(message: String) {
+    override suspend fun logUserEvent(eventName: String) {
+        val bundle = android.os.Bundle()
+        bundle.putString(TIMESTAMP, System.currentTimeMillis().toString())
+        bundle.putString(AnalyticsConstants.UUID, deviceUtils.getDeviceUUID())
+        firebaseAnalytics.logEvent(eventName, bundle)
+    }
+
+    override fun logForNextCrash(message: String) {
         firebaseCrashlytics.log(message)
     }
 
