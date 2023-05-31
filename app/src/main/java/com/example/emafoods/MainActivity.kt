@@ -37,7 +37,6 @@ class MainActivity : ComponentActivity() {
             appUpdateManager.registerListener(installStateUpdatedListener)
         }
         checkForAppUpdate()
-
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             val viewModel: MainViewModel = hiltViewModel()

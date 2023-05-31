@@ -9,6 +9,7 @@ import com.example.emafoods.feature.game.domain.mapper.MapLevelPermissionToViewD
 import com.example.emafoods.feature.game.domain.repository.GameRepository
 import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
 import com.example.emafoods.feature.game.domain.usecase.CalculateUserLevelFromXpUseCase
+import com.example.emafoods.feature.game.domain.usecase.CheckIfAdminCodeIsValidUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckUserLeveledUpUseCase
 import com.example.emafoods.feature.game.domain.usecase.CheckXNrOfDaysPassedSinceLastReviewUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
@@ -29,6 +30,7 @@ import com.example.emafoods.feature.game.domain.usecase.StoreUserXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserOpenedAppUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserReviewedUseCase
+import com.example.emafoods.feature.game.domain.usecase.UpgradeBasicUserToAdminUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -250,6 +252,20 @@ object GameModule {
     fun provideUpdateLastTimeUserReviewedUseCase(
         gameRepository: GameRepository
     ) = UpdateLastTimeUserReviewedUseCase(
+        gameRepository = gameRepository
+    )
+
+    @Provides
+    @Singleton
+    fun provideCheckIfAdminCodeIsValidUseCase(
+    ) = CheckIfAdminCodeIsValidUseCase(
+    )
+
+    @Provides
+    @Singleton
+    fun provideUpgradeBasicUserToAdminUseCase(
+        gameRepository: GameRepository
+    ) = UpgradeBasicUserToAdminUseCase(
         gameRepository = gameRepository
     )
 }

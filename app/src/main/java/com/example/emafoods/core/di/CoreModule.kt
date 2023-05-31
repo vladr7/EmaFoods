@@ -7,15 +7,18 @@ import com.example.emafoods.core.data.datasource.DefaultFoodDataSource
 import com.example.emafoods.core.data.localstorage.DefaultDataStore
 import com.example.emafoods.core.data.localstorage.LocalStorage
 import com.example.emafoods.core.data.network.DefaultAuthService
+import com.example.emafoods.core.data.network.FirebaseLogHelper
 import com.example.emafoods.core.data.repository.DefaultFoodRepository
 import com.example.emafoods.core.data.stringdecoder.UriDecoder
 import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.network.AuthService
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,6 +71,7 @@ object CoreModule {
     @Provides
     fun bindStringDecoder(): StringDecoder = UriDecoder()
 
+    @Singleton
     @Provides
     fun provideGetUserDetailsUseCase(
         authService: AuthService,
@@ -75,10 +79,24 @@ object CoreModule {
         authService = authService,
     )
 
+    @Singleton
     @Provides
     fun provideLocalStorage(
         @ApplicationContext context: Context
     ): LocalStorage = DefaultDataStore(
         context = context
+    )
+
+    @Singleton
+    @Provides
+    fun provideFirebaseCrashlytics()
+    : FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideLogHelper(
+        firebaseCrashlytics: FirebaseCrashlytics
+    ): LogHelper = FirebaseLogHelper(
+        firebaseCrashlytics = firebaseCrashlytics
     )
 }
