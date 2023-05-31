@@ -1,4 +1,4 @@
-package com.example.emafoods.core.data.localstorage
+package com.example.emafoods.core.domain.localstorage
 
 interface LocalStorage {
 

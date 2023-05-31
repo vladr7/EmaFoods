@@ -5,12 +5,14 @@ import com.example.emafoods.core.data.database.FoodDatabase
 import com.example.emafoods.core.data.database.getFoodDatabase
 import com.example.emafoods.core.data.datasource.DefaultFoodDataSource
 import com.example.emafoods.core.data.localstorage.DefaultDataStore
-import com.example.emafoods.core.data.localstorage.LocalStorage
+import com.example.emafoods.core.data.localstorage.DefaultDeviceUtils
 import com.example.emafoods.core.data.network.DefaultAuthService
 import com.example.emafoods.core.data.network.FirebaseLogHelper
 import com.example.emafoods.core.data.repository.DefaultFoodRepository
 import com.example.emafoods.core.data.stringdecoder.UriDecoder
 import com.example.emafoods.core.domain.datasource.FoodDataSource
+import com.example.emafoods.core.domain.localstorage.DeviceUtils
+import com.example.emafoods.core.domain.localstorage.LocalStorage
 import com.example.emafoods.core.domain.network.AuthService
 import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.repository.FoodRepository
@@ -18,6 +20,7 @@ import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
@@ -90,13 +93,34 @@ object CoreModule {
     @Singleton
     @Provides
     fun provideFirebaseCrashlytics()
-    : FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+            : FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
+
+    @Singleton
+    @Provides
+    fun provideFirebaseAnalytics(
+        @ApplicationContext
+        context: Context
+    ): FirebaseAnalytics = FirebaseAnalytics.getInstance(
+        context
+    )
 
     @Singleton
     @Provides
     fun provideLogHelper(
-        firebaseCrashlytics: FirebaseCrashlytics
+        firebaseCrashlytics: FirebaseCrashlytics,
+        firebaseAnalytics: FirebaseAnalytics,
+        deviceUtils: DeviceUtils
     ): LogHelper = FirebaseLogHelper(
-        firebaseCrashlytics = firebaseCrashlytics
+        firebaseCrashlytics = firebaseCrashlytics,
+        firebaseAnalytics = firebaseAnalytics,
+        deviceUtils = deviceUtils
+    )
+
+    @Singleton
+    @Provides
+    fun provideDefaultDeviceUtils(
+        localStorage: LocalStorage
+    ): DeviceUtils = DefaultDeviceUtils(
+        localStorage = localStorage
     )
 }

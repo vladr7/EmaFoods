@@ -2,6 +2,7 @@ package com.example.emafoods.core.domain.network
 
 interface LogHelper {
 
-    fun log(message: String)
+    suspend fun logUserEvent(eventName: String)
+    fun logForNextCrash(message: String)
     fun reportCrash(throwable: Throwable)
 }
