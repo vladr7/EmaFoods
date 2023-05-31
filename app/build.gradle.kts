@@ -12,8 +12,19 @@ android {
     namespace = "com.example.emafoods"
     compileSdk = 33
 
+    signingConfigs {
+        getByName("debug") {
+        }
+        create("release") {
+            keyAlias = "release"
+            keyPassword = "bdjoGjrFZEU7nj"
+            storeFile = file("/Users/vladricean/AndroidStudioProjects/EmaFoods/keystore.jks")
+            storePassword = "bdjoGjrFZEU7nj"
+        }
+    }
+
     defaultConfig {
-        applicationId = "com.example.emafoods"
+        applicationId = "com.riviem.emafoods"
         minSdk = 26
         targetSdk = 33
         versionCode = (findProperty("versionCode") as? String)?.toIntOrNull() ?: 1
@@ -25,9 +36,11 @@ android {
         }
     }
 
+
     buildTypes {
 
         getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
         }
 
         getByName("release") {
@@ -36,6 +49,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
         flavorDimensions += listOf("environment")
     }
@@ -93,6 +107,7 @@ dependencies {
     implementation(libs.play.review)
     implementation(libs.play.review.ktx)
     implementation(libs.bundles.accompanist)
+    implementation(libs.bundles.appupdate)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.junit)

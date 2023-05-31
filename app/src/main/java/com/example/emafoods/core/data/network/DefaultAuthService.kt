@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.models.UserData
 import com.example.emafoods.core.domain.network.AuthService
+import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,12 +27,24 @@ class DefaultAuthService @Inject constructor() : AuthService {
     override fun isUserSignedIn(): Boolean =
         firebaseAuth.currentUser != null
 
-    override fun getUserDetails(): UserData =
-        UserData(
-            uid = firebaseAuth.currentUser?.uid ?: "",
-            email = firebaseAuth.currentUser?.email ?: "",
-            displayName = firebaseAuth.currentUser?.displayName ?: "",
-        )
+    override suspend fun getUserDetails(): UserData {
+        val uid = firebaseAuth.currentUser?.uid
+        return try {
+            val documentSnapshot = usersCollection.document(uid ?: "").get().await()
+            val userData = documentSnapshot.toObject(UserData::class.java)
+            userData ?: UserData(
+                uid = firebaseAuth.currentUser?.uid ?: "",
+                email = firebaseAuth.currentUser?.email ?: "",
+                displayName = firebaseAuth.currentUser?.displayName ?: "",
+            )
+        } catch (e: Exception) {
+            UserData(
+                uid = firebaseAuth.currentUser?.uid ?: "",
+                email = firebaseAuth.currentUser?.email ?: "",
+                displayName = firebaseAuth.currentUser?.displayName ?: "",
+            )
+        }
+    }
 
     override fun signOut() {
         firebaseAuth.signOut()
@@ -110,6 +123,26 @@ class DefaultAuthService @Inject constructor() : AuthService {
         } catch (e: Exception) {
             Log.d("DefaultAuthService", "getUserXP: ${e.localizedMessage}")
             0
+        }
+    }
+
+    override suspend fun storeUserLevel(userLevel: UserLevel) {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update("userLevel", userLevel.string)
+        } catch (e: Exception) {
+            Log.d("DefaultAuthService", "storeUserLevel: ${e.localizedMessage}")
+        }
+    }
+
+    override suspend fun upgradeBasicUserToAdmin() {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update("admin", true)
+        } catch (e: Exception) {
+            Log.d("DefaultAuthService", "upgradeBasicUserToAdmin: ${e.localizedMessage}")
         }
     }
 }

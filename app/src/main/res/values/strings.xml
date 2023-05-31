@@ -32,4 +32,8 @@
     <string name="signing_in">Conectare…</string>
     <string name="recipe_has_been_accepted">Rețeta a fost acceptată!</string>
     <string name="recipe_has_been_declined">Rețeta a fost respinsă!</string>
+    <string name="sign_in_failed">Conectarea a eșuat, verifică conexiunea de internet!</string>
+    <string name="introduce_code">Introduceți codul</string>
+    <string name="confirmed">Confirmare</string>
+    <string name="promoted_successfully">Promovare cu succes! Aplicația se va reporni în 5 secunde!</string>
 </resources>

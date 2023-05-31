@@ -6,10 +6,11 @@ import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.extension.capitalizeWords
 import com.example.emafoods.feature.game.domain.mapper.MapLevelPermissionToViewData
 import com.example.emafoods.feature.game.domain.model.UserLevel
+import com.example.emafoods.feature.game.domain.usecase.CheckIfAdminCodeIsValidUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetLevelPermissionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
-import com.example.emafoods.feature.game.domain.usecase.StoreUserLevelUseCase
+import com.example.emafoods.feature.game.domain.usecase.UpgradeBasicUserToAdminUseCase
 import com.example.emafoods.feature.game.presentation.model.Permission
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,8 @@ class GameViewModel @Inject constructor(
     private val getLevelPermissionsUseCase: GetLevelPermissionsUseCase,
     private val mapLevelPermissionToViewData: MapLevelPermissionToViewData,
     private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase,
-    private val storeUserLevelUseCase: StoreUserLevelUseCase
+    private val checkIfAdminCodeIsValidUseCase: CheckIfAdminCodeIsValidUseCase,
+    private val upgradeBasicUserToAdminUseCase: UpgradeBasicUserToAdminUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow<GameViewState>(GameViewState())
@@ -61,6 +63,32 @@ class GameViewModel @Inject constructor(
             it.copy(displayXpAlert = false)
         }
     }
+
+    fun onLadyBugIconClick() {
+        _state.update {
+            it.copy(showEnterAdminCode = true)
+        }
+    }
+
+    fun onCodeAlertDimiss() {
+        _state.update {
+            it.copy(showEnterAdminCode = false)
+        }
+    }
+
+    fun onCodeEntered(code: String) {
+        _state.update {
+            it.copy(showEnterAdminCode = false)
+        }
+        viewModelScope.launch {
+            if (checkIfAdminCodeIsValidUseCase.execute(code)) {
+                _state.update {
+                    it.copy(showUpgradedToAdminAlert = true)
+                }
+                upgradeBasicUserToAdminUseCase.execute()
+            }
+        }
+    }
 }
 
 data class GameViewState(
@@ -69,6 +97,8 @@ data class GameViewState(
     val userName: String = "",
     val userLevel: String = "",
     val listOfLevelPermission: List<ViewDataLevelPermission> = listOf(),
+    val showEnterAdminCode: Boolean = false,
+    val showUpgradedToAdminAlert: Boolean = false
 )
 
 data class ViewDataLevelPermission(

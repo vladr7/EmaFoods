@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -35,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
+import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.LoadingButton
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
@@ -42,6 +44,7 @@ import com.example.emafoods.feature.addfood.presentation.description.Description
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -52,6 +55,7 @@ fun InsertFoodRoute(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val coroutine = rememberCoroutineScope()
 
     if (state.insertFoodSuccess) {
         viewModel.onXpIncrease()
@@ -69,9 +73,13 @@ fun InsertFoodRoute(
                     imageUri = state.imageUri
                 )
             },
-            onUriChanged = {
-                viewModel.onSelectedNewImage()
-                viewModel.updateImageUri(it)
+            onUriChanged = { uri ->
+                coroutine.launch {
+                    val compressedUri = uri?.getCompressedImage(context)
+                    // todo add a loading
+                    viewModel.onSelectedNewImage()
+                    viewModel.updateImageUri(compressedUri)
+                }
             },
             loading = state.isLoading
         )

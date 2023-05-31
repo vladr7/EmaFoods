@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,11 +55,13 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -68,18 +71,21 @@ fun ImageRoute(
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val coroutine = rememberCoroutineScope()
 
     ImageScreen(
         onChoosePictureUriRetrieved = { uri ->
             uri?.let { imageUri ->
                 viewModel.updateImageUri(imageUri.toString())
-                viewModel.addPendingImageToTemporarilySavedImages(imageUri)
+                viewModel.addPendingImageToTemporarilySavedImages(imageUri, context)
             }
         },
         modifier = modifier,
         onTakePictureUriRetrieved = { uri ->
-            uri?.let { imageUri ->
-                viewModel.updateImageUri(imageUri.toString())
+            coroutine.launch {
+                val compressedUri = uri?.getCompressedImage(context)
+                viewModel.updateImageUri(compressedUri.toString())
                 viewModel.updateHasTakePictureImage(true)
             }
         },

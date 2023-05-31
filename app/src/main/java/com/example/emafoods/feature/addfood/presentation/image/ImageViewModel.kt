@@ -1,8 +1,10 @@
 package com.example.emafoods.feature.addfood.presentation.image
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.feature.addfood.domain.usecase.AddTemporaryPendingImageToRemoteStorageUseCase
@@ -36,11 +38,12 @@ class AddImageViewModel @Inject constructor(
         }
     }
 
-    fun addPendingImageToTemporarilySavedImages(imageUri: Uri) {
+    fun addPendingImageToTemporarilySavedImages(imageUri: Uri, context: Context) {
         viewModelScope.launch {
+            val compressedUri = imageUri.getCompressedImage(context)
             addTemporaryPendingImageToRemoteStorageUseCase.execute(
                 food = Food(
-                    imageRef = imageUri.toString()
+                    imageRef = compressedUri.toString()
                 )
             )
         }

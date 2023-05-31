@@ -3,8 +3,7 @@ package com.example.emafoods.feature.signin.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.models.State
-import com.example.emafoods.feature.game.domain.model.UserLevel
-import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
+import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.feature.game.domain.usecase.RefreshUserGameDetailsUseCase
 import com.example.emafoods.feature.signin.domain.usecase.AddUserDataToRemoteDatabaseUseCase
 import com.example.emafoods.feature.signin.domain.usecase.SignInUseCase
@@ -20,7 +19,7 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val addUserDataToRemoteDatabaseUseCase: AddUserDataToRemoteDatabaseUseCase,
     private val refreshUserGameDetailsUseCase: RefreshUserGameDetailsUseCase,
-    private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase
+    private val getUserDetailsUseCase: GetUserDetailsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<LoginViewState>(LoginViewState())
@@ -39,21 +38,30 @@ class SignInViewModel @Inject constructor(
                 }
                 is State.Success -> {
                     refreshUserGameDetailsUseCase.execute()
-                    val userLevel = getUserGameDetailsUseCase.execute().userLevel
-                    addUserDataToRemoteDatabaseUseCase.execute()
+                    val userData = getUserDetailsUseCase.execute()
+                    addUserDataToRemoteDatabaseUseCase.execute(userData)
                     _state.update {
                         it.copy(
                             signInSuccess = true,
-                            userLevel = userLevel
+                            isAdmin = userData.admin
                         )
                     }
                 }
             }
         }
     }
+
+    fun updateSignInLoading(isLoading: Boolean) {
+        _state.update {
+            it.copy(
+                signInLoading = isLoading
+            )
+        }
+    }
 }
 
 data class LoginViewState(
     val signInSuccess: Boolean = false,
-    val userLevel: UserLevel = UserLevel.LEVEL_1
+    val isAdmin: Boolean = false,
+    val signInLoading: Boolean = false
 )

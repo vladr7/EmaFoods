@@ -47,6 +47,7 @@ lottie = "6.0.0"
 image-compressor = "3.0.1"
 play-review = "2.0.1"
 play-review-ktx = "2.0.1"
+app-update = "2.1.0"
 
 #Tests
 junit = "4.13.2"
@@ -71,6 +72,8 @@ gms-auth = { module = "com.google.android.gms:play-services-auth", version.ref =
 icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composematerial-icons" }
 play-review = { module = "com.google.android.play:review", version.ref = "play-review" }
 play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "play-review-ktx" }
+appupdate = { module = "com.google.android.play:app-update", version.ref = "app-update" }
+appupdate-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "app-update" }
 
 #Androidx dependencies;
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -159,6 +162,7 @@ retrofitAndSerialization = ["squareup-retrofit", "retrofit-converter", "kotlinx-
 hilt = ["google-hilt", "hilt-navigation-compose"]
 testing = ["mockk", "mockito-kotlin", "hilt-android-testing", "mockito-inline", "core-testing"]
 review = ["play-review", "play-review-ktx"]
+appupdate = ["appupdate", "appupdate-ktx"]
 
 
 [plugins]
