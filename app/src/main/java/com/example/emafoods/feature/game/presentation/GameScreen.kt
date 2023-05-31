@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.game.presentation
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -30,11 +31,14 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,7 +61,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.extension.restartApp
 import com.example.emafoods.feature.game.presentation.model.Permission
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun GameRoute(
@@ -66,6 +74,7 @@ fun GameRoute(
 ) {
     val context = LocalContext.current
     val state = viewModel.state.collectAsStateWithLifecycle()
+    val coroutine = rememberCoroutineScope()
 
     GameScreen(
         modifier = modifier,
@@ -94,7 +103,20 @@ fun GameRoute(
         },
         onDismissXpAlertClick = {
             viewModel.onDismissXpAlertClick()
-        }
+        },
+        onLadyBugIconClick = {
+            viewModel.onLadyBugIconClick()
+        },
+        showEnterAdminCode = state.value.showEnterAdminCode,
+        onCodeConfirmClick = {
+            viewModel.onCodeEntered(it)
+        },
+        onCodeDismiss = {
+            viewModel.onCodeAlertDimiss()
+        },
+        showUpgradedToAdminAlert = state.value.showUpgradedToAdminAlert,
+        context = context,
+        coroutine = coroutine
     )
 }
 
@@ -109,8 +131,30 @@ fun GameScreen(
     onDismissXpAlertClick: () -> Unit,
     xpList: List<String>,
     levelDataList: List<ViewDataLevelPermission>,
+    onLadyBugIconClick: () -> Unit,
+    showEnterAdminCode: Boolean,
+    onCodeConfirmClick: (String) -> Unit,
+    onCodeDismiss: () -> Unit,
+    showUpgradedToAdminAlert: Boolean,
+    context: Context,
+    coroutine: CoroutineScope
 ) {
     GameBackground()
+    if(showUpgradedToAdminAlert) {
+        Toast.makeText(context, stringResource(R.string.promoted_successfully), Toast.LENGTH_LONG).show()
+        LaunchedEffect(key1 = true) {
+            coroutine.launch {
+                delay(5000)
+                context.restartApp()
+            }
+        }
+    }
+    if (showEnterAdminCode) {
+        EnterAdminCodeDialog(
+            onDismissClick = onCodeDismiss,
+            onConfirmClick = onCodeConfirmClick
+        )
+    }
     if (displayXpAlert) {
         AlertListOfActionsToGainXp(
             title = stringResource(R.string.get_xp_from_following_actions),
@@ -128,7 +172,8 @@ fun GameScreen(
         GameHeader(
             modifier = modifier,
             userName = userName,
-            userLevel = userLevel
+            userLevel = userLevel,
+            onLadyBugIconClick = onLadyBugIconClick
         )
         LevelList(
             modifier = modifier,
@@ -142,6 +187,47 @@ fun GameScreen(
         )
     }
 
+}
+
+@Composable
+fun EnterAdminCodeDialog(
+    modifier: Modifier = Modifier,
+    onDismissClick: () -> Unit,
+    onConfirmClick: (String) -> Unit,
+
+    ) {
+    var text by remember { mutableStateOf("") }
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        iconContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        textContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = modifier,
+        onDismissRequest = { onDismissClick() },
+        title = {
+            Text(
+                text = stringResource(R.string.introduce_code),
+                fontSize = 20.sp,
+            )
+        },
+        confirmButton = {
+            Text(
+                text = stringResource(R.string.confirmed),
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .clickable { onConfirmClick(text) }
+                    .padding(16.dp)
+            )
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { newText -> text = newText }
+                )
+            }
+        },
+    )
 }
 
 @Composable
@@ -284,15 +370,15 @@ fun LevelList(
                 )
             }
         }
-            ScrollArrow(
-                modifier = modifier
-                    .offset(y = 16.dp)
-                    .align(Alignment.BottomCenter)
-                    .padding(top = 16.dp)
-                    .alpha(0.8f)
-                    .size(64.dp),
-                visible = scrollState.value == 0
-            )
+        ScrollArrow(
+            modifier = modifier
+                .offset(y = 16.dp)
+                .align(Alignment.BottomCenter)
+                .padding(top = 16.dp)
+                .alpha(0.8f)
+                .size(64.dp),
+            visible = scrollState.value == 0
+        )
     }
 }
 
@@ -319,7 +405,8 @@ fun ScrollArrow(
 fun GameHeader(
     modifier: Modifier,
     userName: String,
-    userLevel: String
+    userLevel: String,
+    onLadyBugIconClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -354,6 +441,9 @@ fun GameHeader(
                     imageVector = Icons.Filled.EmojiNature,
                     contentDescription = null,
                     modifier = Modifier
+                        .clickable {
+                            onLadyBugIconClick()
+                        }
                         .padding(start = 4.dp)
                         .graphicsLayer(alpha = 0.99f)
                         .drawWithCache {

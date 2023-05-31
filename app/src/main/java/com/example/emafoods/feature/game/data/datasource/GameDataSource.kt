@@ -26,4 +26,5 @@ interface GameDataSource {
     suspend fun updateLastTimeUserOpenedApp()
     suspend fun getLastTimeUserReviewedApp(): Long
     suspend fun updateLastTimeUserReviewedApp()
+    suspend fun upgradeBasicUserToAdmin()
 }

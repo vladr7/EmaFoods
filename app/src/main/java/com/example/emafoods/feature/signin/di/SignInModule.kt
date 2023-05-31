@@ -26,11 +26,7 @@ object SignInModule {
     @Singleton
     fun provideAddUserDataToRemoteDatabaseUseCase(
         authService: AuthService,
-        getUserDetailsUseCase: GetUserDetailsUseCase
     ) = AddUserDataToRemoteDatabaseUseCase(
         authService = authService,
-        getUserDetailsUseCase = getUserDetailsUseCase
     )
-
-
 }

@@ -1,17 +1,17 @@
 package com.example.emafoods.feature.generatefood.domain.usecase
 
 import com.example.emafoods.core.data.models.Food
-import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
-import kotlinx.coroutines.flow.first
+import com.example.emafoods.core.presentation.models.FoodViewData
 import javax.inject.Inject
 
-class GenerateFoodUseCase @Inject constructor(
-    private val getAllFoodsUseCase: GetAllFoodsUseCase
-) {
+class GenerateFoodUseCase @Inject constructor() {
 
-    suspend fun execute(): Food {
-        val foods = getAllFoodsUseCase.execute().first()
+    fun execute(previousFood: FoodViewData, foods: List<Food>): Food {
         if(foods.isEmpty()) return Food(id = "empty")
-        return foods.random()
+        var nextFood = foods.random()
+        while(previousFood.id == nextFood.id) {
+           nextFood = foods.random()
+        }
+        return nextFood
     }
 }

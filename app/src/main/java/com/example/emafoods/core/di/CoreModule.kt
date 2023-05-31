@@ -16,8 +16,6 @@ import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
-import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
-import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -73,12 +71,8 @@ object CoreModule {
     @Provides
     fun provideGetUserDetailsUseCase(
         authService: AuthService,
-        getUserGameDetailsUseCase: GetUserGameDetailsUseCase,
-        getUserRewardsUseCase: GetUserRewardsUseCase
     ) = GetUserDetailsUseCase(
         authService = authService,
-        getUserGameDetailsUseCase = getUserGameDetailsUseCase,
-        getUserRewardsUseCase = getUserRewardsUseCase
     )
 
     @Provides
