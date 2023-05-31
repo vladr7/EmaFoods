@@ -52,7 +52,10 @@ fun CongratulationRoute(
 
     CongratulationScreen(
         modifier = modifier,
-        onInsertFoodClick = onInsertNewFoodClick,
+        onInsertFoodClick = {
+            viewModel.onInsertNewFoodClick()
+            onInsertNewFoodClick()
+        },
         showMessage = state.showMessages,
         onMessagesShown = viewModel::onMessagesShown,
         context = context

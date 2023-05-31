@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddImageViewModel @Inject constructor(
     private val addTemporaryPendingImageToRemoteStorageUseCase: AddTemporaryPendingImageToRemoteStorageUseCase,
+    private val logHelper: LogHelper
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<ImageViewState>(ImageViewState())
@@ -36,6 +39,9 @@ class AddImageViewModel @Inject constructor(
                 hasChooseFilesImage = false
             )
         }
+        viewModelScope.launch {
+            logHelper.logUserEvent(AnalyticsConstants.ADD_PHOTO_VIA_CAMERA)
+        }
     }
 
     fun addPendingImageToTemporarilySavedImages(imageUri: Uri, context: Context) {
@@ -52,6 +58,9 @@ class AddImageViewModel @Inject constructor(
                 hasChooseFilesImage = true,
                 hasTakePictureImage = false
             )
+        }
+        viewModelScope.launch {
+            logHelper.logUserEvent(AnalyticsConstants.ADD_PHOTO_VIA_GALLERY)
         }
     }
 

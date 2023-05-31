@@ -74,6 +74,7 @@ fun ProfileRoute(
     ProfileScreen(
         modifier = modifier,
         onReviewClick = {
+            viewModel.onReviewClick()
             // can be tested after app is published (or in internal testing)
             val request = manager.requestReviewFlow()
             request.addOnCompleteListener { task ->
@@ -91,7 +92,10 @@ fun ProfileRoute(
                 }
             }
         },
-        onLevelUpClick = onGameClick,
+        onLevelUpClick = {
+            viewModel.onLevelUpClick()
+            onGameClick()
+        },
         onSignOutClick = {
             viewModel.onSignOutClick()
         },
