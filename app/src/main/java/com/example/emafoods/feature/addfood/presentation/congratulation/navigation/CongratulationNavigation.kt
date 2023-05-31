@@ -13,6 +13,5 @@ fun NavGraphBuilder.congratulationScreen(onInsertNewFoodClick: () -> Unit) {
 }
 
 fun NavController.navigateToCongratulation() {
-    this.popBackStack()
     this.navigate(AddFoodDestinations.Congratulation.route)
 }
