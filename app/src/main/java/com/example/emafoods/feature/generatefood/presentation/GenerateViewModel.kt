@@ -2,6 +2,8 @@ package com.example.emafoods.feature.generatefood.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
@@ -16,6 +18,7 @@ import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,13 +31,23 @@ class GenerateViewModel @Inject constructor(
     private val increaseXpUseCase: IncreaseXpUseCase,
     private val getUserRewardsUseCase: GetUserRewardsUseCase,
     private val resetUserRewardsUseCase: ResetUserRewardsUseCase,
-    private val updateFireStreaksUseCase: UpdateFireStreaksUseCase
+    private val updateFireStreaksUseCase: UpdateFireStreaksUseCase,
+    private val getAllFoodsUseCase: GetAllFoodsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
     val state: StateFlow<GenerateViewState> = _state
 
     init {
+        viewModelScope.launch {
+            getAllFoodsUseCase.execute().collectLatest { foods ->
+                _state.update {
+                    it.copy(
+                        listOfFoods = foods
+                    )
+                }
+            }
+        }
         viewModelScope.launch {
             updateFireStreaksUseCase.execute()
         }
@@ -66,7 +79,10 @@ class GenerateViewModel @Inject constructor(
 
     fun generateFoodEvent() {
         viewModelScope.launch {
-            val food = generateFoodUseCase.execute()
+            val food = generateFoodUseCase.execute(
+                previousFood = state.value.food,
+                foods = state.value.listOfFoods
+            )
             _state.update {
                 it.copy(
                     food = foodMapper.mapToViewData(food),
@@ -78,7 +94,8 @@ class GenerateViewModel @Inject constructor(
 
     fun onXpIncrease(nrOfRewards: Int? = null) {
         viewModelScope.launch {
-            val increaseXpActionType = nrOfRewards?.let { IncreaseXpActionType.RECIPE_ACCEPTED } ?: IncreaseXpActionType.GENERATE_RECIPE
+            val increaseXpActionType = nrOfRewards?.let { IncreaseXpActionType.RECIPE_ACCEPTED }
+                ?: IncreaseXpActionType.GENERATE_RECIPE
             when (val result = increaseXpUseCase.execute(increaseXpActionType, nrOfRewards ?: 0)) {
                 is IncreaseXpResult.ExceededUnspentThreshold -> {
                     _state.update {
@@ -149,4 +166,5 @@ data class GenerateViewState(
     val appOpenedToday: Boolean = true,
     val showRewardsAlert: Boolean = false,
     val nrOfRewards: Int = 0,
+    val listOfFoods: List<Food> = emptyList()
 )

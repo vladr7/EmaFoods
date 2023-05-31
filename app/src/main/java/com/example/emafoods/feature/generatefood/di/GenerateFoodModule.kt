@@ -1,6 +1,5 @@
 package com.example.emafoods.feature.generatefood.di
 
-import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
 import dagger.Module
 import dagger.Provides
@@ -13,8 +12,6 @@ object GenerateFoodModule {
 
     @Provides
     fun provideGenerateFoodUseCase(
-        getAllFoodsUseCase: GetAllFoodsUseCase
     ) = GenerateFoodUseCase(
-        getAllFoodsUseCase = getAllFoodsUseCase
     )
 }
