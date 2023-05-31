@@ -2,7 +2,9 @@ package com.example.emafoods.feature.pending.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
 import com.example.emafoods.core.domain.models.State
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
@@ -30,6 +32,7 @@ class PendingFoodViewModel @Inject constructor(
     private val movePendingFoodToAllFoodsUseCase: MovePendingFoodToAllFoodsUseCase,
     private val foodMapper: FoodMapper,
     private val addRewardToUserAcceptedRecipeUseCase: AddRewardToUserAcceptedRecipeUseCase,
+    private val logHelper: LogHelper
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<PendingFoodState> = MutableStateFlow(PendingFoodState())
@@ -76,6 +79,9 @@ class PendingFoodViewModel @Inject constructor(
                 }
             }
         }
+        viewModelScope.launch {
+            logHelper.logUserEvent(AnalyticsConstants.ADMIN_REJECTED_RECIPE)
+        }
     }
 
     fun onSwipeRight() {
@@ -100,6 +106,9 @@ class PendingFoodViewModel @Inject constructor(
                     }
                 }
             }
+        }
+        viewModelScope.launch {
+            logHelper.logUserEvent(AnalyticsConstants.ADMIN_ACCEPTED_RECIPE)
         }
     }
 

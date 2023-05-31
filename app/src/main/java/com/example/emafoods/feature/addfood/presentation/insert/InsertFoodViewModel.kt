@@ -4,7 +4,9 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
 import com.example.emafoods.core.domain.models.State
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
@@ -28,7 +30,8 @@ class InsertFoodViewModel @Inject constructor(
     private val insertFoodUseCase: InsertFoodUseCase,
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
     private val increaseXpUseCase: IncreaseXpUseCase,
-    private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase
+    private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase,
+    private val logHelper: LogHelper
 ) : BaseViewModel() {
 
     private val insertFoodArgs: InsertFoodArguments =
@@ -137,6 +140,9 @@ class InsertFoodViewModel @Inject constructor(
     fun onSelectedNewImage() {
         _state.update {
             it.copy(shouldAddImageFromTemporary = false)
+        }
+        viewModelScope.launch {
+            logHelper.logUserEvent(AnalyticsConstants.RE_PICK_PHOTO)
         }
     }
 }

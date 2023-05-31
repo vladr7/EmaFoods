@@ -21,6 +21,7 @@ import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Module
 import dagger.Provides
@@ -106,13 +107,20 @@ object CoreModule {
 
     @Singleton
     @Provides
+    fun provideFirebaseAuth(
+    ): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Singleton
+    @Provides
     fun provideLogHelper(
         firebaseCrashlytics: FirebaseCrashlytics,
         firebaseAnalytics: FirebaseAnalytics,
+        firebaseAuth: FirebaseAuth,
         deviceUtils: DeviceUtils
     ): LogHelper = FirebaseLogHelper(
         firebaseCrashlytics = firebaseCrashlytics,
         firebaseAnalytics = firebaseAnalytics,
+        firebaseAuth,
         deviceUtils = deviceUtils
     )
 
