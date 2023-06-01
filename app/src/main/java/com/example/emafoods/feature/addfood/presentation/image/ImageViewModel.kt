@@ -40,7 +40,7 @@ class AddImageViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.ADD_PHOTO_VIA_CAMERA)
+            logHelper.log(AnalyticsConstants.ADD_PHOTO_VIA_CAMERA)
         }
     }
 
@@ -60,7 +60,7 @@ class AddImageViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.ADD_PHOTO_VIA_GALLERY)
+            logHelper.log(AnalyticsConstants.ADD_PHOTO_VIA_GALLERY)
         }
     }
 

@@ -16,16 +16,13 @@ class FirebaseLogHelper @Inject constructor(
     private val deviceUtils: DeviceUtils
 ) : LogHelper {
 
-    override suspend fun logUserEvent(eventName: String) {
+    override suspend fun log(eventName: String) {
         val bundle = android.os.Bundle()
         bundle.putString(TIMESTAMP, System.currentTimeMillis().toString())
         bundle.putString(AnalyticsConstants.UUID, deviceUtils.getDeviceUUID())
         bundle.putString(AnalyticsConstants.USER_EMAIL, firebaseAuth.currentUser?.email)
         firebaseAnalytics.logEvent(eventName, bundle)
-    }
-
-    override fun logForNextCrash(message: String) {
-        firebaseCrashlytics.log(message)
+        firebaseCrashlytics.log(eventName)
     }
 
     override fun reportCrash(throwable: Throwable) {

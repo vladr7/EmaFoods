@@ -32,7 +32,7 @@ class CongratulationViewModel @Inject constructor(
 
     fun onInsertNewFoodClick() {
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.CLICKED_ON_ADD_NEW_RECIPE_FROM_CONGRATULATION)
+            logHelper.log(AnalyticsConstants.CLICKED_ON_ADD_NEW_RECIPE_FROM_CONGRATULATION)
         }
     }
 }

@@ -99,8 +99,12 @@ class InsertFoodViewModel @Inject constructor(
                 fileUri = imageUri ?: Uri.EMPTY,
                 shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary
             )) {
-                is State.Failed -> _state.update {
-                    it.copy(isLoading = false, errorMessage = result.message)
+                is State.Failed -> {
+                    _state.update {
+                        it.copy(isLoading = false, errorMessage = result.message)
+                    }
+                    logHelper.log(AnalyticsConstants.ADD_RECIPE_FAILED)
+                    logHelper.reportCrash(Throwable("Insert food failed ${result.message}"))
                 }
 
                 is State.Success -> {
@@ -108,6 +112,7 @@ class InsertFoodViewModel @Inject constructor(
                         it.copy(isLoading = false, errorMessage = null, insertFoodSuccess = true)
                     }
                     refreshPendingFoodsUseCase.execute()
+                    logHelper.log(AnalyticsConstants.ADD_RECIPE_SUCCESS)
                 }
             }
         }
@@ -142,7 +147,7 @@ class InsertFoodViewModel @Inject constructor(
             it.copy(shouldAddImageFromTemporary = false)
         }
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.RE_PICK_PHOTO)
+            logHelper.log(AnalyticsConstants.RE_PICK_PHOTO)
         }
     }
 }

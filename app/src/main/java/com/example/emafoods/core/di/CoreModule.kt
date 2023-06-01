@@ -36,8 +36,11 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideAuthService():
-            AuthService = DefaultAuthService()
+    fun provideAuthService(
+        logHelper: LogHelper
+    ): AuthService = DefaultAuthService(
+        logHelper = logHelper
+    )
 
     @Singleton
     @Provides
@@ -45,9 +48,15 @@ object CoreModule {
         @ApplicationContext context: Context
     ) = getFoodDatabase(context)
 
+    @Singleton
     @Provides
-    fun provideFoodDataSource(): FoodDataSource = DefaultFoodDataSource()
+    fun provideFoodDataSource(
+        logHelper: LogHelper
+    ): FoodDataSource = DefaultFoodDataSource(
+        logHelper = logHelper
+    )
 
+    @Singleton
     @Provides
     fun provideFoodRepository(
         foodDatabase: FoodDatabase,
@@ -57,6 +66,7 @@ object CoreModule {
         foodDataSource = foodDataSource
     )
 
+    @Singleton
     @Provides
     fun provideGetAllFoodsUseCase(
         foodRepository: FoodRepository
@@ -64,6 +74,7 @@ object CoreModule {
         foodRepository = foodRepository
     )
 
+    @Singleton
     @Provides
     fun provideRefreshFoodsUseCase(
         foodRepository: FoodRepository

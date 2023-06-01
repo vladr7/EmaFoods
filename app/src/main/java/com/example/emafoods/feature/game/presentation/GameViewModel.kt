@@ -56,11 +56,11 @@ class GameViewModel @Inject constructor(
     }
 
     fun onIncreaseXpClick() {
-        viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.CLICKED_ON_HOW_TO_INCREASE_XP)
-        }
         _state.update {
             it.copy(displayXpAlert = true)
+        }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.CLICKED_ON_HOW_TO_INCREASE_XP)
         }
     }
 
@@ -71,11 +71,11 @@ class GameViewModel @Inject constructor(
     }
 
     fun onLadyBugIconClick() {
-        viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.CLICKED_ON_BEE_SECRET_CODE)
-        }
         _state.update {
             it.copy(showEnterAdminCode = true)
+        }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.CLICKED_ON_BEE_SECRET_CODE)
         }
     }
 
@@ -95,6 +95,7 @@ class GameViewModel @Inject constructor(
                     it.copy(showUpgradedToAdminAlert = true)
                 }
                 upgradeBasicUserToAdminUseCase.execute()
+                logHelper.log(AnalyticsConstants.ENTERED_BEE_SECRET_CODE_SUCCESSFULLY)
             }
         }
     }

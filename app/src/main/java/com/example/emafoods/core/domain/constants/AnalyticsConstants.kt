@@ -2,6 +2,15 @@ package com.example.emafoods.core.domain.constants
 
 object AnalyticsConstants {
 
+    const val ADD_RECIPE_FAILED: String = "add_recipe_failed"
+    const val ADD_RECIPE_SUCCESS: String = "add_recipe_success"
+    const val ENTERED_BEE_SECRET_CODE_SUCCESSFULLY: String = "entered_bee_secret_code_successfully"
+    const val CHECK_FOR_AWAITING_REWARDS: String = "check_for_awaiting_rewards"
+    const val ADMIN_FETCH_PENDING_RECIPE_EMPTY: String = "admin_fetch_pending_recipe_empty"
+    const val ADMIN_FETCH_PENDING_RECIPE_SUCCESS: String = "admin_fetch_pending_recipe_success"
+    const val XP_INCREASE_TOAST_SHOWN: String = "xp_increase_toast_shown"
+    const val EXCEEDED_UNSPENT_THRESHOLD: String = "exceeded_unspent_threshold"
+    const val LEVELED_UP: String = "leveled_up"
     const val TIMESTAMP = "timestamp"
     const val UUID = "uuid"
     const val USER_EMAIL = "user_email"
@@ -17,4 +26,6 @@ object AnalyticsConstants {
     const val ADMIN_REJECTED_RECIPE = "admin_rejected_recipe"
     const val CLICKED_ON_SIGN_OUT = "clicked_on_sign_out"
     const val CLICKED_ON_BEE_SECRET_CODE = "clicked_on_bee_secret_code"
+    const val SIGN_IN_SUCCESS = "sign_in_success"
+    const val SIGN_IN_FAILED = "sign_in_failed"
 }
