@@ -69,7 +69,7 @@ class ProfileViewModel @Inject constructor(
             )
         }
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.CLICKED_ON_SIGN_OUT)
+            logHelper.log(AnalyticsConstants.CLICKED_ON_SIGN_OUT)
         }
     }
 
@@ -102,6 +102,7 @@ class ProfileViewModel @Inject constructor(
                                 xpIncreased = result.data
                             )
                         }
+                        logHelper.log(AnalyticsConstants.EXCEEDED_UNSPENT_THRESHOLD)
                     }
 
                     is IncreaseXpResult.NotExceededUnspentThreshold -> {
@@ -120,6 +121,7 @@ class ProfileViewModel @Inject constructor(
                                 newLevel = result.levelAcquired
                             )
                         }
+                        logHelper.log(AnalyticsConstants.LEVELED_UP)
                     }
                 }
             }
@@ -132,6 +134,9 @@ class ProfileViewModel @Inject constructor(
                 showXpIncreaseToast = false,
                 xpIncreased = 0
             )
+        }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.XP_INCREASE_TOAST_SHOWN)
         }
     }
 
@@ -146,13 +151,13 @@ class ProfileViewModel @Inject constructor(
 
     fun onLevelUpClick() {
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.CLICKED_ON_MY_LEVEL_BUTTON)
+            logHelper.log(AnalyticsConstants.CLICKED_ON_MY_LEVEL_BUTTON)
         }
     }
 
     fun onReviewClick() {
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.CLICKED_ON_REVIEW)
+            logHelper.log(AnalyticsConstants.CLICKED_ON_REVIEW)
         }
     }
 }

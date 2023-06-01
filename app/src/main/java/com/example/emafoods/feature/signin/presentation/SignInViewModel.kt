@@ -2,7 +2,9 @@ package com.example.emafoods.feature.signin.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
 import com.example.emafoods.core.domain.models.State
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.feature.game.domain.usecase.RefreshUserGameDetailsUseCase
 import com.example.emafoods.feature.signin.domain.usecase.AddUserDataToRemoteDatabaseUseCase
@@ -19,7 +21,8 @@ class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val addUserDataToRemoteDatabaseUseCase: AddUserDataToRemoteDatabaseUseCase,
     private val refreshUserGameDetailsUseCase: RefreshUserGameDetailsUseCase,
-    private val getUserDetailsUseCase: GetUserDetailsUseCase
+    private val getUserDetailsUseCase: GetUserDetailsUseCase,
+    private val logHelper: LogHelper
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<LoginViewState>(LoginViewState())
@@ -35,6 +38,7 @@ class SignInViewModel @Inject constructor(
                             signInSuccess = false
                         )
                     }
+                    logHelper.log(AnalyticsConstants.SIGN_IN_FAILED)
                 }
                 is State.Success -> {
                     refreshUserGameDetailsUseCase.execute()
@@ -46,6 +50,7 @@ class SignInViewModel @Inject constructor(
                             isAdmin = userData.admin
                         )
                     }
+                    logHelper.log(AnalyticsConstants.SIGN_IN_SUCCESS)
                 }
             }
         }

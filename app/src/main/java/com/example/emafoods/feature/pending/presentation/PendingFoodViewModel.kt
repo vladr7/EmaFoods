@@ -54,11 +54,13 @@ class PendingFoodViewModel @Inject constructor(
                     pendingFoods = foods.map { foodMapper.mapToViewData(it) },
                     currentFood = foodMapper.mapToViewData(foods.first())
                 )
+                logHelper.log(AnalyticsConstants.ADMIN_FETCH_PENDING_RECIPE_SUCCESS)
             } else {
                 _state.value = _state.value.copy(
                     pendingFoods = emptyList(),
                     currentFood = FoodViewData()
                 )
+                logHelper.log(AnalyticsConstants.ADMIN_FETCH_PENDING_RECIPE_EMPTY)
             }
         }
     }
@@ -80,7 +82,7 @@ class PendingFoodViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.ADMIN_REJECTED_RECIPE)
+            logHelper.log(AnalyticsConstants.ADMIN_REJECTED_RECIPE)
         }
     }
 
@@ -108,7 +110,7 @@ class PendingFoodViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.ADMIN_ACCEPTED_RECIPE)
+            logHelper.log(AnalyticsConstants.ADMIN_ACCEPTED_RECIPE)
         }
     }
 

@@ -71,6 +71,7 @@ class GenerateViewModel @Inject constructor(
                 }
                 resetUserRewardsUseCase.execute()
             }
+            logHelper.log(AnalyticsConstants.CHECK_FOR_AWAITING_REWARDS)
         }
     }
 
@@ -82,9 +83,6 @@ class GenerateViewModel @Inject constructor(
 
     fun generateFoodEvent() {
         viewModelScope.launch {
-            logHelper.logUserEvent(AnalyticsConstants.GENERATE_FOOD)
-        }
-        viewModelScope.launch {
             val food = generateFoodUseCase.execute(
                 previousFood = state.value.food,
                 foods = state.value.listOfFoods
@@ -95,6 +93,9 @@ class GenerateViewModel @Inject constructor(
                     foodHasBeenGenerated = true,
                 )
             }
+        }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.GENERATE_FOOD)
         }
     }
 
@@ -110,6 +111,7 @@ class GenerateViewModel @Inject constructor(
                             xpIncreased = result.data
                         )
                     }
+                    logHelper.log(AnalyticsConstants.EXCEEDED_UNSPENT_THRESHOLD)
                 }
 
                 is IncreaseXpResult.NotExceededUnspentThreshold -> {
@@ -128,6 +130,7 @@ class GenerateViewModel @Inject constructor(
                             newLevel = result.levelAcquired
                         )
                     }
+                    logHelper.log(AnalyticsConstants.LEVELED_UP)
                 }
             }
         }
@@ -139,6 +142,9 @@ class GenerateViewModel @Inject constructor(
                 showXpIncreaseToast = false,
                 xpIncreased = 0
             )
+        }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.XP_INCREASE_TOAST_SHOWN)
         }
     }
 

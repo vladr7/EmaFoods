@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.models.UserData
 import com.example.emafoods.core.domain.network.AuthService
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -13,7 +14,9 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
-class DefaultAuthService @Inject constructor() : AuthService {
+class DefaultAuthService @Inject constructor(
+    private val logHelper: LogHelper
+) : AuthService {
 
     companion object {
         const val FIRESTORE_USERS_COLLECTION = "USERS"
@@ -32,12 +35,18 @@ class DefaultAuthService @Inject constructor() : AuthService {
         return try {
             val documentSnapshot = usersCollection.document(uid ?: "").get().await()
             val userData = documentSnapshot.toObject(UserData::class.java)
-            userData ?: UserData(
-                uid = firebaseAuth.currentUser?.uid ?: "",
-                email = firebaseAuth.currentUser?.email ?: "",
-                displayName = firebaseAuth.currentUser?.displayName ?: "",
-            )
+            if (userData != null) {
+                userData
+            } else {
+                logHelper.reportCrash(Throwable("DefaultAuthService: GetUserDetails: User data is null"))
+                UserData(
+                    uid = firebaseAuth.currentUser?.uid ?: "",
+                    email = firebaseAuth.currentUser?.email ?: "",
+                    displayName = firebaseAuth.currentUser?.displayName ?: "",
+                )
+            }
         } catch (e: Exception) {
+            logHelper.reportCrash(Throwable("DefaultAuthService: GetUserDetails: ${e.localizedMessage}"))
             UserData(
                 uid = firebaseAuth.currentUser?.uid ?: "",
                 email = firebaseAuth.currentUser?.email ?: "",
@@ -58,6 +67,7 @@ class DefaultAuthService @Inject constructor() : AuthService {
                     if (task.isSuccessful) {
                         continuation.resume(State.success(Unit))
                     } else {
+                        logHelper.reportCrash(Throwable("DefaultAuthService: SignIn: ${task.exception?.localizedMessage}"))
                         continuation.resume(State.failed(task.exception?.localizedMessage ?: ""))
                     }
                 }
@@ -66,7 +76,11 @@ class DefaultAuthService @Inject constructor() : AuthService {
 
     override suspend fun addUserDataToFirestore(userData: UserData) {
         val uid = firebaseAuth.currentUser?.uid
-        usersCollection.document(uid ?: userData.email).set(userData)
+        try {
+            usersCollection.document(uid ?: userData.email).set(userData)
+        } catch (e: Exception) {
+            logHelper.reportCrash(Throwable("DefaultAuthService: addUserDataToFirestore: ${e.localizedMessage}"))
+        }
     }
 
     override suspend fun addRewardToUser(rewardedUserUid: String) {
@@ -91,6 +105,7 @@ class DefaultAuthService @Inject constructor() : AuthService {
             val currentRewards = if (awaitingRewards != null) awaitingRewards as Long else 0L
             State.success(currentRewards)
         } catch (e: Exception) {
+            logHelper.reportCrash(Throwable("DefaultAuthService: getUserRewards: ${e.localizedMessage}"))
             State.failed(e.localizedMessage ?: "")
         }
     }
@@ -101,7 +116,7 @@ class DefaultAuthService @Inject constructor() : AuthService {
             usersCollection.document(uid ?: "")
                 .update(FIRESTORE_USER_AWAITING_REWARDS, 0L)
         } catch (e: Exception) {
-            Log.d("DefaultAuthService", "resetUserRewards: ${e.localizedMessage}")
+            logHelper.reportCrash(Throwable("DefaultAuthService: resetUserRewards: ${e.localizedMessage}"))
         }
     }
 
@@ -111,7 +126,7 @@ class DefaultAuthService @Inject constructor() : AuthService {
             usersCollection.document(uid ?: "")
                 .update("userXp", xpToBeStored)
         } catch (e: Exception) {
-            Log.d("DefaultAuthService", "storeUserXP: ${e.localizedMessage}")
+            logHelper.reportCrash(Throwable("DefaultAuthService: storeUserXP: ${e.localizedMessage}"))
         }
     }
 
@@ -121,7 +136,7 @@ class DefaultAuthService @Inject constructor() : AuthService {
             val userXp = usersCollection.document(uid ?: "").get().await().get("userXp")
             if (userXp != null) userXp as Long else 0L
         } catch (e: Exception) {
-            Log.d("DefaultAuthService", "getUserXP: ${e.localizedMessage}")
+            logHelper.reportCrash(Throwable("DefaultAuthService: getUserXP: ${e.localizedMessage}"))
             0
         }
     }
@@ -132,7 +147,7 @@ class DefaultAuthService @Inject constructor() : AuthService {
             usersCollection.document(uid ?: "")
                 .update("userLevel", userLevel.string)
         } catch (e: Exception) {
-            Log.d("DefaultAuthService", "storeUserLevel: ${e.localizedMessage}")
+            logHelper.reportCrash(Throwable("DefaultAuthService: storeUserLevel: ${e.localizedMessage}"))
         }
     }
 
@@ -142,7 +157,7 @@ class DefaultAuthService @Inject constructor() : AuthService {
             usersCollection.document(uid ?: "")
                 .update("admin", true)
         } catch (e: Exception) {
-            Log.d("DefaultAuthService", "upgradeBasicUserToAdmin: ${e.localizedMessage}")
+            logHelper.reportCrash(Throwable("DefaultAuthService: upgradeBasicUserToAdmin: ${e.localizedMessage}"))
         }
     }
 }
