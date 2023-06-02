@@ -20,10 +20,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
@@ -200,6 +203,7 @@ fun PendingSwipe(
 ) {
     Row(
         modifier = modifier
+            .height(300.dp)
             .fillMaxWidth()
             .padding(26.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -391,9 +395,11 @@ fun PendingFoodDescription(
         fontSize = 16.sp,
         textAlign = TextAlign.Left,
         modifier = modifier
+            .heightIn(max = 180.dp)
+            .verticalScroll(rememberScrollState())
             .padding(
                 start = 25.dp, end = 20.dp, top = 10.dp, bottom = 10.dp
-            )
+            ),
     )
 }
 
