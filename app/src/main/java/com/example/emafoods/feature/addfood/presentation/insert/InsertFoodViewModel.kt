@@ -4,7 +4,9 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
 import com.example.emafoods.core.domain.models.State
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
@@ -28,7 +30,8 @@ class InsertFoodViewModel @Inject constructor(
     private val insertFoodUseCase: InsertFoodUseCase,
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
     private val increaseXpUseCase: IncreaseXpUseCase,
-    private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase
+    private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase,
+    private val logHelper: LogHelper
 ) : BaseViewModel() {
 
     private val insertFoodArgs: InsertFoodArguments =
@@ -96,8 +99,12 @@ class InsertFoodViewModel @Inject constructor(
                 fileUri = imageUri ?: Uri.EMPTY,
                 shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary
             )) {
-                is State.Failed -> _state.update {
-                    it.copy(isLoading = false, errorMessage = result.message)
+                is State.Failed -> {
+                    _state.update {
+                        it.copy(isLoading = false, errorMessage = result.message)
+                    }
+                    logHelper.log(AnalyticsConstants.ADD_RECIPE_FAILED)
+                    logHelper.reportCrash(Throwable("Insert food failed ${result.message}"))
                 }
 
                 is State.Success -> {
@@ -105,6 +112,7 @@ class InsertFoodViewModel @Inject constructor(
                         it.copy(isLoading = false, errorMessage = null, insertFoodSuccess = true)
                     }
                     refreshPendingFoodsUseCase.execute()
+                    logHelper.log(AnalyticsConstants.ADD_RECIPE_SUCCESS)
                 }
             }
         }
@@ -137,6 +145,9 @@ class InsertFoodViewModel @Inject constructor(
     fun onSelectedNewImage() {
         _state.update {
             it.copy(shouldAddImageFromTemporary = false)
+        }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.RE_PICK_PHOTO)
         }
     }
 }

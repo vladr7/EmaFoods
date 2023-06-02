@@ -2,6 +2,8 @@ package com.example.emafoods.feature.game.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.extension.capitalizeWords
 import com.example.emafoods.feature.game.domain.mapper.MapLevelPermissionToViewData
@@ -27,7 +29,8 @@ class GameViewModel @Inject constructor(
     private val mapLevelPermissionToViewData: MapLevelPermissionToViewData,
     private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase,
     private val checkIfAdminCodeIsValidUseCase: CheckIfAdminCodeIsValidUseCase,
-    private val upgradeBasicUserToAdminUseCase: UpgradeBasicUserToAdminUseCase
+    private val upgradeBasicUserToAdminUseCase: UpgradeBasicUserToAdminUseCase,
+    private val logHelper: LogHelper
 ): ViewModel() {
 
     private val _state = MutableStateFlow<GameViewState>(GameViewState())
@@ -56,6 +59,9 @@ class GameViewModel @Inject constructor(
         _state.update {
             it.copy(displayXpAlert = true)
         }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.CLICKED_ON_HOW_TO_INCREASE_XP)
+        }
     }
 
     fun onDismissXpAlertClick() {
@@ -67,6 +73,9 @@ class GameViewModel @Inject constructor(
     fun onLadyBugIconClick() {
         _state.update {
             it.copy(showEnterAdminCode = true)
+        }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.CLICKED_ON_BEE_SECRET_CODE)
         }
     }
 
@@ -86,6 +95,7 @@ class GameViewModel @Inject constructor(
                     it.copy(showUpgradedToAdminAlert = true)
                 }
                 upgradeBasicUserToAdminUseCase.execute()
+                logHelper.log(AnalyticsConstants.ENTERED_BEE_SECRET_CODE_SUCCESSFULLY)
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.example.emafoods.feature.profile.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.extension.capitalizeWords
 import com.example.emafoods.core.presentation.base.BaseViewModel
@@ -26,7 +28,8 @@ class ProfileViewModel @Inject constructor(
     private val increaseXpUseCase: IncreaseXpUseCase,
     private val consecutiveDaysAppOpenedUseCase: GetConsecutiveDaysAppOpenedUseCase,
     private val checkXNrOfDaysPassedSinceLastReviewUseCase: CheckXNrOfDaysPassedSinceLastReviewUseCase,
-    private val updateLastTimeUserReviewedUseCase: UpdateLastTimeUserReviewedUseCase
+    private val updateLastTimeUserReviewedUseCase: UpdateLastTimeUserReviewedUseCase,
+    private val logHelper: LogHelper
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<ProfileViewState>(ProfileViewState())
@@ -65,6 +68,9 @@ class ProfileViewModel @Inject constructor(
                 showSignOutAlert = true
             )
         }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.CLICKED_ON_SIGN_OUT)
+        }
     }
 
     fun onDismissSignOutAlert() {
@@ -96,6 +102,7 @@ class ProfileViewModel @Inject constructor(
                                 xpIncreased = result.data
                             )
                         }
+                        logHelper.log(AnalyticsConstants.EXCEEDED_UNSPENT_THRESHOLD)
                     }
 
                     is IncreaseXpResult.NotExceededUnspentThreshold -> {
@@ -114,6 +121,7 @@ class ProfileViewModel @Inject constructor(
                                 newLevel = result.levelAcquired
                             )
                         }
+                        logHelper.log(AnalyticsConstants.LEVELED_UP)
                     }
                 }
             }
@@ -127,6 +135,9 @@ class ProfileViewModel @Inject constructor(
                 xpIncreased = 0
             )
         }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.XP_INCREASE_TOAST_SHOWN)
+        }
     }
 
     fun onDismissLevelUp() {
@@ -135,6 +146,18 @@ class ProfileViewModel @Inject constructor(
                 leveledUpEvent = false,
                 newLevel = null
             )
+        }
+    }
+
+    fun onLevelUpClick() {
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.CLICKED_ON_MY_LEVEL_BUTTON)
+        }
+    }
+
+    fun onReviewClick() {
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.CLICKED_ON_REVIEW)
         }
     }
 }
