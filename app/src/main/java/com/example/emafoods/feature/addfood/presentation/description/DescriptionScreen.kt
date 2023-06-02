@@ -116,7 +116,7 @@ fun DescriptionScreenInput(
     onDescriptionChange: (String) -> Unit,
     description: String
 ) {
-    val maxChars = 300
+    val maxChars = 600
 
     Box(
         modifier = modifier

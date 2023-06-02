@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -260,6 +263,8 @@ fun GenerateDescription(
         fontSize = 16.sp,
         textAlign = TextAlign.Left,
         modifier = modifier
+            .heightIn(max = 300.dp)
+            .verticalScroll(rememberScrollState())
             .fillMaxWidth()
             .padding(start = 25.dp, end = 20.dp, top = 10.dp)
     )
