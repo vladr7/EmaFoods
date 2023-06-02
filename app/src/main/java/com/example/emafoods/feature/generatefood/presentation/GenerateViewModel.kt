@@ -3,6 +3,8 @@ package com.example.emafoods.feature.generatefood.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.constants.AnalyticsConstants
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
@@ -32,7 +34,8 @@ class GenerateViewModel @Inject constructor(
     private val getUserRewardsUseCase: GetUserRewardsUseCase,
     private val resetUserRewardsUseCase: ResetUserRewardsUseCase,
     private val updateFireStreaksUseCase: UpdateFireStreaksUseCase,
-    private val getAllFoodsUseCase: GetAllFoodsUseCase
+    private val getAllFoodsUseCase: GetAllFoodsUseCase,
+    private val logHelper: LogHelper
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
@@ -68,6 +71,7 @@ class GenerateViewModel @Inject constructor(
                 }
                 resetUserRewardsUseCase.execute()
             }
+            logHelper.log(AnalyticsConstants.CHECK_FOR_AWAITING_REWARDS)
         }
     }
 
@@ -90,6 +94,9 @@ class GenerateViewModel @Inject constructor(
                 )
             }
         }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.GENERATE_FOOD)
+        }
     }
 
     fun onXpIncrease(nrOfRewards: Int? = null) {
@@ -104,6 +111,7 @@ class GenerateViewModel @Inject constructor(
                             xpIncreased = result.data
                         )
                     }
+                    logHelper.log(AnalyticsConstants.EXCEEDED_UNSPENT_THRESHOLD)
                 }
 
                 is IncreaseXpResult.NotExceededUnspentThreshold -> {
@@ -122,6 +130,7 @@ class GenerateViewModel @Inject constructor(
                             newLevel = result.levelAcquired
                         )
                     }
+                    logHelper.log(AnalyticsConstants.LEVELED_UP)
                 }
             }
         }
@@ -133,6 +142,9 @@ class GenerateViewModel @Inject constructor(
                 showXpIncreaseToast = false,
                 xpIncreased = 0
             )
+        }
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.XP_INCREASE_TOAST_SHOWN)
         }
     }
 

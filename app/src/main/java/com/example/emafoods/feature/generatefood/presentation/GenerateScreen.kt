@@ -260,6 +260,7 @@ fun GenerateDescription(
         fontSize = 16.sp,
         textAlign = TextAlign.Left,
         modifier = modifier
+            .fillMaxWidth()
             .padding(start = 25.dp, end = 20.dp, top = 10.dp)
     )
 
