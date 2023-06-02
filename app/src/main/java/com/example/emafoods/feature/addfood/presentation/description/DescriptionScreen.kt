@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -117,7 +116,6 @@ fun DescriptionScreenInput(
     onDescriptionChange: (String) -> Unit,
     description: String
 ) {
-    val mockedDescription = "Lorem Ipsum dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. versions of Lorem Ipsum.."
     val maxChars = 600
 
     Box(
@@ -127,7 +125,7 @@ fun DescriptionScreenInput(
             .padding(top = 0.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
     ) {
         OutlinedTextField(
-            value = mockedDescription,
+            value = description,
             onValueChange = {
                 if (it.length <= maxChars) {
                     onDescriptionChange(it)
