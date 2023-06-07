@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,12 +43,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
@@ -62,6 +57,7 @@ import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
+import com.example.emafoods.feature.addfood.presentation.common.NewStepTitle
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
@@ -114,7 +110,7 @@ fun ImageScreen(
             modifier = modifier,
             step = 2,
         )
-        AddImageTitle()
+        NewStepTitle(text = stringResource(id = R.string.add_image_title))
         InsertFoodImage(
             imageUri = imageUri,
             modifier = modifier,
@@ -190,44 +186,6 @@ fun ConfirmImageButton(
             )
         }
     }
-}
-
-@Composable
-fun AddImageTitle(
-    modifier: Modifier = Modifier,
-) {
-
-    val gradient = Brush.horizontalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.secondary,
-            Color.Transparent
-        ),
-        startX = 300.0f,
-        endX = 0.0f
-    )
-
-    Text(
-        text = stringResource(id = R.string.add_image_title),
-        fontSize = 36.sp,
-        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-        fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.onSecondary,
-                    MaterialTheme.colorScheme.onSecondary
-                )
-            )
-        ),
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .padding(20.dp, top = 20.dp, bottom = 40.dp)
-            .background(
-                brush = gradient
-            )
-
-    )
-
 }
 
 @Composable
