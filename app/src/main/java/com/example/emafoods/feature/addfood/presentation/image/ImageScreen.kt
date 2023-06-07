@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,6 +62,7 @@ import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
+import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
 import kotlinx.coroutines.launch
@@ -90,7 +94,6 @@ fun ImageRoute(
             }
         },
         hasTakePictureImage = state.hasTakePictureImage,
-        hasChooseFilesImage = state.hasChooseFilesImage,
         onNextClicked = onNextClicked,
         imageUri = Uri.parse(state.imageUri)
     )
@@ -102,19 +105,33 @@ fun ImageScreen(
     onChoosePictureUriRetrieved: (Uri?) -> Unit,
     onTakePictureUriRetrieved: (Uri?) -> Unit,
     hasTakePictureImage: Boolean,
-    hasChooseFilesImage: Boolean,
     imageUri: Uri,
     onNextClicked: (DescriptionArguments?) -> Unit
 ) {
     ImageScreenBackground()
-    if (hasTakePictureImage || hasChooseFilesImage) {
-        Column {
-            InsertFoodImage(
-                imageUri = imageUri,
-                modifier = modifier,
-                onUriChangedChoseFile = onChoosePictureUriRetrieved,
-                onUriChangedTakePicture = onTakePictureUriRetrieved
-            )
+    Column {
+        StepIndicator(
+            modifier = modifier,
+            step = 2,
+        )
+        AddImageTitle()
+        InsertFoodImage(
+            imageUri = imageUri,
+            modifier = modifier,
+            onUriChangedChoseFile = onChoosePictureUriRetrieved,
+            onUriChangedTakePicture = onTakePictureUriRetrieved
+        )
+        val visible = imageUri.toString().isNotEmpty()
+        AnimatedVisibility(
+            visible = visible,
+            enter = slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth },
+                animationSpec = tween(
+                    durationMillis = 500,
+                    delayMillis = 300
+                )
+            ),
+        ) {
             ConfirmImageButton(
                 modifier = modifier,
                 onConfirmedClick = {
@@ -129,19 +146,12 @@ fun ImageScreen(
                 modifier = modifier
             )
         }
-    } else {
-        AddImageTitle()
-        AddImageOptions(
-            modifier = modifier,
-            onChoosePictureUriRetrieved = onChoosePictureUriRetrieved,
-            onTakePictureUriRetrieved = onTakePictureUriRetrieved
-        )
     }
 }
 
 @Composable
 fun HangingPlantAnimation(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row() {
         Spacer(modifier = modifier.weight(1f))
@@ -153,7 +163,7 @@ fun HangingPlantAnimation(
         )
         LottieAnimation(
             modifier = modifier
-                .offset(y = (-50).dp, x = (73).dp)
+                .offset(y = (15).dp, x = (73).dp)
                 .size(250.dp),
             composition = composition,
             progress = { progress },
@@ -164,7 +174,7 @@ fun HangingPlantAnimation(
 @Composable
 fun ConfirmImageButton(
     modifier: Modifier = Modifier,
-    onConfirmedClick: () -> Unit
+    onConfirmedClick: () -> Unit,
 ) {
     Row {
         Spacer(modifier = modifier.weight(1f))
@@ -211,7 +221,7 @@ fun AddImageTitle(
         ),
         textAlign = TextAlign.Center,
         modifier = modifier
-            .padding(20.dp, top = 40.dp, bottom = 40.dp)
+            .padding(20.dp, top = 20.dp, bottom = 40.dp)
             .background(
                 brush = gradient
             )

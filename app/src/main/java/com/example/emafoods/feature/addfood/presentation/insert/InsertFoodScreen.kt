@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
@@ -30,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -169,18 +169,23 @@ fun InsertFoodImage(
     onUriChangedTakePicture: (Uri?) -> Unit
 ) {
     val context = LocalContext.current
+    val hasImage = imageUri != null && imageUri.toString().isNotEmpty()
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(300.dp)
             .padding(20.dp)
-            .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
+            .shadow(
+                elevation = 8.dp,
+                shape = MaterialTheme.shapes.medium,
+                clip = true
+            )
     ) {
         SubcomposeAsyncImage(
             modifier = modifier,
             model = ImageRequest.Builder(context)
-                .data(imageUri ?: R.drawable.background)
+                .data(imageUri)
                 .crossfade(true)
                 .build(),
             contentDescription = null,
@@ -189,51 +194,75 @@ fun InsertFoodImage(
                 LoadingCookingAnimation()
             },
             error = {
-                Box(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                        .padding(20.dp)
-                        .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
-                ) {
-                    Text(text = "Error loading image ${it.result.throwable.message}")
+                if (imageUri.toString().isNotEmpty()) {
+                    Toast.makeText(
+                        context,
+                        stringResource(R.string.error_loading_picture),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )
         Column(
             modifier = modifier
-                .align(Alignment.TopEnd)
+                .align(Alignment.TopEnd),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            AttachFileIcon(
-                onUriRetrieved = {
-                    onUriChangedChoseFile(it)
-                },
-                modifier = Modifier
-                    .size(90.dp)
-                    .background(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.secondary,
-                                Color.Transparent
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = modifier
+                    .padding(top = 8.dp)
+            ) {
+                if(!hasImage) {
+                    Text(
+                        text = stringResource(R.string.choose_from_gallery),
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                AttachFileIcon(
+                    onUriRetrieved = {
+                        onUriChangedChoseFile(it)
+                    },
+                    modifier = Modifier
+                        .size(90.dp)
+                        .background(
+                            brush = Brush.radialGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.secondary,
+                                    Color.Transparent
+                                )
                             )
-                        )
-                    ),
-            )
-            TakePictureIcon(
-                onUriRetrieved = {
-                    onUriChangedTakePicture(it)
-                },
-                modifier = Modifier
-                    .size(90.dp)
-                    .background(
-                        brush = Brush.radialGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.secondary,
-                                Color.Transparent
+                        ),
+                )
+            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if(!hasImage) {
+                    Text(
+                        text = stringResource(R.string.take_a_picture),
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                TakePictureIcon(
+                    onUriRetrieved = {
+                        onUriChangedTakePicture(it)
+                    },
+                    modifier = Modifier
+                        .size(90.dp)
+                        .background(
+                            brush = Brush.radialGradient(
+                                colors = listOf(
+                                    MaterialTheme.colorScheme.secondary,
+                                    Color.Transparent
+                                )
                             )
-                        )
-                    ),
-            )
+                        ),
+                )
+            }
         }
 
     }
