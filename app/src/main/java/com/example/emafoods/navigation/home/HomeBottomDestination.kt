@@ -2,11 +2,9 @@ package com.example.emafoods.navigation.home
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PendingActions
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material.icons.outlined.PendingActions
 import androidx.compose.material.icons.outlined.Person
@@ -24,11 +22,6 @@ sealed class HomeBottomDestination(
         route = "add_food",
     )
 
-    object ListFood : HomeBottomDestination(
-        selectedIcon = Icons.Filled.Search,
-        unselectedIcon = Icons.Filled.Close,
-        "list_food",
-    )
     object GenerateFood : HomeBottomDestination(
         selectedIcon = Icons.Filled.Restaurant,
         unselectedIcon = Icons.Outlined.Restaurant,
