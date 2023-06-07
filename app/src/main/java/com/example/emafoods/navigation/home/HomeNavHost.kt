@@ -71,7 +71,6 @@ fun HomeNavHost(
                 }
             )
         }
-//        listFoodScreen()
         generateFoodScreen()
         pendingFoodScreen()
         navigation(
