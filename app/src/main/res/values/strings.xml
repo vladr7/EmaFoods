@@ -45,4 +45,5 @@
     <string name="main_dish">Prânz\nCină</string>
     <string name="soup">Supe</string>
     <string name="dessert">Desert</string>
+    <string name="add_a_new_recipe">Adaugă o rețetă nouă</string>
 </resources>
