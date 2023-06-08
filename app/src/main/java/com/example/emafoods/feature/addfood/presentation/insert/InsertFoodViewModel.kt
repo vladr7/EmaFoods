@@ -38,6 +38,7 @@ class InsertFoodViewModel @Inject constructor(
         InsertFoodArguments(savedStateHandle, stringDecoder)
     private val uriId = insertFoodArgs.uri
     private val descriptionId = insertFoodArgs.description
+    private val categoryId = insertFoodArgs.category
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()

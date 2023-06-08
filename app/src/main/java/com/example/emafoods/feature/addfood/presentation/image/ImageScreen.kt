@@ -90,7 +90,16 @@ fun ImageRoute(
             }
         },
         hasTakePictureImage = state.hasTakePictureImage,
-        onNextClicked = onNextClicked,
+        onNextClicked = { imageUri ->
+            onNextClicked(
+                imageUri?.let { imageUriString ->
+                    DescriptionArguments(
+                        category = state.category,
+                        uri = imageUriString
+                    )
+                }
+            )
+        },
         imageUri = Uri.parse(state.imageUri)
     )
 }
@@ -102,13 +111,13 @@ fun ImageScreen(
     onTakePictureUriRetrieved: (Uri?) -> Unit,
     hasTakePictureImage: Boolean,
     imageUri: Uri,
-    onNextClicked: (DescriptionArguments?) -> Unit
+    onNextClicked: (String?) -> Unit
 ) {
     ImageScreenBackground()
     Column {
         StepIndicator(
             modifier = modifier,
-            step = 2,
+            step = 1,
         )
         AddRecipeTitle(text = stringResource(id = R.string.add_image_title))
         InsertFoodImage(
@@ -132,7 +141,7 @@ fun ImageScreen(
                 modifier = modifier,
                 onConfirmedClick = {
                     if (hasTakePictureImage) {
-                        onNextClicked(DescriptionArguments(imageUri.toString()))
+                        onNextClicked(imageUri.toString())
                     } else {
                         onNextClicked(null)
                     }
