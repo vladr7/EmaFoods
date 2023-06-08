@@ -48,7 +48,8 @@ fun HomeNavHost(
             imageScreen(
                 onHasImage = { descriptionArguments ->
                     navController.navigateToDescription(
-                        uriId = descriptionArguments?.uri ?: "empty"
+                        uriId = descriptionArguments?.uri ?: "empty",
+                        categoryId = descriptionArguments?.category ?: "empty"
                     )
                 }
             )
@@ -56,7 +57,8 @@ fun HomeNavHost(
                 onConfirmedClick = {
                     navController.navigateToInsertFood(
                         uriId = it.uri,
-                        descriptionId = it.description
+                        descriptionId = it.description,
+                        categoryId = it.category
                     )
                 },
             )

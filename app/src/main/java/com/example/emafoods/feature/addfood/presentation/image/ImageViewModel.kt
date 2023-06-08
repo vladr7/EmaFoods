@@ -12,6 +12,7 @@ import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.domain.usecase.AddTemporaryPendingImageToRemoteStorageUseCase
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.image.navigation.ImageArguments
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +34,14 @@ class AddImageViewModel @Inject constructor(
 
     private val _state = MutableStateFlow<ImageViewState>(ImageViewState())
     val state: StateFlow<ImageViewState> = _state
+
+    init {
+        _state.update {
+            it.copy(
+                category = categoryId
+            )
+        }
+    }
 
     fun updateImageUri(imageUri: String) {
         _state.update {
@@ -103,4 +112,5 @@ data class ImageViewState(
     val hasTakePictureImage: Boolean = false,
     val hasChooseFilesImage: Boolean = false,
     val imageUri: String = Uri.EMPTY.toString(),
+    val category: String = CategoryType.MAIN_DISH.string
 ) : ViewState(isLoading, errorMessage)
