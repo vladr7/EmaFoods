@@ -1,14 +1,21 @@
 package com.example.emafoods.feature.addfood.presentation.category
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,9 +30,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,6 +66,7 @@ fun CategoryScreen(
     modifier: Modifier = Modifier,
     onNextClicked: (ImageArguments?) -> Unit
 ) {
+    var showCategories by remember { mutableStateOf(false) }
     CategoryScreenBackground()
     Box(
         modifier = modifier
@@ -64,33 +76,99 @@ fun CategoryScreen(
             modifier = modifier
                 .align(Alignment.TopStart)
         ) {
-            StepIndicator( // todo sterg asta si pun Adauga o reteta noua ca titlu
+            StepIndicator(
+                // todo sterg asta si pun Adauga o reteta noua ca titlu
                 modifier = modifier,
                 step = 1,
             )
             NewStepTitle(text = stringResource(R.string.choose_a_category)) // probabil sterg si asta
         }
-        ChooseCategoryContent(
+        OpenCategoryButton(
+            modifier = modifier
+                .align(Alignment.Center),
+            onClick = { showCategories = !showCategories }
+        )
+        CategoryChoices(
             modifier = modifier
                 .align(Alignment.Center),
             onNextClicked = onNextClicked,
+            showCategories = showCategories,
         )
     }
 }
 
 @Composable
-fun ChooseCategoryContent(
+fun OpenCategoryButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Image(
+        painter = painterResource(id = R.drawable.restaurantmenu),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+            .size(70.dp)
+            .clickable { onClick() }
+    )
+}
+
+@Composable
+fun CategoryChoices(
     modifier: Modifier = Modifier,
     onNextClicked: (ImageArguments?) -> Unit,
+    showCategories: Boolean,
 ) {
+    val configuration = LocalConfiguration.current
+
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = modifier
+            .fillMaxSize()
+    ) {
+        LeftCategory(showCategories, screenWidth, modifier, onNextClicked)
+        Column(
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .fillMaxHeight()
+            ) {
+            TopCategory(
+                showCategories, screenHeight, modifier,
+                onNextClicked
+            )
+            BottomCategory(
+                showCategories, screenHeight, modifier
+                    , onNextClicked
+            )
+        }
+        RightCategory(showCategories, screenWidth, modifier, onNextClicked)
+    }
+}
+
+@Composable
+private fun RowScope.LeftCategory(
+    showCategories: Boolean,
+    screenWidth: Dp,
+    modifier: Modifier,
+    onNextClicked: (ImageArguments?) -> Unit
+) {
+    AnimatedVisibility(
+        visible = showCategories,
+        enter = slideInHorizontally {
+            screenWidth.value.toInt() / 2
+        },
+        exit = slideOutHorizontally(
+            targetOffsetX = {
+                screenWidth.value.toInt() / 2
+            }
+        )
     ) {
         CategoryItem(
             modifier = modifier,
-            image = R.drawable.chefgirlcircle,
+            image = R.drawable.breakfast,
             categoryType = CategoryType.BREAKFAST,
             onClick = {
                 onNextClicked(
@@ -100,45 +178,105 @@ fun ChooseCategoryContent(
                 )
             }
         )
-        Column(
-            modifier = modifier
-                .padding(start = 40.dp, end = 40.dp)
-        ) {
-            CategoryItem(
-                modifier = modifier
-                    .padding(bottom = 60.dp),
-                image = R.drawable.chefgirlcircle,
-                categoryType = CategoryType.MAIN_DISH,
-                onClick = {
-                    onNextClicked(
-                        ImageArguments(
-                            category = CategoryType.MAIN_DISH.string
-                        )
-                    )
-                }
-            )
-            CategoryItem(
-                modifier = modifier
-                    .padding(top = 60.dp),
-                image = R.drawable.chefgirlcircle,
-                categoryType = CategoryType.SOUP,
-                onClick = {
-                    onNextClicked(
-                        ImageArguments(
-                            category = CategoryType.SOUP.string
-                        )
-                    )
-                }
-            )
-        }
+    }
+}
+
+@Composable
+private fun RowScope.RightCategory(
+    showCategories: Boolean,
+    screenWidth: Dp,
+    modifier: Modifier,
+    onNextClicked: (ImageArguments?) -> Unit
+) {
+    AnimatedVisibility(
+        visible = showCategories,
+        enter = slideInHorizontally {
+            -screenWidth.value.toInt() / 2
+        },
+        exit = slideOutHorizontally(
+            targetOffsetX = {
+                -screenWidth.value.toInt() / 2
+            }
+        )
+    ) {
         CategoryItem(
             modifier = modifier,
-            image = R.drawable.chefgirlcircle,
+            image = R.drawable.dessert,
             categoryType = CategoryType.DESSERT,
             onClick = {
                 onNextClicked(
                     ImageArguments(
                         category = CategoryType.DESSERT.string
+                    )
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun ColumnScope.BottomCategory(
+    showCategories: Boolean,
+    screenHeight: Dp,
+    modifier: Modifier,
+    onNextClicked: (ImageArguments?) -> Unit
+) {
+    AnimatedVisibility(
+        visible = showCategories,
+        enter = slideInVertically(
+            initialOffsetY = {
+                -screenHeight.value.toInt() / 2
+            }
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = {
+                -screenHeight.value.toInt() / 2
+            }
+        )
+    ) {
+        CategoryItem(
+            modifier = modifier,
+            image = R.drawable.soup,
+            categoryType = CategoryType.SOUP,
+            onClick = {
+                onNextClicked(
+                    ImageArguments(
+                        category = CategoryType.SOUP.string
+                    )
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun ColumnScope.TopCategory(
+    showCategories: Boolean,
+    screenHeight: Dp,
+    modifier: Modifier,
+    onNextClicked: (ImageArguments?) -> Unit
+) {
+    AnimatedVisibility(
+        visible = showCategories,
+        enter = slideInVertically(
+            initialOffsetY = {
+                screenHeight.value.toInt() / 2
+            }
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = {
+                screenHeight.value.toInt() / 2
+            }
+        )
+    ) {
+        CategoryItem(
+            modifier = modifier,
+            image = R.drawable.pasta,
+            categoryType = CategoryType.MAIN_DISH,
+            onClick = {
+                onNextClicked(
+                    ImageArguments(
+                        category = CategoryType.MAIN_DISH.string
                     )
                 )
             }
@@ -159,15 +297,23 @@ fun CategoryItem(
         CategoryType.SOUP -> stringResource(R.string.soup)
         CategoryType.DESSERT -> stringResource(R.string.dessert)
     }
-    Column {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+    ) {
         Text(
-            text = text
+            text = text,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSecondary,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
         )
         Image(
             painter = painterResource(id = image),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = modifier
+            modifier = Modifier
                 .size(70.dp)
                 .clickable { onClick() }
         )
