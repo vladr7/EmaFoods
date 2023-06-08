@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,12 +41,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.bounceClick
-import com.example.emafoods.feature.addfood.presentation.common.NewStepTitle
-import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
+import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
 import com.example.emafoods.feature.addfood.presentation.image.navigation.ImageArguments
 
 @Composable
@@ -78,12 +79,21 @@ fun CategoryScreen(
             modifier = modifier
                 .align(Alignment.TopStart)
         ) {
-            StepIndicator(
-                // todo sterg asta si pun Adauga o reteta noua ca titlu
-                modifier = modifier,
-                step = 1,
+            AddRecipeTitle(
+                text = stringResource(R.string.add_a_new_recipe),
+                modifier = modifier
             )
-            NewStepTitle(text = stringResource(R.string.choose_a_category)) // probabil sterg si asta
+            AnimatedVisibility(
+                visible = !showCategories,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                AddRecipeTitle(
+                    text = stringResource(R.string.choose_a_category), fontSize = 24.sp,
+                    modifier = modifier
+                        .padding(start = 30.dp)
+                )
+            }
         }
         OpenCategoryButton(
             modifier = modifier

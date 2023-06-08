@@ -11,13 +11,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun NewStepTitle(
+fun AddRecipeTitle(
     modifier: Modifier = Modifier,
-    text: String
+    text: String,
+    fontSize: TextUnit = 36.sp
 ) {
 
     val gradient = Brush.horizontalGradient(
@@ -31,7 +33,7 @@ fun NewStepTitle(
 
     Text(
         text = " $text ",
-        fontSize = 36.sp,
+        fontSize = fontSize,
         fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
         fontWeight = FontWeight.Bold,
         style = TextStyle(
@@ -44,10 +46,11 @@ fun NewStepTitle(
         ),
         textAlign = TextAlign.Center,
         modifier = modifier
-            .padding(20.dp, top = 20.dp, bottom = 40.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
             .background(
                 brush = gradient
             )
 
     )
 }
+
