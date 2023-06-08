@@ -1,13 +1,14 @@
 package com.example.emafoods.feature.addfood.presentation.category
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.presentation.common.NewStepTitle
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.image.navigation.ImageArguments
@@ -107,8 +109,10 @@ fun OpenCategoryButton(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         modifier = modifier
-            .size(70.dp)
-            .clickable { onClick() }
+            .size(90.dp)
+            .bounceClick(
+                onClick = onClick
+            )
     )
 }
 
@@ -134,14 +138,13 @@ fun CategoryChoices(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
                 .fillMaxHeight()
-            ) {
+        ) {
             TopCategory(
                 showCategories, screenHeight, modifier,
                 onNextClicked
             )
             BottomCategory(
-                showCategories, screenHeight, modifier
-                    , onNextClicked
+                showCategories, screenHeight, modifier, onNextClicked
             )
         }
         RightCategory(showCategories, screenWidth, modifier, onNextClicked)
@@ -157,14 +160,15 @@ private fun RowScope.LeftCategory(
 ) {
     AnimatedVisibility(
         visible = showCategories,
-        enter = slideInHorizontally {
-            screenWidth.value.toInt() / 2
-        },
+        enter = fadeIn() +
+                slideInHorizontally {
+                    screenWidth.value.toInt() / 2
+                },
         exit = slideOutHorizontally(
             targetOffsetX = {
                 screenWidth.value.toInt() / 2
             }
-        )
+        ) + fadeOut()
     ) {
         CategoryItem(
             modifier = modifier,
@@ -190,14 +194,15 @@ private fun RowScope.RightCategory(
 ) {
     AnimatedVisibility(
         visible = showCategories,
-        enter = slideInHorizontally {
+        enter = fadeIn()
+                + slideInHorizontally {
             -screenWidth.value.toInt() / 2
         },
         exit = slideOutHorizontally(
             targetOffsetX = {
                 -screenWidth.value.toInt() / 2
             }
-        )
+        ) + fadeOut()
     ) {
         CategoryItem(
             modifier = modifier,
@@ -223,7 +228,7 @@ private fun ColumnScope.BottomCategory(
 ) {
     AnimatedVisibility(
         visible = showCategories,
-        enter = slideInVertically(
+        enter = fadeIn() + slideInVertically(
             initialOffsetY = {
                 -screenHeight.value.toInt() / 2
             }
@@ -232,7 +237,7 @@ private fun ColumnScope.BottomCategory(
             targetOffsetY = {
                 -screenHeight.value.toInt() / 2
             }
-        )
+        ) + fadeOut()
     ) {
         CategoryItem(
             modifier = modifier,
@@ -258,7 +263,7 @@ private fun ColumnScope.TopCategory(
 ) {
     AnimatedVisibility(
         visible = showCategories,
-        enter = slideInVertically(
+        enter = fadeIn() + slideInVertically(
             initialOffsetY = {
                 screenHeight.value.toInt() / 2
             }
@@ -267,7 +272,7 @@ private fun ColumnScope.TopCategory(
             targetOffsetY = {
                 screenHeight.value.toInt() / 2
             }
-        )
+        ) + fadeOut()
     ) {
         CategoryItem(
             modifier = modifier,
@@ -315,7 +320,9 @@ fun CategoryItem(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(70.dp)
-                .clickable { onClick() }
+                .bounceClick(
+                    onClick = onClick
+                )
         )
     }
 }
