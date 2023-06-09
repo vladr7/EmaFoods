@@ -9,6 +9,7 @@ import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
 import com.example.emafoods.feature.pending.domain.usecase.DeletePendingFoodUseCase
 import com.example.emafoods.feature.pending.domain.usecase.GetAllPendingFoodsUseCase
@@ -58,7 +59,9 @@ class PendingFoodViewModel @Inject constructor(
             } else {
                 _state.value = _state.value.copy(
                     pendingFoods = emptyList(),
-                    currentFood = FoodViewData()
+                    currentFood = FoodViewData(
+                        categoryType = CategoryType.MAIN_DISH
+                    )
                 )
                 logHelper.log(AnalyticsConstants.ADMIN_FETCH_PENDING_RECIPE_EMPTY)
             }
@@ -131,7 +134,9 @@ data class PendingFoodState(
     val isLoading: Boolean = false,
     val showError: Boolean = false,
     val error: String = "",
-    val currentFood: FoodViewData = FoodViewData(),
+    val currentFood: FoodViewData = FoodViewData(
+        categoryType = CategoryType.MAIN_DISH
+    ),
     val showMovedSuccessfully: Boolean = false,
     val showDeleteSuccessfully: Boolean = false
 )

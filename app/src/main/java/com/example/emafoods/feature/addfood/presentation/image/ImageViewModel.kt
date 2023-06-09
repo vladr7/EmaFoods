@@ -66,7 +66,8 @@ class AddImageViewModel @Inject constructor(
             val compressedUri = imageUri.getCompressedImage(context)
             addTemporaryPendingImageToRemoteStorageUseCase.execute(
                 food = Food(
-                    imageRef = compressedUri.toString()
+                    imageRef = compressedUri.toString(),
+                    category = categoryId
                 )
             )
         }

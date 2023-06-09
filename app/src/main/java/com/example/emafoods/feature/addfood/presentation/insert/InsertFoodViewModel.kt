@@ -96,6 +96,7 @@ class InsertFoodViewModel @Inject constructor(
             when (val result = insertFoodUseCase.execute(
                 food = Food(
                     description = description,
+                    category = categoryId
                 ),
                 fileUri = imageUri ?: Uri.EMPTY,
                 shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary

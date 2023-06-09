@@ -4,7 +4,6 @@ import android.net.Uri
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.data.models.FoodImage
 import com.example.emafoods.core.domain.models.State
-import kotlinx.coroutines.flow.Flow
 
 interface FoodDataSource {
 
@@ -26,13 +25,13 @@ interface FoodDataSource {
 
     suspend fun moveTemporaryImageToPending(food: Food): State<Food>
 
-    fun getAllFoods(): Flow<List<Food>>
+    suspend fun getAllFoods(): List<Food>
 
-    fun getAllFoodImages(): Flow<List<FoodImage>>
+    suspend fun getAllFoodImages(): List<FoodImage>
 
-    fun getAllPendingFoods(): Flow<List<Food>>
+    suspend fun getAllPendingFoods(): List<Food>
 
-    fun getAllPendingFoodImages(): Flow<List<FoodImage>>
+    suspend fun getAllPendingFoodImages(): List<FoodImage>
 
     suspend fun deletePendingFood(food: Food): State<Food>
 

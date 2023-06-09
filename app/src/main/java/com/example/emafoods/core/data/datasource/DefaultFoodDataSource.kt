@@ -6,46 +6,73 @@ import com.example.emafoods.core.data.models.FoodImage
 import com.example.emafoods.core.domain.datasource.FoodDataSource
 import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.network.LogHelper
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class DefaultFoodDataSource @Inject constructor(
-   private val logHelper: LogHelper
+    private val logHelper: LogHelper
 ) : FoodDataSource {
 
     companion object {
-        const val FIRESTORE_FOODS_COLLECTION = "ALLFOODS"
+        const val FIRESTORE_MAIN_DISH_COLLECTION = "MAINDISH"
+        const val FIREBASE_DESSERT_COLLECTION = "DESSERT"
+        const val FIREBASE_SOUP_COLLECTION = "SOUP"
+        const val FIREBASE_BREAKFAST_COLLECTION = "BREAKFAST"
+        const val STORAGE_MAIN_DISH = "MAINDISH"
+        const val STORAGE_DESSERT = "DESSERT"
+        const val STORAGE_SOUP = "SOUP"
+        const val STORAGE_BREAKFAST = "BREAKFAST"
         const val FIRESTORE_PENDING_FOODS_COLLECTION = "PENDINGFOODS"
-        const val STORAGE_FOODS = "ALLFOODS"
         const val STORAGE_PENDING_FOODS = "PENDINGFOODS"
         const val STORAGE_PENDING_FOODS_TEMPORARY_FOLDER = "TEMPORARY"
         const val FIREBASE_BUCKET_NAME = "emafoods-16e9e.appspot.com"
     }
 
-    private val foodCollection = FirebaseFirestore.getInstance()
-        .collection(FIRESTORE_FOODS_COLLECTION)
+    private val mainDishCollection = FirebaseFirestore.getInstance()
+        .collection(FIRESTORE_MAIN_DISH_COLLECTION)
+
+    private val breakfastCollection = FirebaseFirestore.getInstance()
+        .collection(FIREBASE_BREAKFAST_COLLECTION)
+
+    private val dessertCollection = FirebaseFirestore.getInstance()
+        .collection(FIREBASE_DESSERT_COLLECTION)
+
+    private val soupCollection = FirebaseFirestore.getInstance()
+        .collection(FIREBASE_SOUP_COLLECTION)
 
     private val pendingFoodCollection = FirebaseFirestore.getInstance()
         .collection(FIRESTORE_PENDING_FOODS_COLLECTION)
 
     private val storage = FirebaseStorage.getInstance()
-    private val gsReference =
-        storage.getReferenceFromUrl("gs://$FIREBASE_BUCKET_NAME/$STORAGE_FOODS/")
-    private val gsPendingReference =
-        storage.getReferenceFromUrl("gs://$FIREBASE_BUCKET_NAME/$STORAGE_PENDING_FOODS/")
+
+    private fun getCollectionFromCategory(categoryType: CategoryType): CollectionReference {
+        return when (categoryType) {
+            CategoryType.MAIN_DISH -> mainDishCollection
+            CategoryType.BREAKFAST -> breakfastCollection
+            CategoryType.DESSERT -> dessertCollection
+            CategoryType.SOUP -> soupCollection
+        }
+    }
+
+    private fun getStorageReference(food: Food): StorageReference {
+        val extension = ".jpg"
+        return when (CategoryType.fromString(food.category)) {
+            CategoryType.MAIN_DISH -> FirebaseStorage.getInstance().reference.child("$STORAGE_MAIN_DISH/${food.id}$extension")
+            CategoryType.BREAKFAST -> FirebaseStorage.getInstance().reference.child("$STORAGE_BREAKFAST/${food.id}$extension")
+            CategoryType.DESSERT -> FirebaseStorage.getInstance().reference.child("$STORAGE_DESSERT/${food.id}$extension")
+            CategoryType.SOUP -> FirebaseStorage.getInstance().reference.child("$STORAGE_SOUP/${food.id}$extension")
+        }
+    }
 
     override suspend fun addFood(food: Food): State<Food> {
+        val collection = getCollectionFromCategory(CategoryType.fromString(food.category))
         return try {
-            val task = foodCollection.document(food.id).set(food)
+            val task = collection.document(food.id).set(food)
             task.await()
             if (task.isSuccessful) {
                 State.success(food)
@@ -67,8 +94,7 @@ class DefaultFoodDataSource @Inject constructor(
     ): State<Food> {
         return try {
             val extension = ".jpg"
-            val refStorage =
-                FirebaseStorage.getInstance().reference.child("$STORAGE_FOODS/${food.id}$extension")
+            val refStorage = getStorageReference(food)
             val task = refStorage.putFile(fileUri)
             task.await()
             if (task.isSuccessful) {
@@ -90,9 +116,7 @@ class DefaultFoodDataSource @Inject constructor(
         bytes: ByteArray
     ): State<Food> {
         return try {
-            val extension = ".jpg"
-            val refStorage =
-                FirebaseStorage.getInstance().reference.child("$STORAGE_FOODS/${food.id}$extension")
+            val refStorage = getStorageReference(food)
             val task = refStorage.putBytes(bytes)
             task.await()
             if (task.isSuccessful) {
@@ -109,67 +133,72 @@ class DefaultFoodDataSource @Inject constructor(
         }
     }
 
-    override fun getAllFoods() = callbackFlow<List<Food>> {
-        val snapshotListener = foodCollection.addSnapshotListener { snapshot, error ->
-            if (snapshot != null) {
-                val foods = snapshot.toObjects(Food::class.java)
-                trySend(foods)
-            } else {
-                trySend(emptyList())
-            }
+    override suspend fun getAllFoods(): List<Food> {
+        return try {
+            val snapshotBreakfast = breakfastCollection.get().await()
+            val breakfastList = snapshotBreakfast.toObjects(Food::class.java)
+            val snapshotDessert = dessertCollection.get().await()
+            val dessertList = snapshotDessert.toObjects(Food::class.java)
+            val snapshotMainDish = mainDishCollection.get().await()
+            val mainDishList = snapshotMainDish.toObjects(Food::class.java)
+            val snapshotSoup = soupCollection.get().await()
+            val soupList = snapshotSoup.toObjects(Food::class.java)
+            val foods = breakfastList + dessertList + mainDishList + soupList
+            foods
+        } catch (e: Exception) {
+            logHelper.reportCrash(e)
+            emptyList<Food>()
         }
-        awaitClose {
-            snapshotListener.remove()
-        }
-    }.catch {
-        logHelper.reportCrash(it)
-        emit(emptyList())
-    }.flowOn(Dispatchers.IO)
-
-
-    override fun getAllFoodImages() = flow<List<FoodImage>> {
-        val mutableListOfFoodImages = mutableListOf<FoodImage>()
-
-        val snapshot = gsReference.listAll().await()
-        snapshot.items.forEach { storageReference ->
-            mutableListOfFoodImages.add(
-                FoodImage(
-                    id = storageReference.name.removeSuffix(".jpg"),
-                    imageRef = storageReference.downloadUrl.await().toString()
-                )
-            )
-        }
-
-        emit(mutableListOfFoodImages.toList())
-    }.catch {
-        logHelper.reportCrash(it)
-        emit(listOf())
-    }.flowOn(Dispatchers.IO)
-
-    override fun getAllPendingFoods(): Flow<List<Food>> {
-        return callbackFlow<List<Food>> {
-            val snapshotListener = pendingFoodCollection.addSnapshotListener { snapshot, error ->
-                if (snapshot != null) {
-                    val foods = snapshot.toObjects(Food::class.java)
-                    trySend(foods)
-                } else {
-                    trySend(emptyList())
-                }
-            }
-            awaitClose {
-                snapshotListener.remove()
-            }
-        }.catch {
-            logHelper.reportCrash(it)
-            emit(emptyList())
-        }.flowOn(Dispatchers.IO)
     }
 
-    override fun getAllPendingFoodImages(): Flow<List<FoodImage>> =
-        flow<List<FoodImage>> {
+    override suspend fun getAllFoodImages(): List<FoodImage> {
+        return try {
             val mutableListOfFoodImages = mutableListOf<FoodImage>()
+            val snapshotMainDish =
+                storage.getReferenceFromUrl("gs://$FIREBASE_BUCKET_NAME/$STORAGE_MAIN_DISH/")
+                    .listAll().await()
+            val snapshotBreakfast =
+                storage.getReferenceFromUrl("gs://$FIREBASE_BUCKET_NAME/$STORAGE_BREAKFAST/")
+                    .listAll().await()
+            val snapshotDessert =
+                storage.getReferenceFromUrl("gs://$FIREBASE_BUCKET_NAME/$STORAGE_DESSERT/")
+                    .listAll().await()
+            val snapshotSoup =
+                storage.getReferenceFromUrl("gs://$FIREBASE_BUCKET_NAME/$STORAGE_SOUP/").listAll()
+                    .await()
+            val referenceList =
+                snapshotMainDish.items + snapshotBreakfast.items + snapshotDessert.items + snapshotSoup.items
+            referenceList.forEach { storageReference ->
+                mutableListOfFoodImages.add(
+                    FoodImage(
+                        id = storageReference.name.removeSuffix(".jpg"),
+                        imageRef = storageReference.downloadUrl.await().toString()
+                    )
+                )
+            }
+            return mutableListOfFoodImages.toList()
+        } catch (e: Exception) {
+            logHelper.reportCrash(e)
+            emptyList<FoodImage>()
+        }
+    }
 
-            val snapshot = gsPendingReference.listAll().await()
+    override suspend fun getAllPendingFoods(): List<Food> {
+        return try {
+            val snapshot = pendingFoodCollection.get().await()
+            return snapshot.toObjects(Food::class.java)
+        } catch (e: Exception) {
+            logHelper.reportCrash(e)
+            emptyList<Food>()
+        }
+    }
+
+    override suspend fun getAllPendingFoodImages(): List<FoodImage> =
+        try {
+            val mutableListOfFoodImages = mutableListOf<FoodImage>()
+            val snapshot =
+                storage.getReferenceFromUrl("gs://$FIREBASE_BUCKET_NAME/$STORAGE_PENDING_FOODS/")
+                    .listAll().await()
             snapshot.items.forEach { storageReference ->
                 mutableListOfFoodImages.add(
                     FoodImage(
@@ -179,11 +208,12 @@ class DefaultFoodDataSource @Inject constructor(
                 )
             }
 
-            emit(mutableListOfFoodImages.toList())
-        }.catch {
-            logHelper.reportCrash(it)
-            emit(listOf())
-        }.flowOn(Dispatchers.IO)
+            mutableListOfFoodImages.toList()
+        } catch (e: Exception) {
+            logHelper.reportCrash(e)
+            emptyList<FoodImage>()
+        }
+
 
     override suspend fun deletePendingFood(food: Food): State<Food> {
         return try {
@@ -192,7 +222,8 @@ class DefaultFoodDataSource @Inject constructor(
             if (task.isSuccessful) {
                 State.success(food)
             } else {
-                val message = "Could not delete food from firebase ${task.exception?.message}"
+                val message =
+                    "Could not delete food from firebase ${task.exception?.message}"
                 logHelper.reportCrash(Throwable(message))
                 State.Failed(message)
             }
@@ -213,7 +244,8 @@ class DefaultFoodDataSource @Inject constructor(
             if (task.isSuccessful) {
                 State.success(food)
             } else {
-                val message = "Could not delete food image from storage ${task.exception?.message}"
+                val message =
+                    "Could not delete food image from storage ${task.exception?.message}"
                 logHelper.reportCrash(Throwable(message))
                 State.Failed(message)
             }
@@ -272,7 +304,8 @@ class DefaultFoodDataSource @Inject constructor(
             if (task.isSuccessful) {
                 State.success(food)
             } else {
-                val message = "Could not add pending food image to storage ${task.exception?.message}"
+                val message =
+                    "Could not add pending food image to storage ${task.exception?.message}"
                 logHelper.reportCrash(Throwable(message))
                 State.Failed(message)
             }
@@ -296,12 +329,14 @@ class DefaultFoodDataSource @Inject constructor(
             if (task.isSuccessful) {
                 State.success(food)
             } else {
-                val message = "Could not add pending food image byte array to storage ${task.exception?.message}"
+                val message =
+                    "Could not add pending food image byte array to storage ${task.exception?.message}"
                 logHelper.reportCrash(Throwable(message))
                 State.Failed(message)
             }
         } catch (e: Exception) {
-            val message = "Could not add pending food image byte array to storage ${e.message}"
+            val message =
+                "Could not add pending food image byte array to storage ${e.message}"
             logHelper.reportCrash(Throwable(message))
             State.Failed(message)
         }
@@ -318,12 +353,14 @@ class DefaultFoodDataSource @Inject constructor(
             if (task.isSuccessful) {
                 State.success(food)
             } else {
-                val message = "Could not add pending food image to temporary storage ${task.exception?.message}"
+                val message =
+                    "Could not add pending food image to temporary storage ${task.exception?.message}"
                 logHelper.reportCrash(Throwable(message))
                 State.Failed(message)
             }
         } catch (e: Exception) {
-            val message = "Could not add pending food image to temporary storage ${e.message}"
+            val message =
+                "Could not add pending food image to temporary storage ${e.message}"
             logHelper.reportCrash(Throwable(message))
             State.Failed(message)
         }

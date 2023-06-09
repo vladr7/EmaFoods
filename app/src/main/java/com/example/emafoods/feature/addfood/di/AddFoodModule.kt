@@ -25,12 +25,10 @@ object AddFoodModule {
     fun provideAddFoodUseCase(
         getUserDetailsUseCase: GetUserDetailsUseCase,
         checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
-        addFoodToMainListUseCase: AddFoodToMainListUseCase,
         addFoodToPendingListUseCase: AddFoodToPendingListUseCase,
     ) = InsertFoodUseCase(
         getUserDetailsUseCase = getUserDetailsUseCase,
         checkFieldsAreFilledUseCase = checkFieldsAreFilledUseCase,
-        addFoodToMainListUseCase = addFoodToMainListUseCase,
         addFoodToPendingListUseCase = addFoodToPendingListUseCase,
     )
 
