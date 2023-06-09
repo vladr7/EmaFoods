@@ -38,6 +38,7 @@ class InsertFoodViewModel @Inject constructor(
         InsertFoodArguments(savedStateHandle, stringDecoder)
     private val uriId = insertFoodArgs.uri
     private val descriptionId = insertFoodArgs.description
+    private val categoryId = insertFoodArgs.category
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
@@ -95,6 +96,7 @@ class InsertFoodViewModel @Inject constructor(
             when (val result = insertFoodUseCase.execute(
                 food = Food(
                     description = description,
+                    category = categoryId
                 ),
                 fileUri = imageUri ?: Uri.EMPTY,
                 shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary

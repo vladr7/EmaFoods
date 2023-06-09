@@ -9,7 +9,6 @@ import javax.inject.Inject
 class InsertFoodUseCase @Inject constructor(
     private val checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
-    private val addFoodToMainListUseCase: AddFoodToMainListUseCase,
     private val addFoodToPendingListUseCase: AddFoodToPendingListUseCase,
 ) {
 
@@ -32,6 +31,7 @@ class InsertFoodUseCase @Inject constructor(
             author = user.displayName,
             description = food.description,
             imageRef = fileUri.toString(),
+            category = food.category
         )
 
         return addFoodToPendingListUseCase.execute(newFood, shouldAddImageFromTemporary)

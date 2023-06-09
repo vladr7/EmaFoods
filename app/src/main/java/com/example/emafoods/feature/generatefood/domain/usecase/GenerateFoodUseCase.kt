@@ -7,8 +7,9 @@ import javax.inject.Inject
 class GenerateFoodUseCase @Inject constructor() {
 
     fun execute(previousFood: FoodViewData, foods: List<Food>): Food {
-        if(foods.isEmpty()) return Food(id = "empty")
+        if(foods.isEmpty()) return Food(id = "empty", category = "")
         var nextFood = foods.random()
+        if(foods.size == 1) return nextFood
         while(previousFood.id == nextFood.id) {
            nextFood = foods.random()
         }

@@ -7,7 +7,7 @@
     <string name="generate_button_text">Generează</string>
     <string name="title">Titlu</string>
     <string name="description">Descriere</string>
-    <string name="add_image_title">Adaugă o rețetă nouă</string>
+    <string name="add_image_title">Adaugă o imagine a rețetei</string>
     <string name="title_screen_title">Titlu rețetă</string>
     <string name="title_input_label_text">Titlu</string>
     <string name="description_empty_input_label_text">Descriere</string>
@@ -36,4 +36,14 @@
     <string name="introduce_code">Introduceți codul</string>
     <string name="confirmed">Confirmare</string>
     <string name="promoted_successfully">Promovare cu succes! Aplicația se va reporni în 5 secunde!</string>
+    <string name="error_loading_picture">Eroare la încărcarea imaginii, încearcă din nou.</string>
+    <string name="take_a_picture">Fă o poză</string>
+    <string name="choose_from_gallery">Alege din galerie</string>
+    <string name="step_indicator">" Pasul %1$s "</string>
+    <string name="choose_a_category">Alege o categorie</string>
+    <string name="breakfast">Mic dejun</string>
+    <string name="main_dish">Prânz\nCină</string>
+    <string name="soup">Supe</string>
+    <string name="dessert">Desert</string>
+    <string name="add_a_new_recipe">Adaugă o rețetă nouă</string>
 </resources>
