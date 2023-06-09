@@ -10,8 +10,8 @@ import androidx.navigation.navArgument
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.category.navigation.CategoryIdArg
-import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 import com.example.emafoods.feature.addfood.presentation.image.ImageRoute
+import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
 
 data class ImageArguments(
     val category: String,
@@ -29,7 +29,7 @@ fun NavController.navigateToImage(categoryId: String) {
 }
 
 
-fun NavGraphBuilder.imageScreen(onHasImage: (DescriptionArguments?) -> Unit) {
+fun NavGraphBuilder.imageScreen(onHasImage: (IngredientsArguments) -> Unit) {
     composable(
         route = "${AddFoodDestinations.Image.route}/{$CategoryIdArg}",
         arguments = listOf(
