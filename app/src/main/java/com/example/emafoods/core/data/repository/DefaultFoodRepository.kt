@@ -12,8 +12,6 @@ import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.repository.FoodRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,31 +31,31 @@ class DefaultFoodRepository @Inject constructor(
 
     override suspend fun refreshFoods() {
         withContext(Dispatchers.IO) {
-            foodDataSource.getAllFoods()
-                .combine(foodDataSource.getAllFoodImages()) { foods, images ->
-                    val mutableListOfFoods = mutableListOf<Food>()
-                    foods.forEach { food ->
-                        val image = images.find { image ->
-                            food.id == image.id
-                        }
-                        val newFood = Food(
-                            id = food.id,
-                            author = food.author,
-                            authorUid = food.authorUid,
-                            description = food.description,
-                            imageRef = image?.imageRef ?: "",
-                            addedDateInSeconds = food.addedDateInSeconds,
-                        )
-                        if (newFood.imageRef.isNotEmpty()) {
-                            mutableListOfFoods.add(newFood)
-                        }
-                    }
-                    if (mutableListOfFoods.isNotEmpty()) {
-                        database.foodDao.insertAll(
-                            mutableListOfFoods.toList().asDatabaseModel()
-                        )
-                    }
-                }.collect()
+            val foods = foodDataSource.getAllFoods()
+            val images = foodDataSource.getAllFoodImages()
+            val mutableListOfFoods = mutableListOf<Food>()
+            foods.forEach { food ->
+                val image = images.find { image ->
+                    food.id == image.id
+                }
+                val newFood = Food(
+                    id = food.id,
+                    author = food.author,
+                    authorUid = food.authorUid,
+                    description = food.description,
+                    imageRef = image?.imageRef ?: "",
+                    addedDateInSeconds = food.addedDateInSeconds,
+                    category = food.category
+                )
+                if (newFood.imageRef.isNotEmpty()) {
+                    mutableListOfFoods.add(newFood)
+                }
+            }
+            if (mutableListOfFoods.isNotEmpty()) {
+                database.foodDao.insertAll(
+                    mutableListOfFoods.toList().asDatabaseModel()
+                )
+            }
         }
     }
 
@@ -72,31 +70,31 @@ class DefaultFoodRepository @Inject constructor(
 
     override suspend fun refreshPendingFoods() {
         withContext(Dispatchers.IO) {
-            foodDataSource.getAllPendingFoods()
-                .combine(foodDataSource.getAllPendingFoodImages()) { foods, images ->
-                    val mutableListOfFoods = mutableListOf<Food>()
-                    foods.forEach { food ->
-                        val image = images.find { image ->
-                            food.id == image.id
-                        }
-                        val newFood = Food(
-                            id = food.id,
-                            author = food.author,
-                            authorUid = food.authorUid,
-                            description = food.description,
-                            imageRef = image?.imageRef ?: "",
-                            addedDateInSeconds = food.addedDateInSeconds,
-                        )
-                        if (newFood.imageRef.isNotEmpty()) {
-                            mutableListOfFoods.add(newFood)
-                        }
-                    }
-                    if (mutableListOfFoods.isNotEmpty()) {
-                        database.foodDao.insertAllPendingFoods(
-                            mutableListOfFoods.toList().asDatabasePendingModel()
-                        )
-                    }
-                }.collect()
+            val foods = foodDataSource.getAllPendingFoods()
+            val images = foodDataSource.getAllPendingFoodImages()
+            val mutableListOfFoods = mutableListOf<Food>()
+            foods.forEach { food ->
+                val image = images.find { image ->
+                    food.id == image.id
+                }
+                val newFood = Food(
+                    id = food.id,
+                    author = food.author,
+                    authorUid = food.authorUid,
+                    description = food.description,
+                    imageRef = image?.imageRef ?: "",
+                    addedDateInSeconds = food.addedDateInSeconds,
+                    category = food.category
+                )
+                if (newFood.imageRef.isNotEmpty()) {
+                    mutableListOfFoods.add(newFood)
+                }
+            }
+            if (mutableListOfFoods.isNotEmpty()) {
+                database.foodDao.insertAllPendingFoods(
+                    mutableListOfFoods.toList().asDatabasePendingModel()
+                )
+            }
         }
     }
 
