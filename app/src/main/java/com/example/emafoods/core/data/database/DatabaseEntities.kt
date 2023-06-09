@@ -13,7 +13,8 @@ data class DatabaseFood (
     val authorUid: String = "",
     val description: String = "",
     val addedDateInSeconds: Long = Timestamp.now().seconds,
-    val imageRef: String = ""
+    val imageRef: String = "",
+    val category: String = ""
 )
 
 @Entity
@@ -24,7 +25,8 @@ data class DatabasePendingFood (
     val authorUid: String = "",
     val description: String = "",
     val addedDateInSeconds: Long = Timestamp.now().seconds,
-    val imageRef: String = ""
+    val imageRef: String = "",
+    val category: String = ""
 )
 
 fun List<DatabaseFood>.asDomainModel(): List<Food> {
@@ -35,7 +37,8 @@ fun List<DatabaseFood>.asDomainModel(): List<Food> {
             authorUid = it.authorUid,
             description = it.description,
             addedDateInSeconds = it.addedDateInSeconds,
-            imageRef = it.imageRef
+            imageRef = it.imageRef,
+            category = it.category
         )
     }
 }
@@ -48,7 +51,8 @@ fun List<DatabasePendingFood>.asDomainPendingModel(): List<Food> {
             authorUid = it.authorUid,
             description = it.description,
             addedDateInSeconds = it.addedDateInSeconds,
-            imageRef = it.imageRef
+            imageRef = it.imageRef,
+            category = it.category
         )
     }
 }
@@ -61,7 +65,8 @@ fun List<Food>.asDatabaseModel(): List<DatabaseFood> {
             authorUid = it.authorUid,
             description = it.description,
             addedDateInSeconds = it.addedDateInSeconds,
-            imageRef = it.imageRef
+            imageRef = it.imageRef,
+            category = it.category
         )
     }
 }
@@ -74,7 +79,8 @@ fun List<Food>.asDatabasePendingModel(): List<DatabasePendingFood> {
             authorUid = it.authorUid,
             description = it.description,
             addedDateInSeconds = it.addedDateInSeconds,
-            imageRef = it.imageRef
+            imageRef = it.imageRef,
+            category = it.category
         )
     }
 }

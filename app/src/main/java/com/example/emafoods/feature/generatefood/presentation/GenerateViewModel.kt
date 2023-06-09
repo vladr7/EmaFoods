@@ -9,6 +9,7 @@ import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
@@ -168,7 +169,7 @@ class GenerateViewModel @Inject constructor(
 }
 
 data class GenerateViewState(
-    val food: FoodViewData = FoodViewData(),
+    val food: FoodViewData = FoodViewData(categoryType = CategoryType.MAIN_DISH),
     val isNetworkAvailable: Boolean? = null,
     val foodHasBeenGenerated: Boolean = false,
     val showXpIncreaseToast: Boolean = false,

@@ -18,8 +18,10 @@ class DescriptionViewModel @Inject constructor(
 
     ) : BaseViewModel() {
 
-    private val descriptionArgs: DescriptionArguments = DescriptionArguments(savedStateHandle, stringDecoder)
+    private val descriptionArgs: DescriptionArguments =
+        DescriptionArguments(savedStateHandle, stringDecoder)
     private val uriId = descriptionArgs.uri
+    private val categoryId = descriptionArgs.category
 
     private val _state = MutableStateFlow<DescriptionViewState>(
         DescriptionViewState()
@@ -28,7 +30,9 @@ class DescriptionViewModel @Inject constructor(
 
     init {
         _state.update {
-            it.copy(uri = uriId)
+            it.copy(
+                uri = uriId, category = categoryId
+            )
         }
     }
 
@@ -47,4 +51,5 @@ data class DescriptionViewState(
     val description: String = "",
     val showNextButton: Boolean = false,
     val uri: String = "",
+    val category: String = "",
 ) : ViewState(isLoading, errorMessage)

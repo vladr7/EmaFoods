@@ -15,6 +15,7 @@ class AddTemporaryPendingImageToRemoteStorageUseCase @Inject constructor(
         val newFood = Food(
             imageRef = food.imageRef,
             authorUid = userDetails.uid,
+            category = food.category,
         )
         foodRepository.addPendingFoodImageToTemporaryStorage(food = newFood)
     }

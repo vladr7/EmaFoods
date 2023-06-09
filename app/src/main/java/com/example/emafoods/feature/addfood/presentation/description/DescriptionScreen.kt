@@ -61,6 +61,7 @@ fun DescriptionRoute(
                 InsertFoodArguments(
                     description = state.description,
                     uri = state.uri,
+                    category = state.category,
                 )
             )
         },

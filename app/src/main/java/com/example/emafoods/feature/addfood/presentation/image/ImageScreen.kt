@@ -4,6 +4,9 @@ import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +27,6 @@ import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,12 +43,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
@@ -59,6 +57,8 @@ import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
+import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
 import kotlinx.coroutines.launch
@@ -90,8 +90,16 @@ fun ImageRoute(
             }
         },
         hasTakePictureImage = state.hasTakePictureImage,
-        hasChooseFilesImage = state.hasChooseFilesImage,
-        onNextClicked = onNextClicked,
+        onNextClicked = { imageUri ->
+            onNextClicked(
+                imageUri?.let { imageUriString ->
+                    DescriptionArguments(
+                        category = state.category,
+                        uri = imageUriString
+                    )
+                }
+            )
+        },
         imageUri = Uri.parse(state.imageUri)
     )
 }
@@ -102,24 +110,38 @@ fun ImageScreen(
     onChoosePictureUriRetrieved: (Uri?) -> Unit,
     onTakePictureUriRetrieved: (Uri?) -> Unit,
     hasTakePictureImage: Boolean,
-    hasChooseFilesImage: Boolean,
     imageUri: Uri,
-    onNextClicked: (DescriptionArguments?) -> Unit
+    onNextClicked: (String?) -> Unit
 ) {
     ImageScreenBackground()
-    if (hasTakePictureImage || hasChooseFilesImage) {
-        Column {
-            InsertFoodImage(
-                imageUri = imageUri,
-                modifier = modifier,
-                onUriChangedChoseFile = onChoosePictureUriRetrieved,
-                onUriChangedTakePicture = onTakePictureUriRetrieved
-            )
+    Column {
+        StepIndicator(
+            modifier = modifier,
+            step = 1,
+        )
+        AddRecipeTitle(text = stringResource(id = R.string.add_image_title))
+        InsertFoodImage(
+            imageUri = imageUri,
+            modifier = modifier,
+            onUriChangedChoseFile = onChoosePictureUriRetrieved,
+            onUriChangedTakePicture = onTakePictureUriRetrieved
+        )
+        val visible = imageUri.toString().isNotEmpty()
+        AnimatedVisibility(
+            visible = visible,
+            enter = slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth },
+                animationSpec = tween(
+                    durationMillis = 500,
+                    delayMillis = 300
+                )
+            ),
+        ) {
             ConfirmImageButton(
                 modifier = modifier,
                 onConfirmedClick = {
                     if (hasTakePictureImage) {
-                        onNextClicked(DescriptionArguments(imageUri.toString()))
+                        onNextClicked(imageUri.toString())
                     } else {
                         onNextClicked(null)
                     }
@@ -129,19 +151,12 @@ fun ImageScreen(
                 modifier = modifier
             )
         }
-    } else {
-        AddImageTitle()
-        AddImageOptions(
-            modifier = modifier,
-            onChoosePictureUriRetrieved = onChoosePictureUriRetrieved,
-            onTakePictureUriRetrieved = onTakePictureUriRetrieved
-        )
     }
 }
 
 @Composable
 fun HangingPlantAnimation(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row() {
         Spacer(modifier = modifier.weight(1f))
@@ -153,7 +168,7 @@ fun HangingPlantAnimation(
         )
         LottieAnimation(
             modifier = modifier
-                .offset(y = (-50).dp, x = (73).dp)
+                .offset(y = (15).dp, x = (73).dp)
                 .size(250.dp),
             composition = composition,
             progress = { progress },
@@ -164,7 +179,7 @@ fun HangingPlantAnimation(
 @Composable
 fun ConfirmImageButton(
     modifier: Modifier = Modifier,
-    onConfirmedClick: () -> Unit
+    onConfirmedClick: () -> Unit,
 ) {
     Row {
         Spacer(modifier = modifier.weight(1f))
@@ -180,44 +195,6 @@ fun ConfirmImageButton(
             )
         }
     }
-}
-
-@Composable
-fun AddImageTitle(
-    modifier: Modifier = Modifier,
-) {
-
-    val gradient = Brush.horizontalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.secondary,
-            Color.Transparent
-        ),
-        startX = 300.0f,
-        endX = 0.0f
-    )
-
-    Text(
-        text = stringResource(id = R.string.add_image_title),
-        fontSize = 36.sp,
-        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-        fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.onSecondary,
-                    MaterialTheme.colorScheme.onSecondary
-                )
-            )
-        ),
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .padding(20.dp, top = 40.dp, bottom = 40.dp)
-            .background(
-                brush = gradient
-            )
-
-    )
-
 }
 
 @Composable

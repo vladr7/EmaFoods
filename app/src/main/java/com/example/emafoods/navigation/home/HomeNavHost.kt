@@ -6,11 +6,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
+import com.example.emafoods.feature.addfood.presentation.category.navigation.categoryScreen
 import com.example.emafoods.feature.addfood.presentation.congratulation.navigation.congratulationScreen
 import com.example.emafoods.feature.addfood.presentation.congratulation.navigation.navigateToCongratulation
 import com.example.emafoods.feature.addfood.presentation.description.navigation.descriptionScreen
 import com.example.emafoods.feature.addfood.presentation.description.navigation.navigateToDescription
 import com.example.emafoods.feature.addfood.presentation.image.navigation.imageScreen
+import com.example.emafoods.feature.addfood.presentation.image.navigation.navigateToImage
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.navigateToInsertFood
 import com.example.emafoods.feature.game.presentation.navigation.gameScreen
@@ -34,12 +36,20 @@ fun HomeNavHost(
 
         navigation(
             route = HomeBottomDestination.AddFood.route,
-            startDestination = AddFoodDestinations.Image.route
+            startDestination = AddFoodDestinations.Category.route
         ) {
+            categoryScreen(
+                onChoseCategory = { imageArguments ->
+                    navController.navigateToImage(
+                        categoryId = imageArguments?.category ?: "empty"
+                    )
+                }
+            )
             imageScreen(
                 onHasImage = { descriptionArguments ->
                     navController.navigateToDescription(
-                        uriId = descriptionArguments?.uri ?: "empty"
+                        uriId = descriptionArguments?.uri ?: "empty",
+                        categoryId = descriptionArguments?.category ?: "empty"
                     )
                 }
             )
@@ -47,7 +57,8 @@ fun HomeNavHost(
                 onConfirmedClick = {
                     navController.navigateToInsertFood(
                         uriId = it.uri,
-                        descriptionId = it.description
+                        descriptionId = it.description,
+                        categoryId = it.category
                     )
                 },
             )
@@ -62,7 +73,6 @@ fun HomeNavHost(
                 }
             )
         }
-//        listFoodScreen()
         generateFoodScreen()
         pendingFoodScreen()
         navigation(

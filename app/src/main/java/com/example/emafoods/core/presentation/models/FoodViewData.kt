@@ -3,6 +3,7 @@ package com.example.emafoods.core.presentation.models
 import com.example.emafoods.core.data.models.Food
 import com.example.emafoods.core.presentation.models.helper.DataModelMapper
 import com.example.emafoods.core.presentation.models.helper.ViewData
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import javax.inject.Inject
 
 data class FoodViewData(
@@ -11,6 +12,7 @@ data class FoodViewData(
     val authorUid: String = "",
     val description: String = "",
     val imageRef: String = "",
+    val categoryType: CategoryType
 ): ViewData()
 
 class FoodMapper @Inject constructor(): DataModelMapper<Food, FoodViewData> {
@@ -26,7 +28,8 @@ class FoodMapper @Inject constructor(): DataModelMapper<Food, FoodViewData> {
             author = author,
             authorUid = authorUid,
             description = description,
-            imageRef = imageRef
+            imageRef = imageRef,
+            category = viewData.categoryType.string
         )
     }
 
@@ -40,7 +43,8 @@ class FoodMapper @Inject constructor(): DataModelMapper<Food, FoodViewData> {
             author = author,
             authorUid = model.authorUid,
             description = description,
-            imageRef = imageRef
+            imageRef = imageRef,
+            categoryType = CategoryType.fromString(model.category)
         )
     }
 }
