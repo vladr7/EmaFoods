@@ -59,14 +59,14 @@ import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
-import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
+import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun ImageRoute(
-    onNextClicked: (DescriptionArguments?) -> Unit,
+    onNextClicked: (IngredientsArguments) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
@@ -91,14 +91,14 @@ fun ImageRoute(
         },
         hasTakePictureImage = state.hasTakePictureImage,
         onNextClicked = { imageUri ->
-            onNextClicked(
-                imageUri?.let { imageUriString ->
-                    DescriptionArguments(
+            if (!imageUri.isNullOrEmpty()) {
+                onNextClicked(
+                    IngredientsArguments(
                         category = state.category,
-                        uri = imageUriString
+                        uri = imageUri
                     )
-                }
-            )
+                )
+            }
         },
         imageUri = Uri.parse(state.imageUri)
     )

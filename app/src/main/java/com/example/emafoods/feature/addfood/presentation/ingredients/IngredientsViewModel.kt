@@ -1,0 +1,45 @@
+package com.example.emafoods.feature.addfood.presentation.ingredients
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
+import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import javax.inject.Inject
+
+@HiltViewModel
+class IngredientsViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    stringDecoder: StringDecoder,
+): ViewModel() {
+
+    private val ingredientsArgs: IngredientsArguments =
+        IngredientsArguments(savedStateHandle, stringDecoder)
+    private val uriId = ingredientsArgs.uri
+    private val categoryId = ingredientsArgs.category
+
+    private val _state = MutableStateFlow<IngredientsViewState>(IngredientsViewState())
+    val state: StateFlow<IngredientsViewState> = _state
+
+    init {
+        _state.update {
+            it.copy(
+                categoryType = CategoryType.fromString(categoryId),
+                uriId = uriId
+            )
+        }
+    }
+
+
+
+}
+
+data class IngredientsViewState(
+    val ingredientsList: List<String> = listOf(),
+    val categoryType: CategoryType = CategoryType.MAIN_DISH,
+    val uriId: String = "",
+)
