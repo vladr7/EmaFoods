@@ -40,6 +40,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.common.keyboardAsState
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
 import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
@@ -103,6 +105,8 @@ fun IngredientsScreen(
     onShowedIngredientAlreadyAddedError: () -> Unit,
 ) {
     var shouldShowIngredientCard by remember { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
+
     HandleIngredientToasts(
         showIngredientAlreadyAddedError = showIngredientAlreadyAddedError,
         onShowedIngredientAlreadyAddedError = onShowedIngredientAlreadyAddedError,
@@ -159,6 +163,7 @@ fun IngredientsScreen(
                 },
                 onConfirmIngredientClick = { ingredient ->
                     onSaveChangesIngredient(ingredient)
+                    focusManager.clearFocus()
                 },
             )
         }
