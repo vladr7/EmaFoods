@@ -15,8 +15,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -173,6 +173,7 @@ fun IngredientCard(
                 onClick = { /*TODO*/ },
             )
             ConfirmIngredientsButton(
+                isEnabled = ingredientText.isNotEmpty() && measurementValue.isNotEmpty(),
                 modifier = modifier.padding(start = 20.dp),
                 onClick = { /*TODO*/ },
             )
@@ -183,19 +184,33 @@ fun IngredientCard(
 @Composable
 fun ConfirmIngredientsButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isEnabled: Boolean
 ) {
+    val color = if (isEnabled) {
+        MaterialTheme.colorScheme.secondaryContainer
+    } else {
+        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+    }
+    val onColor = if (isEnabled) {
+        MaterialTheme.colorScheme.onSecondaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f)
+    }
     FloatingActionButton(
         onClick = onClick,
         modifier = modifier,
         shape = CircleShape,
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        contentColor = onColor,
+        containerColor = color,
         content = {
             Icon(
-                imageVector = Icons.Rounded.Done,
-                contentDescription = null
+                imageVector = Icons.Rounded.Check,
+                contentDescription = null,
+                tint = onColor
             )
-        }
+        },
+        elevation = FloatingActionButtonDefaults.elevation(0.dp,0.dp)
     )
 }
 
