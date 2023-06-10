@@ -16,7 +16,7 @@ import javax.inject.Inject
 class IngredientsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
-): ViewModel() {
+) : ViewModel() {
 
     private val ingredientsArgs: IngredientsArguments =
         IngredientsArguments(savedStateHandle, stringDecoder)
@@ -36,17 +36,29 @@ class IngredientsViewModel @Inject constructor(
     }
 
     fun addIngredientToList(ingredient: IngredientViewData) {
-        val newIngredient = ingredient.copy(id = getNextId())
+        if (_state.value.ingredientsList.any {
+                it.name == ingredient.name
+            }) {
+            _state.update {
+                it.copy(
+                    showIngredientAlreadyAddedError = true
+                )
+            }
+            return
+        }
         _state.update {
             it.copy(
-                ingredientsList = it.ingredientsList + newIngredient
+                ingredientsList = it.ingredientsList + ingredient
             )
         }
     }
 
     fun removeIngredientFromList(ingredient: IngredientViewData) {
-
-
+        _state.update {
+            it.copy(
+                ingredientsList = it.ingredientsList - ingredient
+            )
+        }
     }
 
     fun saveChangesIngredient(ingredient: IngredientViewData) {
@@ -54,18 +66,22 @@ class IngredientsViewModel @Inject constructor(
 
     }
 
-    private fun getNextId(): Long {
-        if(_state.value.ingredientsList.isEmpty()) return 1L
-        return _state.value.ingredientsList.maxOf { it.id } + 1
+    fun onShowedIngredientAlreadyAdded() {
+        _state.update {
+            it.copy(
+                showIngredientAlreadyAddedError = false
+            )
+        }
     }
 }
 
 data class IngredientsViewState(
     val ingredientsList: List<IngredientViewData> = listOf(
-        IngredientViewData(1, "Ingredient 1", 1),
-        IngredientViewData(2, "Ingredient 2", 2),
-        IngredientViewData(3, "Ingredient 3", 3),
+        IngredientViewData("Ingredient 1", 1),
+        IngredientViewData("Ingredient 2", 2),
+        IngredientViewData("Ingredient 3", 3),
     ),
     val categoryType: CategoryType = CategoryType.MAIN_DISH,
     val uriId: String = "",
+    val showIngredientAlreadyAddedError: Boolean = false,
 )
