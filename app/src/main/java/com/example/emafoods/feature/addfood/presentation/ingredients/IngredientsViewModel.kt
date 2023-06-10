@@ -36,20 +36,18 @@ class IngredientsViewModel @Inject constructor(
     }
 
     fun addIngredientToList(ingredient: IngredientViewData) {
-        if (_state.value.ingredientsList.any {
-                it.name == ingredient.name
-            }) {
-            _state.update {
+        _state.update {
+            if (it.ingredientsList.contains(ingredient)) {
                 it.copy(
                     showIngredientAlreadyAddedError = true
                 )
+            } else {
+                it.copy(
+                    ingredientsList = it.ingredientsList + ingredient.copy(
+                        id = getNextIngredientId()
+                    )
+                )
             }
-            return
-        }
-        _state.update {
-            it.copy(
-                ingredientsList = it.ingredientsList + ingredient
-            )
         }
     }
 
@@ -62,8 +60,17 @@ class IngredientsViewModel @Inject constructor(
     }
 
     fun saveChangesIngredient(ingredient: IngredientViewData) {
-
-
+        _state.update {
+            it.copy(
+                ingredientsList = it.ingredientsList.map {
+                    if (it.name == ingredient.name) {
+                        ingredient
+                    } else {
+                        it
+                    }
+                }
+            )
+        }
     }
 
     fun onShowedIngredientAlreadyAdded() {
@@ -73,13 +80,17 @@ class IngredientsViewModel @Inject constructor(
             )
         }
     }
+
+    private fun getNextIngredientId(): Long {
+        return _state.value.ingredientsList.maxOfOrNull { it.id }?.plus(1) ?: 1
+    }
 }
 
 data class IngredientsViewState(
     val ingredientsList: List<IngredientViewData> = listOf(
-        IngredientViewData("Ingredient 1", 1),
-        IngredientViewData("Ingredient 2", 2),
-        IngredientViewData("Ingredient 3", 3),
+        IngredientViewData(1, "Ingredient 1", 1),
+        IngredientViewData(2, "Ingredient 2", 2),
+        IngredientViewData(3, "Ingredient 3", 3),
     ),
     val categoryType: CategoryType = CategoryType.MAIN_DISH,
     val uriId: String = "",

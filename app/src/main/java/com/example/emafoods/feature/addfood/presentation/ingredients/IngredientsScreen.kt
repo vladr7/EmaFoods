@@ -158,8 +158,8 @@ fun IngredientsScreen(
                     onRemoveIngredientFromList(ingredient)
                 },
                 onConfirmIngredientClick = { ingredient ->
-                    // save changes on the item
-                }
+                    onSaveChangesIngredient(ingredient)
+                },
             )
         }
         NextStepIngredientsButton(
@@ -193,7 +193,7 @@ fun IngredientsList(
     LazyColumn {
         items(
             ingredients,
-            key = { ingredient -> ingredient.name }
+            key = { ingredient -> ingredient.id }
         ) { ingredient ->
             IngredientCard(
                 modifier = modifier,
