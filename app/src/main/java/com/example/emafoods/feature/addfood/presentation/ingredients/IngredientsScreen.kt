@@ -14,8 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -75,6 +78,7 @@ fun IngredientsScreen(
 ) {
     var ingredientValue by remember { mutableStateOf("") }
     var measurementValue by remember { mutableStateOf("") }
+    var shouldShowIngredientCard by remember { mutableStateOf(false) }
 
     val pattern = remember { Regex("^\\d+\$") }
 
@@ -97,21 +101,36 @@ fun IngredientsScreen(
                 modifier = modifier
                     .padding(top = 50.dp)
             )
-            IngredientCard(
-                modifier = modifier,
-                ingredientText = ingredientValue,
-                measurementValue = measurementValue,
-                onIngredientValueChange = {
-                    ingredientValue = it
-                },
-                onMeasurementValueChange = { newValue ->
-                    if ((newValue.matches(pattern) && newValue.length <= 4) || newValue.isEmpty()) {
-                        measurementValue = newValue
+            AnimatedVisibility(visible = !shouldShowIngredientCard) {
+                AddNewIngredientButton(
+                    modifier = modifier,
+                    onClick = {
+                        shouldShowIngredientCard = true
                     }
-                }
-            )
+                )
+            }
+            AnimatedVisibility(visible = shouldShowIngredientCard) {
+                IngredientCard(
+                    modifier = modifier,
+                    ingredientText = ingredientValue,
+                    measurementValue = measurementValue,
+                    onIngredientValueChange = {
+                        ingredientValue = it
+                    },
+                    onMeasurementValueChange = { newValue ->
+                        if ((newValue.matches(pattern) && newValue.length <= 4) || newValue.isEmpty()) {
+                            measurementValue = newValue
+                        }
+                    },
+                    onRemoveIngredientClick = {
+                        shouldShowIngredientCard = false
+                    },
+                    onConfirmIngredientClick = {
+                        shouldShowIngredientCard = false
+                    }
+                )
+            }
         }
-
         NextStepIngredientsButton(
             modifier = modifier
                 .padding(bottom = 24.dp, end = 24.dp)
@@ -123,12 +142,45 @@ fun IngredientsScreen(
 }
 
 @Composable
+fun AddNewIngredientButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ),
+        modifier = modifier
+            .padding(top = 24.dp, start = 24.dp, end = 24.dp)
+            .fillMaxWidth()
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Add,
+            contentDescription = null,
+            modifier = modifier
+                .padding(8.dp),
+            tint = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+        Text(
+            text = stringResource(R.string.add_new_ingredient),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = modifier.padding(12.dp),
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
+    }
+}
+
+@Composable
 fun IngredientCard(
     modifier: Modifier = Modifier,
     onIngredientValueChange: (String) -> Unit,
     ingredientText: String,
     onMeasurementValueChange: (String) -> Unit,
-    measurementValue: String
+    measurementValue: String,
+    onRemoveIngredientClick: () -> Unit,
+    onConfirmIngredientClick: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     var isFocusable by remember { mutableStateOf(false) }
@@ -186,12 +238,12 @@ fun IngredientCard(
                 horizontalArrangement = Arrangement.End
             ) {
                 RemoveIngredientButton(
-                    onClick = { /*TODO*/ },
+                    onClick = onRemoveIngredientClick,
                 )
                 ConfirmIngredientsButton(
                     isEnabled = ingredientText.isNotEmpty() && measurementValue.isNotEmpty(),
                     modifier = modifier.padding(start = 20.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = onConfirmIngredientClick,
                 )
             }
         }
@@ -302,7 +354,7 @@ private fun RowScope.Measurement(
     onValueChange: (String) -> Unit,
     focusRequester: FocusRequester,
     onFocused: (Boolean) -> Unit,
-    ) {
+) {
     val color = MaterialTheme.colorScheme.onSecondaryContainer
     OutlinedTextField(
         value = measurementValue,
