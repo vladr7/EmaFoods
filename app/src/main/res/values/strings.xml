@@ -46,4 +46,9 @@
     <string name="soup">Supe</string>
     <string name="dessert">Desert</string>
     <string name="add_a_new_recipe">Adaugă o rețetă nouă</string>
+    <string name="add_ingredients">Adauga ingrediente</string>
+    <string name="ingredient_hint">Ingredient</string>
+    <string name="measurement_hint">gr/ml</string>
+    <string name="measurement_hint_extended">grame/ml</string>
+    <string name="confirm_ingredients">Confirm ingredients</string>
 </resources>
