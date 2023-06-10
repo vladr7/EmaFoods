@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.addfood.presentation.ingredients
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -126,6 +130,9 @@ fun IngredientCard(
     onMeasurementValueChange: (String) -> Unit,
     measurementValue: String
 ) {
+    val focusRequester = remember { FocusRequester() }
+    var isFocusable by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .padding(12.dp)
@@ -150,6 +157,10 @@ fun IngredientCard(
                     ingredientText = ingredientText,
                     onValueChange = {
                         onIngredientValueChange(it)
+                    },
+                    focusRequester = focusRequester,
+                    onFocused = {
+                        isFocusable = it
                     }
                 )
                 Spacer(modifier = modifier.padding(4.dp))
@@ -158,25 +169,31 @@ fun IngredientCard(
                     measurementValue = measurementValue,
                     onValueChange = {
                         onMeasurementValueChange(it)
+                    },
+                    focusRequester = focusRequester,
+                    onFocused = {
+                        isFocusable = it
                     }
                 )
             }
 
         }
-        Row(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-            RemoveIngredientButton(
-                onClick = { /*TODO*/ },
-            )
-            ConfirmIngredientsButton(
-                isEnabled = ingredientText.isNotEmpty() && measurementValue.isNotEmpty(),
-                modifier = modifier.padding(start = 20.dp),
-                onClick = { /*TODO*/ },
-            )
+        AnimatedVisibility(visible = isFocusable) {
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                RemoveIngredientButton(
+                    onClick = { /*TODO*/ },
+                )
+                ConfirmIngredientsButton(
+                    isEnabled = ingredientText.isNotEmpty() && measurementValue.isNotEmpty(),
+                    modifier = modifier.padding(start = 20.dp),
+                    onClick = { /*TODO*/ },
+                )
+            }
         }
     }
 }
@@ -198,7 +215,11 @@ fun ConfirmIngredientsButton(
         MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f)
     }
     FloatingActionButton(
-        onClick = onClick,
+        onClick = {
+            if (isEnabled) {
+                onClick()
+            }
+        },
         modifier = modifier,
         shape = CircleShape,
         contentColor = onColor,
@@ -210,7 +231,7 @@ fun ConfirmIngredientsButton(
                 tint = onColor
             )
         },
-        elevation = FloatingActionButtonDefaults.elevation(0.dp,0.dp)
+        elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
     )
 }
 
@@ -237,7 +258,9 @@ fun RemoveIngredientButton(
 private fun RowScope.Ingredient(
     ingredientText: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    focusRequester: FocusRequester,
+    onFocused: (Boolean) -> Unit,
 ) {
     val color = MaterialTheme.colorScheme.onSecondaryContainer
     OutlinedTextField(
@@ -249,6 +272,14 @@ private fun RowScope.Ingredient(
             Text(text = stringResource(R.string.ingredient_hint))
         },
         modifier = modifier
+            .focusRequester(focusRequester)
+            .onFocusChanged { focusState ->
+                if (focusState.isFocused) {
+                    onFocused(true)
+                } else {
+                    onFocused(false)
+                }
+            }
             .weight(0.7f),
         textStyle = TextStyle(
             color = color,
@@ -268,8 +299,10 @@ private fun RowScope.Ingredient(
 private fun RowScope.Measurement(
     modifier: Modifier,
     measurementValue: String,
-    onValueChange: (String) -> Unit
-) {
+    onValueChange: (String) -> Unit,
+    focusRequester: FocusRequester,
+    onFocused: (Boolean) -> Unit,
+    ) {
     val color = MaterialTheme.colorScheme.onSecondaryContainer
     OutlinedTextField(
         value = measurementValue,
@@ -280,6 +313,14 @@ private fun RowScope.Measurement(
             Text(text = stringResource(R.string.measurement_hint))
         },
         modifier = modifier
+            .focusRequester(focusRequester)
+            .onFocusChanged { focusState ->
+                if (focusState.isFocused) {
+                    onFocused(true)
+                } else {
+                    onFocused(false)
+                }
+            }
             .weight(0.3f),
         textStyle = TextStyle(
             color = color,
