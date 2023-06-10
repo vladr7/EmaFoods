@@ -90,9 +90,9 @@ class IngredientsViewModel @Inject constructor(
 
 data class IngredientsViewState(
     val ingredientsList: List<IngredientViewData> = listOf(
-        IngredientViewData(1, "Ingredient 1", 1),
-        IngredientViewData(2, "Ingredient 2", 2),
-        IngredientViewData(3, "Ingredient 3", 3),
+//        IngredientViewData(1, "Ingredient 1", 1),
+//        IngredientViewData(2, "Ingredient 2", 2),
+//        IngredientViewData(3, "Ingredient 3", 3),
     ),
     val categoryType: CategoryType = CategoryType.MAIN_DISH,
     val uriId: String = "",

@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
-import com.example.emafoods.core.presentation.common.keyboardAsState
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
 import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
@@ -106,6 +105,7 @@ fun IngredientsScreen(
 ) {
     var shouldShowIngredientCard by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+    var isIngredientsListFocused by remember { mutableStateOf(false) }
 
     HandleIngredientToasts(
         showIngredientAlreadyAddedError = showIngredientAlreadyAddedError,
@@ -131,7 +131,7 @@ fun IngredientsScreen(
                 modifier = modifier
                     .padding(top = 50.dp)
             )
-            AnimatedVisibility(visible = !shouldShowIngredientCard) {
+            AnimatedVisibility(visible = !shouldShowIngredientCard && !isIngredientsListFocused) {
                 AddNewIngredientButton(
                     modifier = modifier,
                     onClick = {
@@ -151,10 +151,12 @@ fun IngredientsScreen(
                     },
                 )
             }
-            IngredientsListTitle(
-                modifier = modifier
-                    .padding(top = 24.dp)
-            )
+            AnimatedVisibility(visible = !isIngredientsListFocused && ingredients.isNotEmpty()) {
+                IngredientsListTitle(
+                    modifier = modifier
+                        .padding(top = 24.dp)
+                )
+            }
             IngredientsList(
                 modifier = modifier,
                 ingredients = ingredients,
@@ -165,6 +167,9 @@ fun IngredientsScreen(
                     onSaveChangesIngredient(ingredient)
                     focusManager.clearFocus()
                 },
+                onFocusChanged = {
+                    isIngredientsListFocused = it
+                }
             )
         }
         NextStepIngredientsButton(
@@ -198,6 +203,7 @@ fun IngredientsList(
     ingredients: List<IngredientViewData>,
     onRemoveIngredientClick: (IngredientViewData) -> Unit,
     onConfirmIngredientClick: (IngredientViewData) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
 ) {
     LazyColumn {
         items(
@@ -215,6 +221,7 @@ fun IngredientsList(
                 onConfirmIngredientClick = {
                     onConfirmIngredientClick(it)
                 },
+                onFocusChanged = onFocusChanged
             )
         }
     }
@@ -275,10 +282,11 @@ fun IngredientCard(
             name = "",
             measurement = 0L,
         ),
+    onFocusChanged: (Boolean) -> Unit = {},
 ) {
     val pattern = remember { Regex("^\\d+\$") }
     val focusRequester = remember { FocusRequester() }
-    var isFocusable by remember { mutableStateOf(false) }
+    var isFocused by remember { mutableStateOf(false) }
     var ingredientValue by remember { mutableStateOf(ingredient.name) }
     var measurementValue by remember {
         mutableStateOf(
@@ -290,6 +298,31 @@ fun IngredientCard(
         modifier = modifier
             .padding(12.dp)
     ) {
+        AnimatedVisibility(visible = isFocused) {
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                RemoveIngredientButton(
+                    onClick = onRemoveIngredientClick,
+                )
+                ConfirmIngredientsButton(
+                    isEnabled = ingredientValue.isNotEmpty() && measurementValue.isNotEmpty(),
+                    modifier = modifier.padding(start = 20.dp),
+                    onClick = {
+                        onConfirmIngredientClick(
+                            IngredientViewData(
+                                id = ingredient.id,
+                                name = ingredientValue,
+                                measurement = measurementValue.toLong()
+                            )
+                        )
+                    }
+                )
+            }
+        }
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -313,7 +346,8 @@ fun IngredientCard(
                     },
                     focusRequester = focusRequester,
                     onFocused = {
-                        isFocusable = it
+                        isFocused = it
+                        onFocusChanged(it)
                     }
                 )
                 Spacer(modifier = modifier.padding(4.dp))
@@ -327,33 +361,8 @@ fun IngredientCard(
                     },
                     focusRequester = focusRequester,
                     onFocused = {
-                        isFocusable = it
-                    }
-                )
-            }
-
-        }
-        AnimatedVisibility(visible = isFocusable) {
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                RemoveIngredientButton(
-                    onClick = onRemoveIngredientClick,
-                )
-                ConfirmIngredientsButton(
-                    isEnabled = ingredientValue.isNotEmpty() && measurementValue.isNotEmpty(),
-                    modifier = modifier.padding(start = 20.dp),
-                    onClick = {
-                        onConfirmIngredientClick(
-                            IngredientViewData(
-                                id = ingredient.id,
-                                name = ingredientValue,
-                                measurement = measurementValue.toLong()
-                            )
-                        )
+                        isFocused = it
+                        onFocusChanged(it)
                     }
                 )
             }
