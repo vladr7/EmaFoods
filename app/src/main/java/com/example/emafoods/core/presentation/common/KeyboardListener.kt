@@ -12,5 +12,5 @@ fun keyboardAsState(): State<Boolean> {
     val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
     return rememberUpdatedState(isImeVisible)
 }
-
+// USAGE BELOW
 // val isKeyboardVisible by keyboardAsState() -> true/false
