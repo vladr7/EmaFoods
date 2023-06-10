@@ -177,8 +177,12 @@ fun HandleIngredientToasts(
     showIngredientAlreadyAddedError: Boolean,
     onShowedIngredientAlreadyAddedError: () -> Unit
 ) {
-    if(showIngredientAlreadyAddedError) {
-        Toast.makeText(LocalContext.current, stringResource(R.string.ingredient_already_added_error), Toast.LENGTH_LONG).show()
+    if (showIngredientAlreadyAddedError) {
+        Toast.makeText(
+            LocalContext.current,
+            stringResource(R.string.ingredient_already_added_error),
+            Toast.LENGTH_LONG
+        ).show()
         onShowedIngredientAlreadyAddedError()
     }
 }
@@ -193,7 +197,9 @@ fun IngredientsList(
     LazyColumn {
         items(
             ingredients,
-            key = { ingredient -> ingredient.id }
+            key = { ingredient ->
+                ingredient.id
+            }
         ) { ingredient ->
             IngredientCard(
                 modifier = modifier,
@@ -202,7 +208,7 @@ fun IngredientsList(
                     onRemoveIngredientClick(ingredient)
                 },
                 onConfirmIngredientClick = {
-                    onConfirmIngredientClick(ingredient)
+                    onConfirmIngredientClick(it)
                 },
             )
         }
@@ -338,6 +344,7 @@ fun IngredientCard(
                     onClick = {
                         onConfirmIngredientClick(
                             IngredientViewData(
+                                id = ingredient.id,
                                 name = ingredientValue,
                                 measurement = measurementValue.toLong()
                             )
