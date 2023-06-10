@@ -35,6 +35,29 @@ class IngredientsViewModel @Inject constructor(
         }
     }
 
+    fun addIngredientToList(ingredient: IngredientViewData) {
+        val newIngredient = ingredient.copy(id = getNextId())
+        _state.update {
+            it.copy(
+                ingredientsList = it.ingredientsList + newIngredient
+            )
+        }
+    }
+
+    fun removeIngredientFromList(ingredient: IngredientViewData) {
+
+
+    }
+
+    fun saveChangesIngredient(ingredient: IngredientViewData) {
+
+
+    }
+
+    private fun getNextId(): Long {
+        if(_state.value.ingredientsList.isEmpty()) return 1L
+        return _state.value.ingredientsList.maxOf { it.id } + 1
+    }
 }
 
 data class IngredientsViewState(

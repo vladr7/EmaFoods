@@ -72,7 +72,16 @@ fun IngredientsRoute(
                 )
             )
         },
-        ingredients = state.ingredientsList
+        ingredients = state.ingredientsList,
+        onAddIngredientToList = { ingredient ->
+            viewModel.addIngredientToList(ingredient)
+        },
+        onRemoveIngredientFromList = { ingredient ->
+            viewModel.removeIngredientFromList(ingredient)
+        },
+        onSaveChangesIngredient = { ingredient ->
+            viewModel.saveChangesIngredient(ingredient)
+        },
     )
 }
 
@@ -81,6 +90,9 @@ fun IngredientsScreen(
     modifier: Modifier = Modifier,
     onConfirmedClick: () -> Unit,
     ingredients: List<IngredientViewData>,
+    onAddIngredientToList: (IngredientViewData) -> Unit,
+    onRemoveIngredientFromList: (IngredientViewData) -> Unit,
+    onSaveChangesIngredient: (IngredientViewData) -> Unit,
 ) {
     var shouldShowIngredientCard by remember { mutableStateOf(false) }
 
@@ -117,9 +129,10 @@ fun IngredientsScreen(
                     onRemoveIngredientClick = {
                         shouldShowIngredientCard = false
                     },
-                    onConfirmIngredientClick = {
+                    onConfirmIngredientClick = { ingredientViewData ->
                         shouldShowIngredientCard = false
-                    }
+                        onAddIngredientToList(ingredientViewData)
+                    },
                 )
             }
             IngredientsListTitle(
@@ -159,6 +172,7 @@ fun IngredientsList(
         items(ingredients) { ingredient ->
             IngredientCard(
                 modifier = modifier,
+                ingredient = ingredient,
                 onRemoveIngredientClick = {
                     onRemoveIngredientClick(ingredient)
                 },
@@ -219,13 +233,23 @@ fun AddNewIngredientButton(
 fun IngredientCard(
     modifier: Modifier = Modifier,
     onRemoveIngredientClick: () -> Unit,
-    onConfirmIngredientClick: () -> Unit,
+    onConfirmIngredientClick: (IngredientViewData) -> Unit,
+    ingredient: IngredientViewData =
+        IngredientViewData(
+            id = -1,
+            name = "",
+            measurement = 0L,
+        ),
 ) {
     val pattern = remember { Regex("^\\d+\$") }
     val focusRequester = remember { FocusRequester() }
     var isFocusable by remember { mutableStateOf(false) }
-    var ingredientValue by remember { mutableStateOf("") }
-    var measurementValue by remember { mutableStateOf("") }
+    var ingredientValue by remember { mutableStateOf(ingredient.name) }
+    var measurementValue by remember {
+        mutableStateOf(
+            if (ingredient.measurement == 0L) "" else ingredient.measurement.toString()
+        )
+    }
 
     Column(
         modifier = modifier
@@ -287,7 +311,14 @@ fun IngredientCard(
                 ConfirmIngredientsButton(
                     isEnabled = ingredientValue.isNotEmpty() && measurementValue.isNotEmpty(),
                     modifier = modifier.padding(start = 20.dp),
-                    onClick = onConfirmIngredientClick,
+                    onClick = {
+                        onConfirmIngredientClick(
+                            IngredientViewData(
+                                name = ingredientValue,
+                                measurement = measurementValue.toLong()
+                            )
+                        )
+                    }
                 )
             }
         }
