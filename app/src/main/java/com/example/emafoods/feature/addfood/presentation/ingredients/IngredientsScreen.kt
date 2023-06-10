@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.addfood.presentation.ingredients
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -82,6 +84,10 @@ fun IngredientsRoute(
         onSaveChangesIngredient = { ingredient ->
             viewModel.saveChangesIngredient(ingredient)
         },
+        showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
+        onShowedIngredientAlreadyAddedError = {
+            viewModel.onShowedIngredientAlreadyAdded()
+        },
     )
 }
 
@@ -93,8 +99,14 @@ fun IngredientsScreen(
     onAddIngredientToList: (IngredientViewData) -> Unit,
     onRemoveIngredientFromList: (IngredientViewData) -> Unit,
     onSaveChangesIngredient: (IngredientViewData) -> Unit,
+    showIngredientAlreadyAddedError: Boolean,
+    onShowedIngredientAlreadyAddedError: () -> Unit,
 ) {
     var shouldShowIngredientCard by remember { mutableStateOf(false) }
+    HandleIngredientToasts(
+        showIngredientAlreadyAddedError = showIngredientAlreadyAddedError,
+        onShowedIngredientAlreadyAddedError = onShowedIngredientAlreadyAddedError,
+    )
 
     CategoryScreenBackground()
     Box(
@@ -143,8 +155,7 @@ fun IngredientsScreen(
                 modifier = modifier,
                 ingredients = ingredients,
                 onRemoveIngredientClick = { ingredient ->
-                    // remove item from list
-
+                    onRemoveIngredientFromList(ingredient)
                 },
                 onConfirmIngredientClick = { ingredient ->
                     // save changes on the item
@@ -162,6 +173,17 @@ fun IngredientsScreen(
 }
 
 @Composable
+fun HandleIngredientToasts(
+    showIngredientAlreadyAddedError: Boolean,
+    onShowedIngredientAlreadyAddedError: () -> Unit
+) {
+    if(showIngredientAlreadyAddedError) {
+        Toast.makeText(LocalContext.current, stringResource(R.string.ingredient_already_added_error), Toast.LENGTH_LONG).show()
+        onShowedIngredientAlreadyAddedError()
+    }
+}
+
+@Composable
 fun IngredientsList(
     modifier: Modifier = Modifier,
     ingredients: List<IngredientViewData>,
@@ -169,7 +191,10 @@ fun IngredientsList(
     onConfirmIngredientClick: (IngredientViewData) -> Unit,
 ) {
     LazyColumn {
-        items(ingredients) { ingredient ->
+        items(
+            ingredients,
+            key = { ingredient -> ingredient.name }
+        ) { ingredient ->
             IngredientCard(
                 modifier = modifier,
                 ingredient = ingredient,
@@ -236,7 +261,6 @@ fun IngredientCard(
     onConfirmIngredientClick: (IngredientViewData) -> Unit,
     ingredient: IngredientViewData =
         IngredientViewData(
-            id = -1,
             name = "",
             measurement = 0L,
         ),

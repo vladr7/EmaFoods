@@ -53,4 +53,5 @@
     <string name="confirm_ingredients">Confirm ingredients</string>
     <string name="add_new_ingredient">Adauga un ingredient nou</string>
     <string name="ingredients_list_title">Lista ingrediente</string>
+    <string name="ingredient_already_added_error">Ingredientul acesta a fost deja adaugat!</string>
 </resources>
