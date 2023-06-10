@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -19,8 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -151,6 +150,7 @@ fun IngredientsScreen(
                         shouldShowIngredientCard = false
                         onAddIngredientToList(ingredientViewData)
                     },
+                    addFoodText = stringResource(R.string.add_food),
                 )
             }
             AnimatedVisibility(visible = !isIngredientsListFocused && ingredients.isNotEmpty()) {
@@ -285,6 +285,7 @@ fun IngredientCard(
             measurement = 0L,
         ),
     onFocusChanged: (Boolean) -> Unit = {},
+    addFoodText: String = stringResource(id = R.string.save)
 ) {
     val pattern = remember { Regex("^\\d+\$") }
     val focusRequester = remember { FocusRequester() }
@@ -321,7 +322,8 @@ fun IngredientCard(
                                 measurement = measurementValue.toLong()
                             )
                         )
-                    }
+                    },
+                    text = addFoodText
                 )
             }
         }
@@ -376,7 +378,8 @@ fun IngredientCard(
 fun ConfirmIngredientsButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    isEnabled: Boolean
+    isEnabled: Boolean,
+    text: String
 ) {
     val color = if (isEnabled) {
         MaterialTheme.colorScheme.secondaryContainer
@@ -394,15 +397,14 @@ fun ConfirmIngredientsButton(
                 onClick()
             }
         },
-        modifier = modifier,
+        modifier = modifier
+            .width(76.dp),
         shape = CircleShape,
         contentColor = onColor,
         containerColor = color,
         content = {
-            Icon(
-                imageVector = Icons.Rounded.Check,
-                contentDescription = null,
-                tint = onColor
+            Text(
+                text = text,
             )
         },
         elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp)
@@ -416,13 +418,13 @@ fun RemoveIngredientButton(
 ) {
     FloatingActionButton(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier
+            .width(76.dp),
         shape = CircleShape,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         content = {
-            Icon(
-                imageVector = Icons.Rounded.Close,
-                contentDescription = null
+            Text(
+                text = stringResource(R.string.remove),
             )
         }
     )
