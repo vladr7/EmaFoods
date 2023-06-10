@@ -18,10 +18,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -514,13 +516,17 @@ fun NextStepIngredientsButton(
     modifier: Modifier = Modifier,
     onConfirmedClick: () -> Unit
 ) {
-    FloatingActionButton(
+    ExtendedFloatingActionButton(
         modifier = modifier,
         onClick = onConfirmedClick,
         shape = CircleShape,
     ) {
+        Text(
+            text = stringResource(R.string.next_step),
+            modifier = Modifier.padding(end = 8.dp)
+        )
         Icon(
-            imageVector = Icons.Rounded.Check,
+            imageVector = Icons.Rounded.ArrowForward,
             contentDescription = "Add ingredients"
         )
     }
