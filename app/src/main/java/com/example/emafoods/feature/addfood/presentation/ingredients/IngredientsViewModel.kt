@@ -60,17 +60,19 @@ class IngredientsViewModel @Inject constructor(
     }
 
     fun saveChangesIngredient(ingredient: IngredientViewData) {
-        _state.update {
-            it.copy(
-                ingredientsList = it.ingredientsList.map {
-                    if (it.name == ingredient.name) {
-                        ingredient
-                    } else {
-                        it
-                    }
-                }
-            )
+        val newList = _state.value.ingredientsList.map { currentIngredient ->
+            if (currentIngredient.id == ingredient.id) {
+                currentIngredient.copy(
+                    name = ingredient.name,
+                    measurement = ingredient.measurement
+                )
+            } else {
+                currentIngredient
+            }
         }
+        _state.value = _state.value.copy(
+            ingredientsList = newList
+        )
     }
 
     fun onShowedIngredientAlreadyAdded() {
