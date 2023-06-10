@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,12 +35,14 @@ class IngredientsViewModel @Inject constructor(
         }
     }
 
-
-
 }
 
 data class IngredientsViewState(
-    val ingredientsList: List<String> = listOf(),
+    val ingredientsList: List<IngredientViewData> = listOf(
+        IngredientViewData(1, "Ingredient 1", 1),
+        IngredientViewData(2, "Ingredient 2", 2),
+        IngredientViewData(3, "Ingredient 3", 3),
+    ),
     val categoryType: CategoryType = CategoryType.MAIN_DISH,
     val uriId: String = "",
 )
