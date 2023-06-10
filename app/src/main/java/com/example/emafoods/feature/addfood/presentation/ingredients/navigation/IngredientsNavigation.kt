@@ -37,13 +37,16 @@ fun NavController.navigateToIngredients(uriId: String, categoryId: String) {
 
 fun NavGraphBuilder.ingredientsScreen(onConfirmedClick: (DescriptionArguments) -> Unit) {
     composable(
-        route = "${AddFoodDestinations.Ingredients.route}/{$UriIdArg}&{$CategoryIdArg}",
+//        route = "${AddFoodDestinations.Ingredients.route}/{$UriIdArg}&{$CategoryIdArg}", // todo undo this
+        route = "${AddFoodDestinations.Ingredients.route}",
         arguments = listOf(
             navArgument(UriIdArg) {
                 type = NavType.StringType
+                defaultValue = "" // todo remove this
             },
             navArgument(CategoryIdArg) {
                 type = NavType.StringType
+                defaultValue = "" // todo remove this
             },
         ),
     ) {

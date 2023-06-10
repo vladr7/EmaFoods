@@ -21,8 +21,8 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -153,10 +153,10 @@ fun DescriptionScreenInput(
                 fontWeight = FontWeight.Bold,
                 fontFamily = MaterialTheme.typography.titleLarge.fontFamily
             ),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = MaterialTheme.colorScheme.onSecondary,
                 focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.onSecondary,
-                cursorColor = MaterialTheme.colorScheme.onSecondary,
             ),
         )
         Text(
