@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +37,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
-import com.example.emafoods.core.presentation.features.addfood.TitleComponent
+import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 
 @Composable
@@ -80,37 +80,43 @@ fun DescriptionScreen(
     BackgroundTopToBot(
         imageId = R.drawable.descriptionbackgr
     )
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        TitleComponent(
-            text = stringResource(id = R.string.description_screen_title),
+    Box(modifier = modifier.fillMaxSize()) {
+        StepIndicator(
             modifier = modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, top = 40.dp, bottom = 12.dp, end = 20.dp)
+                .align(Alignment.TopStart),
+            step = 3
         )
-        DescriptionScreenInput(
-            modifier = modifier,
-            onDescriptionChange = onDescriptionChange,
-            description = description
-        )
-        DescriptionScreenNextButton(
-            modifier = modifier,
-            onConfirmedClick = onConfirmedClick,
-            showNextButton = showNextButton
-        )
-        Spacer(modifier = modifier.weight(1f))
-        LottieAnimationContent(
-            animationId = R.raw.descriptionplants,
-            color = MaterialTheme.colorScheme.onSecondary,
+        Column(
             modifier = modifier
-                .offset(y= 85.dp)
-        )
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            AddRecipeTitle(
+                text = stringResource(id = R.string.description_screen_title),
+                modifier = modifier
+                    .padding(top = 35.dp)
+            )
+            DescriptionScreenInput(
+                modifier = modifier,
+                onDescriptionChange = onDescriptionChange,
+                description = description
+            )
+            DescriptionScreenNextButton(
+                modifier = modifier,
+                onConfirmedClick = onConfirmedClick,
+                showNextButton = showNextButton
+            )
+            Spacer(modifier = modifier.weight(1f))
+            LottieAnimationContent(
+                animationId = R.raw.descriptionplants,
+                modifier = modifier
+                    .offset(y = 85.dp)
+            )
+        }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DescriptionScreenInput(
     modifier: Modifier = Modifier,
@@ -123,7 +129,7 @@ fun DescriptionScreenInput(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight(0.5f)
-            .padding(top = 0.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
+            .padding(top = 10.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
     ) {
         OutlinedTextField(
             value = description,
