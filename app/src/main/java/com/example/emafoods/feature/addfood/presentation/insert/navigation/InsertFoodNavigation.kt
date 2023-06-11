@@ -59,12 +59,25 @@ fun NavGraphBuilder.insertFoodScreen(
     onSuccess: () -> Unit,
 ) {
     composable(
-        route = "${AddFoodDestinations.InsertFood.route}/{$UriIdArg}&{$DescriptionIdArg}&{$CategoryIdArg}&{$IngredientsIdArg}",
+//        route = "${AddFoodDestinations.InsertFood.route}/{$UriIdArg}&{$DescriptionIdArg}&{$CategoryIdArg}&{$IngredientsIdArg}",
+        route = "${AddFoodDestinations.InsertFood.route}",
         arguments = listOf(
-            navArgument(UriIdArg) { type = NavType.StringType },
-            navArgument(DescriptionIdArg) { type = NavType.StringType },
-            navArgument(CategoryIdArg) { type = NavType.StringType },
-            navArgument(IngredientsIdArg) { type = NavType.StringType },
+            navArgument(UriIdArg) {
+                type = NavType.StringType
+                defaultValue = "" // todo remove this and below
+            },
+            navArgument(DescriptionIdArg) {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+            navArgument(CategoryIdArg) {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+            navArgument(IngredientsIdArg) {
+                type = NavType.StringType
+                defaultValue = ""
+            },
         ),
     ) {
         InsertFoodRoute(onSuccess = onSuccess)

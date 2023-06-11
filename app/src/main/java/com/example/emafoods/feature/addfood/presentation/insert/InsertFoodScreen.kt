@@ -122,43 +122,52 @@ fun InsertFoodScreen(
             onDescriptionChange = onDescriptionChange,
             description = description
         )
-        Row(
+//        AddRecipeButton(modifier, onInsertFoodClick, loading)
+    }
+
+}
+
+@Composable
+private fun AddRecipeButton(
+    modifier: Modifier,
+    onInsertFoodClick: () -> Unit,
+    loading: Boolean
+) {
+    Row(
+        modifier = modifier
+            .padding(bottom = 32.dp, end = 24.dp)
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        LottieAnimationContent(
+            animationId = R.raw.insertfoodplant,
             modifier = modifier
-                .padding(bottom = 32.dp, end = 24.dp)
+                .size(50.dp)
+                .padding(end = 8.dp),
+            color = MaterialTheme.colorScheme.onSecondary,
+            speed = 0.3f,
+            iterations = 1
+        )
+        LoadingButton(
+            onClick = onInsertFoodClick,
+            loading = loading,
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            LottieAnimationContent(
-                animationId = R.raw.insertfoodplant,
-                modifier = modifier
-                    .size(50.dp)
-                    .padding(end = 8.dp),
-                color = MaterialTheme.colorScheme.onSecondary,
-                speed = 0.3f,
-                iterations = 1
-            )
-            LoadingButton(
-                onClick = onInsertFoodClick,
-                loading = loading,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Icon(
-                        Icons.Filled.Add,
-                        contentDescription = "Add recipe",
-                        tint = MaterialTheme.colorScheme.onSecondary,
-                    )
-                    Text(
-                        stringResource(R.string.add_recipe),
-                        modifier = Modifier.padding(8.dp),
-                        color = MaterialTheme.colorScheme.onSecondary,
-                    )
-                }
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "Add recipe",
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                )
+                Text(
+                    stringResource(R.string.add_recipe),
+                    modifier = Modifier.padding(8.dp),
+                    color = MaterialTheme.colorScheme.onSecondary,
+                )
             }
         }
     }
-
 }
 
 @Composable
