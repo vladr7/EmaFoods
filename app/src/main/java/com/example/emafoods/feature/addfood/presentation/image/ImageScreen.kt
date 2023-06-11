@@ -55,6 +55,7 @@ import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFile
 import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
+import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
 import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
 import kotlinx.coroutines.launch
@@ -87,14 +88,12 @@ fun ImageRoute(
         },
         hasTakePictureImage = state.hasTakePictureImage,
         onNextClicked = { imageUri ->
-            if (!imageUri.isNullOrEmpty()) {
-                onNextClicked(
-                    IngredientsArguments(
-                        category = state.category,
-                        uri = imageUri
-                    )
+            onNextClicked(
+                IngredientsArguments(
+                    category = state.category,
+                    uri = imageUri ?: IMAGE_FROM_GALLERY_FLAG,
                 )
-            }
+            )
         },
         imageUri = Uri.parse(state.imageUri)
     )
@@ -125,7 +124,7 @@ fun ImageScreen(
         Row {
             Spacer(modifier = modifier.weight(1f))
             Column(
-                modifier= modifier,
+                modifier = modifier,
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
             ) {
                 NextStepButton(
