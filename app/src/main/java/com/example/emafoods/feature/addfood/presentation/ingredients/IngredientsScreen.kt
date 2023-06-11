@@ -44,12 +44,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
 import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
@@ -154,9 +154,10 @@ fun IngredientsScreen(
                 )
             }
             AnimatedVisibility(visible = !isIngredientsListFocused && ingredients.isNotEmpty()) {
-                IngredientsListTitle(
+                BasicTitle(
                     modifier = modifier
-                        .padding(top = 24.dp)
+                        .padding(top = 24.dp),
+                    text = stringResource(R.string.ingredients_list_title),
                 )
             }
             IngredientsEditableList(
@@ -227,20 +228,6 @@ fun IngredientsEditableList(
             )
         }
     }
-}
-
-@Composable
-fun IngredientsListTitle(modifier: Modifier) {
-    Text(
-        text = stringResource(R.string.ingredients_list_title),
-        fontSize = 26.sp,
-        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center,
-        color = MaterialTheme.colorScheme.onSecondary,
-        modifier = modifier
-            .padding(start = 20.dp)
-    )
 }
 
 @Composable
