@@ -38,6 +38,7 @@ import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 
@@ -102,11 +103,15 @@ fun DescriptionScreen(
                 onDescriptionChange = onDescriptionChange,
                 description = description
             )
-            DescriptionScreenNextButton(
-                modifier = modifier,
-                onConfirmedClick = onConfirmedClick,
-                showNextButton = showNextButton
-            )
+            Row {
+                Spacer(modifier = modifier.weight(1f))
+                NextStepButton(
+                    modifier = modifier
+                        .padding(end = 24.dp),
+                    onConfirmedClick = onConfirmedClick,
+                    visible = showNextButton
+                )
+            }
             Spacer(modifier = modifier.weight(1f))
             LottieAnimationContent(
                 animationId = R.raw.descriptionplants,

@@ -19,10 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -54,6 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
 import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
@@ -174,13 +173,13 @@ fun IngredientsScreen(
                 }
             )
         }
-        NextStepIngredientsButton(
+        NextStepButton(
             modifier = modifier
                 .padding(bottom = 24.dp, end = 24.dp)
-                .align(Alignment.BottomEnd)
-        ) {
-            onConfirmedClick()
-        }
+                .align(Alignment.BottomEnd),
+            onConfirmedClick = onConfirmedClick,
+            visible = ingredients.isNotEmpty(),
+        )
     }
 }
 
@@ -513,24 +512,5 @@ private fun RowScope.Measurement(
     )
 }
 
-@Composable
-fun NextStepIngredientsButton(
-    modifier: Modifier = Modifier,
-    onConfirmedClick: () -> Unit
-) {
-    ExtendedFloatingActionButton(
-        modifier = modifier,
-        onClick = onConfirmedClick,
-        shape = CircleShape,
-    ) {
-        Text(
-            text = stringResource(R.string.next_step),
-            modifier = Modifier.padding(end = 8.dp)
-        )
-        Icon(
-            imageVector = Icons.Rounded.ArrowForward,
-            contentDescription = "Add ingredients"
-        )
-    }
-}
+
 
