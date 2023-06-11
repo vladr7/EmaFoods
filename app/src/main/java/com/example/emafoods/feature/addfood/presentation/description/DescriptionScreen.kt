@@ -40,7 +40,6 @@ fun DescriptionRoute(
     onConfirmedClick: (InsertFoodArguments) -> Unit,
     viewModel: DescriptionViewModel = hiltViewModel(),
 ) {
-    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     DescriptionScreen(
@@ -55,6 +54,7 @@ fun DescriptionRoute(
                     description = state.description,
                     uri = state.uri,
                     category = state.category,
+                    ingredientsList = state.ingredientsListSerialized
                 )
             )
         },

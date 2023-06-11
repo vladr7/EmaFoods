@@ -3,7 +3,9 @@ package com.example.emafoods.feature.addfood.presentation.ingredients
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.example.emafoods.feature.addfood.domain.usecase.SerializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +18,8 @@ import javax.inject.Inject
 class IngredientsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
+    private val serializeIngredientsUseCase: SerializeIngredientsUseCase,
+    private val ingredientsMapper: IngredientMapper
 ) : ViewModel() {
 
     private val ingredientsArgs: IngredientsArguments =
@@ -85,6 +89,13 @@ class IngredientsViewModel @Inject constructor(
 
     private fun getNextIngredientId(): Long {
         return _state.value.ingredientsList.maxOfOrNull { it.id }?.plus(1) ?: 1
+    }
+
+    fun serializedIngredients(): String {
+        val mappedIngredients = state.value.ingredientsList.map {
+            ingredientsMapper.mapToModel(it)
+        }
+        return serializeIngredientsUseCase.execute(mappedIngredients)
     }
 }
 

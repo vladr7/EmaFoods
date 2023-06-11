@@ -72,6 +72,7 @@ fun IngredientsRoute(
                 DescriptionArguments(
                     uri = state.uriId,
                     category = state.categoryType.string,
+                    ingredientsList = viewModel.serializedIngredients(),
                 )
             )
         },

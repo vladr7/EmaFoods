@@ -11,8 +11,11 @@ import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.example.emafoods.feature.addfood.domain.usecase.DeserializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
@@ -31,7 +34,9 @@ class InsertFoodViewModel @Inject constructor(
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
     private val increaseXpUseCase: IncreaseXpUseCase,
     private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase,
-    private val logHelper: LogHelper
+    private val logHelper: LogHelper,
+    private val deserializeIngredientsUseCase: DeserializeIngredientsUseCase,
+    private val ingredientMapper: IngredientMapper
 ) : BaseViewModel() {
 
     private val insertFoodArgs: InsertFoodArguments =
@@ -39,6 +44,7 @@ class InsertFoodViewModel @Inject constructor(
     private val uriId = insertFoodArgs.uri
     private val descriptionId = insertFoodArgs.description
     private val categoryId = insertFoodArgs.category
+    private val ingredientsList = insertFoodArgs.ingredientsList
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
@@ -65,6 +71,16 @@ class InsertFoodViewModel @Inject constructor(
             _state.update {
                 it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
             }
+        }
+        _state.update {
+            it.copy(ingredientsList = deserializeIngredients())
+        }
+    }
+
+    private fun deserializeIngredients(): List<IngredientViewData> {
+        val deserializedIngredients = deserializeIngredientsUseCase.execute(ingredientsList)
+        return deserializedIngredients.map {
+            ingredientMapper.mapToViewData(it)
         }
     }
 
@@ -161,4 +177,5 @@ data class InsertFoodViewState(
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
     val shouldAddImageFromTemporary: Boolean = false,
+    val ingredientsList: List<IngredientViewData> = emptyList()
 ) : ViewState(isLoading, errorMessage)

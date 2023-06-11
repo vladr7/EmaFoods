@@ -14,6 +14,8 @@ import com.example.emafoods.feature.addfood.presentation.description.navigation.
 import com.example.emafoods.feature.addfood.presentation.description.navigation.UriIdArg
 import com.example.emafoods.feature.addfood.presentation.ingredients.IngredientsRoute
 
+const val IngredientsIdArg = "IngredientsIdArg"
+
 data class IngredientsArguments(
     val uri: String,
     val category: String,
