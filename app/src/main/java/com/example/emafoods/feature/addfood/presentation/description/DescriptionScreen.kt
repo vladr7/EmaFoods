@@ -1,23 +1,15 @@
 package com.example.emafoods.feature.addfood.presentation.description
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -128,12 +120,12 @@ fun DescriptionScreenInput(
     onDescriptionChange: (String) -> Unit,
     description: String
 ) {
-    val maxChars = 600
+    val maxChars = 1000
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.5f)
+            .heightIn(min = 100.dp, max = 350.dp)
             .padding(top = 10.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
     ) {
         OutlinedTextField(
@@ -157,7 +149,7 @@ fun DescriptionScreenInput(
                 }
             },
             modifier = modifier
-                .fillMaxSize(),
+                .fillMaxWidth(),
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSecondary,
                 fontSize = 24.sp,
@@ -174,38 +166,12 @@ fun DescriptionScreenInput(
             text = (maxChars - description.count()).toString(),
             color = MaterialTheme.colorScheme.onSecondary,
             modifier = Modifier
-                .align(Alignment.BottomEnd)
+                .align(Alignment.TopEnd)
                 .padding(8.dp)
         )
     }
 }
 
-@Composable
-fun DescriptionScreenNextButton(
-    modifier: Modifier = Modifier,
-    onConfirmedClick: () -> Unit,
-    showNextButton: Boolean = false,
-) {
-    AnimatedVisibility(visible = showNextButton,
-        enter = slideInHorizontally {
-            it
-        },
-        exit = slideOutHorizontally(
-            targetOffsetX = { it }
-        )
-    ) {
-        Row {
-            Spacer(modifier = modifier.weight(1f))
-            FloatingActionButton(
-                modifier = modifier
-                    .padding(end = 24.dp),
-                onClick = onConfirmedClick,
-                shape = CircleShape,
-            ) {
-                Icon(imageVector = Icons.Rounded.Check, contentDescription = "Add Description")
-            }
-        }
-    }
-}
+
 
 
