@@ -1,14 +1,17 @@
 package com.example.emafoods.feature.addfood.di
 
+import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToMainListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToPendingListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddTemporaryPendingImageToRemoteStorageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.CheckFieldsAreFilledUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.DeserializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.MoveTempImageToPendingUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.SerializeIngredientsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -71,5 +74,19 @@ object AddFoodModule {
         foodRepository: FoodRepository,
     ) = MoveTempImageToPendingUseCase(
         foodRepository = foodRepository,
+    )
+
+    @Provides
+    fun provideSerializeIngredientsUseCase(
+        logHelper: LogHelper
+    ) = SerializeIngredientsUseCase(
+        logHelper = logHelper
+    )
+
+    @Provides
+    fun provideDeserializeIngredientsUseCase(
+        logHelper: LogHelper
+    ) = DeserializeIngredientsUseCase(
+        logHelper = logHelper
     )
 }
