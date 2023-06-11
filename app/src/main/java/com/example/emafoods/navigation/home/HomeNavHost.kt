@@ -59,7 +59,8 @@ fun HomeNavHost(
                 onConfirmedClick = { descriptionArguments ->
                     navController.navigateToDescription(
                         uriId = descriptionArguments.uri,
-                        categoryId = descriptionArguments.category
+                        categoryId = descriptionArguments.category,
+                        ingredientsList = descriptionArguments.ingredientsList
                     )
                 }
             )
@@ -68,7 +69,8 @@ fun HomeNavHost(
                     navController.navigateToInsertFood(
                         uriId = it.uri,
                         descriptionId = it.description,
-                        categoryId = it.category
+                        categoryId = it.category,
+                        ingredientsList = it.ingredientsList
                     )
                 },
             )
