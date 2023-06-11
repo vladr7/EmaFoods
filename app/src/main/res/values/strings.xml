@@ -10,9 +10,9 @@
     <string name="add_image_title">Adaugă o imagine a rețetei</string>
     <string name="title_screen_title">Titlu rețetă</string>
     <string name="title_input_label_text">Titlu</string>
-    <string name="description_empty_input_label_text">Descriere</string>
-    <string name="description_empty_input_label_text_min_chars">Descriere (minim 10 caractere)</string>
-    <string name="description_screen_title">Scurtă descriere</string>
+    <string name="description_empty_input_label_text">Mod de preparare</string>
+    <string name="description_empty_input_label_text_min_chars">Minim 10 caractere</string>
+    <string name="description_screen_title">Mod de preparare</string>
     <string name="add_recipe">Adaugă rețeta</string>
     <string name="how_to_gain_xp">Cum pot să cresc nivelul?</string>
     <string name="your_recipe_has_been_accepted">Ți-a fost acceptată o rețetă! 🥳 Ai primit %1$s XP!</string>
