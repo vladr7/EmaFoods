@@ -73,9 +73,9 @@ class InsertFoodViewModel @Inject constructor(
                 it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
             }
         }
-        _state.update {
-            it.copy(ingredientsList = deserializeIngredients())
-        }
+//        _state.update {
+//            it.copy(ingredientsList = deserializeIngredients())
+//        }
     }
 
     private fun deserializeIngredients(): List<IngredientViewData> {
@@ -178,5 +178,31 @@ data class InsertFoodViewState(
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
     val shouldAddImageFromTemporary: Boolean = false,
-    val ingredientsList: List<IngredientViewData> = emptyList()
+    val ingredientsList: List<IngredientViewData> = listOf(
+        IngredientViewData(
+            id = 0,
+            name = "Radacina de sfecla rosie",
+            measurement = 100L
+        ),
+        IngredientViewData(
+            id = 1,
+            name = "Faina",
+            measurement = 200L
+        ),
+        IngredientViewData(
+            id = 2,
+            name = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
+            measurement = 100L
+        ),
+        IngredientViewData(
+            id = 3,
+            name = "Oua",
+            measurement = 2L
+        ),
+        IngredientViewData(
+            id = 4,
+            name = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
+            measurement = 100L
+        ),
+    )
 ) : ViewState(isLoading, errorMessage)

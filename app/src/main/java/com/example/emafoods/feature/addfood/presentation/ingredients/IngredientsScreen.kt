@@ -159,7 +159,7 @@ fun IngredientsScreen(
                         .padding(top = 24.dp)
                 )
             }
-            IngredientsList(
+            IngredientsEditableList(
                 modifier = modifier,
                 ingredients = ingredients,
                 onRemoveIngredientClick = { ingredient ->
@@ -200,7 +200,7 @@ fun HandleIngredientToasts(
 }
 
 @Composable
-fun IngredientsList(
+fun IngredientsEditableList(
     modifier: Modifier = Modifier,
     ingredients: List<IngredientViewData>,
     onRemoveIngredientClick: (IngredientViewData) -> Unit,
