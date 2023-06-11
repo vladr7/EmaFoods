@@ -11,10 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,13 +28,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,6 +54,8 @@ import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
+import com.example.emafoods.feature.addfood.presentation.ingredients.IngredientsListTitle
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 import kotlinx.coroutines.launch
 
@@ -81,7 +94,8 @@ fun InsertFoodRoute(
                     viewModel.updateImageUri(compressedUri)
                 }
             },
-            loading = state.isLoading
+            loading = state.isLoading,
+            ingredients = state.ingredientsList
         )
     }
     if (state.errorMessage?.isNotEmpty() == true) {
@@ -99,7 +113,8 @@ fun InsertFoodScreen(
     description: String,
     onInsertFoodClick: () -> Unit,
     onUriChanged: (Uri?) -> Unit,
-    loading: Boolean
+    loading: Boolean,
+    ingredients: List<IngredientViewData>,
 ) {
 
     BackgroundTopToBot(
@@ -117,14 +132,126 @@ fun InsertFoodScreen(
             onUriChangedTakePicture = onUriChanged
         )
         DescriptionScreenInput(
-            modifier = modifier
-                .weight(1f),
+            modifier = modifier,
             onDescriptionChange = onDescriptionChange,
             description = description
         )
+        IngredientsReadOnlyList(
+            modifier = modifier,
+            ingredients = ingredients,
+            onEditClick = {
+                // todo
+            }
+        )
 //        AddRecipeButton(modifier, onInsertFoodClick, loading)
-    }
 
+    }
+}
+
+@Composable
+fun IngredientsReadOnlyList(
+    modifier: Modifier = Modifier,
+    ingredients: List<IngredientViewData>,
+    onEditClick: () -> Unit
+) {
+    IngredientsListTitle(
+        modifier = modifier
+            .padding(bottom = 8.dp)
+    )
+    Box(
+        modifier = modifier
+            .verticalScroll(state = rememberScrollState())
+            .fillMaxWidth()
+            .heightIn(max = 500.dp)
+    ) {
+        Column {
+            ingredients.forEach { ingredient ->
+                IngredientReadOnlyItem(
+                    modifier = modifier,
+                    ingredientName = ingredient.name,
+                    measurement = ingredient.measurement.toString()
+                )
+                Divider(
+                    modifier = modifier
+                        .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 4.dp)
+                        .alpha(0.5f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun IngredientReadOnlyItem(
+    modifier: Modifier = Modifier,
+    ingredientName: String,
+    measurement: String,
+) {
+    Row(
+        verticalAlignment = Alignment.Top,
+        modifier = modifier
+            .padding(start = 20.dp, end = 8.dp)
+            .fillMaxWidth()
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Circle,
+            contentDescription = null,
+            modifier = modifier
+                .size(22.dp)
+                .padding(end = 8.dp),
+            tint = MaterialTheme.colorScheme.onSecondary
+        )
+//        Text(
+//            text = ingredientName,
+//            style = MaterialTheme.typography.bodyLarge,
+//            fontWeight = FontWeight.Bold,
+//            color = MaterialTheme.colorScheme.onSecondary,
+//            modifier = modifier
+//                .padding(end = 8.dp)
+//        )
+        val gradient = Brush.verticalGradient(
+            colors = listOf(Color.Transparent, MaterialTheme.colorScheme.secondary),
+        )
+        Text(
+            buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                    )
+                ) {
+                    append(ingredientName)
+                }
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        shadow = Shadow(
+                            color = Color.Yellow,
+                            blurRadius = 4f,
+                            offset = Offset(0f, 0f)
+                        )
+                    ),
+                ) {
+                    append(" $measurement")
+                }
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSecondary,
+                        shadow = Shadow(
+                            color = Color.Yellow,
+                            blurRadius = 4f,
+                            offset = Offset(0f, 0f)
+                        )
+                    )
+                ) {
+                    append(" gr/ml")
+                }
+            }
+        )
+
+    }
 }
 
 @Composable
@@ -223,7 +350,7 @@ fun InsertFoodImage(
                 modifier = modifier
                     .padding(top = 8.dp)
             ) {
-                if(!hasImage) {
+                if (!hasImage) {
                     Text(
                         text = stringResource(R.string.choose_from_gallery),
                         color = MaterialTheme.colorScheme.onSecondary,
@@ -249,7 +376,7 @@ fun InsertFoodImage(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if(!hasImage) {
+                if (!hasImage) {
                     Text(
                         text = stringResource(R.string.take_a_picture),
                         color = MaterialTheme.colorScheme.onSecondary,
