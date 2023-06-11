@@ -14,7 +14,6 @@ import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.domain.usecase.DeserializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
-import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
@@ -53,26 +52,26 @@ class InsertFoodViewModel @Inject constructor(
     val state: StateFlow<InsertFoodViewState> = _state
 
     init {
-        if(uriId == IMAGE_FROM_GALLERY_FLAG) {
-            viewModelScope.launch {
-                when(val result = getTemporaryPendingImageUseCase.execute()) {
-                    is State.Failed -> {
-                        _state.update {
-                            it.copy(errorMessage = result.message, description = descriptionId)
-                        }
-                    }
-                    is State.Success -> {
-                        _state.update {
-                            it.copy(shouldAddImageFromTemporary = true, imageUri = result.data, description = descriptionId)
-                        }
-                    }
-                }
-            }
-        } else {
-            _state.update {
-                it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
-            }
-        }
+//        if(uriId == IMAGE_FROM_GALLERY_FLAG) {
+//            viewModelScope.launch {
+//                when(val result = getTemporaryPendingImageUseCase.execute()) {
+//                    is State.Failed -> {
+//                        _state.update {
+//                            it.copy(errorMessage = result.message, description = descriptionId)
+//                        }
+//                    }
+//                    is State.Success -> {
+//                        _state.update {
+//                            it.copy(shouldAddImageFromTemporary = true, imageUri = result.data, description = descriptionId)
+//                        }
+//                    }
+//                }
+//            }
+//        } else {
+//            _state.update {
+//                it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
+//            }
+//        }
 //        _state.update {
 //            it.copy(ingredientsList = deserializeIngredients())
 //        }
@@ -175,7 +174,14 @@ data class InsertFoodViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
     val imageUri: Uri? = null,
-    val description: String = "",
+    val description: String = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
+            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
+            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
+            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
+            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
+            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
+            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
+            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
     val insertFoodSuccess: Boolean = false,
     val shouldAddImageFromTemporary: Boolean = false,
     val ingredientsList: List<IngredientViewData> = listOf(

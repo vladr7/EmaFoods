@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -51,11 +52,12 @@ import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.LoadingButton
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
+import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
-import com.example.emafoods.feature.addfood.presentation.ingredients.IngredientsListTitle
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
+import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 import kotlinx.coroutines.launch
 
@@ -120,31 +122,48 @@ fun InsertFoodScreen(
     BackgroundTopToBot(
         imageId = R.drawable.descriptionbackgr
     )
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-    ) {
-        InsertFoodImage(
-            imageUri = imageUri,
-            modifier = modifier,
-            onUriChangedChoseFile = onUriChanged,
-            onUriChangedTakePicture = onUriChanged
+    val scrollState = rememberScrollState()
+    Box(modifier = modifier) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(state = scrollState)
+                .heightIn(max = 5000.dp)
+        ) {
+            InsertFoodImage(
+                imageUri = imageUri,
+                modifier = modifier,
+                onUriChangedChoseFile = onUriChanged,
+                onUriChangedTakePicture = onUriChanged
+            )
+            IngredientsReadOnlyList(
+                modifier = modifier,
+                ingredients = ingredients,
+                onEditClick = {
+                    // todo
+                }
+            )
+            Spacer(modifier = modifier.height(16.dp))
+            BasicTitle(modifier = modifier, text = stringResource(id = R.string.description_title))
+            DescriptionScreenInput(
+                modifier = modifier,
+                onDescriptionChange = onDescriptionChange,
+                description = description
+            )
+            Spacer(modifier = modifier.height(16.dp))
+            AddRecipeButton(
+                modifier,
+                onInsertFoodClick,
+                loading
+            )
+        }
+        ScrollArrow(
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = 10.dp)
+                .size(80.dp),
+            visible = scrollState.value == 0,
         )
-        DescriptionScreenInput(
-            modifier = modifier,
-            onDescriptionChange = onDescriptionChange,
-            description = description
-        )
-        IngredientsReadOnlyList(
-            modifier = modifier,
-            ingredients = ingredients,
-            onEditClick = {
-                // todo
-            }
-        )
-//        AddRecipeButton(modifier, onInsertFoodClick, loading)
-
     }
 }
 
@@ -154,13 +173,13 @@ fun IngredientsReadOnlyList(
     ingredients: List<IngredientViewData>,
     onEditClick: () -> Unit
 ) {
-    IngredientsListTitle(
+    BasicTitle(
         modifier = modifier
-            .padding(bottom = 8.dp)
+            .padding(bottom = 8.dp),
+        text = stringResource(id = R.string.ingredients_list_title)
     )
     Box(
         modifier = modifier
-            .verticalScroll(state = rememberScrollState())
             .fillMaxWidth()
             .heightIn(max = 500.dp)
     ) {
@@ -200,17 +219,6 @@ fun IngredientReadOnlyItem(
                 .size(22.dp)
                 .padding(end = 8.dp),
             tint = MaterialTheme.colorScheme.onSecondary
-        )
-//        Text(
-//            text = ingredientName,
-//            style = MaterialTheme.typography.bodyLarge,
-//            fontWeight = FontWeight.Bold,
-//            color = MaterialTheme.colorScheme.onSecondary,
-//            modifier = modifier
-//                .padding(end = 8.dp)
-//        )
-        val gradient = Brush.verticalGradient(
-            colors = listOf(Color.Transparent, MaterialTheme.colorScheme.secondary),
         )
         Text(
             buildAnnotatedString {
@@ -272,7 +280,6 @@ private fun AddRecipeButton(
                 .padding(end = 8.dp),
             color = MaterialTheme.colorScheme.onSecondary,
             speed = 0.3f,
-            iterations = 1
         )
         LoadingButton(
             onClick = onInsertFoodClick,

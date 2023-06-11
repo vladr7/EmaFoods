@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -152,7 +151,7 @@ fun DescriptionScreenInput(
                 .fillMaxWidth(),
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSecondary,
-                fontSize = 24.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = MaterialTheme.typography.titleLarge.fontFamily
             ),
