@@ -9,9 +9,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.category.navigation.CategoryIdArg
 import com.example.emafoods.feature.addfood.presentation.image.ImageRoute
 import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
+
+const val IMAGE_FROM_GALLERY_FLAG = "IMAGE_FROM_GALLERY_FLAG"
 
 data class ImageArguments(
     val category: String,
@@ -34,7 +37,7 @@ fun NavGraphBuilder.imageScreen(onHasImage: (IngredientsArguments) -> Unit) {
         route = "${AddFoodDestinations.Image.route}/{$CategoryIdArg}",
         arguments = listOf(
             navArgument(CategoryIdArg) {
-                defaultValue = "empty"
+                defaultValue = CategoryType.MAIN_DISH.string
                 type = NavType.StringType
             }
         )

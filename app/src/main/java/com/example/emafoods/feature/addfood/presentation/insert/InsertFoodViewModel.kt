@@ -14,6 +14,7 @@ import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.domain.usecase.DeserializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
@@ -52,7 +53,7 @@ class InsertFoodViewModel @Inject constructor(
     val state: StateFlow<InsertFoodViewState> = _state
 
     init {
-        if(uriId == "empty") {
+        if(uriId == IMAGE_FROM_GALLERY_FLAG) {
             viewModelScope.launch {
                 when(val result = getTemporaryPendingImageUseCase.execute()) {
                     is State.Failed -> {
