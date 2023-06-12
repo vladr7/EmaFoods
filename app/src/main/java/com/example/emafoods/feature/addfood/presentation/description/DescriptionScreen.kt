@@ -151,7 +151,7 @@ fun DescriptionScreenInput(
                 .fillMaxWidth(),
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSecondary,
-                fontSize = 16.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = MaterialTheme.typography.titleLarge.fontFamily
             ),
