@@ -110,6 +110,9 @@ fun InsertFoodRoute(
                 },
                 showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
                 showStepIndicator = false,
+                onUpdateIngredientFocus = { ingredient, isFocused ->
+                    viewModel.onUpdateIngredientFocus(ingredient, isFocused)
+                },
             )
         }
         AnimatedVisibility(

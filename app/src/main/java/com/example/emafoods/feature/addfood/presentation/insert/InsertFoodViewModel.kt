@@ -18,6 +18,7 @@ import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingIm
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
@@ -44,6 +45,7 @@ class InsertFoodViewModel @Inject constructor(
     private val addIngredientToListUseCase: AddIngredientToListUseCase,
     private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
     private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
+    private val updateIngredientFocusUseCase: UpdateIngredientFocusUseCase
 ) : BaseViewModel() {
 
     private val insertFoodArgs: InsertFoodArguments =
@@ -244,6 +246,19 @@ class InsertFoodViewModel @Inject constructor(
             )
         }
     }
+
+    fun onUpdateIngredientFocus(ingredient: IngredientViewData, isFocused: Boolean) {
+        when(val result = updateIngredientFocusUseCase.execute(_state.value.ingredientsList, ingredient, isFocused)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
 }
 
 data class InsertFoodViewState(
@@ -278,15 +293,15 @@ data class InsertFoodViewState(
             name = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
             measurement = 100L
         ),
-        IngredientViewData(
-            id = 3,
-            name = "Oua",
-            measurement = 2L
-        ),
-        IngredientViewData(
-            id = 4,
-            name = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
-            measurement = 100L
-        ),
+//        IngredientViewData(
+//            id = 3,
+//            name = "Oua",
+//            measurement = 2L
+//        ),
+//        IngredientViewData(
+//            id = 4,
+//            name = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
+//            measurement = 100L
+//        ),
     )
 ) : ViewState(isLoading, errorMessage)
