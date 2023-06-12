@@ -109,6 +109,7 @@ fun InsertFoodRoute(
                     viewModel.onShowedIngredientAlreadyAdded()
                 },
                 showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
+                showStepIndicator = false,
             )
         }
         AnimatedVisibility(
