@@ -168,11 +168,18 @@ class InsertFoodViewModel @Inject constructor(
             logHelper.log(AnalyticsConstants.RE_PICK_PHOTO)
         }
     }
+
+    fun onConfirmedIngredients() {
+        _state.update {
+            it.copy(showEditIngredientsContent = false)
+        }
+    }
 }
 
 data class InsertFoodViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
+    val showEditIngredientsContent: Boolean = false,
     val imageUri: Uri? = null,
     val description: String = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
             "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +

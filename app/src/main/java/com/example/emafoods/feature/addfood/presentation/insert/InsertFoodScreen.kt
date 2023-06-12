@@ -82,28 +82,41 @@ fun InsertFoodRoute(
         viewModel.resetState()
         onSuccess()
     } else {
-        InsertFoodScreen(
-            modifier = modifier,
-            imageUri = state.imageUri,
-            onDescriptionChange = { viewModel.updateDescription(it) },
-            description = state.description,
-            onInsertFoodClick = {
-                viewModel.insertFood(
-                    description = state.description,
-                    imageUri = state.imageUri
-                )
-            },
-            onUriChanged = { uri ->
-                coroutine.launch {
-                    val compressedUri = uri?.getCompressedImage(context)
-                    // todo add a loading
-                    viewModel.onSelectedNewImage()
-                    viewModel.updateImageUri(compressedUri)
-                }
-            },
-            loading = state.isLoading,
-            ingredients = state.ingredientsList
-        )
+        if (state.showEditIngredientsContent) {
+//            IngredientsScreen(
+//                onConfirmedClick = {
+//                    viewModel.onConfirmedIngredients()
+//                },
+//                ingredients = state.ingredientsList,
+//                onAddIngredientToList = ,
+//                onRemoveIngredientFromList =,
+//                onSaveChangesIngredient =,
+//                showIngredientAlreadyAddedError =
+//            )
+        } else {
+            InsertFoodScreen(
+                modifier = modifier,
+                imageUri = state.imageUri,
+                onDescriptionChange = { viewModel.updateDescription(it) },
+                description = state.description,
+                onInsertFoodClick = {
+                    viewModel.insertFood(
+                        description = state.description,
+                        imageUri = state.imageUri
+                    )
+                },
+                onUriChanged = { uri ->
+                    coroutine.launch {
+                        val compressedUri = uri?.getCompressedImage(context)
+                        // todo add a loading
+                        viewModel.onSelectedNewImage()
+                        viewModel.updateImageUri(compressedUri)
+                    }
+                },
+                loading = state.isLoading,
+                ingredients = state.ingredientsList
+            )
+        }
     }
     if (state.errorMessage?.isNotEmpty() == true) {
         Toast.makeText(context, "${state.errorMessage}", Toast.LENGTH_LONG).show()
@@ -223,7 +236,7 @@ fun EditIngredientsButton(
         horizontalArrangement = Arrangement.End,
         modifier = modifier
             .clickable { onClick() }
-            .padding(end = 20.dp)
+            .padding(end = 20.dp, top = 4.dp, bottom = 4.dp)
             .fillMaxWidth()
     ) {
         Text(
@@ -382,7 +395,7 @@ fun InsertFoodImage(
                 LoadingCookingAnimation()
             },
             error = {
-                if(!alreadyShowedErrorImage) {
+                if (!alreadyShowedErrorImage) {
                     alreadyShowedErrorImage = true
                     Toast.makeText(
                         context,

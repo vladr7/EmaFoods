@@ -3,6 +3,10 @@ package com.example.emafoods.feature.addfood.presentation.ingredients
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.example.emafoods.feature.addfood.domain.models.IngredientResult
+import com.example.emafoods.feature.addfood.domain.usecase.AddIngredientToListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SerializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
@@ -19,7 +23,10 @@ class IngredientsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
     private val serializeIngredientsUseCase: SerializeIngredientsUseCase,
-    private val ingredientsMapper: IngredientMapper
+    private val ingredientsMapper: IngredientMapper,
+    private val addIngredientToListUseCase: AddIngredientToListUseCase,
+    private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
+    private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
 ) : ViewModel() {
 
     private val ingredientsArgs: IngredientsArguments =
@@ -40,43 +47,51 @@ class IngredientsViewModel @Inject constructor(
     }
 
     fun addIngredientToList(ingredient: IngredientViewData) {
-        _state.update {
-            if (it.ingredientsList.contains(ingredient)) {
-                it.copy(
-                    showIngredientAlreadyAddedError = true
-                )
-            } else {
-                it.copy(
-                    ingredientsList = it.ingredientsList + ingredient.copy(
-                        id = getNextIngredientId()
+        when(val result = addIngredientToListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {
+                _state.update {
+                    it.copy(
+                        showIngredientAlreadyAddedError = true
                     )
-                )
+                }
+            }
+            is IngredientResult.Failed -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
             }
         }
     }
 
     fun removeIngredientFromList(ingredient: IngredientViewData) {
-        _state.update {
-            it.copy(
-                ingredientsList = it.ingredientsList - ingredient
-            )
+        when(val result = removeIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Failed -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
         }
     }
 
     fun saveChangesIngredient(ingredient: IngredientViewData) {
-        val newList = _state.value.ingredientsList.map { currentIngredient ->
-            if (currentIngredient.id == ingredient.id) {
-                currentIngredient.copy(
-                    name = ingredient.name,
-                    measurement = ingredient.measurement
-                )
-            } else {
-                currentIngredient
+        when(val result = saveChangedIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Failed -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
             }
         }
-        _state.value = _state.value.copy(
-            ingredientsList = newList
-        )
     }
 
     fun onShowedIngredientAlreadyAdded() {
@@ -85,10 +100,6 @@ class IngredientsViewModel @Inject constructor(
                 showIngredientAlreadyAddedError = false
             )
         }
-    }
-
-    private fun getNextIngredientId(): Long {
-        return _state.value.ingredientsList.maxOfOrNull { it.id }?.plus(1) ?: 1
     }
 
     fun serializedIngredients(): String {
