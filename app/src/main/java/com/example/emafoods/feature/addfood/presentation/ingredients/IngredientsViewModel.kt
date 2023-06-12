@@ -55,7 +55,6 @@ class IngredientsViewModel @Inject constructor(
                     )
                 }
             }
-            is IngredientResult.Failed -> {}
             is IngredientResult.Success -> {
                 _state.update {
                     it.copy(
@@ -69,7 +68,6 @@ class IngredientsViewModel @Inject constructor(
     fun removeIngredientFromList(ingredient: IngredientViewData) {
         when(val result = removeIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
             is IngredientResult.ErrorAlreadyAdded -> {}
-            is IngredientResult.Failed -> {}
             is IngredientResult.Success -> {
                 _state.update {
                     it.copy(
@@ -83,7 +81,6 @@ class IngredientsViewModel @Inject constructor(
     fun saveChangesIngredient(ingredient: IngredientViewData) {
         when(val result = saveChangedIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
             is IngredientResult.ErrorAlreadyAdded -> {}
-            is IngredientResult.Failed -> {}
             is IngredientResult.Success -> {
                 _state.update {
                     it.copy(
