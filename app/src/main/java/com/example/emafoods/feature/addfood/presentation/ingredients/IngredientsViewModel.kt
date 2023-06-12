@@ -8,6 +8,7 @@ import com.example.emafoods.feature.addfood.domain.usecase.AddIngredientToListUs
 import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SerializeIngredientsUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
@@ -27,6 +28,7 @@ class IngredientsViewModel @Inject constructor(
     private val addIngredientToListUseCase: AddIngredientToListUseCase,
     private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
     private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
+    private val updateIngredientFocusUseCase: UpdateIngredientFocusUseCase
 ) : ViewModel() {
 
     private val ingredientsArgs: IngredientsArguments =
@@ -105,13 +107,28 @@ class IngredientsViewModel @Inject constructor(
         }
         return serializeIngredientsUseCase.execute(mappedIngredients)
     }
+
+    fun onUpdateIngredientFocus(ingredient: IngredientViewData, isFocused: Boolean) {
+        when(val result = updateIngredientFocusUseCase.execute(_state.value.ingredientsList, ingredient, isFocused)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
 }
 
 data class IngredientsViewState(
     val ingredientsList: List<IngredientViewData> = listOf(
-//        IngredientViewData(1, "Ingredient 1", 1),
-//        IngredientViewData(2, "Ingredient 2", 2),
-//        IngredientViewData(3, "Ingredient 3", 3),
+        IngredientViewData(1, "Ingredient 1", 1),
+        IngredientViewData(2, "Ingredient 2", 2),
+        IngredientViewData(3, "Ingredient 3", 3),
+        IngredientViewData(4, "Ingredient 4", 3),
+        IngredientViewData(5, "Ingredient 5", 3),
     ),
     val categoryType: CategoryType = CategoryType.MAIN_DISH,
     val uriId: String = "",

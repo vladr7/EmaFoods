@@ -8,7 +8,8 @@ import javax.inject.Inject
 data class IngredientViewData(
     val id: Long = -1,
     val name: String,
-    val measurement: Long
+    val measurement: Long,
+    val isFocused: Boolean = false
 ) : ViewData()
 
 class IngredientMapper @Inject constructor() : DataModelMapper<Ingredient, IngredientViewData> {

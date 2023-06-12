@@ -15,6 +15,7 @@ import com.example.emafoods.feature.addfood.domain.usecase.MoveTempImageToPendin
 import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SerializeIngredientsUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -106,5 +107,10 @@ object AddFoodModule {
     @Provides
     fun provideSaveChangedIngredientFromListUseCase(
     ) = SaveChangedIngredientFromListUseCase(
+    )
+
+    @Provides
+    fun provideUpdateIngredientFocusUseCase(
+    ) = UpdateIngredientFocusUseCase(
     )
 }

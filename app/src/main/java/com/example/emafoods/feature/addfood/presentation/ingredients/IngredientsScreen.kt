@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -90,6 +91,9 @@ fun IngredientsRoute(
         onShowedIngredientAlreadyAddedError = {
             viewModel.onShowedIngredientAlreadyAdded()
         },
+        onUpdateIngredientFocus = { ingredient, isFocused ->
+            viewModel.onUpdateIngredientFocus(ingredient, isFocused)
+        },
     )
 }
 
@@ -104,10 +108,12 @@ fun IngredientsScreen(
     showIngredientAlreadyAddedError: Boolean,
     onShowedIngredientAlreadyAddedError: () -> Unit,
     showStepIndicator: Boolean = true,
+    onUpdateIngredientFocus: (IngredientViewData, Boolean) -> Unit,
 ) {
     var shouldShowIngredientCard by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     var isIngredientsListFocused by remember { mutableStateOf(false) }
+    isIngredientsListFocused = ingredients.any { it.isFocused }
 
     HandleIngredientToasts(
         showIngredientAlreadyAddedError = showIngredientAlreadyAddedError,
@@ -175,9 +181,7 @@ fun IngredientsScreen(
                     onSaveChangesIngredient(ingredient)
                     focusManager.clearFocus()
                 },
-                onFocusChanged = {
-                    isIngredientsListFocused = it
-                }
+                onFocusChanged = onUpdateIngredientFocus
             )
         }
         NextStepButton(
@@ -211,14 +215,17 @@ fun IngredientsEditableList(
     ingredients: List<IngredientViewData>,
     onRemoveIngredientClick: (IngredientViewData) -> Unit,
     onConfirmIngredientClick: (IngredientViewData) -> Unit,
-    onFocusChanged: (Boolean) -> Unit,
+    onFocusChanged: (IngredientViewData, Boolean) -> Unit,
 ) {
-    LazyColumn {
+    val state = rememberLazyListState()
+    LazyColumn(
+        state = state,
+    ) {
         items(
             ingredients,
             key = { ingredient ->
                 ingredient.id
-            }
+            },
         ) { ingredient ->
             IngredientCard(
                 modifier = modifier,
@@ -276,7 +283,7 @@ fun IngredientCard(
             name = "",
             measurement = 0L,
         ),
-    onFocusChanged: (Boolean) -> Unit = {},
+    onFocusChanged: (IngredientViewData, Boolean) -> Unit = { _, _ -> },
     addFoodText: String = stringResource(id = R.string.save)
 ) {
     val pattern = remember { Regex("^\\d+\$") }
@@ -341,9 +348,9 @@ fun IngredientCard(
                         ingredientValue = it
                     },
                     focusRequester = focusRequester,
-                    onFocused = {
-                        isFocused = it
-                        onFocusChanged(it)
+                    onFocused = { focused ->
+                        isFocused = focused
+                        onFocusChanged(ingredient, focused)
                     }
                 )
                 Spacer(modifier = modifier.padding(4.dp))
@@ -356,9 +363,9 @@ fun IngredientCard(
                         }
                     },
                     focusRequester = focusRequester,
-                    onFocused = {
-                        isFocused = it
-                        onFocusChanged(it)
+                    onFocused = { focused ->
+                        isFocused = focused
+                        onFocusChanged(ingredient, focused)
                     }
                 )
             }
