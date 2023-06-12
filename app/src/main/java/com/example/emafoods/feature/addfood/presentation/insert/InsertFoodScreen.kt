@@ -61,6 +61,7 @@ import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
+import com.example.emafoods.feature.addfood.presentation.ingredients.IngredientsScreen
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
@@ -83,16 +84,25 @@ fun InsertFoodRoute(
         onSuccess()
     } else {
         if (state.showEditIngredientsContent) {
-//            IngredientsScreen(
-//                onConfirmedClick = {
-//                    viewModel.onConfirmedIngredients()
-//                },
-//                ingredients = state.ingredientsList,
-//                onAddIngredientToList = ,
-//                onRemoveIngredientFromList =,
-//                onSaveChangesIngredient =,
-//                showIngredientAlreadyAddedError =
-//            )
+            IngredientsScreen(
+                onConfirmedClick = {
+                    viewModel.onFinishedEditingIngredients()
+                },
+                ingredients = state.ingredientsList,
+                onAddIngredientToList = {
+                    viewModel.addIngredientToList(it)
+                },
+                onRemoveIngredientFromList = {
+                    viewModel.removeIngredientFromList(it)
+                },
+                onSaveChangesIngredient = {
+                    viewModel.saveChangesIngredient(it)
+                },
+                onShowedIngredientAlreadyAddedError = {
+                    viewModel.onShowedIngredientAlreadyAdded()
+                },
+                showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
+            )
         } else {
             InsertFoodScreen(
                 modifier = modifier,
@@ -114,7 +124,10 @@ fun InsertFoodRoute(
                     }
                 },
                 loading = state.isLoading,
-                ingredients = state.ingredientsList
+                ingredients = state.ingredientsList,
+                onEditIngredientsClick = {
+                    viewModel.onEditIngredients()
+                }
             )
         }
     }
@@ -135,6 +148,7 @@ fun InsertFoodScreen(
     onUriChanged: (Uri?) -> Unit,
     loading: Boolean,
     ingredients: List<IngredientViewData>,
+    onEditIngredientsClick: () -> Unit
 ) {
 
     BackgroundTopToBot(
@@ -157,9 +171,7 @@ fun InsertFoodScreen(
             IngredientsReadOnlyContent(
                 modifier = modifier,
                 ingredients = ingredients,
-                onEditClick = {
-                    // todo
-                }
+                onEditClick = onEditIngredientsClick
             )
             Spacer(modifier = modifier.height(16.dp))
             BasicTitle(modifier = modifier, text = stringResource(id = R.string.description_title))
