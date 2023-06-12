@@ -3,6 +3,7 @@ package com.example.emafoods.feature.addfood.presentation.insert
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,13 +21,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -136,7 +141,7 @@ fun InsertFoodScreen(
                 onUriChangedChoseFile = onUriChanged,
                 onUriChangedTakePicture = onUriChanged
             )
-            IngredientsReadOnlyList(
+            IngredientsReadOnlyContent(
                 modifier = modifier,
                 ingredients = ingredients,
                 onEditClick = {
@@ -168,22 +173,30 @@ fun InsertFoodScreen(
 }
 
 @Composable
-fun IngredientsReadOnlyList(
+fun IngredientsReadOnlyContent(
     modifier: Modifier = Modifier,
     ingredients: List<IngredientViewData>,
     onEditClick: () -> Unit
 ) {
-    BasicTitle(
-        modifier = modifier
-            .padding(bottom = 8.dp),
-        text = stringResource(id = R.string.ingredients_list_title)
-    )
     Box(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(max = 500.dp)
     ) {
         Column {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                BasicTitle(
+                    modifier = modifier
+                        .padding(bottom = 8.dp),
+                    text = stringResource(id = R.string.ingredients_list_title)
+                )
+                EditIngredientsButton(
+                    onClick = onEditClick
+                )
+            }
             ingredients.forEach { ingredient ->
                 IngredientReadOnlyItem(
                     modifier = modifier,
@@ -197,6 +210,37 @@ fun IngredientsReadOnlyList(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun EditIngredientsButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
+        modifier = modifier
+            .clickable { onClick() }
+            .padding(end = 20.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            modifier = modifier
+                .padding(start = 20.dp, end = 4.dp),
+            text = stringResource(id = R.string.edit_ingredients),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSecondary,
+            fontWeight = FontWeight.Bold
+        )
+        Icon(
+            modifier = modifier
+                .size(32.dp),
+            imageVector = Icons.Filled.Edit,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSecondary
+        )
     }
 }
 
@@ -313,6 +357,7 @@ fun InsertFoodImage(
 ) {
     val context = LocalContext.current
     val hasImage = imageUri != null && imageUri.toString().isNotEmpty()
+    var alreadyShowedErrorImage by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -337,11 +382,12 @@ fun InsertFoodImage(
                 LoadingCookingAnimation()
             },
             error = {
-                if (imageUri.toString().isNotEmpty()) {
+                if(!alreadyShowedErrorImage) {
+                    alreadyShowedErrorImage = true
                     Toast.makeText(
                         context,
                         stringResource(R.string.error_loading_picture),
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
