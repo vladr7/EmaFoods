@@ -103,6 +103,7 @@ fun IngredientsScreen(
     onSaveChangesIngredient: (IngredientViewData) -> Unit,
     showIngredientAlreadyAddedError: Boolean,
     onShowedIngredientAlreadyAddedError: () -> Unit,
+    showStepIndicator: Boolean = true,
 ) {
     var shouldShowIngredientCard by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -118,7 +119,7 @@ fun IngredientsScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
-        AnimatedVisibility(visible = !isIngredientsListFocused) {
+        if(showStepIndicator) {
             StepIndicator(
                 modifier = modifier
                     .align(Alignment.TopStart),
