@@ -38,7 +38,7 @@ fun HomeNavHost(
 
         navigation(
             route = HomeBottomDestination.AddFood.route,
-            startDestination = AddFoodDestinations.InsertFood.route
+            startDestination = AddFoodDestinations.Category.route
         ) {
             categoryScreen(
                 onChoseCategory = { imageArguments ->
