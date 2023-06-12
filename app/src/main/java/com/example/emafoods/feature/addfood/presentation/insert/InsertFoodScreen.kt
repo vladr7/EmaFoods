@@ -2,6 +2,9 @@ package com.example.emafoods.feature.addfood.presentation.insert
 
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -83,7 +86,11 @@ fun InsertFoodRoute(
         viewModel.resetState()
         onSuccess()
     } else {
-        if (state.showEditIngredientsContent) {
+        AnimatedVisibility(
+            visible = state.showEditIngredientsContent,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             IngredientsScreen(
                 onConfirmedClick = {
                     viewModel.onFinishedEditingIngredients()
@@ -103,7 +110,12 @@ fun InsertFoodRoute(
                 },
                 showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
             )
-        } else {
+        }
+        AnimatedVisibility(
+            visible = !state.showEditIngredientsContent,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             InsertFoodScreen(
                 modifier = modifier,
                 imageUri = state.imageUri,
@@ -407,14 +419,15 @@ fun InsertFoodImage(
                 LoadingCookingAnimation()
             },
             error = {
-                if (!alreadyShowedErrorImage) {
-                    alreadyShowedErrorImage = true
-                    Toast.makeText(
-                        context,
-                        stringResource(R.string.error_loading_picture),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                // todo undo this
+//                if (!alreadyShowedErrorImage) {
+//                    alreadyShowedErrorImage = true
+//                    Toast.makeText(
+//                        context,
+//                        stringResource(R.string.error_loading_picture),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                }
             }
         )
         Column(
