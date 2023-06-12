@@ -113,6 +113,9 @@ fun InsertFoodRoute(
                 onUpdateIngredientFocus = { ingredient, isFocused ->
                     viewModel.onUpdateIngredientFocus(ingredient, isFocused)
                 },
+                screenTitle = stringResource(id = R.string.edit_ingredients_title),
+                screenTitlePaddingTop = 10,
+                nextStepButtonText = stringResource(R.string.save_changes)
             )
         }
         AnimatedVisibility(

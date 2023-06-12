@@ -18,7 +18,8 @@ import com.example.emafoods.R
 fun NextStepButton(
     modifier: Modifier = Modifier,
     onConfirmedClick: () -> Unit,
-    visible: Boolean
+    visible: Boolean,
+    text: String = stringResource(R.string.next_step),
 ) {
     AnimatedVisibility(visible = visible,
         enter = slideInHorizontally {
@@ -34,7 +35,7 @@ fun NextStepButton(
             shape = CircleShape,
         ) {
             Text(
-                text = stringResource(R.string.next_step),
+                text = text,
             )
             Icon(
                 imageVector = Icons.Rounded.ArrowForward,

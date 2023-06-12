@@ -109,6 +109,9 @@ fun IngredientsScreen(
     onShowedIngredientAlreadyAddedError: () -> Unit,
     showStepIndicator: Boolean = true,
     onUpdateIngredientFocus: (IngredientViewData, Boolean) -> Unit,
+    screenTitle: String = stringResource(R.string.add_ingredients),
+    screenTitlePaddingTop: Int = 50,
+    nextStepButtonText: String = stringResource(R.string.next_step),
 ) {
     var shouldShowIngredientCard by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -138,9 +141,9 @@ fun IngredientsScreen(
         ) {
             AnimatedVisibility(visible = !isIngredientsListFocused) {
                 AddRecipeTitle(
-                    text = stringResource(R.string.add_ingredients),
+                    text = screenTitle,
                     modifier = modifier
-                        .padding(top = 50.dp)
+                        .padding(top = screenTitlePaddingTop.dp)
                 )
             }
             AnimatedVisibility(visible = !shouldShowIngredientCard && !isIngredientsListFocused) {
@@ -190,6 +193,7 @@ fun IngredientsScreen(
                 .align(Alignment.BottomEnd),
             onConfirmedClick = onConfirmedClick,
             visible = ingredients.isNotEmpty(),
+            text = nextStepButtonText,
         )
     }
 }

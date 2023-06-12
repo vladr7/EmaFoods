@@ -59,4 +59,6 @@
     <string name="save">Salvează</string>
     <string name="description_title">Mod de preparare</string>
     <string name="edit_ingredients">Modifica</string>
+    <string name="edit_ingredients_title">Editeaza ingrediente</string>
+    <string name="save_changes">Salveaza modificarile</string>
 </resources>
