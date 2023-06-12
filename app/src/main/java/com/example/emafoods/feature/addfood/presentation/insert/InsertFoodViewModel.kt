@@ -11,9 +11,13 @@ import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.example.emafoods.feature.addfood.domain.models.IngredientResult
+import com.example.emafoods.feature.addfood.domain.usecase.AddIngredientToListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.DeserializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
@@ -36,7 +40,10 @@ class InsertFoodViewModel @Inject constructor(
     private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase,
     private val logHelper: LogHelper,
     private val deserializeIngredientsUseCase: DeserializeIngredientsUseCase,
-    private val ingredientMapper: IngredientMapper
+    private val ingredientMapper: IngredientMapper,
+    private val addIngredientToListUseCase: AddIngredientToListUseCase,
+    private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
+    private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
 ) : BaseViewModel() {
 
     private val insertFoodArgs: InsertFoodArguments =
@@ -169,9 +176,72 @@ class InsertFoodViewModel @Inject constructor(
         }
     }
 
-    fun onConfirmedIngredients() {
+    fun addIngredientToList(ingredient: IngredientViewData) {
+        when(val result = addIngredientToListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {
+                _state.update {
+                    it.copy(
+                        showIngredientAlreadyAddedError = true
+                    )
+                }
+            }
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun removeIngredientFromList(ingredient: IngredientViewData) {
+        when(val result = removeIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun saveChangesIngredient(ingredient: IngredientViewData) {
+        when(val result = saveChangedIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun onShowedIngredientAlreadyAdded() {
         _state.update {
-            it.copy(showEditIngredientsContent = false)
+            it.copy(
+                showIngredientAlreadyAddedError = false
+            )
+        }
+    }
+
+    fun onEditIngredients() {
+        _state.update {
+            it.copy(
+                showEditIngredientsContent = true
+            )
+        }
+    }
+
+    fun onFinishedEditingIngredients() {
+        _state.update {
+            it.copy(
+                showEditIngredientsContent = false
+            )
         }
     }
 }
@@ -180,6 +250,7 @@ data class InsertFoodViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
     val showEditIngredientsContent: Boolean = false,
+    val showIngredientAlreadyAddedError: Boolean = false,
     val imageUri: Uri? = null,
     val description: String = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
             "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
