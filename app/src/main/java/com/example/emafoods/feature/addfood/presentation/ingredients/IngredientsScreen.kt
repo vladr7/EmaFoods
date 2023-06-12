@@ -118,20 +118,24 @@ fun IngredientsScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
-        StepIndicator(
-            modifier = modifier
-                .align(Alignment.TopStart),
-            step = 2
-        )
+        AnimatedVisibility(visible = !isIngredientsListFocused) {
+            StepIndicator(
+                modifier = modifier
+                    .align(Alignment.TopStart),
+                step = 2
+            )
+        }
         Column(
             modifier = modifier
                 .fillMaxSize()
         ) {
-            AddRecipeTitle(
-                text = stringResource(R.string.add_ingredients),
-                modifier = modifier
-                    .padding(top = 50.dp)
-            )
+            AnimatedVisibility(visible = !isIngredientsListFocused) {
+                AddRecipeTitle(
+                    text = stringResource(R.string.add_ingredients),
+                    modifier = modifier
+                        .padding(top = 50.dp)
+                )
+            }
             AnimatedVisibility(visible = !shouldShowIngredientCard && !isIngredientsListFocused) {
                 AddNewIngredientButton(
                     modifier = modifier,
