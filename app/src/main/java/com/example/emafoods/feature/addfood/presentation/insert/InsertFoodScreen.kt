@@ -192,7 +192,6 @@ fun InsertFoodScreen(
                 modifier = modifier,
                 ingredients = ingredients,
                 onEditClick = onEditIngredientsClick,
-                isEditButtonVisible = false
             )
             Spacer(modifier = modifier.height(16.dp))
             BasicTitle(modifier = modifier, text = stringResource(id = R.string.description_title))

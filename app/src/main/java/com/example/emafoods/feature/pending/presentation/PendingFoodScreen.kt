@@ -171,7 +171,7 @@ fun PendingFoodScreen(
                     )
                 }
             } else {
-                val random: Float = 0.5f + Random.nextFloat() * (1.0f - 0.5f)
+                val random: Float = 0.5f + Random.nextFloat() * (0.8f - 0.5f)
                 LottieAnimationContent(
                     animationId = R.raw.cutedancingchicken,
                     speed = random,
