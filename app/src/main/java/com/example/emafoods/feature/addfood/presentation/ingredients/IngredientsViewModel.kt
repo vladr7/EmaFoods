@@ -123,13 +123,7 @@ class IngredientsViewModel @Inject constructor(
 }
 
 data class IngredientsViewState(
-    val ingredientsList: List<IngredientViewData> = listOf(
-        IngredientViewData(1, "Ingredient 1", 1),
-        IngredientViewData(2, "Ingredient 2", 2),
-        IngredientViewData(3, "Ingredient 3", 3),
-        IngredientViewData(4, "Ingredient 4", 3),
-        IngredientViewData(5, "Ingredient 5", 3),
-    ),
+    val ingredientsList: List<IngredientViewData> = emptyList(),
     val categoryType: CategoryType = CategoryType.MAIN_DISH,
     val uriId: String = "",
     val showIngredientAlreadyAddedError: Boolean = false,
