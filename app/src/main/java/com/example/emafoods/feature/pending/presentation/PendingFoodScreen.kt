@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -70,6 +71,7 @@ import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
+import com.example.emafoods.feature.game.presentation.ScrollArrow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -136,40 +138,56 @@ fun PendingFoodScreen(
         ).show()
         onErrorShown()
     }
+    val scrollState = rememberScrollState()
+
     PendingFoodBackground(imageId = R.drawable.pendingbackground)
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Box(
         modifier = modifier
-            .verticalScroll(rememberScrollState())
+            .fillMaxSize()
     ) {
-        FoodItem(
-            food = food,
-            modifier = modifier,
-            ingredientsList = ingredientsList,
-        )
-        if (ingredientsList.isNotEmpty()) {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-            ) {
-                PendingSwipeTips(
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .verticalScroll(scrollState)
+        ) {
+            FoodItem(
+                food = food,
+                modifier = modifier,
+                ingredientsList = ingredientsList,
+            )
+            if (ingredientsList.isNotEmpty()) {
+                Box(
                     modifier = modifier
-                )
-                PendingSwipe(
-                    modifier = modifier,
-                    onSwipeRight = onSwipeRight,
-                    onSwipeLeft = onSwipeLeft,
+                        .fillMaxWidth()
+                ) {
+                    PendingSwipeTips(
+                        modifier = modifier
+                    )
+                    PendingSwipe(
+                        modifier = modifier,
+                        onSwipeRight = onSwipeRight,
+                        onSwipeLeft = onSwipeLeft,
+                    )
+                }
+            } else {
+                val random: Float = 0.5f + Random.nextFloat() * (1.0f - 0.5f)
+                LottieAnimationContent(
+                    animationId = R.raw.cutedancingchicken,
+                    speed = random,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
                 )
             }
-        } else {
-            val random: Float = 0.5f + Random.nextFloat() * (1.5f - 0.5f)
-            LottieAnimationContent(
-                animationId = R.raw.cutedancingchicken,
-                speed = random,
+        }
+        if(ingredientsList.isNotEmpty() && ingredientsList.size > 2 && food.description.length > 50) {
+            ScrollArrow(
                 modifier = modifier
-                    .fillMaxWidth()
-                    .height(250.dp)
+                    .align(Alignment.BottomCenter)
+                    .offset(y = 10.dp)
+                    .size(80.dp),
+                visible = scrollState.value == 0,
             )
         }
     }
