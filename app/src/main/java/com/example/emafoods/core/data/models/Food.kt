@@ -16,5 +16,6 @@ data class Food(
     @SerialName("author") val author: String = "",
     @SerialName("authorUid") val authorUid: String = "",
     @SerialName("category") val category: String = "",
-    val imageRef: String = ""
+    @SerialName("imageRef") val imageRef: String = "",
+    @SerialName("ingredients") val ingredients: String = ""
 ): java.io.Serializable, Model()

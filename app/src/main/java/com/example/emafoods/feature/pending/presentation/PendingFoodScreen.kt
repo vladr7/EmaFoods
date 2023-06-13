@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,8 +55,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
@@ -66,9 +65,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
+import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
+import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
+import com.example.emafoods.feature.game.presentation.ScrollArrow
 import kotlinx.coroutines.launch
+import kotlin.random.Random
+
 
 @Composable
 fun PendingFoodRoute(
@@ -95,6 +101,7 @@ fun PendingFoodRoute(
         },
         showMovedSuccessfully = state.showMovedSuccessfully,
         showDeletedSuccessfully = state.showDeleteSuccessfully,
+        ingredientsList = state.currentFood.ingredients,
     )
 }
 
@@ -110,47 +117,87 @@ fun PendingFoodScreen(
     onErrorShown: () -> Unit,
     showMovedSuccessfully: Boolean,
     showDeletedSuccessfully: Boolean,
+    ingredientsList: List<IngredientViewData>,
 ) {
-    if(showError) {
+    if (showError) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         onErrorShown()
     }
-    if(showMovedSuccessfully) {
-        Toast.makeText(context, stringResource(R.string.recipe_has_been_accepted), Toast.LENGTH_SHORT).show()
+    if (showMovedSuccessfully) {
+        Toast.makeText(
+            context,
+            stringResource(R.string.recipe_has_been_accepted),
+            Toast.LENGTH_SHORT
+        ).show()
         onErrorShown()
     }
-    if(showDeletedSuccessfully) {
-        Toast.makeText(context,
-            stringResource(R.string.recipe_has_been_declined), Toast.LENGTH_SHORT).show()
+    if (showDeletedSuccessfully) {
+        Toast.makeText(
+            context,
+            stringResource(R.string.recipe_has_been_declined), Toast.LENGTH_SHORT
+        ).show()
         onErrorShown()
     }
-    PendingFoodBackground(imageId = R.drawable.pendingbackground)
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        FoodItem(
-            food = food,
-            modifier = modifier,
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        PendingSwipeTips(
-            modifier = modifier,
-        )
-        PendingSwipe(
-            modifier = modifier,
-            onSwipeRight = onSwipeRight,
-            onSwipeLeft = onSwipeLeft,
-        )
-        Spacer(modifier = Modifier.weight(1f))
-    }
+    val scrollState = rememberScrollState()
 
+    PendingFoodBackground(imageId = R.drawable.pendingbackground)
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier
+                .verticalScroll(scrollState)
+        ) {
+            FoodItem(
+                food = food,
+                modifier = modifier,
+                ingredientsList = ingredientsList,
+            )
+            if (ingredientsList.isNotEmpty()) {
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth()
+                ) {
+                    PendingSwipeTips(
+                        modifier = modifier
+                    )
+                    PendingSwipe(
+                        modifier = modifier,
+                        onSwipeRight = onSwipeRight,
+                        onSwipeLeft = onSwipeLeft,
+                    )
+                }
+            } else {
+                val random: Float = 0.5f + Random.nextFloat() * (0.8f - 0.5f)
+                LottieAnimationContent(
+                    animationId = R.raw.cutedancingchicken,
+                    speed = random,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                )
+            }
+        }
+        if(ingredientsList.isNotEmpty() && ingredientsList.size > 2 && food.description.length > 50) {
+            ScrollArrow(
+                modifier = modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y = 10.dp)
+                    .size(80.dp),
+                visible = scrollState.value == 0,
+            )
+        }
+    }
 }
 
 @Composable
 fun FoodItem(
     food: FoodViewData,
     modifier: Modifier = Modifier,
+    ingredientsList: List<IngredientViewData>,
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
@@ -164,6 +211,7 @@ fun FoodItem(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .fillMaxWidth()
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -173,8 +221,38 @@ fun FoodItem(
                 .background(color)
         ) {
             PendingFoodImage(imageUri = food.imageRef)
+            if (ingredientsList.isNotEmpty()) {
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth()
+                ) {
+                    IngredientsReadOnlyContent(
+                        ingredients = ingredientsList,
+                        onEditClick = {
+
+                        },
+                        isEditButtonVisible = false,
+                    )
+                    PendingFoodAuthor(
+                        author = food.author,
+                        modifier = modifier
+                            .align(Alignment.TopEnd)
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                ) {
+                    BasicTitle(
+                        modifier = modifier,
+                        text = stringResource(id = R.string.description_title)
+                    )
+                }
+            }
             PendingFoodDescription(description = food.description)
-            PendingFoodAuthor(author = food.author)
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -185,8 +263,7 @@ fun PendingSwipeTips(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .offset(y = (100).dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -203,9 +280,8 @@ fun PendingSwipe(
 ) {
     Row(
         modifier = modifier
-            .height(300.dp)
             .fillMaxWidth()
-            .padding(26.dp),
+            .padding(start = 26.dp, end = 26.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -318,34 +394,26 @@ fun AcceptFood() {
     )
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun PendingFoodAuthor(
     modifier: Modifier = Modifier,
     author: String
 ) {
-    Row {
-        Spacer(modifier = modifier.weight(1f))
-        Text(
-            text = author,
-            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.onSecondary,
-                        MaterialTheme.colorScheme.onSecondary,
-                    )
-                )
-            ),
-            fontSize = 12.sp,
-            textAlign = TextAlign.Left,
-            modifier = modifier
-                .padding(
-                    start = 25.dp, end = 20.dp, top = 10.dp, bottom = 10.dp
-                )
-        )
-    }
+//    Row {
+//        Spacer(modifier = modifier.weight(1f))
+    Text(
+        text = author,
+        fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+        textAlign = TextAlign.Left,
+        color = MaterialTheme.colorScheme.onSecondary,
+        modifier = modifier
+            .padding(
+                start = 25.dp, end = 20.dp,
+            )
+    )
+//    }
 
 }
 
@@ -384,21 +452,14 @@ fun PendingFoodDescription(
         text = description.ifEmpty { stringResource(R.string.for_the_moment_there_are_no_more_pending_foods) },
         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.onSecondary,
-                    MaterialTheme.colorScheme.onSecondary,
-                )
-            )
-        ),
         fontSize = 16.sp,
         textAlign = TextAlign.Left,
+        color = MaterialTheme.colorScheme.onSecondary,
         modifier = modifier
-            .heightIn(max = 180.dp)
+            .heightIn(max = 250.dp)
             .verticalScroll(rememberScrollState())
             .padding(
-                start = 25.dp, end = 20.dp, top = 10.dp, bottom = 10.dp
+                start = 25.dp, end = 20.dp, top = 5.dp, bottom = 10.dp
             ),
     )
 }

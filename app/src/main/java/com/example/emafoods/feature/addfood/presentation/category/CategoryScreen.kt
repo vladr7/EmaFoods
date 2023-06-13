@@ -52,7 +52,7 @@ import com.example.emafoods.feature.addfood.presentation.image.navigation.ImageA
 @Composable
 fun CategoryRoute(
     modifier: Modifier = Modifier,
-    onNextClicked: (ImageArguments?) -> Unit,
+    onNextClicked: (ImageArguments) -> Unit,
     viewModel: CategoryViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -67,7 +67,7 @@ fun CategoryRoute(
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
-    onNextClicked: (ImageArguments?) -> Unit
+    onNextClicked: (ImageArguments) -> Unit
 ) {
     var showCategories by remember { mutableStateOf(false) }
     CategoryScreenBackground()
@@ -129,7 +129,7 @@ fun OpenCategoryButton(
 @Composable
 fun CategoryChoices(
     modifier: Modifier = Modifier,
-    onNextClicked: (ImageArguments?) -> Unit,
+    onNextClicked: (ImageArguments) -> Unit,
     showCategories: Boolean,
 ) {
     val configuration = LocalConfiguration.current
@@ -166,7 +166,7 @@ private fun RowScope.LeftCategory(
     showCategories: Boolean,
     screenWidth: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments?) -> Unit
+    onNextClicked: (ImageArguments) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -200,7 +200,7 @@ private fun RowScope.RightCategory(
     showCategories: Boolean,
     screenWidth: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments?) -> Unit
+    onNextClicked: (ImageArguments) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -234,7 +234,7 @@ private fun ColumnScope.BottomCategory(
     showCategories: Boolean,
     screenHeight: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments?) -> Unit
+    onNextClicked: (ImageArguments) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -269,7 +269,7 @@ private fun ColumnScope.TopCategory(
     showCategories: Boolean,
     screenHeight: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments?) -> Unit
+    onNextClicked: (ImageArguments) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,

@@ -138,5 +138,5 @@ data class PendingFoodState(
         categoryType = CategoryType.MAIN_DISH
     ),
     val showMovedSuccessfully: Boolean = false,
-    val showDeleteSuccessfully: Boolean = false
+    val showDeleteSuccessfully: Boolean = false,
 )
