@@ -46,7 +46,7 @@ class InsertFoodViewModel @Inject constructor(
     private val addIngredientToListUseCase: AddIngredientToListUseCase,
     private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
     private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
-    private val updateIngredientFocusUseCase: UpdateIngredientFocusUseCase
+    private val updateIngredientFocusUseCase: UpdateIngredientFocusUseCase,
 ) : BaseViewModel() {
 
     private val insertFoodArgs: InsertFoodArguments =
@@ -54,7 +54,7 @@ class InsertFoodViewModel @Inject constructor(
     private val uriId = insertFoodArgs.uri
     private val descriptionId = insertFoodArgs.description
     private val categoryId = insertFoodArgs.category
-    private val ingredientsList = insertFoodArgs.ingredientsList
+    private val ingredientsListId = insertFoodArgs.ingredientsList
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
@@ -88,7 +88,7 @@ class InsertFoodViewModel @Inject constructor(
     }
 
     private fun deserializeIngredients(): List<IngredientViewData> {
-        val deserializedIngredients = deserializeIngredientsUseCase.execute(ingredientsList)
+        val deserializedIngredients = deserializeIngredientsUseCase.execute(ingredientsListId)
         return deserializedIngredients.map {
             ingredientMapper.mapToViewData(it)
         }
@@ -110,7 +110,8 @@ class InsertFoodViewModel @Inject constructor(
 
     fun insertFood(
         description: String,
-        imageUri: Uri?
+        imageUri: Uri?,
+        ingredients: List<IngredientViewData>
     ) {
         if (state.value.isLoading) {
             return
@@ -122,8 +123,9 @@ class InsertFoodViewModel @Inject constructor(
             when (val result = insertFoodUseCase.execute(
                 food = Food(
                     description = description,
-                    category = categoryId
+                    category = categoryId,
                 ),
+                ingredients = state.value.ingredientsList,
                 fileUri = imageUri ?: Uri.EMPTY,
                 shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary
             )) {
@@ -268,41 +270,8 @@ data class InsertFoodViewState(
     val showEditIngredientsContent: Boolean = false,
     val showIngredientAlreadyAddedError: Boolean = false,
     val imageUri: Uri? = null,
-    val description: String = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
-            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
-            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
-            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
-            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
-            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
-            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui" +
-            "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
+    val description: String = "",
     val insertFoodSuccess: Boolean = false,
     val shouldAddImageFromTemporary: Boolean = false,
-    val ingredientsList: List<IngredientViewData> = listOf(
-        IngredientViewData(
-            id = 0,
-            name = "Radacina de sfecla rosie",
-            measurement = 100L
-        ),
-        IngredientViewData(
-            id = 1,
-            name = "Faina",
-            measurement = 200L
-        ),
-        IngredientViewData(
-            id = 2,
-            name = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
-            measurement = 100L
-        ),
-//        IngredientViewData(
-//            id = 3,
-//            name = "Oua",
-//            measurement = 2L
-//        ),
-//        IngredientViewData(
-//            id = 4,
-//            name = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
-//            measurement = 100L
-//        ),
-    )
+    val ingredientsList: List<IngredientViewData> = emptyList()
 ) : ViewState(isLoading, errorMessage)

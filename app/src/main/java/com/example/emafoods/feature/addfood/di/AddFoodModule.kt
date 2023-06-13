@@ -16,6 +16,7 @@ import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromL
 import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SerializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,10 +34,14 @@ object AddFoodModule {
         getUserDetailsUseCase: GetUserDetailsUseCase,
         checkFieldsAreFilledUseCase: CheckFieldsAreFilledUseCase,
         addFoodToPendingListUseCase: AddFoodToPendingListUseCase,
+        serializeIngredientsUseCase: SerializeIngredientsUseCase,
+        ingredientMapper: IngredientMapper
     ) = InsertFoodUseCase(
         getUserDetailsUseCase = getUserDetailsUseCase,
         checkFieldsAreFilledUseCase = checkFieldsAreFilledUseCase,
         addFoodToPendingListUseCase = addFoodToPendingListUseCase,
+        serializeIngredientsUseCase = serializeIngredientsUseCase,
+        ingredientsMapper = ingredientMapper
     )
 
     @Provides

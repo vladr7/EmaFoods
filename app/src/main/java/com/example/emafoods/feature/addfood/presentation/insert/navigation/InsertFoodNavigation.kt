@@ -59,24 +59,19 @@ fun NavGraphBuilder.insertFoodScreen(
     onSuccess: () -> Unit,
 ) {
     composable(
-//        route = "${AddFoodDestinations.InsertFood.route}/{$UriIdArg}&{$DescriptionIdArg}&{$CategoryIdArg}&{$IngredientsIdArg}",
-        route = "${AddFoodDestinations.InsertFood.route}",
+        route = "${AddFoodDestinations.InsertFood.route}/{$UriIdArg}&{$DescriptionIdArg}&{$CategoryIdArg}&{$IngredientsIdArg}",
         arguments = listOf(
             navArgument(UriIdArg) {
                 type = NavType.StringType
-                defaultValue = "" // todo remove this and below
             },
             navArgument(DescriptionIdArg) {
                 type = NavType.StringType
-                defaultValue = ""
             },
             navArgument(CategoryIdArg) {
                 type = NavType.StringType
-                defaultValue = ""
             },
             navArgument(IngredientsIdArg) {
                 type = NavType.StringType
-                defaultValue = ""
             },
         ),
     ) {
