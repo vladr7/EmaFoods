@@ -10,7 +10,6 @@ import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
-import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.game.domain.usecase.AddRewardToUserAcceptedRecipeUseCase
 import com.example.emafoods.feature.pending.domain.usecase.DeletePendingFoodUseCase
 import com.example.emafoods.feature.pending.domain.usecase.GetAllPendingFoodsUseCase
@@ -140,21 +139,4 @@ data class PendingFoodState(
     ),
     val showMovedSuccessfully: Boolean = false,
     val showDeleteSuccessfully: Boolean = false,
-    val ingredientsList: List<IngredientViewData> = listOf(
-        IngredientViewData(
-            id = 0,
-            name = "Radacina de sfecla rosie",
-            measurement = 100L
-        ),
-        IngredientViewData(
-            id = 1,
-            name = "Faina",
-            measurement = 200L
-        ),
-        IngredientViewData(
-            id = 2,
-            name = "Ulei de floarea soarelui rafinat galben de o stralucire excelenta care este obtinut din semintele de floarea soarelui",
-            measurement = 100L
-        ),
-    )
 )

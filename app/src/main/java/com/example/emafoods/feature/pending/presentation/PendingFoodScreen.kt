@@ -96,7 +96,7 @@ fun PendingFoodRoute(
         },
         showMovedSuccessfully = state.showMovedSuccessfully,
         showDeletedSuccessfully = state.showDeleteSuccessfully,
-        ingredientsList = state.ingredientsList,
+        ingredientsList = state.currentFood.ingredients,
     )
 }
 
@@ -415,8 +415,7 @@ fun PendingFoodDescription(
     modifier: Modifier = Modifier
 ) {
     Text(
-//        text = description.ifEmpty { stringResource(R.string.for_the_moment_there_are_no_more_pending_foods) },
-        text = "description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and",
+        text = description.ifEmpty { stringResource(R.string.for_the_moment_there_are_no_more_pending_foods) },
         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
