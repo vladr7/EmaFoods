@@ -64,12 +64,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
 import kotlinx.coroutines.launch
+import kotlin.random.Random
+
 
 @Composable
 fun PendingFoodRoute(
@@ -145,17 +148,28 @@ fun PendingFoodScreen(
             modifier = modifier,
             ingredientsList = ingredientsList,
         )
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-        ) {
-            PendingSwipeTips(
+        if (ingredientsList.isNotEmpty()) {
+            Box(
                 modifier = modifier
-            )
-            PendingSwipe(
-                modifier = modifier,
-                onSwipeRight = onSwipeRight,
-                onSwipeLeft = onSwipeLeft,
+                    .fillMaxWidth()
+            ) {
+                PendingSwipeTips(
+                    modifier = modifier
+                )
+                PendingSwipe(
+                    modifier = modifier,
+                    onSwipeRight = onSwipeRight,
+                    onSwipeLeft = onSwipeLeft,
+                )
+            }
+        } else {
+            val random: Float = 0.5f + Random.nextFloat() * (1.5f - 0.5f)
+            LottieAnimationContent(
+                animationId = R.raw.cutedancingchicken,
+                speed = random,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
             )
         }
     }
@@ -189,33 +203,35 @@ fun FoodItem(
                 .background(color)
         ) {
             PendingFoodImage(imageUri = food.imageRef)
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-            ) {
-                IngredientsReadOnlyContent(
-                    ingredients = ingredientsList,
-                    onEditClick = {
-
-                    },
-                    isEditButtonVisible = false,
-                )
-                PendingFoodAuthor(
-                    author = food.author,
+            if (ingredientsList.isNotEmpty()) {
+                Box(
                     modifier = modifier
-                        .align(Alignment.TopEnd)
-                )
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Row(
-                modifier = modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start,
-            ) {
-                BasicTitle(
-                    modifier = modifier,
-                    text = stringResource(id = R.string.description_title)
-                )
+                        .fillMaxWidth()
+                ) {
+                    IngredientsReadOnlyContent(
+                        ingredients = ingredientsList,
+                        onEditClick = {
+
+                        },
+                        isEditButtonVisible = false,
+                    )
+                    PendingFoodAuthor(
+                        author = food.author,
+                        modifier = modifier
+                            .align(Alignment.TopEnd)
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                Row(
+                    modifier = modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                ) {
+                    BasicTitle(
+                        modifier = modifier,
+                        text = stringResource(id = R.string.description_title)
+                    )
+                }
             }
             PendingFoodDescription(description = food.description)
             Spacer(modifier = Modifier.height(8.dp))
@@ -367,18 +383,18 @@ fun PendingFoodAuthor(
 ) {
 //    Row {
 //        Spacer(modifier = modifier.weight(1f))
-        Text(
-            text = author,
-            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 12.sp,
-            textAlign = TextAlign.Left,
-            color = MaterialTheme.colorScheme.onSecondary,
-            modifier = modifier
-                .padding(
-                    start = 25.dp, end = 20.dp,
-                )
-        )
+    Text(
+        text = author,
+        fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+        textAlign = TextAlign.Left,
+        color = MaterialTheme.colorScheme.onSecondary,
+        modifier = modifier
+            .padding(
+                start = 25.dp, end = 20.dp,
+            )
+    )
 //    }
 
 }
