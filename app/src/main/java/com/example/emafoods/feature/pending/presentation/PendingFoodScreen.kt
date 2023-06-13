@@ -54,8 +54,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
@@ -67,7 +65,10 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.bounceClick
+import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
+import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
 import kotlinx.coroutines.launch
 
 @Composable
@@ -95,6 +96,7 @@ fun PendingFoodRoute(
         },
         showMovedSuccessfully = state.showMovedSuccessfully,
         showDeletedSuccessfully = state.showDeleteSuccessfully,
+        ingredientsList = state.ingredientsList,
     )
 }
 
@@ -110,18 +112,25 @@ fun PendingFoodScreen(
     onErrorShown: () -> Unit,
     showMovedSuccessfully: Boolean,
     showDeletedSuccessfully: Boolean,
+    ingredientsList: List<IngredientViewData>,
 ) {
-    if(showError) {
+    if (showError) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         onErrorShown()
     }
-    if(showMovedSuccessfully) {
-        Toast.makeText(context, stringResource(R.string.recipe_has_been_accepted), Toast.LENGTH_SHORT).show()
+    if (showMovedSuccessfully) {
+        Toast.makeText(
+            context,
+            stringResource(R.string.recipe_has_been_accepted),
+            Toast.LENGTH_SHORT
+        ).show()
         onErrorShown()
     }
-    if(showDeletedSuccessfully) {
-        Toast.makeText(context,
-            stringResource(R.string.recipe_has_been_declined), Toast.LENGTH_SHORT).show()
+    if (showDeletedSuccessfully) {
+        Toast.makeText(
+            context,
+            stringResource(R.string.recipe_has_been_declined), Toast.LENGTH_SHORT
+        ).show()
         onErrorShown()
     }
     PendingFoodBackground(imageId = R.drawable.pendingbackground)
@@ -132,6 +141,7 @@ fun PendingFoodScreen(
         FoodItem(
             food = food,
             modifier = modifier,
+            ingredientsList = ingredientsList,
         )
         Spacer(modifier = Modifier.weight(1f))
         PendingSwipeTips(
@@ -151,6 +161,7 @@ fun PendingFoodScreen(
 fun FoodItem(
     food: FoodViewData,
     modifier: Modifier = Modifier,
+    ingredientsList: List<IngredientViewData>,
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
@@ -164,6 +175,8 @@ fun FoodItem(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -173,8 +186,36 @@ fun FoodItem(
                 .background(color)
         ) {
             PendingFoodImage(imageUri = food.imageRef)
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+            ) {
+                IngredientsReadOnlyContent(
+                    ingredients = ingredientsList,
+                    onEditClick = {
+
+                    },
+                    isEditButtonVisible = false,
+                )
+                PendingFoodAuthor(
+                    author = food.author,
+                    modifier = modifier
+                        .align(Alignment.TopEnd)
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                BasicTitle(
+                    modifier = modifier,
+                    text = stringResource(id = R.string.description_title)
+                )
+            }
             PendingFoodDescription(description = food.description)
-            PendingFoodAuthor(author = food.author)
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -292,15 +333,15 @@ fun SwipableFood(
                     }
                 }
             )
-            .background(
-                brush = Brush.radialGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.secondary,
-                        Color.Transparent
-                    )
-                ),
-                alpha = 0.5f,
-            )
+//            .background( // todo renable and check if it does not crash
+//                brush = Brush.radialGradient(
+//                    colors = listOf(
+//                        MaterialTheme.colorScheme.secondary,
+//                        Color.Transparent
+//                    )
+//                ),
+//                alpha = 0.5f,
+//            )
             .padding(20.dp)
             .height(70.dp)
             .width(70.dp),
@@ -318,34 +359,26 @@ fun AcceptFood() {
     )
 }
 
-@OptIn(ExperimentalTextApi::class)
 @Composable
 fun PendingFoodAuthor(
     modifier: Modifier = Modifier,
     author: String
 ) {
-    Row {
-        Spacer(modifier = modifier.weight(1f))
+//    Row {
+//        Spacer(modifier = modifier.weight(1f))
         Text(
             text = author,
             fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
             fontWeight = FontWeight.Bold,
-            style = TextStyle(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.onSecondary,
-                        MaterialTheme.colorScheme.onSecondary,
-                    )
-                )
-            ),
             fontSize = 12.sp,
             textAlign = TextAlign.Left,
+            color = MaterialTheme.colorScheme.onSecondary,
             modifier = modifier
                 .padding(
-                    start = 25.dp, end = 20.dp, top = 10.dp, bottom = 10.dp
+                    start = 25.dp, end = 20.dp,
                 )
         )
-    }
+//    }
 
 }
 
@@ -381,24 +414,18 @@ fun PendingFoodDescription(
     modifier: Modifier = Modifier
 ) {
     Text(
-        text = description.ifEmpty { stringResource(R.string.for_the_moment_there_are_no_more_pending_foods) },
+//        text = description.ifEmpty { stringResource(R.string.for_the_moment_there_are_no_more_pending_foods) },
+        text = "description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and description of the food is here and",
         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.onSecondary,
-                    MaterialTheme.colorScheme.onSecondary,
-                )
-            )
-        ),
         fontSize = 16.sp,
         textAlign = TextAlign.Left,
+        color = MaterialTheme.colorScheme.onSecondary,
         modifier = modifier
-            .heightIn(max = 180.dp)
+            .heightIn(max = 250.dp)
             .verticalScroll(rememberScrollState())
             .padding(
-                start = 25.dp, end = 20.dp, top = 10.dp, bottom = 10.dp
+                start = 25.dp, end = 20.dp, top = 5.dp, bottom = 10.dp
             ),
     )
 }

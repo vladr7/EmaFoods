@@ -19,6 +19,7 @@ import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
+import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
@@ -61,29 +62,29 @@ class InsertFoodViewModel @Inject constructor(
     val state: StateFlow<InsertFoodViewState> = _state
 
     init {
-//        if(uriId == IMAGE_FROM_GALLERY_FLAG) {
-//            viewModelScope.launch {
-//                when(val result = getTemporaryPendingImageUseCase.execute()) {
-//                    is State.Failed -> {
-//                        _state.update {
-//                            it.copy(errorMessage = result.message, description = descriptionId)
-//                        }
-//                    }
-//                    is State.Success -> {
-//                        _state.update {
-//                            it.copy(shouldAddImageFromTemporary = true, imageUri = result.data, description = descriptionId)
-//                        }
-//                    }
-//                }
-//            }
-//        } else {
-//            _state.update {
-//                it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
-//            }
-//        }
-//        _state.update {
-//            it.copy(ingredientsList = deserializeIngredients())
-//        }
+        if(uriId == IMAGE_FROM_GALLERY_FLAG) {
+            viewModelScope.launch {
+                when(val result = getTemporaryPendingImageUseCase.execute()) {
+                    is State.Failed -> {
+                        _state.update {
+                            it.copy(errorMessage = result.message, description = descriptionId)
+                        }
+                    }
+                    is State.Success -> {
+                        _state.update {
+                            it.copy(shouldAddImageFromTemporary = true, imageUri = result.data, description = descriptionId)
+                        }
+                    }
+                }
+            }
+        } else {
+            _state.update {
+                it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
+            }
+        }
+        _state.update {
+            it.copy(ingredientsList = deserializeIngredients())
+        }
     }
 
     private fun deserializeIngredients(): List<IngredientViewData> {

@@ -190,7 +190,8 @@ fun InsertFoodScreen(
             IngredientsReadOnlyContent(
                 modifier = modifier,
                 ingredients = ingredients,
-                onEditClick = onEditIngredientsClick
+                onEditClick = onEditIngredientsClick,
+                isEditButtonVisible = false
             )
             Spacer(modifier = modifier.height(16.dp))
             BasicTitle(modifier = modifier, text = stringResource(id = R.string.description_title))
@@ -220,7 +221,8 @@ fun InsertFoodScreen(
 fun IngredientsReadOnlyContent(
     modifier: Modifier = Modifier,
     ingredients: List<IngredientViewData>,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    isEditButtonVisible: Boolean = true
 ) {
     Box(
         modifier = modifier
@@ -237,9 +239,11 @@ fun IngredientsReadOnlyContent(
                         .padding(bottom = 8.dp),
                     text = stringResource(id = R.string.ingredients_list_title)
                 )
-                EditIngredientsButton(
-                    onClick = onEditClick
-                )
+                if(isEditButtonVisible) {
+                    EditIngredientsButton(
+                        onClick = onEditClick
+                    )
+                }
             }
             ingredients.forEach { ingredient ->
                 IngredientReadOnlyItem(
