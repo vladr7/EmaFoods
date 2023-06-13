@@ -1,4 +1,4 @@
-package com.example.emafoods.feature.addfood.presentation.description.navigation
+package com.example.emafoods.feature.addfood.presentation.ingredients.navigation
 
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
@@ -10,16 +10,15 @@ import androidx.navigation.navArgument
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.category.navigation.CategoryIdArg
-import com.example.emafoods.feature.addfood.presentation.description.DescriptionRoute
-import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsIdArg
-import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
+import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
+import com.example.emafoods.feature.addfood.presentation.description.navigation.UriIdArg
+import com.example.emafoods.feature.addfood.presentation.ingredients.IngredientsRoute
 
-const val UriIdArg = "UriIdArg"
+const val IngredientsIdArg = "IngredientsIdArg"
 
-data class DescriptionArguments(
+data class IngredientsArguments(
     val uri: String,
     val category: String,
-    val ingredientsList: String
 ) {
     constructor(savedStateHandle: SavedStateHandle, stringDecoder: StringDecoder) : this(
         stringDecoder.decodeString(
@@ -28,35 +27,31 @@ data class DescriptionArguments(
         stringDecoder.decodeString(
             checkNotNull(savedStateHandle[CategoryIdArg])
         ),
-        stringDecoder.decodeString(
-            checkNotNull(savedStateHandle[IngredientsIdArg])
-        ),
     )
 }
 
-fun NavController.navigateToDescription(uriId: String, categoryId: String, ingredientsList: String) {
+fun NavController.navigateToIngredients(uriId: String, categoryId: String) {
     this.popBackStack()
     val uri = Uri.encode(uriId)
     val category = Uri.encode(categoryId)
-    val ingredients = Uri.encode(ingredientsList)
-    this.navigate("${AddFoodDestinations.Description.route}/$uri&$category&$ingredients")
+    this.navigate("${AddFoodDestinations.Ingredients.route}/$uri&$category")
 }
 
-fun NavGraphBuilder.descriptionScreen(onConfirmedClick: (InsertFoodArguments) -> Unit) {
+fun NavGraphBuilder.ingredientsScreen(onConfirmedClick: (DescriptionArguments) -> Unit) {
     composable(
-        route = "${AddFoodDestinations.Description.route}/{$UriIdArg}&{$CategoryIdArg}&{$IngredientsIdArg}",
+        route = "${AddFoodDestinations.Ingredients.route}/{$UriIdArg}&{$CategoryIdArg}",
+//        route = "${AddFoodDestinations.Ingredients.route}", // todo remove this
         arguments = listOf(
             navArgument(UriIdArg) {
                 type = NavType.StringType
+//                defaultValue = "" // todo remove this
             },
             navArgument(CategoryIdArg) {
                 type = NavType.StringType
-            },
-            navArgument(IngredientsIdArg) {
-                type = NavType.StringType
+//                defaultValue = "" // todo remove this
             },
         ),
     ) {
-        DescriptionRoute(onConfirmedClick = onConfirmedClick)
+        IngredientsRoute(onConfirmedClick = onConfirmedClick)
     }
 }

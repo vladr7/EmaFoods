@@ -13,6 +13,8 @@ import com.example.emafoods.feature.addfood.presentation.description.navigation.
 import com.example.emafoods.feature.addfood.presentation.description.navigation.navigateToDescription
 import com.example.emafoods.feature.addfood.presentation.image.navigation.imageScreen
 import com.example.emafoods.feature.addfood.presentation.image.navigation.navigateToImage
+import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.ingredientsScreen
+import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.navigateToIngredients
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.navigateToInsertFood
 import com.example.emafoods.feature.game.presentation.navigation.gameScreen
@@ -41,15 +43,24 @@ fun HomeNavHost(
             categoryScreen(
                 onChoseCategory = { imageArguments ->
                     navController.navigateToImage(
-                        categoryId = imageArguments?.category ?: "empty"
+                        categoryId = imageArguments.category
                     )
                 }
             )
             imageScreen(
-                onHasImage = { descriptionArguments ->
+                onHasImage = { ingredientsArguments ->
+                    navController.navigateToIngredients(
+                        uriId = ingredientsArguments.uri,
+                        categoryId = ingredientsArguments.category
+                    )
+                }
+            )
+            ingredientsScreen(
+                onConfirmedClick = { descriptionArguments ->
                     navController.navigateToDescription(
-                        uriId = descriptionArguments?.uri ?: "empty",
-                        categoryId = descriptionArguments?.category ?: "empty"
+                        uriId = descriptionArguments.uri,
+                        categoryId = descriptionArguments.category,
+                        ingredientsList = descriptionArguments.ingredientsList
                     )
                 }
             )
@@ -58,7 +69,8 @@ fun HomeNavHost(
                     navController.navigateToInsertFood(
                         uriId = it.uri,
                         descriptionId = it.description,
-                        categoryId = it.category
+                        categoryId = it.category,
+                        ingredientsList = it.ingredientsList
                     )
                 },
             )

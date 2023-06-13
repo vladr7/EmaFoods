@@ -11,8 +11,17 @@ import com.example.emafoods.core.domain.usecase.RefreshPendingFoodsUseCase
 import com.example.emafoods.core.presentation.base.BaseViewModel
 import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
+import com.example.emafoods.feature.addfood.domain.models.IngredientResult
+import com.example.emafoods.feature.addfood.domain.usecase.AddIngredientToListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.DeserializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
+import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
@@ -31,7 +40,13 @@ class InsertFoodViewModel @Inject constructor(
     private val refreshPendingFoodsUseCase: RefreshPendingFoodsUseCase,
     private val increaseXpUseCase: IncreaseXpUseCase,
     private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase,
-    private val logHelper: LogHelper
+    private val logHelper: LogHelper,
+    private val deserializeIngredientsUseCase: DeserializeIngredientsUseCase,
+    private val ingredientMapper: IngredientMapper,
+    private val addIngredientToListUseCase: AddIngredientToListUseCase,
+    private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
+    private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
+    private val updateIngredientFocusUseCase: UpdateIngredientFocusUseCase,
 ) : BaseViewModel() {
 
     private val insertFoodArgs: InsertFoodArguments =
@@ -39,6 +54,7 @@ class InsertFoodViewModel @Inject constructor(
     private val uriId = insertFoodArgs.uri
     private val descriptionId = insertFoodArgs.description
     private val categoryId = insertFoodArgs.category
+    private val ingredientsListId = insertFoodArgs.ingredientsList
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
@@ -46,7 +62,7 @@ class InsertFoodViewModel @Inject constructor(
     val state: StateFlow<InsertFoodViewState> = _state
 
     init {
-        if(uriId == "empty") {
+        if(uriId == IMAGE_FROM_GALLERY_FLAG) {
             viewModelScope.launch {
                 when(val result = getTemporaryPendingImageUseCase.execute()) {
                     is State.Failed -> {
@@ -66,6 +82,16 @@ class InsertFoodViewModel @Inject constructor(
                 it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
             }
         }
+        _state.update {
+            it.copy(ingredientsList = deserializeIngredients())
+        }
+    }
+
+    private fun deserializeIngredients(): List<IngredientViewData> {
+        val deserializedIngredients = deserializeIngredientsUseCase.execute(ingredientsListId)
+        return deserializedIngredients.map {
+            ingredientMapper.mapToViewData(it)
+        }
     }
 
     fun updateDescription(description: String) {
@@ -84,7 +110,8 @@ class InsertFoodViewModel @Inject constructor(
 
     fun insertFood(
         description: String,
-        imageUri: Uri?
+        imageUri: Uri?,
+        ingredients: List<IngredientViewData>
     ) {
         if (state.value.isLoading) {
             return
@@ -96,8 +123,9 @@ class InsertFoodViewModel @Inject constructor(
             when (val result = insertFoodUseCase.execute(
                 food = Food(
                     description = description,
-                    category = categoryId
+                    category = categoryId,
                 ),
+                ingredients = state.value.ingredientsList,
                 fileUri = imageUri ?: Uri.EMPTY,
                 shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary
             )) {
@@ -152,13 +180,98 @@ class InsertFoodViewModel @Inject constructor(
             logHelper.log(AnalyticsConstants.RE_PICK_PHOTO)
         }
     }
+
+    fun addIngredientToList(ingredient: IngredientViewData) {
+        when(val result = addIngredientToListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {
+                _state.update {
+                    it.copy(
+                        showIngredientAlreadyAddedError = true
+                    )
+                }
+            }
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun removeIngredientFromList(ingredient: IngredientViewData) {
+        when(val result = removeIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun saveChangesIngredient(ingredient: IngredientViewData) {
+        when(val result = saveChangedIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun onShowedIngredientAlreadyAdded() {
+        _state.update {
+            it.copy(
+                showIngredientAlreadyAddedError = false
+            )
+        }
+    }
+
+    fun onEditIngredients() {
+        _state.update {
+            it.copy(
+                showEditIngredientsContent = true
+            )
+        }
+    }
+
+    fun onFinishedEditingIngredients() {
+        _state.update {
+            it.copy(
+                showEditIngredientsContent = false
+            )
+        }
+    }
+
+    fun onUpdateIngredientFocus(ingredient: IngredientViewData, isFocused: Boolean) {
+        when(val result = updateIngredientFocusUseCase.execute(_state.value.ingredientsList, ingredient, isFocused)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
 }
 
 data class InsertFoodViewState(
     override val isLoading: Boolean = false,
     override val errorMessage: String? = null,
+    val showEditIngredientsContent: Boolean = false,
+    val showIngredientAlreadyAddedError: Boolean = false,
     val imageUri: Uri? = null,
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
     val shouldAddImageFromTemporary: Boolean = false,
+    val ingredientsList: List<IngredientViewData> = emptyList()
 ) : ViewState(isLoading, errorMessage)

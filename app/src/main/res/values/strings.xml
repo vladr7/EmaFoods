@@ -10,9 +10,9 @@
     <string name="add_image_title">Adaugă o imagine a rețetei</string>
     <string name="title_screen_title">Titlu rețetă</string>
     <string name="title_input_label_text">Titlu</string>
-    <string name="description_empty_input_label_text">Descriere</string>
-    <string name="description_empty_input_label_text_min_chars">Descriere (minim 10 caractere)</string>
-    <string name="description_screen_title">Scurtă descriere</string>
+    <string name="description_empty_input_label_text">Mod de preparare</string>
+    <string name="description_empty_input_label_text_min_chars">Minim 10 caractere</string>
+    <string name="description_screen_title">Mod de preparare</string>
     <string name="add_recipe">Adaugă rețeta</string>
     <string name="how_to_gain_xp">Cum pot să cresc nivelul?</string>
     <string name="your_recipe_has_been_accepted">Ți-a fost acceptată o rețetă! 🥳 Ai primit %1$s XP!</string>
@@ -46,4 +46,19 @@
     <string name="soup">Supe</string>
     <string name="dessert">Desert</string>
     <string name="add_a_new_recipe">Adaugă o rețetă nouă</string>
+    <string name="add_ingredients">Adauga ingrediente</string>
+    <string name="ingredient_hint">Ingredient</string>
+    <string name="measurement_hint">gr/ml</string>
+    <string name="measurement_hint_extended">grame/ml</string>
+    <string name="confirm_ingredients">Confirm ingredients</string>
+    <string name="add_new_ingredient">Adauga un ingredient nou</string>
+    <string name="ingredients_list_title">Ingrediente</string>
+    <string name="ingredient_already_added_error">Ingredientul acesta a fost deja adaugat!</string>
+    <string name="next_step">Pasul urmator</string>
+    <string name="remove">Elimină</string>
+    <string name="save">Salvează</string>
+    <string name="description_title">Mod de preparare</string>
+    <string name="edit_ingredients">Modifica</string>
+    <string name="edit_ingredients_title">Editeaza ingrediente</string>
+    <string name="save_changes">Salveaza modificarile</string>
 </resources>

@@ -8,7 +8,7 @@ import com.example.emafoods.feature.addfood.presentation.image.navigation.ImageA
 
 const val CategoryIdArg = "CategoryIdArg"
 
-fun NavGraphBuilder.categoryScreen(onChoseCategory: (ImageArguments?) -> Unit) {
+fun NavGraphBuilder.categoryScreen(onChoseCategory: (ImageArguments) -> Unit) {
     composable(route = AddFoodDestinations.Category.route) {
         CategoryRoute(onNextClicked = onChoseCategory)
     }

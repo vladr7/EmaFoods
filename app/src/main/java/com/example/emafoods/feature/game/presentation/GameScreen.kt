@@ -140,8 +140,9 @@ fun GameScreen(
     coroutine: CoroutineScope
 ) {
     GameBackground()
-    if(showUpgradedToAdminAlert) {
-        Toast.makeText(context, stringResource(R.string.promoted_successfully), Toast.LENGTH_LONG).show()
+    if (showUpgradedToAdminAlert) {
+        Toast.makeText(context, stringResource(R.string.promoted_successfully), Toast.LENGTH_LONG)
+            .show()
         LaunchedEffect(key1 = true) {
             coroutine.launch {
                 delay(5000)
@@ -385,7 +386,8 @@ fun LevelList(
 @Composable
 fun ScrollArrow(
     modifier: Modifier,
-    visible: Boolean = false
+    visible: Boolean = false,
+    color: Color = MaterialTheme.colorScheme.onSecondary
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -396,7 +398,7 @@ fun ScrollArrow(
         Icon(
             imageVector = Icons.Filled.ArrowDropDown,
             contentDescription = "",
-            tint = MaterialTheme.colorScheme.onSecondary
+            tint = color,
         )
     }
 }

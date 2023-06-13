@@ -5,8 +5,8 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,13 +19,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -54,19 +50,20 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
 import com.example.emafoods.core.extension.getCompressedImage
-import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
 import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
-import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
+import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
+import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun ImageRoute(
-    onNextClicked: (DescriptionArguments?) -> Unit,
+    onNextClicked: (IngredientsArguments) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
@@ -92,12 +89,10 @@ fun ImageRoute(
         hasTakePictureImage = state.hasTakePictureImage,
         onNextClicked = { imageUri ->
             onNextClicked(
-                imageUri?.let { imageUriString ->
-                    DescriptionArguments(
-                        category = state.category,
-                        uri = imageUriString
-                    )
-                }
+                IngredientsArguments(
+                    category = state.category,
+                    uri = imageUri ?: IMAGE_FROM_GALLERY_FLAG,
+                )
             )
         },
         imageUri = Uri.parse(state.imageUri)
@@ -126,40 +121,46 @@ fun ImageScreen(
             onUriChangedChoseFile = onChoosePictureUriRetrieved,
             onUriChangedTakePicture = onTakePictureUriRetrieved
         )
-        val visible = imageUri.toString().isNotEmpty()
-        AnimatedVisibility(
-            visible = visible,
-            enter = slideInHorizontally(
-                initialOffsetX = { fullWidth -> fullWidth },
-                animationSpec = tween(
-                    durationMillis = 500,
-                    delayMillis = 300
-                )
-            ),
-        ) {
-            ConfirmImageButton(
+        Row {
+            Spacer(modifier = modifier.weight(1f))
+            Column(
                 modifier = modifier,
-                onConfirmedClick = {
-                    if (hasTakePictureImage) {
-                        onNextClicked(imageUri.toString())
-                    } else {
-                        onNextClicked(null)
-                    }
-                }
-            )
-            HangingPlantAnimation(
-                modifier = modifier
-            )
+                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            ) {
+                NextStepButton(
+                    modifier = modifier,
+                    onConfirmedClick = {
+                        if (hasTakePictureImage) {
+                            onNextClicked(imageUri.toString())
+                        } else {
+                            onNextClicked(null)
+                        }
+                    }, visible = imageUri.toString().isNotEmpty()
+                )
+                HangingPlantAnimation(
+                    visible = imageUri.toString().isNotEmpty(),
+                    modifier = modifier
+                )
+            }
         }
+
     }
 }
+
 
 @Composable
 fun HangingPlantAnimation(
     modifier: Modifier = Modifier,
+    visible: Boolean,
 ) {
-    Row() {
-        Spacer(modifier = modifier.weight(1f))
+    AnimatedVisibility(visible = visible,
+        enter = slideInHorizontally {
+            it
+        },
+        exit = slideOutHorizontally(
+            targetOffsetX = { it }
+        )
+    ) {
         val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.hangingplant))
         val progress by animateLottieCompositionAsState(
             composition = composition,
@@ -168,65 +169,11 @@ fun HangingPlantAnimation(
         )
         LottieAnimation(
             modifier = modifier
-                .offset(y = (15).dp, x = (73).dp)
+                .offset(y = ((-20).dp))
                 .size(250.dp),
             composition = composition,
             progress = { progress },
         )
-    }
-}
-
-@Composable
-fun ConfirmImageButton(
-    modifier: Modifier = Modifier,
-    onConfirmedClick: () -> Unit,
-) {
-    Row {
-        Spacer(modifier = modifier.weight(1f))
-        FloatingActionButton(
-            modifier = modifier
-                .padding(end = 24.dp),
-            onClick = onConfirmedClick,
-            shape = CircleShape,
-        ) {
-            androidx.compose.material3.Icon(
-                imageVector = Icons.Rounded.Check,
-                contentDescription = "Add Image"
-            )
-        }
-    }
-}
-
-@Composable
-fun AddImageOptions(
-    modifier: Modifier = Modifier,
-    onChoosePictureUriRetrieved: (Uri?) -> Unit,
-    onTakePictureUriRetrieved: (Uri?) -> Unit
-) {
-    Box(
-        modifier = modifier
-            .fillMaxSize(),
-    ) {
-        LottieAnimationContent(
-            animationId = R.raw.addimageplant,
-            modifier = modifier
-                .size(250.dp)
-                .align(Alignment.BottomStart)
-                .padding(bottom = 16.dp)
-                .offset(x = (-20).dp),
-        )
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomEnd),
-        ) {
-            AttachFileIcon(
-                onUriRetrieved = onChoosePictureUriRetrieved
-            )
-            TakePictureIcon(
-                onUriRetrieved = onTakePictureUriRetrieved
-            )
-        }
     }
 }
 

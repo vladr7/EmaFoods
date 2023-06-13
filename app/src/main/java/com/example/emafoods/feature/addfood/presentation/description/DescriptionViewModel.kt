@@ -15,13 +15,13 @@ import javax.inject.Inject
 class DescriptionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     stringDecoder: StringDecoder,
-
     ) : BaseViewModel() {
 
     private val descriptionArgs: DescriptionArguments =
         DescriptionArguments(savedStateHandle, stringDecoder)
     private val uriId = descriptionArgs.uri
     private val categoryId = descriptionArgs.category
+    private val ingredientsList = descriptionArgs.ingredientsList
 
     private val _state = MutableStateFlow<DescriptionViewState>(
         DescriptionViewState()
@@ -31,7 +31,9 @@ class DescriptionViewModel @Inject constructor(
     init {
         _state.update {
             it.copy(
-                uri = uriId, category = categoryId
+                uri = uriId,
+                category = categoryId,
+                ingredientsListSerialized = ingredientsList
             )
         }
     }
@@ -52,4 +54,5 @@ data class DescriptionViewState(
     val showNextButton: Boolean = false,
     val uri: String = "",
     val category: String = "",
+    val ingredientsListSerialized: String = "",
 ) : ViewState(isLoading, errorMessage)
