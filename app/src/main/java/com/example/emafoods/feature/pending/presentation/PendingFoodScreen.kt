@@ -136,25 +136,29 @@ fun PendingFoodScreen(
     PendingFoodBackground(imageId = R.drawable.pendingbackground)
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
     ) {
         FoodItem(
             food = food,
             modifier = modifier,
             ingredientsList = ingredientsList,
         )
-        Spacer(modifier = Modifier.weight(1f))
-        PendingSwipeTips(
-            modifier = modifier,
-        )
-        PendingSwipe(
-            modifier = modifier,
-            onSwipeRight = onSwipeRight,
-            onSwipeLeft = onSwipeLeft,
-        )
-        Spacer(modifier = Modifier.weight(1f))
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+        ) {
+            PendingSwipeTips(
+                modifier = modifier
+            )
+            PendingSwipe(
+                modifier = modifier,
+                onSwipeRight = onSwipeRight,
+                onSwipeLeft = onSwipeLeft,
+            )
+        }
     }
-
 }
 
 @Composable
@@ -176,7 +180,6 @@ fun FoodItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -226,8 +229,7 @@ fun PendingSwipeTips(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .offset(y = (100).dp),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -244,9 +246,8 @@ fun PendingSwipe(
 ) {
     Row(
         modifier = modifier
-            .height(300.dp)
             .fillMaxWidth()
-            .padding(26.dp),
+            .padding(start = 26.dp, end = 26.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -333,15 +334,15 @@ fun SwipableFood(
                     }
                 }
             )
-//            .background( // todo renable and check if it does not crash
-//                brush = Brush.radialGradient(
-//                    colors = listOf(
-//                        MaterialTheme.colorScheme.secondary,
-//                        Color.Transparent
-//                    )
-//                ),
-//                alpha = 0.5f,
-//            )
+            .background(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.secondary,
+                        Color.Transparent
+                    )
+                ),
+                alpha = 0.5f,
+            )
             .padding(20.dp)
             .height(70.dp)
             .width(70.dp),
