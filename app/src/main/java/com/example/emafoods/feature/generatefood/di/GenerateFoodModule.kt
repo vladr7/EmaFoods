@@ -1,6 +1,7 @@
 package com.example.emafoods.feature.generatefood.di
 
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
+import com.example.emafoods.feature.generatefood.domain.usecase.GetFoodsByCategoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,5 +14,10 @@ object GenerateFoodModule {
     @Provides
     fun provideGenerateFoodUseCase(
     ) = GenerateFoodUseCase(
+    )
+
+    @Provides
+    fun provideGetFoodsByCategoryUseCase(
+    ) = GetFoodsByCategoryUseCase(
     )
 }

@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,11 +63,13 @@ import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
+import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.category.CategoryChoices
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.category.OpenCategoryButton
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
+import com.example.emafoods.feature.pending.presentation.FoodItem
 import com.example.emafoods.feature.profile.presentation.ProfileHeader
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,14 +84,12 @@ fun GenerateScreenRoute(
 
     GenerateScreenBackground()
     GenerateScreen(
-        generatedImagedRef = state.food.imageRef,
         modifier = modifier,
         onGenerateClick = {
             viewModel.onXpIncrease()
             viewModel.generateFoodEvent()
         },
-        description = state.food.description,
-        foodHasBeenGenerated = state.foodHasBeenGenerated,
+        categorySelected = state.categorySelected,
         showXpIncreaseToast = state.showXpIncreaseToast,
         xpIncreased = state.xpIncreased,
         onToastShown = { viewModel.onXpIncreaseToastShown() },
@@ -107,18 +106,20 @@ fun GenerateScreenRoute(
         },
         showCategories = state.showCategories,
         onCategoryClick = {
-            viewModel.onCategoriyClick()
+            viewModel.onCategoryClick()
         },
+        onChooseCategoryClick = { categoryType ->
+            viewModel.onCategorySelected(categoryType)
+        },
+        food = state.currentFood,
     )
 }
 
 @Composable
 fun GenerateScreen(
-    generatedImagedRef: String,
     onGenerateClick: () -> Unit,
-    description: String,
     modifier: Modifier = Modifier,
-    foodHasBeenGenerated: Boolean,
+    categorySelected: Boolean,
     showXpIncreaseToast: Boolean,
     onToastShown: () -> Unit,
     context: Context,
@@ -131,6 +132,8 @@ fun GenerateScreen(
     onDismissRewardsAlert: () -> Unit,
     showCategories: Boolean,
     onCategoryClick: () -> Unit,
+    onChooseCategoryClick: (CategoryType) -> Unit,
+    food: FoodViewData,
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -157,23 +160,25 @@ fun GenerateScreen(
             .fillMaxSize(),
     ) {
 
-        if (!foodHasBeenGenerated) {
+        if (!categorySelected) {
             WaitingGenerateFoodContent(
                 showCategories = showCategories,
                 onShowCategoryClick = onCategoryClick,
-                onChooseCategoryClick = { categoryType ->
-
-                },
+                onChooseCategoryClick = onChooseCategoryClick,
             )
         } else {
-            GenerateImage(generatedImagedRef = generatedImagedRef, modifier = modifier)
-            Divider(
-                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
-                modifier = modifier
-                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-                    .alpha(0.2f),
+//            GenerateImage(generatedImagedRef = generatedImagedRef, modifier = modifier)
+//            Divider(
+//                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
+//                modifier = modifier
+//                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+//                    .alpha(0.2f),
+//            )
+//            GenerateDescription(modifier, description)
+            FoodItem(
+                food = food,
+                ingredientsList = food.ingredients,
             )
-            GenerateDescription(modifier, description)
         }
 
 //        GenerateButton(

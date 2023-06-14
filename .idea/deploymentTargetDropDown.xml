@@ -8,13 +8,13 @@
       <entry key="AddIngredientToListUseCaseTest.add ingredient success">
         <State />
       </entry>
-      <entry key="RemoveIngredientFromListUseCaseTest.remove fail ingredient list is empty expect success with empty list">
+      <entry key="GenerateFoodUseCaseTest.when generating MainDish type and index is equal to MainDish list size expect success and index must be reset result">
+        <State />
+      </entry>
+      <entry key="GenerateFoodUseCaseTest.when generating MainDish type and index is not equal to MainDish list size expect success result">
         <State />
       </entry>
       <entry key="SaveChangedIngredientFromListUseCaseTest.save changes ingredient fail ingredient does not exist in the list expect success with current list">
-        <State />
-      </entry>
-      <entry key="SaveChangedIngredientFromListUseCaseTest.save changes ingredient success">
         <State />
       </entry>
       <entry key="app">
