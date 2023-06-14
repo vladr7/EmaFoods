@@ -46,6 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -236,12 +237,13 @@ fun ProfileHeader(
     modifier: Modifier = Modifier,
     userName: String,
     streaks: Int,
+    profileTopPadding: Dp = 36.dp,
 ) {
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 20.dp),
+            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
         contentAlignment = Alignment.Center
     ) {
         Row (
@@ -261,7 +263,7 @@ fun ProfileHeader(
 
         Row(
             modifier = modifier
-                .padding(start = 16.dp, end = 16.dp, top = 36.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, top = profileTopPadding, bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
