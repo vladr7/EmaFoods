@@ -1,8 +1,10 @@
 package com.example.emafoods.feature.generatefood.presentation
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.Canvas
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -10,6 +12,7 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,9 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -50,7 +50,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
@@ -64,8 +63,13 @@ import com.example.emafoods.R
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.core.presentation.features.addfood.BasicTitle
+import com.example.emafoods.feature.addfood.presentation.category.CategoryChoices
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
+import com.example.emafoods.feature.addfood.presentation.category.OpenCategoryButton
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
+import com.example.emafoods.feature.profile.presentation.ProfileHeader
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -95,14 +99,16 @@ fun GenerateScreenRoute(
         newLevel = state.newLevel,
         onDismissLevelUp = {
             viewModel.onDismissLevelUp()
-            // todo: restart app
-//            context.restartApp()
         },
         showRewardsAlert = state.showRewardsAlert,
         nrOfRewards = state.nrOfRewards,
         onDismissRewardsAlert = {
             viewModel.onDismissRewardsAlert()
-        }
+        },
+        showCategories = state.showCategories,
+        onCategoryClick = {
+            viewModel.onCategoriyClick()
+        },
     )
 }
 
@@ -123,6 +129,8 @@ fun GenerateScreen(
     showRewardsAlert: Boolean,
     nrOfRewards: Int,
     onDismissRewardsAlert: () -> Unit,
+    showCategories: Boolean,
+    onCategoryClick: () -> Unit,
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -136,7 +144,7 @@ fun GenerateScreen(
             onDismiss = onDismissLevelUp,
         )
     }
-    if (showXpIncreaseToast) {
+    if (showXpIncreaseToast && !leveledUpEvent && !showRewardsAlert) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.GENERATE_RECIPE,
             onToastShown = onToastShown,
@@ -144,14 +152,19 @@ fun GenerateScreen(
             customXP = xpIncreased
         )
     }
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
     ) {
 
         if (!foodHasBeenGenerated) {
-            WaitingCookAnimation()
+            WaitingGenerateFoodContent(
+                showCategories = showCategories,
+                onShowCategoryClick = onCategoryClick,
+                onChooseCategoryClick = { categoryType ->
+
+                },
+            )
         } else {
             GenerateImage(generatedImagedRef = generatedImagedRef, modifier = modifier)
             Divider(
@@ -163,11 +176,63 @@ fun GenerateScreen(
             GenerateDescription(modifier, description)
         }
 
-        GenerateButton(
-            modifier = modifier,
-            onGenerateClick = onGenerateClick
+//        GenerateButton(
+//            modifier = modifier,
+//            onGenerateClick = onGenerateClick
+//        )
+    }
+}
+
+@Composable
+fun BoxScope.WaitingGenerateFoodContent(
+    modifier: Modifier = Modifier,
+    showCategories: Boolean,
+    onShowCategoryClick: () -> Unit,
+    onChooseCategoryClick: (CategoryType) -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        ProfileHeader(
+            userName = "Vlad Ricean",
+            streaks = 5,
+            profileTopPadding = 20.dp,
         )
     }
+    AnimatedVisibility(
+        visible = !showCategories,
+        enter = fadeIn(),
+        exit = fadeOut(),
+        modifier = modifier
+            .align(Alignment.Center)
+    ) {
+        GenerateTitle(
+            modifier = modifier
+                .padding(bottom = 140.dp)
+        )
+    }
+    OpenCategoryButton(
+        modifier = modifier
+            .align(Alignment.Center),
+        onClick = onShowCategoryClick,
+    )
+    CategoryChoices(
+        onChooseCategoryClick = onChooseCategoryClick,
+        showCategories = showCategories
+    )
+}
+
+@Composable
+fun GenerateTitle(
+    modifier: Modifier = Modifier
+) {
+    BasicTitle(
+        modifier = modifier,
+        text = stringResource(id = R.string.generate_title),
+        fontSize = 18.sp,
+    )
 }
 
 @Composable
@@ -203,27 +268,6 @@ fun LoadingCookingAnimation() {
         composition = composition,
         progress = { progress },
     )
-}
-
-@Composable
-fun WaitingCookAnimation(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .padding(start = 32.dp, end = 32.dp, bottom = 32.dp)
-    ) {
-        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.waitingcook))
-        val progress by animateLottieCompositionAsState(
-            composition = composition,
-            iterations = LottieConstants.IterateForever,
-            speed = 1f
-        )
-        LottieAnimation(
-            composition = composition,
-            progress = { progress },
-        )
-    }
 }
 
 @Composable
@@ -347,58 +391,58 @@ fun GenerateButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        ArcComposable(
-            modifier = modifier,
-            exceededThreshold = offsetY.value < threshold
-        )
+//        ArcComposable(
+//            modifier = modifier,
+//            exceededThreshold = offsetY.value < threshold
+//        )
     }
 
 }
 
-@Composable
-private fun ArcComposable(
-    modifier: Modifier = Modifier,
-    exceededThreshold: Boolean = false,
-) {
-    val color1 =
-        if (!exceededThreshold) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
-    val color2 = MaterialTheme.colorScheme.secondary
-    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
-    Canvas(
-        modifier = modifier
-            .fillMaxSize()
-            .zIndex(0f)
-    ) {
-        val canvasWidth = size.width
-        val canvasHeight = size.height
-        val formWidth = (canvasWidth * 2)
-        val xPos = canvasWidth / 2
-
-        drawArc(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    color1,
-                    color2
-                ),
-            ),
-            0f,
-            -180f,
-            useCenter = true,
-            size = Size(formWidth, 1000f),
-            topLeft = Offset(x = -xPos, y = canvasHeight - 200),
-        )
-
-        val handleWidth = 200f
-        val handleHeight = 30f
-
-        drawRoundRect(
-            color = colorOnPrimary,
-            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
-            size = Size(handleWidth, handleHeight),
-            cornerRadius = CornerRadius(50f, 50f)
-        )
-    }
-}
+//@Composable
+//private fun ArcComposable(
+//    modifier: Modifier = Modifier,
+//    exceededThreshold: Boolean = false,
+//) {
+//    val color1 =
+//        if (!exceededThreshold) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+//    val color2 = MaterialTheme.colorScheme.secondary
+//    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
+//    Canvas(
+//        modifier = modifier
+//            .fillMaxSize()
+//            .zIndex(0f)
+//    ) {
+//        val canvasWidth = size.width
+//        val canvasHeight = size.height
+//        val formWidth = (canvasWidth * 2)
+//        val xPos = canvasWidth / 2
+//
+//        drawArc(
+//            brush = Brush.verticalGradient(
+//                colors = listOf(
+//                    color1,
+//                    color2
+//                ),
+//            ),
+//            0f,
+//            -180f,
+//            useCenter = true,
+//            size = Size(formWidth, 1000f),
+//            topLeft = Offset(x = -xPos, y = canvasHeight - 200),
+//        )
+//
+//        val handleWidth = 200f
+//        val handleHeight = 30f
+//
+//        drawRoundRect(
+//            color = colorOnPrimary,
+//            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
+//            size = Size(handleWidth, handleHeight),
+//            cornerRadius = CornerRadius(50f, 50f)
+//        )
+//    }
+//}
 
 @Composable
 fun GenerateScreenBackground(

@@ -166,6 +166,14 @@ class GenerateViewModel @Inject constructor(
             )
         }
     }
+
+    fun onCategoriyClick() {
+        _state.update {
+            it.copy(
+                showCategories = !it.showCategories
+            )
+        }
+    }
 }
 
 data class GenerateViewState(
@@ -179,5 +187,6 @@ data class GenerateViewState(
     val appOpenedToday: Boolean = true,
     val showRewardsAlert: Boolean = false,
     val nrOfRewards: Int = 0,
-    val listOfFoods: List<Food> = emptyList()
+    val listOfFoods: List<Food> = emptyList(),
+    val showCategories: Boolean = false,
 )

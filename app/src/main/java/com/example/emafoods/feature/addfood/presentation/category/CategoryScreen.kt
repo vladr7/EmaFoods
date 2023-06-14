@@ -60,14 +60,20 @@ fun CategoryRoute(
 
     CategoryScreen(
         modifier = modifier,
-        onNextClicked = onNextClicked,
+        onChooseCategoryClick = { category ->
+            onNextClicked(
+                ImageArguments(
+                    category = category.string,
+                )
+            )
+        }
     )
 }
 
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onChooseCategoryClick: (CategoryType) -> Unit,
 ) {
     var showCategories by remember { mutableStateOf(false) }
     CategoryScreenBackground()
@@ -103,7 +109,7 @@ fun CategoryScreen(
         CategoryChoices(
             modifier = modifier
                 .align(Alignment.Center),
-            onNextClicked = onNextClicked,
+            onChooseCategoryClick = onChooseCategoryClick,
             showCategories = showCategories,
         )
     }
@@ -129,7 +135,7 @@ fun OpenCategoryButton(
 @Composable
 fun CategoryChoices(
     modifier: Modifier = Modifier,
-    onNextClicked: (ImageArguments) -> Unit,
+    onChooseCategoryClick: (CategoryType) -> Unit,
     showCategories: Boolean,
 ) {
     val configuration = LocalConfiguration.current
@@ -142,7 +148,7 @@ fun CategoryChoices(
         modifier = modifier
             .fillMaxSize()
     ) {
-        LeftCategory(showCategories, screenWidth, modifier, onNextClicked)
+        LeftCategory(showCategories, screenWidth, modifier, onChooseCategoryClick)
         Column(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -151,13 +157,13 @@ fun CategoryChoices(
         ) {
             TopCategory(
                 showCategories, screenHeight, modifier,
-                onNextClicked
+                onChooseCategoryClick
             )
             BottomCategory(
-                showCategories, screenHeight, modifier, onNextClicked
+                showCategories, screenHeight, modifier, onChooseCategoryClick
             )
         }
-        RightCategory(showCategories, screenWidth, modifier, onNextClicked)
+        RightCategory(showCategories, screenWidth, modifier, onChooseCategoryClick)
     }
 }
 
@@ -166,7 +172,7 @@ private fun RowScope.LeftCategory(
     showCategories: Boolean,
     screenWidth: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onNextClicked: (CategoryType) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -186,9 +192,7 @@ private fun RowScope.LeftCategory(
             categoryType = CategoryType.BREAKFAST,
             onClick = {
                 onNextClicked(
-                    ImageArguments(
-                        category = CategoryType.BREAKFAST.string
-                    )
+                    CategoryType.BREAKFAST
                 )
             }
         )
@@ -200,7 +204,7 @@ private fun RowScope.RightCategory(
     showCategories: Boolean,
     screenWidth: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onNextClicked: (CategoryType) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -220,9 +224,7 @@ private fun RowScope.RightCategory(
             categoryType = CategoryType.DESSERT,
             onClick = {
                 onNextClicked(
-                    ImageArguments(
-                        category = CategoryType.DESSERT.string
-                    )
+                    CategoryType.DESSERT
                 )
             }
         )
@@ -234,7 +236,7 @@ private fun ColumnScope.BottomCategory(
     showCategories: Boolean,
     screenHeight: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onNextClicked: (CategoryType) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -255,9 +257,7 @@ private fun ColumnScope.BottomCategory(
             categoryType = CategoryType.SOUP,
             onClick = {
                 onNextClicked(
-                    ImageArguments(
-                        category = CategoryType.SOUP.string
-                    )
+                    CategoryType.SOUP
                 )
             }
         )
@@ -269,7 +269,7 @@ private fun ColumnScope.TopCategory(
     showCategories: Boolean,
     screenHeight: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onNextClicked: (CategoryType) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -290,9 +290,7 @@ private fun ColumnScope.TopCategory(
             categoryType = CategoryType.MAIN_DISH,
             onClick = {
                 onNextClicked(
-                    ImageArguments(
-                        category = CategoryType.MAIN_DISH.string
-                    )
+                    CategoryType.MAIN_DISH
                 )
             }
         )
