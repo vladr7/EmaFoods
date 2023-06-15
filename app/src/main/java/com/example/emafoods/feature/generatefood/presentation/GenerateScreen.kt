@@ -3,7 +3,6 @@ package com.example.emafoods.feature.generatefood.presentation
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -36,7 +36,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -357,40 +356,11 @@ fun GenerateButton(
     onGenerateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val offsetY = remember { Animatable(0f) }
-    val threshold = -20f
     Box(
         modifier = modifier
-//            .offset(
-//                y = if (offsetY.value < -100f) {
-//                    maxOf(-100f, offsetY.value).dp
-//                } else if (offsetY.value > 0f) {
-//                    minOf(offsetY.value, 0f).dp
-//                } else {
-//                    offsetY.value.dp
-//                }
-//            )
-//            .draggable(
-//                state = rememberDraggableState { delta ->
-//                    coroutineScope.launch {
-//                        offsetY.animateTo(offsetY.value + delta)
-//                    }
-//                },
-//                orientation = Orientation.Vertical,
-//                onDragStarted = {
-//
-//                },
-//                onDragStopped = {
-//                    if (offsetY.value < threshold) {
-//                        onGenerateClick()
-//                    }
-//                    coroutineScope.launch {
-//                        offsetY.animateTo(0f)
-//                    }
-//                },
-//            ),
-                ,
+            .bounceClick {
+                onGenerateClick()
+            },
         contentAlignment = Alignment.Center
     ) {
         ArcComposable(
@@ -409,12 +379,12 @@ private fun ArcComposable(
     val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
     Canvas(
         modifier = modifier
-            .fillMaxSize()
+            .height(500.dp)
+            .width(70.dp)
             .zIndex(0f)
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
-
         drawArc(
             brush = Brush.verticalGradient(
                 colors = listOf(
@@ -426,7 +396,7 @@ private fun ArcComposable(
             sweepAngle = 180f,
             useCenter = true,
             size = Size(canvasWidth * 2, canvasHeight),
-            topLeft = Offset(x = canvasWidth - 140f, y = 0f),
+            topLeft = Offset(x = canvasWidth - 130f, y = 0f),
         )
 
         val arrowWidth = 30f
