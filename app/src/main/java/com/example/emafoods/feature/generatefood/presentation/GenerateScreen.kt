@@ -3,8 +3,10 @@ package com.example.emafoods.feature.generatefood.presentation
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -34,11 +36,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -52,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
@@ -62,6 +68,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
@@ -242,6 +249,7 @@ fun BoxScope.CategoryDropDown(
             onClick = onClickCategoryDropDown,
             modifier = Modifier
                 .size(100.dp)
+                .bounceClick()
         ) {
             Icon(
                 imageVector = Icons.Default.FilterList,
@@ -256,45 +264,179 @@ fun BoxScope.CategoryDropDown(
             expanded = expanded,
             onDismissRequest = onDismissRequest
         ) {
-            DropdownMenuItem(text = {
-                Text(text = stringResource(id = R.string.main_dish))
-            }, onClick = {
-                onDropDownItemClick(CategoryType.MAIN_DISH)
-            })
-            DropdownMenuItem(text = {
-                Text(text = stringResource(id = R.string.dessert))
-            }, onClick = {
-                onDropDownItemClick(CategoryType.DESSERT)
-            })
-            DropdownMenuItem(text = {
-                Text(text = stringResource(id = R.string.soup))
-            }, onClick = {
-                onDropDownItemClick(CategoryType.SOUP)
-            })
-            DropdownMenuItem(text = {
-                Text(text = stringResource(id = R.string.breakfast))
-            }, onClick = {
-                onDropDownItemClick(CategoryType.BREAKFAST)
-            })
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.spaghetti),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.main_dish_dropdown),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(CategoryType.MAIN_DISH)
+                })
+            Divider()
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.dessert),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.dessert),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(CategoryType.DESSERT)
+                })
+            Divider()
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.soup),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.soup),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(CategoryType.SOUP)
+                })
+            Divider()
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.breakfast),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.breakfast),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(CategoryType.BREAKFAST)
+                })
         }
     }
 }
 
 @Composable
-fun BoxScope.GenerateButton(
-    modifier: Modifier = Modifier,
-    onGenerateClick: () -> Unit
+fun GenerateButton(
+    onGenerateClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Button(
-        onClick = onGenerateClick,
+    val coroutineScope = rememberCoroutineScope()
+    val offsetY = remember { Animatable(0f) }
+    val threshold = -20f
+    Box(
         modifier = modifier
-            .align(Alignment.BottomCenter)
-            .padding(bottom = 20.dp)
-            .fillMaxWidth()
-            .height(50.dp),
-        shape = RoundedCornerShape(20.dp),
+//            .offset(
+//                y = if (offsetY.value < -100f) {
+//                    maxOf(-100f, offsetY.value).dp
+//                } else if (offsetY.value > 0f) {
+//                    minOf(offsetY.value, 0f).dp
+//                } else {
+//                    offsetY.value.dp
+//                }
+//            )
+//            .draggable(
+//                state = rememberDraggableState { delta ->
+//                    coroutineScope.launch {
+//                        offsetY.animateTo(offsetY.value + delta)
+//                    }
+//                },
+//                orientation = Orientation.Vertical,
+//                onDragStarted = {
+//
+//                },
+//                onDragStopped = {
+//                    if (offsetY.value < threshold) {
+//                        onGenerateClick()
+//                    }
+//                    coroutineScope.launch {
+//                        offsetY.animateTo(0f)
+//                    }
+//                },
+//            ),
+                ,
+        contentAlignment = Alignment.Center
     ) {
-        Text(text = "Generate")
+        ArcComposable(
+            modifier = modifier,
+        )
+    }
+
+}
+
+@Composable
+private fun ArcComposable(
+    modifier: Modifier = Modifier,
+) {
+    val color1 = MaterialTheme.colorScheme.primary
+    val color2 = MaterialTheme.colorScheme.secondary
+    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
+    Canvas(
+        modifier = modifier
+            .fillMaxSize()
+            .zIndex(0f)
+    ) {
+        val canvasWidth = size.width
+        val canvasHeight = size.height
+
+        drawArc(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    color1,
+                    color2
+                ),
+            ),
+            startAngle = 90f,
+            sweepAngle = 180f,
+            useCenter = true,
+            size = Size(canvasWidth * 2, canvasHeight),
+            topLeft = Offset(x = canvasWidth - 140f, y = 0f),
+        )
+
+        val handleWidth = 200f
+        val handleHeight = 30f
+
+//        drawRoundRect(
+//            color = colorOnPrimary,
+//            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
+//            size = Size(handleWidth, handleHeight),
+//            cornerRadius = CornerRadius(50f, 50f)
+//        )
     }
 }
 

@@ -43,6 +43,7 @@
     <string name="choose_a_category">Alege o categorie</string>
     <string name="breakfast">Mic dejun</string>
     <string name="main_dish">Prânz\nCină</string>
+    <string name="main_dish_dropdown">Prânz/Cină</string>
     <string name="soup">Supe</string>
     <string name="dessert">Desert</string>
     <string name="add_a_new_recipe">Adaugă o rețetă nouă</string>
