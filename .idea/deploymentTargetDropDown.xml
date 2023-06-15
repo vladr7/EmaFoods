@@ -2,19 +2,19 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AddIngredientToListUseCaseTest.add ingredient fail ingredient already exist in the list expect error">
+      <entry key="GenerateFoodUseCaseTest">
         <State />
       </entry>
-      <entry key="AddIngredientToListUseCaseTest.add ingredient success">
-        <State />
-      </entry>
-      <entry key="GenerateFoodUseCaseTest.when generating MainDish type and index is equal to MainDish list size expect success and index must be reset result">
+      <entry key="GenerateFoodUseCaseTest.when generating Dessert type and index is not equal to Dessert list size expect success result">
         <State />
       </entry>
       <entry key="GenerateFoodUseCaseTest.when generating MainDish type and index is not equal to MainDish list size expect success result">
         <State />
       </entry>
-      <entry key="SaveChangedIngredientFromListUseCaseTest.save changes ingredient fail ingredient does not exist in the list expect success with current list">
+      <entry key="GenerateFoodUseCaseTest.when generating Soup type and index is not equal to Soup list size expect success result">
+        <State />
+      </entry>
+      <entry key="GenerateFoodUseCaseTest.when generating soup type and soup list is empty expect error result">
         <State />
       </entry>
       <entry key="app">

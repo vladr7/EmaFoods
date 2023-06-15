@@ -17,8 +17,10 @@ import com.example.emafoods.feature.game.domain.usecase.UpdateFireStreaksUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
 import com.example.emafoods.feature.generatefood.domain.models.GenerateResult
+import com.example.emafoods.feature.generatefood.domain.models.PreviousFoodResult
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
 import com.example.emafoods.feature.generatefood.domain.usecase.GetFoodsByCategoryUseCase
+import com.example.emafoods.feature.generatefood.domain.usecase.PreviousFoodUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +40,8 @@ class GenerateViewModel @Inject constructor(
     private val updateFireStreaksUseCase: UpdateFireStreaksUseCase,
     private val getAllFoodsUseCase: GetAllFoodsUseCase,
     private val logHelper: LogHelper,
-    private val getFoodsByCategoryUseCase: GetFoodsByCategoryUseCase
+    private val getFoodsByCategoryUseCase: GetFoodsByCategoryUseCase,
+    private val previousFoodUseCase: PreviousFoodUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
@@ -115,6 +118,11 @@ class GenerateViewModel @Inject constructor(
     }
 
     fun generateFoodEvent() {
+        _state.update {
+            it.copy(
+                previousButtonVisible = true
+            )
+        }
         viewModelScope.launch {
             when(val result = generateFoodUseCase.execute(
                 categoryType = state.value.currentCategory,
@@ -324,6 +332,74 @@ class GenerateViewModel @Inject constructor(
             )
         }
     }
+
+    fun onPreviousButtonClick() {
+        when(val result = previousFoodUseCase.execute(
+            categoryType = state.value.currentCategory,
+            mainDishList = state.value.mainDishList,
+            dessertList = state.value.dessertList,
+            breakfastList = state.value.breakfastList,
+            soupList = state.value.soupList,
+            indexMainDish = state.value.indexMainDish,
+            indexDessert = state.value.indexDessert,
+            indexBreakfast = state.value.indexBreakfast,
+            indexSoup = state.value.indexSoup
+        )) {
+            is PreviousFoodResult.ErrorEmptyList -> {
+                _state.update {
+                    it.copy(
+                        showEmptyListToast = true
+                    )
+                }
+            }
+            is PreviousFoodResult.Success -> {
+                _state.update {
+                    it.copy(
+                        currentFood = result.food
+                    )
+                }
+                when(state.value.currentCategory) {
+                    CategoryType.BREAKFAST -> {
+                        _state.update {
+                            it.copy(
+                                indexBreakfast = it.indexBreakfast - 1
+                            )
+                        }
+                    }
+                    CategoryType.MAIN_DISH -> {
+                        _state.update {
+                            it.copy(
+                                indexMainDish = it.indexMainDish - 1
+                            )
+                        }
+                    }
+                    CategoryType.SOUP -> {
+                        _state.update {
+                            it.copy(
+                                indexSoup = it.indexSoup - 1
+                            )
+                        }
+                    }
+                    CategoryType.DESSERT -> {
+                        _state.update {
+                            it.copy(
+                                indexDessert = it.indexDessert - 1
+                            )
+                        }
+                    }
+                }
+            }
+
+            is PreviousFoodResult.SuccessAndStartOfTheList -> {
+                _state.update {
+                    it.copy(
+                        currentFood = result.food,
+                        previousButtonVisible = false
+                    )
+                }
+            }
+        }
+    }
 }
 
 data class GenerateViewState(
@@ -348,5 +424,6 @@ data class GenerateViewState(
     val indexSoup: Int = 0,
     val showCategories: Boolean = false,
     val showEmptyListToast: Boolean = false,
-    val categoryDropdownExpanded: Boolean = false
+    val categoryDropdownExpanded: Boolean = false,
+    val previousButtonVisible: Boolean = false
 )
