@@ -46,6 +46,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -428,15 +429,20 @@ private fun ArcComposable(
             topLeft = Offset(x = canvasWidth - 140f, y = 0f),
         )
 
-        val handleWidth = 200f
-        val handleHeight = 30f
-
-//        drawRoundRect(
-//            color = colorOnPrimary,
-//            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
-//            size = Size(handleWidth, handleHeight),
-//            cornerRadius = CornerRadius(50f, 50f)
-//        )
+        val arrowWidth = 30f
+        val arrowHeight = 100f
+        val arrowPath = Path().let {
+            it.moveTo(x = canvasWidth - 90f, y = canvasHeight / 2 - arrowHeight / 2) // Top
+            it.lineTo(x = canvasWidth - 90f + arrowWidth - 15f, y = canvasHeight / 2) // Right
+            it.lineTo(x = canvasWidth - 90f, y = canvasHeight / 2 + arrowHeight / 2) // Bottom
+            it.lineTo(x = canvasWidth - 90f + arrowWidth, y = canvasHeight / 2) // Far right
+            it.close()
+            it
+        }
+        drawPath(
+            path = arrowPath,
+            color = colorOnPrimary,
+        )
     }
 }
 
