@@ -62,4 +62,5 @@
     <string name="edit_ingredients_title">Editeaza ingrediente</string>
     <string name="save_changes">Salveaza modificarile</string>
     <string name="generate_title">Pentru a genera o reteta noua, alege o categorie</string>
+    <string name="recipes_could_not_be_found">Nu se gasesc retete, verifica conexiunea la internet!</string>
 </resources>

@@ -300,6 +300,14 @@ class GenerateViewModel @Inject constructor(
         }
         generateFoodEvent()
     }
+
+    fun onShowedEmptyListToast() {
+        _state.update {
+            it.copy(
+                showEmptyListToast = false
+            )
+        }
+    }
 }
 
 data class GenerateViewState(
