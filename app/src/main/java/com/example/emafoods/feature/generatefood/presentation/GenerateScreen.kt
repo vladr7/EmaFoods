@@ -215,6 +215,13 @@ fun GenerateScreen(
                 food = food,
                 ingredientsList = food.ingredients,
             )
+            PreviousGenerateButton(
+                modifier = modifier
+                    .align(Alignment.CenterStart),
+                onPreviousButtonClick = {
+
+                }
+            )
             GenerateButton(
                 onGenerateClick = onGenerateClick,
                 modifier = modifier
@@ -228,6 +235,141 @@ fun GenerateScreen(
                 onDropDownItemClick = onDropDownItemClick
             )
         }
+    }
+}
+
+@Composable
+fun PreviousGenerateButton(
+    modifier: Modifier = Modifier,
+    onPreviousButtonClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .bounceClick {
+                onPreviousButtonClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        PreviousButtonArcComposable(
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun PreviousButtonArcComposable(
+    modifier: Modifier = Modifier,
+) {
+    val color1 = MaterialTheme.colorScheme.primary
+    val color2 = MaterialTheme.colorScheme.secondary
+    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
+    Canvas(
+        modifier = modifier
+            .height(500.dp)
+            .width(70.dp)
+            .zIndex(0f)
+            .alpha(0.8f)
+    ) {
+        val canvasWidth = size.width
+        val canvasHeight = size.height
+        val xPosArc = -canvasWidth - 80f // absolute difference between canvasWidth and arcWidth on this button and generate button
+
+        drawArc(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    color1,
+                    color2
+                ),
+            ),
+            startAngle = -90f,
+            sweepAngle = 180f,
+            useCenter = true,
+            size = Size(canvasWidth * 2, canvasHeight),
+            topLeft = Offset(x = xPosArc, y = 0f),
+        )
+
+        val arrowWidth = 30f
+        val arrowHeight = 100f
+        val xPosArrow = canvasWidth - 110f
+        val arrowPath = Path().let {
+            it.moveTo(x = xPosArrow, y = canvasHeight / 2 - arrowHeight / 2) // Top
+            it.lineTo(x = xPosArrow - arrowWidth + 15f, y = canvasHeight / 2) // Left
+            it.lineTo(x = xPosArrow, y = canvasHeight / 2 + arrowHeight / 2) // Bottom
+            it.lineTo(x = xPosArrow - arrowWidth, y = canvasHeight / 2) // Far left
+            it.close()
+            it
+        }
+        drawPath(
+            path = arrowPath,
+            color = colorOnPrimary,
+        )
+    }
+}
+
+@Composable
+fun GenerateButton(
+    onGenerateClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .bounceClick {
+                onGenerateClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        GenerateArcComposable(
+            modifier = modifier,
+        )
+    }
+}
+
+@Composable
+private fun GenerateArcComposable(
+    modifier: Modifier = Modifier,
+) {
+    val color1 = MaterialTheme.colorScheme.primary
+    val color2 = MaterialTheme.colorScheme.secondary
+    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
+    Canvas(
+        modifier = modifier
+            .height(500.dp)
+            .width(70.dp)
+            .zIndex(0f)
+            .alpha(0.8f)
+    ) {
+        val canvasWidth = size.width
+        val canvasHeight = size.height
+        val xPosArc = canvasWidth - 110f
+        drawArc(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    color1,
+                    color2
+                ),
+            ),
+            startAngle = 90f,
+            sweepAngle = 180f,
+            useCenter = true,
+            size = Size(canvasWidth * 2, canvasHeight),
+            topLeft = Offset(x = xPosArc, y = 0f),
+        )
+
+        val arrowWidth = 30f
+        val arrowHeight = 100f
+        val xPosArrow = canvasWidth - 70f
+        val arrowPath = Path().let {
+            it.moveTo(x = xPosArrow, y = canvasHeight / 2 - arrowHeight / 2) // Top
+            it.lineTo(x = xPosArrow + arrowWidth - 15f, y = canvasHeight / 2) // Right
+            it.lineTo(x = xPosArrow, y = canvasHeight / 2 + arrowHeight / 2) // Bottom
+            it.lineTo(x = xPosArrow + arrowWidth, y = canvasHeight / 2) // Far right
+            it.close()
+            it
+        }
+        drawPath(
+            path = arrowPath,
+            color = colorOnPrimary,
+        )
     }
 }
 
@@ -348,71 +490,6 @@ fun BoxScope.CategoryDropDown(
                     onDropDownItemClick(CategoryType.BREAKFAST)
                 })
         }
-    }
-}
-
-@Composable
-fun GenerateButton(
-    onGenerateClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .bounceClick {
-                onGenerateClick()
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        ArcComposable(
-            modifier = modifier,
-        )
-    }
-
-}
-
-@Composable
-private fun ArcComposable(
-    modifier: Modifier = Modifier,
-) {
-    val color1 = MaterialTheme.colorScheme.primary
-    val color2 = MaterialTheme.colorScheme.secondary
-    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
-    Canvas(
-        modifier = modifier
-            .height(500.dp)
-            .width(70.dp)
-            .zIndex(0f)
-    ) {
-        val canvasWidth = size.width
-        val canvasHeight = size.height
-        drawArc(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    color1,
-                    color2
-                ),
-            ),
-            startAngle = 90f,
-            sweepAngle = 180f,
-            useCenter = true,
-            size = Size(canvasWidth * 2, canvasHeight),
-            topLeft = Offset(x = canvasWidth - 130f, y = 0f),
-        )
-
-        val arrowWidth = 30f
-        val arrowHeight = 100f
-        val arrowPath = Path().let {
-            it.moveTo(x = canvasWidth - 90f, y = canvasHeight / 2 - arrowHeight / 2) // Top
-            it.lineTo(x = canvasWidth - 90f + arrowWidth - 15f, y = canvasHeight / 2) // Right
-            it.lineTo(x = canvasWidth - 90f, y = canvasHeight / 2 + arrowHeight / 2) // Bottom
-            it.lineTo(x = canvasWidth - 90f + arrowWidth, y = canvasHeight / 2) // Far right
-            it.close()
-            it
-        }
-        drawPath(
-            path = arrowPath,
-            color = colorOnPrimary,
-        )
     }
 }
 
