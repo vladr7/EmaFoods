@@ -1,6 +1,7 @@
 package com.example.emafoods.feature.generatefood.presentation
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
@@ -112,6 +113,10 @@ fun GenerateScreenRoute(
             viewModel.onCategorySelected(categoryType)
         },
         food = state.currentFood,
+        showEmptyListToast = state.showEmptyListToast,
+        onShowedEmptyListToast = {
+            viewModel.onShowedEmptyListToast()
+        }
     )
 }
 
@@ -134,6 +139,8 @@ fun GenerateScreen(
     onCategoryClick: () -> Unit,
     onChooseCategoryClick: (CategoryType) -> Unit,
     food: FoodViewData,
+    showEmptyListToast: Boolean,
+    onShowedEmptyListToast: () -> Unit
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -154,6 +161,13 @@ fun GenerateScreen(
             context = context,
             customXP = xpIncreased
         )
+    }
+    if(showEmptyListToast) {
+        Toast.makeText(
+            context,
+            stringResource(R.string.recipes_could_not_be_found),
+            Toast.LENGTH_SHORT
+        ).show()
     }
     Box(
         modifier = modifier
