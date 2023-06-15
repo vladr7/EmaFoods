@@ -3,14 +3,10 @@ package com.example.emafoods.feature.generatefood.presentation
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -19,11 +15,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +34,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,7 +75,6 @@ import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.pending.presentation.FoodItem
 import com.example.emafoods.feature.profile.presentation.ProfileHeader
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun GenerateScreenRoute(
@@ -116,6 +117,17 @@ fun GenerateScreenRoute(
         showEmptyListToast = state.showEmptyListToast,
         onShowedEmptyListToast = {
             viewModel.onShowedEmptyListToast()
+        },
+        categoryDropdownExpanded = state.categoryDropdownExpanded,
+        onDismissCategoryDropDown = {
+            viewModel.onDismissCategoryDropDown()
+        },
+        onClickCategoryDropDown = {
+            viewModel.onClickCategoryDropDown()
+        },
+        onDropDownItemClick = { categoryType ->
+            viewModel.onCategorySelected(categoryType)
+            viewModel.onDismissCategoryDropDown()
         }
     )
 }
@@ -140,7 +152,11 @@ fun GenerateScreen(
     onChooseCategoryClick: (CategoryType) -> Unit,
     food: FoodViewData,
     showEmptyListToast: Boolean,
-    onShowedEmptyListToast: () -> Unit
+    onShowedEmptyListToast: () -> Unit,
+    onDismissCategoryDropDown: () -> Unit,
+    categoryDropdownExpanded: Boolean,
+    onClickCategoryDropDown: () -> Unit,
+    onDropDownItemClick: (CategoryType) -> Unit
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -162,13 +178,17 @@ fun GenerateScreen(
             customXP = xpIncreased
         )
     }
-    if(showEmptyListToast) {
+    if (showEmptyListToast) {
         Toast.makeText(
             context,
             stringResource(R.string.recipes_could_not_be_found),
             Toast.LENGTH_SHORT
         ).show()
+        onShowedEmptyListToast()
     }
+
+    val scrollState = rememberScrollState()
+
     Box(
         modifier = modifier
             .fillMaxSize(),
@@ -180,25 +200,101 @@ fun GenerateScreen(
                 onShowCategoryClick = onCategoryClick,
                 onChooseCategoryClick = onChooseCategoryClick,
             )
+
         } else {
-//            GenerateImage(generatedImagedRef = generatedImagedRef, modifier = modifier)
-//            Divider(
-//                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
-//                modifier = modifier
-//                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-//                    .alpha(0.2f),
-//            )
-//            GenerateDescription(modifier, description)
             FoodItem(
+                modifier = modifier
+                    .verticalScroll(scrollState),
                 food = food,
                 ingredientsList = food.ingredients,
             )
+            GenerateButton(
+                onGenerateClick = onGenerateClick,
+                modifier = modifier
+                    .align(Alignment.CenterEnd)
+            )
+            CategoryDropDown(
+                modifier = modifier,
+                expanded = categoryDropdownExpanded,
+                onDismissRequest = onDismissCategoryDropDown,
+                onClickCategoryDropDown = onClickCategoryDropDown,
+                onDropDownItemClick = onDropDownItemClick
+            )
         }
+    }
+}
 
-//        GenerateButton(
-//            modifier = modifier,
-//            onGenerateClick = onGenerateClick
-//        )
+@Composable
+fun BoxScope.CategoryDropDown(
+    modifier: Modifier = Modifier,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onClickCategoryDropDown: () -> Unit,
+    onDropDownItemClick: (CategoryType) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .align(Alignment.TopEnd)
+            .padding(top = 20.dp, end = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        IconButton(
+            onClick = onClickCategoryDropDown,
+            modifier = Modifier
+                .size(100.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.FilterList,
+                contentDescription = "Category",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(50.dp)
+            )
+        }
+        DropdownMenu(
+            modifier = Modifier,
+            expanded = expanded,
+            onDismissRequest = onDismissRequest
+        ) {
+            DropdownMenuItem(text = {
+                Text(text = stringResource(id = R.string.main_dish))
+            }, onClick = {
+                onDropDownItemClick(CategoryType.MAIN_DISH)
+            })
+            DropdownMenuItem(text = {
+                Text(text = stringResource(id = R.string.dessert))
+            }, onClick = {
+                onDropDownItemClick(CategoryType.DESSERT)
+            })
+            DropdownMenuItem(text = {
+                Text(text = stringResource(id = R.string.soup))
+            }, onClick = {
+                onDropDownItemClick(CategoryType.SOUP)
+            })
+            DropdownMenuItem(text = {
+                Text(text = stringResource(id = R.string.breakfast))
+            }, onClick = {
+                onDropDownItemClick(CategoryType.BREAKFAST)
+            })
+        }
+    }
+}
+
+@Composable
+fun BoxScope.GenerateButton(
+    modifier: Modifier = Modifier,
+    onGenerateClick: () -> Unit
+) {
+    Button(
+        onClick = onGenerateClick,
+        modifier = modifier
+            .align(Alignment.BottomCenter)
+            .padding(bottom = 20.dp)
+            .fillMaxWidth()
+            .height(50.dp),
+        shape = RoundedCornerShape(20.dp),
+    ) {
+        Text(text = "Generate")
     }
 }
 
@@ -370,53 +466,53 @@ fun GenerateImage(
     )
 }
 
-@Composable
-fun GenerateButton(
-    onGenerateClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val coroutineScope = rememberCoroutineScope()
-    val offsetY = remember { Animatable(0f) }
-    val threshold = -20f
-    Box(
-        modifier = modifier
-            .offset(
-                y = if (offsetY.value < -100f) {
-                    maxOf(-100f, offsetY.value).dp
-                } else if (offsetY.value > 0f) {
-                    minOf(offsetY.value, 0f).dp
-                } else {
-                    offsetY.value.dp
-                }
-            )
-            .draggable(
-                state = rememberDraggableState { delta ->
-                    coroutineScope.launch {
-                        offsetY.animateTo(offsetY.value + delta)
-                    }
-                },
-                orientation = Orientation.Vertical,
-                onDragStarted = {
-
-                },
-                onDragStopped = {
-                    if (offsetY.value < threshold) {
-                        onGenerateClick()
-                    }
-                    coroutineScope.launch {
-                        offsetY.animateTo(0f)
-                    }
-                },
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-//        ArcComposable(
-//            modifier = modifier,
-//            exceededThreshold = offsetY.value < threshold
-//        )
-    }
-
-}
+//@Composable
+//fun GenerateButton(
+//    onGenerateClick: () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    val coroutineScope = rememberCoroutineScope()
+//    val offsetY = remember { Animatable(0f) }
+//    val threshold = -20f
+//    Box(
+//        modifier = modifier
+//            .offset(
+//                y = if (offsetY.value < -100f) {
+//                    maxOf(-100f, offsetY.value).dp
+//                } else if (offsetY.value > 0f) {
+//                    minOf(offsetY.value, 0f).dp
+//                } else {
+//                    offsetY.value.dp
+//                }
+//            )
+//            .draggable(
+//                state = rememberDraggableState { delta ->
+//                    coroutineScope.launch {
+//                        offsetY.animateTo(offsetY.value + delta)
+//                    }
+//                },
+//                orientation = Orientation.Vertical,
+//                onDragStarted = {
+//
+//                },
+//                onDragStopped = {
+//                    if (offsetY.value < threshold) {
+//                        onGenerateClick()
+//                    }
+//                    coroutineScope.launch {
+//                        offsetY.animateTo(0f)
+//                    }
+//                },
+//            ),
+//        contentAlignment = Alignment.Center
+//    ) {
+////        ArcComposable(
+////            modifier = modifier,
+////            exceededThreshold = offsetY.value < threshold
+////        )
+//    }
+//
+//}
 
 //@Composable
 //private fun ArcComposable(

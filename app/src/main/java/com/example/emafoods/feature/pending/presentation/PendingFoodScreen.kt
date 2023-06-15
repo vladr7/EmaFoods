@@ -204,7 +204,8 @@ fun FoodItem(
     )
 
     Card(
-        modifier = Modifier
+        modifier = modifier
+            .heightIn(max = 5500.dp)
             .padding(16.dp),
         elevation = 8.dp, shape = RoundedCornerShape(8.dp)
     ) {
@@ -223,7 +224,7 @@ fun FoodItem(
             PendingFoodImage(imageUri = food.imageRef)
             if (ingredientsList.isNotEmpty()) {
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     IngredientsReadOnlyContent(
@@ -235,18 +236,18 @@ fun FoodItem(
                     )
                     PendingFoodAuthor(
                         author = food.author,
-                        modifier = modifier
+                        modifier = Modifier
                             .align(Alignment.TopEnd)
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Start,
                 ) {
                     BasicTitle(
-                        modifier = modifier,
+                        modifier = Modifier,
                         text = stringResource(id = R.string.description_title)
                     )
                 }
