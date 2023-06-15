@@ -308,6 +308,22 @@ class GenerateViewModel @Inject constructor(
             )
         }
     }
+
+    fun onDismissCategoryDropDown() {
+        _state.update {
+            it.copy(
+                categoryDropdownExpanded = false
+            )
+        }
+    }
+
+    fun onClickCategoryDropDown() {
+        _state.update {
+            it.copy(
+                categoryDropdownExpanded = !it.categoryDropdownExpanded
+            )
+        }
+    }
 }
 
 data class GenerateViewState(
@@ -331,5 +347,6 @@ data class GenerateViewState(
     val indexBreakfast: Int = 0,
     val indexSoup: Int = 0,
     val showCategories: Boolean = false,
-    val showEmptyListToast: Boolean = false
+    val showEmptyListToast: Boolean = false,
+    val categoryDropdownExpanded: Boolean = false
 )
