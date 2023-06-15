@@ -135,7 +135,11 @@ fun GenerateScreenRoute(
         onDropDownItemClick = { categoryType ->
             viewModel.onCategorySelected(categoryType)
             viewModel.onDismissCategoryDropDown()
-        }
+        },
+        onPreviousButtonClick = {
+            viewModel.onPreviousButtonClick()
+        },
+        previousButtonVisible = state.previousButtonVisible,
     )
 }
 
@@ -163,7 +167,9 @@ fun GenerateScreen(
     onDismissCategoryDropDown: () -> Unit,
     categoryDropdownExpanded: Boolean,
     onClickCategoryDropDown: () -> Unit,
-    onDropDownItemClick: (CategoryType) -> Unit
+    onDropDownItemClick: (CategoryType) -> Unit,
+    onPreviousButtonClick: () -> Unit,
+    previousButtonVisible: Boolean
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -218,9 +224,8 @@ fun GenerateScreen(
             PreviousGenerateButton(
                 modifier = modifier
                     .align(Alignment.CenterStart),
-                onPreviousButtonClick = {
-
-                }
+                onPreviousButtonClick = onPreviousButtonClick,
+                previousButtonVisible = previousButtonVisible
             )
             GenerateButton(
                 onGenerateClick = onGenerateClick,
@@ -241,7 +246,8 @@ fun GenerateScreen(
 @Composable
 fun PreviousGenerateButton(
     modifier: Modifier = Modifier,
-    onPreviousButtonClick: () -> Unit
+    onPreviousButtonClick: () -> Unit,
+    previousButtonVisible: Boolean
 ) {
     Box(
         modifier = modifier
@@ -250,9 +256,11 @@ fun PreviousGenerateButton(
             },
         contentAlignment = Alignment.Center
     ) {
-        PreviousButtonArcComposable(
-            modifier = modifier,
-        )
+        AnimatedVisibility(visible = previousButtonVisible) {
+            PreviousButtonArcComposable(
+                modifier = modifier,
+            )
+        }
     }
 }
 
@@ -272,7 +280,8 @@ private fun PreviousButtonArcComposable(
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
-        val xPosArc = -canvasWidth - 80f // absolute difference between canvasWidth and arcWidth on this button and generate button
+        val xPosArc =
+            -canvasWidth - 80f // absolute difference between canvasWidth and arcWidth on this button and generate button
 
         drawArc(
             brush = Brush.verticalGradient(
