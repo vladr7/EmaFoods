@@ -16,8 +16,6 @@ import com.example.emafoods.feature.game.domain.usecase.ResetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateFireStreaksUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
-import com.example.emafoods.feature.generatefood.domain.models.GenerateResult
-import com.example.emafoods.feature.generatefood.domain.models.PreviousFoodResult
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
 import com.example.emafoods.feature.generatefood.domain.usecase.GetFoodsByCategoryUseCase
 import com.example.emafoods.feature.generatefood.domain.usecase.PreviousFoodUseCase
@@ -114,112 +112,6 @@ class GenerateViewModel @Inject constructor(
     private fun refreshFoodsFromRepository() {
         viewModelScope.launch {
             refreshFoodsUseCase.execute()
-        }
-    }
-
-    fun generateFoodEvent() {
-        _state.update {
-            it.copy(
-                previousButtonVisible = true
-            )
-        }
-        viewModelScope.launch {
-            when(val result = generateFoodUseCase.execute(
-                categoryType = state.value.currentCategory,
-                mainDishList = state.value.mainDishList,
-                dessertList = state.value.dessertList,
-                breakfastList = state.value.breakfastList,
-                soupList = state.value.soupList,
-                indexMainDish = state.value.indexMainDish,
-                indexDessert = state.value.indexDessert,
-                indexBreakfast = state.value.indexBreakfast,
-                indexSoup = state.value.indexSoup
-            ) ) {
-                is GenerateResult.Success -> {
-                    _state.update {
-                        it.copy(
-                            currentFood = result.food,
-                        )
-                    }
-                    when(state.value.currentCategory) {
-                        CategoryType.MAIN_DISH -> {
-                            _state.update {
-                                it.copy(
-                                    indexMainDish = it.indexMainDish + 1
-                                )
-                            }
-                        }
-                        CategoryType.DESSERT -> {
-                            _state.update {
-                                it.copy(
-                                    indexDessert = it.indexDessert + 1
-                                )
-                            }
-                        }
-                        CategoryType.BREAKFAST -> {
-                            _state.update {
-                                it.copy(
-                                    indexBreakfast = it.indexBreakfast + 1
-                                )
-                            }
-                        }
-                        CategoryType.SOUP -> {
-                            _state.update {
-                                it.copy(
-                                    indexSoup = it.indexSoup + 1
-                                )
-                            }
-                        }
-                    }
-                }
-                is GenerateResult.SuccessAndIndexMustBeReset -> {
-                    _state.update {
-                        it.copy(
-                            currentFood = result.food,
-                        )
-                    }
-                    when(state.value.currentCategory) {
-                        CategoryType.BREAKFAST -> {
-                            _state.update {
-                                it.copy(
-                                    indexBreakfast = 0
-                                )
-                            }
-                        }
-                        CategoryType.MAIN_DISH -> {
-                            _state.update {
-                                it.copy(
-                                    indexMainDish = 0
-                                )
-                            }
-                        }
-                        CategoryType.SOUP -> {
-                            _state.update {
-                                it.copy(
-                                    indexSoup = 0
-                                )
-                            }
-                        }
-                        CategoryType.DESSERT -> {
-                            _state.update {
-                                it.copy(
-                                    indexDessert = 0
-                                )
-                            }
-                        }
-                    }
-                }
-                is GenerateResult.ErrorEmptyList -> {
-                    _state.update {
-                        it.copy(
-                            showEmptyListToast = true
-                        )
-                    }
-                }
-            }
-        }
-        viewModelScope.launch {
-            logHelper.log(AnalyticsConstants.GENERATE_FOOD)
         }
     }
 
@@ -333,71 +225,199 @@ class GenerateViewModel @Inject constructor(
         }
     }
 
-    fun onPreviousButtonClick() {
-        when(val result = previousFoodUseCase.execute(
-            categoryType = state.value.currentCategory,
-            mainDishList = state.value.mainDishList,
-            dessertList = state.value.dessertList,
-            breakfastList = state.value.breakfastList,
-            soupList = state.value.soupList,
-            indexMainDish = state.value.indexMainDish,
-            indexDessert = state.value.indexDessert,
-            indexBreakfast = state.value.indexBreakfast,
-            indexSoup = state.value.indexSoup
-        )) {
-            is PreviousFoodResult.ErrorEmptyList -> {
-                _state.update {
-                    it.copy(
-                        showEmptyListToast = true
+    fun generateFoodEvent() {
+            when(state.value.currentCategory) {
+                CategoryType.BREAKFAST -> {
+                    if (state.value.breakfastList.isEmpty()) {
+                        showEmptyListToast()
+                        return
+                    }
+                    val nextFood = generateFoodUseCase.execute(
+                        foodList = state.value.breakfastList,
+                        index = state.value.indexBreakfast
                     )
+                    val newCounter = state.value.counterBreakfast + 1
+                    val newIndex = state.value.indexBreakfast + 1
+                    _state.update {
+                        it.copy(
+                            indexBreakfast = if(newIndex > state.value.breakfastList.size - 1) 0 else newIndex,
+                            counterBreakfast = newCounter,
+                            currentFood = nextFood,
+                            previousButtonVisible = newCounter > 1
+                        )
+                    }
+                }
+
+                CategoryType.MAIN_DISH -> {
+                    if (state.value.mainDishList.isEmpty()) {
+                        showEmptyListToast()
+                        return
+                    }
+                    val nextFood = generateFoodUseCase.execute(
+                        foodList = state.value.mainDishList,
+                        index = state.value.indexMainDish
+                    )
+                    val newCounter = state.value.counterMainDish + 1
+                    val newIndex = state.value.indexMainDish + 1
+                    _state.update {
+                        it.copy(
+                            indexMainDish = if(newIndex > state.value.mainDishList.size - 1) 0 else newIndex,
+                            counterMainDish = newCounter,
+                            currentFood = nextFood,
+                            previousButtonVisible = newCounter > 1
+                        )
+                    }
+                }
+                CategoryType.SOUP -> {
+                    if (state.value.soupList.isEmpty()) {
+                        showEmptyListToast()
+                        return
+                    }
+                    val nextFood = generateFoodUseCase.execute(
+                        foodList = state.value.soupList,
+                        index = state.value.indexSoup
+                    )
+                    val newCounter = state.value.counterSoup + 1
+                    val newIndex = state.value.indexSoup + 1
+                    _state.update {
+                        it.copy(
+                            indexSoup = if(newIndex > state.value.soupList.size - 1) 0 else newIndex,
+                            counterSoup = newCounter,
+                            currentFood = nextFood,
+                            previousButtonVisible = newCounter > 1
+                        )
+                    }
+                }
+                CategoryType.DESSERT -> {
+                    if (state.value.dessertList.isEmpty()) {
+                        showEmptyListToast()
+                        return
+                    }
+                    val nextFood = generateFoodUseCase.execute(
+                        foodList = state.value.dessertList,
+                        index = state.value.indexDessert
+                    )
+                    val newCounter = state.value.counterDessert + 1
+                    val newIndex = state.value.indexDessert + 1
+                    _state.update {
+                        it.copy(
+                            indexDessert = if(newIndex > state.value.dessertList.size - 1) 0 else newIndex,
+                            counterDessert = newCounter,
+                            currentFood = nextFood,
+                            previousButtonVisible = newCounter > 1
+                        )
+                    }
                 }
             }
-            is PreviousFoodResult.Success -> {
+        viewModelScope.launch {
+            logHelper.log(AnalyticsConstants.GENERATE_FOOD)
+        }
+    }
+
+    fun onPreviousButtonClick() {
+        when (state.value.currentCategory) {
+            CategoryType.BREAKFAST -> {
+                if (state.value.breakfastList.isEmpty()) {
+                    showEmptyListToast()
+                    return
+                }
+                if (state.value.counterBreakfast < 1) {
+                    return
+                }
+                val previousFood = previousFoodUseCase.execute(
+                    foodList = state.value.breakfastList,
+                    index = state.value.indexBreakfast
+                )
+                val newCounter = state.value.counterBreakfast - 1
+                val newIndex = state.value.indexBreakfast - 1
                 _state.update {
                     it.copy(
-                        currentFood = result.food
+                        currentFood = previousFood,
+                        indexBreakfast = if(newIndex < 0) it.breakfastList.size - 1 else newIndex,
+                        counterBreakfast = newCounter,
+                        previousButtonVisible = newCounter > 1
                     )
-                }
-                when(state.value.currentCategory) {
-                    CategoryType.BREAKFAST -> {
-                        _state.update {
-                            it.copy(
-                                indexBreakfast = it.indexBreakfast - 1
-                            )
-                        }
-                    }
-                    CategoryType.MAIN_DISH -> {
-                        _state.update {
-                            it.copy(
-                                indexMainDish = it.indexMainDish - 1
-                            )
-                        }
-                    }
-                    CategoryType.SOUP -> {
-                        _state.update {
-                            it.copy(
-                                indexSoup = it.indexSoup - 1
-                            )
-                        }
-                    }
-                    CategoryType.DESSERT -> {
-                        _state.update {
-                            it.copy(
-                                indexDessert = it.indexDessert - 1
-                            )
-                        }
-                    }
                 }
             }
 
-            is PreviousFoodResult.SuccessAndStartOfTheList -> {
+            CategoryType.MAIN_DISH -> {
+                if (state.value.mainDishList.isEmpty()) {
+                    showEmptyListToast()
+                    return
+                }
+                if (state.value.counterMainDish < 1) {
+                    return
+                }
+                val previousFood = previousFoodUseCase.execute(
+                    foodList = state.value.mainDishList,
+                    index = state.value.indexMainDish
+                )
+                val newCounter = state.value.counterMainDish - 1
+                val newIndex = state.value.indexMainDish - 1
                 _state.update {
                     it.copy(
-                        currentFood = result.food,
-                        previousButtonVisible = false
+                        currentFood = previousFood,
+                        indexMainDish = if(newIndex < 0) it.mainDishList.size - 1 else newIndex,
+                        counterMainDish = newCounter,
+                        previousButtonVisible = newCounter > 1
                     )
                 }
             }
+            CategoryType.SOUP -> {
+                if (state.value.soupList.isEmpty()) {
+                    showEmptyListToast()
+                    return
+                }
+                if (state.value.counterSoup < 1) {
+                    return
+                }
+                val previousFood = previousFoodUseCase.execute(
+                    foodList = state.value.soupList,
+                    index = state.value.indexSoup
+                )
+                val newCounter = state.value.counterSoup - 1
+                val newIndex = state.value.indexSoup - 1
+                _state.update {
+                    it.copy(
+                        currentFood = previousFood,
+                        indexSoup = if(newIndex < 0) it.soupList.size - 1 else newIndex,
+                        counterSoup = newCounter,
+                        previousButtonVisible = newCounter > 1
+                    )
+                }
+            }
+            CategoryType.DESSERT -> {
+                if (state.value.dessertList.isEmpty()) {
+                    showEmptyListToast()
+                    return
+                }
+                if (state.value.counterDessert < 1) {
+                    return
+                }
+                val previousFood = previousFoodUseCase.execute(
+                    foodList = state.value.dessertList,
+                    index = state.value.indexDessert
+                )
+                val newCounter = state.value.counterDessert - 1
+                val newIndex = state.value.indexDessert - 1
+                _state.update {
+                    it.copy(
+                        currentFood = previousFood,
+                        indexDessert = if(newIndex < 0) it.dessertList.size - 1 else newIndex,
+                        counterDessert = newCounter,
+                        previousButtonVisible = newCounter > 1
+                    )
+                }
+            }
+        }
+
+    }
+
+    private fun showEmptyListToast() {
+        _state.update {
+            it.copy(
+                showEmptyListToast = true
+            )
         }
     }
 }
@@ -419,9 +439,13 @@ data class GenerateViewState(
     val breakfastList: List<FoodViewData> = emptyList(),
     val soupList: List<FoodViewData> = emptyList(),
     val indexMainDish: Int = 0,
+    val counterMainDish: Int = 0,
     val indexDessert: Int = 0,
+    val counterDessert: Int = 0,
     val indexBreakfast: Int = 0,
+    val counterBreakfast: Int = 0,
     val indexSoup: Int = 0,
+    val counterSoup: Int = 0,
     val showCategories: Boolean = false,
     val showEmptyListToast: Boolean = false,
     val categoryDropdownExpanded: Boolean = false,
