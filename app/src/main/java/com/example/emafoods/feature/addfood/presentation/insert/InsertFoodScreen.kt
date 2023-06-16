@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,6 +69,7 @@ import com.example.emafoods.feature.addfood.presentation.ingredients.Ingredients
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -298,6 +300,40 @@ fun IngredientReadOnlyItem(
     ingredientName: String,
     measurement: String,
 ) {
+    var ingredientNameDisplay by remember {
+        mutableStateOf("")
+    }
+
+    var measurementDisplay by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(
+        key1 = "ingredientName",
+    ) {
+        ingredientName.forEachIndexed { charIndex, _ ->
+            ingredientNameDisplay = ingredientName
+                .substring(
+                    startIndex = 0,
+                    endIndex = charIndex + 1,
+                )
+            delay(2)
+        }
+    }
+
+    LaunchedEffect(
+        key1 = "measurement",
+    ) {
+        measurement.forEachIndexed { charIndex, _ ->
+            measurementDisplay = measurement
+                .substring(
+                    startIndex = 0,
+                    endIndex = charIndex + 1,
+                )
+            delay(2)
+        }
+    }
+
     Row(
         verticalAlignment = Alignment.Top,
         modifier = modifier
@@ -320,7 +356,7 @@ fun IngredientReadOnlyItem(
                         color = MaterialTheme.colorScheme.onSecondary,
                     )
                 ) {
-                    append(ingredientName)
+                    append(ingredientNameDisplay)
                 }
                 withStyle(
                     style = SpanStyle(
@@ -333,7 +369,7 @@ fun IngredientReadOnlyItem(
                         )
                     ),
                 ) {
-                    append(" $measurement")
+                    append(" $measurementDisplay")
                 }
                 withStyle(
                     style = SpanStyle(

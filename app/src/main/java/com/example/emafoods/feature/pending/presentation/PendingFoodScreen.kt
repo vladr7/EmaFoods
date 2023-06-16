@@ -39,6 +39,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,6 +73,7 @@ import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
 import com.example.emafoods.feature.game.presentation.ScrollArrow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -221,7 +223,7 @@ fun FoodItem(
                 )
                 .background(color)
         ) {
-            PendingFoodImage(imageUri = food.imageRef)
+            FoodImage(imageUri = food.imageRef)
             if (ingredientsList.isNotEmpty()) {
                 Box(
                     modifier = Modifier
@@ -234,7 +236,7 @@ fun FoodItem(
                         },
                         isEditButtonVisible = false,
                     )
-                    PendingFoodAuthor(
+                    FoodAuthor(
                         author = food.author,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -252,7 +254,7 @@ fun FoodItem(
                     )
                 }
             }
-            PendingFoodDescription(description = food.description)
+            FoodDescription(description = food.description)
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
@@ -396,7 +398,7 @@ fun AcceptFood() {
 }
 
 @Composable
-fun PendingFoodAuthor(
+fun FoodAuthor(
     modifier: Modifier = Modifier,
     author: String
 ) {
@@ -419,7 +421,7 @@ fun PendingFoodAuthor(
 }
 
 @Composable
-fun PendingFoodImage(
+fun FoodImage(
     modifier: Modifier = Modifier,
     imageUri: String,
 ) {
@@ -445,12 +447,29 @@ fun PendingFoodImage(
 }
 
 @Composable
-fun PendingFoodDescription(
+fun FoodDescription(
     description: String,
     modifier: Modifier = Modifier
 ) {
+    var descriptionDisplay by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(
+        key1 = "description",
+    ) {
+        description.forEachIndexed { charIndex, _ ->
+            descriptionDisplay = description
+                .substring(
+                    startIndex = 0,
+                    endIndex = charIndex + 1,
+                )
+            delay(2)
+        }
+    }
+
     Text(
-        text = description.ifEmpty { stringResource(R.string.for_the_moment_there_are_no_more_pending_foods) },
+        text = if(description.isNotEmpty()) descriptionDisplay else stringResource(id = R.string.for_the_moment_there_are_no_more_pending_foods),
         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
