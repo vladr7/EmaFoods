@@ -387,11 +387,12 @@ class GenerateViewModel @Inject constructor(
                 }
             }
             CategoryType.DESSERT -> {
+                val currentCounter = state.value.counterDessert
                 if (state.value.dessertList.isEmpty()) {
                     showEmptyListToast()
                     return
                 }
-                if (state.value.counterDessert < 1) {
+                if (currentCounter < 1) {
                     return
                 }
                 val previousFood = previousFoodUseCase.execute(
