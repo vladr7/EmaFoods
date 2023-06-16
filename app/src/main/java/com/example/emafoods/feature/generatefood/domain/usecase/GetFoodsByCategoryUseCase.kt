@@ -9,6 +9,6 @@ class GetFoodsByCategoryUseCase @Inject constructor() {
     fun execute(foods: List<FoodViewData>, categoryType: CategoryType): List<FoodViewData> {
         return foods.filter { food ->
             food.categoryType == categoryType
-        }
+        }.shuffled()
     }
 }

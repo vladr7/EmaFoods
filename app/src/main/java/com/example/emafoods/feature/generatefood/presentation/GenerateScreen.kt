@@ -3,8 +3,12 @@ package com.example.emafoods.feature.generatefood.presentation
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -201,6 +205,8 @@ fun GenerateScreen(
     }
 
     val scrollState = rememberScrollState()
+    var showFilterAndButtons by remember { mutableStateOf(false) }
+    showFilterAndButtons = scrollState.value < 100
 
     Box(
         modifier = modifier
@@ -225,19 +231,21 @@ fun GenerateScreen(
                 modifier = modifier
                     .align(Alignment.CenterStart),
                 onPreviousButtonClick = onPreviousButtonClick,
-                previousButtonVisible = previousButtonVisible
+                previousButtonVisible = (previousButtonVisible && showFilterAndButtons)
             )
             GenerateButton(
                 onGenerateClick = onGenerateClick,
                 modifier = modifier
-                    .align(Alignment.CenterEnd)
+                    .align(Alignment.CenterEnd),
+                visible = showFilterAndButtons
             )
             CategoryDropDown(
                 modifier = modifier,
                 expanded = categoryDropdownExpanded,
                 onDismissRequest = onDismissCategoryDropDown,
                 onClickCategoryDropDown = onClickCategoryDropDown,
-                onDropDownItemClick = onDropDownItemClick
+                onDropDownItemClick = onDropDownItemClick,
+                visible = showFilterAndButtons
             )
         }
     }
@@ -256,7 +264,23 @@ fun PreviousGenerateButton(
             },
         contentAlignment = Alignment.Center
     ) {
-        AnimatedVisibility(visible = previousButtonVisible) {
+        AnimatedVisibility(
+            visible = previousButtonVisible,
+            enter = slideInHorizontally(
+                initialOffsetX = { -it },
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = FastOutSlowInEasing
+                )
+            ),
+            exit = slideOutHorizontally(
+                targetOffsetX = { -it },
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        ) {
             PreviousButtonArcComposable(
                 modifier = modifier,
             )
@@ -318,7 +342,8 @@ private fun PreviousButtonArcComposable(
 @Composable
 fun GenerateButton(
     onGenerateClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    visible: Boolean
 ) {
     Box(
         modifier = modifier
@@ -327,9 +352,27 @@ fun GenerateButton(
             },
         contentAlignment = Alignment.Center
     ) {
-        GenerateArcComposable(
-            modifier = modifier,
-        )
+        AnimatedVisibility(
+            visible = visible,
+            enter = slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth },
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = FastOutSlowInEasing
+                )
+            ),
+            exit = slideOutHorizontally(
+                targetOffsetX = { fullWidth -> fullWidth },
+                animationSpec = tween(
+                    durationMillis = 500,
+                    easing = FastOutSlowInEasing
+                )
+            )
+        ) {
+            GenerateArcComposable(
+                modifier = modifier,
+            )
+        }
     }
 }
 
@@ -388,7 +431,8 @@ fun BoxScope.CategoryDropDown(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
     onClickCategoryDropDown: () -> Unit,
-    onDropDownItemClick: (CategoryType) -> Unit
+    onDropDownItemClick: (CategoryType) -> Unit,
+    visible: Boolean
 ) {
     Column(
         modifier = modifier
@@ -396,108 +440,110 @@ fun BoxScope.CategoryDropDown(
             .padding(top = 20.dp, end = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        IconButton(
-            onClick = onClickCategoryDropDown,
-            modifier = Modifier
-                .size(100.dp)
-                .bounceClick()
-        ) {
-            Icon(
-                imageVector = Icons.Default.FilterList,
-                contentDescription = "Category",
-                tint = Color.White,
+        AnimatedVisibility(visible = visible) {
+            IconButton(
+                onClick = onClickCategoryDropDown,
                 modifier = Modifier
-                    .size(50.dp)
-            )
-        }
-        DropdownMenu(
-            modifier = Modifier,
-            expanded = expanded,
-            onDismissRequest = onDismissRequest
-        ) {
-            DropdownMenuItem(
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.primaryContainer),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.spaghetti),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(id = R.string.main_dish_dropdown),
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }, onClick = {
-                    onDropDownItemClick(CategoryType.MAIN_DISH)
-                })
-            Divider()
-            DropdownMenuItem(
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.primaryContainer),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.dessert),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(id = R.string.dessert),
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }, onClick = {
-                    onDropDownItemClick(CategoryType.DESSERT)
-                })
-            Divider()
-            DropdownMenuItem(
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.primaryContainer),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.soup),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(id = R.string.soup),
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }, onClick = {
-                    onDropDownItemClick(CategoryType.SOUP)
-                })
-            Divider()
-            DropdownMenuItem(
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.primaryContainer),
-                leadingIcon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.breakfast),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(id = R.string.breakfast),
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }, onClick = {
-                    onDropDownItemClick(CategoryType.BREAKFAST)
-                })
+                    .size(100.dp)
+                    .bounceClick()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FilterList,
+                    contentDescription = "Category",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+            }
+            DropdownMenu(
+                modifier = Modifier,
+                expanded = expanded,
+                onDismissRequest = onDismissRequest
+            ) {
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.spaghetti),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.main_dish_dropdown),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }, onClick = {
+                        onDropDownItemClick(CategoryType.MAIN_DISH)
+                    })
+                Divider()
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.dessert),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.dessert),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }, onClick = {
+                        onDropDownItemClick(CategoryType.DESSERT)
+                    })
+                Divider()
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.soup),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.soup),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }, onClick = {
+                        onDropDownItemClick(CategoryType.SOUP)
+                    })
+                Divider()
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.breakfast),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.breakfast),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }, onClick = {
+                        onDropDownItemClick(CategoryType.BREAKFAST)
+                    })
+            }
         }
     }
 }
