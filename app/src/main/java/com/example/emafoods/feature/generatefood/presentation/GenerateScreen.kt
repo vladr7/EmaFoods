@@ -84,6 +84,7 @@ import com.example.emafoods.feature.addfood.presentation.category.CategoryChoice
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.category.OpenCategoryButton
 import com.example.emafoods.feature.game.domain.model.UserLevel
+import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.pending.presentation.FoodItem
 import com.example.emafoods.feature.profile.presentation.ProfileHeader
@@ -209,7 +210,8 @@ fun GenerateScreen(
 
     val scrollState = rememberScrollState()
     var showFilterAndButtons by remember { mutableStateOf(false) }
-    showFilterAndButtons = scrollState.value < 100
+    val scrollVisibilityThreshold = 80
+    showFilterAndButtons = scrollState.value < scrollVisibilityThreshold
 
     Box(
         modifier = modifier
@@ -251,6 +253,14 @@ fun GenerateScreen(
                 visible = showFilterAndButtons
             )
         }
+        ScrollArrow(
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = 10.dp)
+                .size(80.dp),
+            visible = showFilterAndButtons,
+            color = MaterialTheme.colorScheme.primaryContainer
+        )
     }
 }
 
