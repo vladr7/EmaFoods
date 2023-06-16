@@ -299,20 +299,20 @@ private fun PreviousButtonArcComposable(
     modifier: Modifier = Modifier,
     offsetXHideButton: Dp,
 ) {
-    val color1 = MaterialTheme.colorScheme.primary
-    val color2 = MaterialTheme.colorScheme.secondary
-    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
+    val color1 = MaterialTheme.colorScheme.primaryContainer
+    val color2 = MaterialTheme.colorScheme.primary
+    val colorOnPrimary = MaterialTheme.colorScheme.onPrimaryContainer
     Canvas(
         modifier = modifier
             .height(500.dp)
-            .width(70.dp + abs(offsetXHideButton.value.toFloat()).dp)
+            .width(70.dp + abs(offsetXHideButton.value).dp)
             .zIndex(0f)
             .alpha(0.8f)
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
         val xPosArc =
-            -canvasWidth - 80f // absolute difference between canvasWidth and arcWidth on this button and generate button
+            -canvasWidth - 80f
 
         drawArc(
             brush = Brush.verticalGradient(
@@ -391,9 +391,9 @@ private fun GenerateArcComposable(
     modifier: Modifier = Modifier,
     offsetXHideButton: Dp,
 ) {
-    val color1 = MaterialTheme.colorScheme.primary
-    val color2 = MaterialTheme.colorScheme.secondary
-    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
+    val color1 = MaterialTheme.colorScheme.primaryContainer
+    val color2 = MaterialTheme.colorScheme.primary
+    val colorOnPrimary = MaterialTheme.colorScheme.onPrimaryContainer
     Canvas(
         modifier = modifier
             .height(500.dp)
