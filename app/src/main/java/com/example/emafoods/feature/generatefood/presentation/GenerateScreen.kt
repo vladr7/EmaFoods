@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -58,6 +59,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -86,6 +88,7 @@ import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.pending.presentation.FoodItem
 import com.example.emafoods.feature.profile.presentation.ProfileHeader
 import kotlinx.coroutines.delay
+import kotlin.math.abs
 
 @Composable
 fun GenerateScreenRoute(
@@ -257,8 +260,10 @@ fun PreviousGenerateButton(
     onPreviousButtonClick: () -> Unit,
     previousButtonVisible: Boolean
 ) {
+    val offsetXHideButton = (-40).dp
     Box(
         modifier = modifier
+            .offset(x = offsetXHideButton)
             .bounceClick {
                 onPreviousButtonClick()
             },
@@ -283,6 +288,7 @@ fun PreviousGenerateButton(
         ) {
             PreviousButtonArcComposable(
                 modifier = modifier,
+                offsetXHideButton = offsetXHideButton
             )
         }
     }
@@ -291,6 +297,7 @@ fun PreviousGenerateButton(
 @Composable
 private fun PreviousButtonArcComposable(
     modifier: Modifier = Modifier,
+    offsetXHideButton: Dp,
 ) {
     val color1 = MaterialTheme.colorScheme.primary
     val color2 = MaterialTheme.colorScheme.secondary
@@ -298,7 +305,7 @@ private fun PreviousButtonArcComposable(
     Canvas(
         modifier = modifier
             .height(500.dp)
-            .width(70.dp)
+            .width(70.dp + abs(offsetXHideButton.value.toFloat()).dp)
             .zIndex(0f)
             .alpha(0.8f)
     ) {
@@ -345,8 +352,10 @@ fun GenerateButton(
     modifier: Modifier = Modifier,
     visible: Boolean
 ) {
+    val offsetXHideButton = 25.dp
     Box(
         modifier = modifier
+            .offset(x = offsetXHideButton)
             .bounceClick {
                 onGenerateClick()
             },
@@ -371,6 +380,7 @@ fun GenerateButton(
         ) {
             GenerateArcComposable(
                 modifier = modifier,
+                offsetXHideButton = offsetXHideButton
             )
         }
     }
@@ -379,6 +389,7 @@ fun GenerateButton(
 @Composable
 private fun GenerateArcComposable(
     modifier: Modifier = Modifier,
+    offsetXHideButton: Dp,
 ) {
     val color1 = MaterialTheme.colorScheme.primary
     val color2 = MaterialTheme.colorScheme.secondary
@@ -386,13 +397,13 @@ private fun GenerateArcComposable(
     Canvas(
         modifier = modifier
             .height(500.dp)
-            .width(70.dp)
+            .width(70.dp + abs(offsetXHideButton.value).dp)
             .zIndex(0f)
             .alpha(0.8f)
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
-        val xPosArc = canvasWidth - 110f
+        val xPosArc = canvasWidth - 180f
         drawArc(
             brush = Brush.verticalGradient(
                 colors = listOf(
@@ -409,7 +420,7 @@ private fun GenerateArcComposable(
 
         val arrowWidth = 30f
         val arrowHeight = 100f
-        val xPosArrow = canvasWidth - 70f
+        val xPosArrow = canvasWidth - 140f
         val arrowPath = Path().let {
             it.moveTo(x = xPosArrow, y = canvasHeight / 2 - arrowHeight / 2) // Top
             it.lineTo(x = xPosArrow + arrowWidth - 15f, y = canvasHeight / 2) // Right
