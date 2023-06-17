@@ -3,6 +3,7 @@ package com.example.emafoods.feature.generatefood.presentation
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -12,6 +13,10 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -37,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,6 +89,7 @@ import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.pending.presentation.FoodItem
 import com.example.emafoods.feature.profile.domain.models.ProfileImage
 import com.example.emafoods.feature.profile.presentation.ProfileHeader
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @Composable
@@ -246,7 +253,7 @@ fun GenerateScreen(
                 previousButtonVisible,
                 showFilterAndButtons,
                 onGenerateClick = {
-                    if(generateButtonsAlpha >= 0.7f) {
+                    if (generateButtonsAlpha >= 0.7f) {
                         generateButtonsAlpha -= 0.1f
                     }
                     onGenerateClick()
@@ -304,13 +311,40 @@ fun PreviousGenerateButton(
     onPreviousButtonClick: () -> Unit,
     previousButtonVisible: Boolean,
 ) {
-    val offsetXHideButton = (-40).dp
+    val offsetXInitial = (-40).dp
+    val coroutineScope = rememberCoroutineScope()
+    val offsetXAnimation = remember { Animatable(offsetXInitial.value) }
+    val threshold = 10f
+
     Box(
         modifier = modifier
-            .offset(x = offsetXHideButton)
             .bounceClick {
                 onPreviousButtonClick()
-            },
+            }
+            .offset(
+                x = if (offsetXAnimation.value > -10f)
+                    (-10).dp
+                else
+                    offsetXAnimation.value.dp
+            )
+            .draggable(
+                orientation = Orientation.Horizontal,
+                state = rememberDraggableState { delta ->
+                    coroutineScope.launch {
+                        offsetXAnimation.animateTo(offsetXAnimation.value + delta)
+                    }
+                },
+                onDragStopped = {
+                    coroutineScope.launch {
+                        if (offsetXAnimation.value > threshold) {
+                            onPreviousButtonClick()
+                            offsetXAnimation.animateTo(offsetXInitial.value)
+                        } else {
+                            offsetXAnimation.animateTo(offsetXInitial.value)
+                        }
+                    }
+                }
+            ),
         contentAlignment = Alignment.Center
     ) {
         AnimatedVisibility(
@@ -332,7 +366,7 @@ fun PreviousGenerateButton(
         ) {
             PreviousButtonArcComposable(
                 modifier = modifier,
-                offsetXHideButton = offsetXHideButton
+                offsetXHideButton = offsetXInitial
             )
         }
     }
@@ -661,7 +695,8 @@ fun BoxScope.WaitingGenerateFoodContent(
         modifier = modifier
             .align(Alignment.Center)
     ) {
-        TitleWithBackground(text = stringResource(id = R.string.generate_title),
+        TitleWithBackground(
+            text = stringResource(id = R.string.generate_title),
             modifier = modifier
                 .padding(bottom = 160.dp),
             fontSize = 20.sp,
