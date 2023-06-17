@@ -17,15 +17,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
@@ -37,7 +34,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -56,9 +51,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -66,8 +58,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -88,7 +78,6 @@ import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.pending.presentation.FoodItem
 import com.example.emafoods.feature.profile.presentation.ProfileHeader
-import kotlinx.coroutines.delay
 import kotlin.math.abs
 
 @Composable
@@ -653,87 +642,6 @@ fun LoadingCookingAnimation() {
     LottieAnimation(
         composition = composition,
         progress = { progress },
-    )
-}
-
-@Composable
-fun GenerateDescription(
-    modifier: Modifier,
-    description: String,
-) {
-    var textToDisplay by remember {
-        mutableStateOf("")
-    }
-
-    LaunchedEffect(
-        key1 = description
-    ) {
-        description.forEachIndexed { charIndex, _ ->
-            textToDisplay = description
-                .substring(
-                    startIndex = 0,
-                    endIndex = charIndex + 1,
-                )
-            delay(2)
-        }
-    }
-
-    Text(
-        text = textToDisplay,
-        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
-        fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.onSecondary,
-                    MaterialTheme.colorScheme.onSecondary,
-                )
-            )
-        ),
-        fontSize = 16.sp,
-        textAlign = TextAlign.Left,
-        modifier = modifier
-            .heightIn(max = 300.dp)
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-            .padding(start = 25.dp, end = 20.dp, top = 10.dp)
-    )
-
-
-}
-
-@Composable
-fun GenerateImage(
-    generatedImagedRef: String,
-    modifier: Modifier
-) {
-
-    SubcomposeAsyncImage(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(300.dp)
-            .padding(20.dp)
-            .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(generatedImagedRef)
-            .crossfade(true)
-            .build(),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        loading = {
-            LoadingCookingAnimation()
-        },
-        error = {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(20.dp)
-                    .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
-            ) {
-                Text(text = "Error loading image ${it.result.throwable.message}")
-            }
-        }
     )
 }
 

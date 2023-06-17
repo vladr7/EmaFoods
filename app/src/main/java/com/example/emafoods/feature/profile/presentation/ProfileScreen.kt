@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -239,27 +240,13 @@ fun ProfileHeader(
     streaks: Int,
     profileTopPadding: Dp = 36.dp,
 ) {
-
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
         contentAlignment = Alignment.Center
     ) {
-        Row (
-            modifier = modifier
-                .align(Alignment.TopEnd),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "$streaks", style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSecondary,
-                textAlign = TextAlign.Center,
-                modifier = modifier
-                    .offset(y = 5.dp)
-            )
-            LottieAnimationContent(animationId = R.raw.firestreak, modifier = modifier.size(35.dp))
-        }
+        FireStreaks(modifier, streaks)
 
         Row(
             modifier = modifier
@@ -284,36 +271,59 @@ fun ProfileHeader(
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
-                Row {
-                    Text(
-                        text = "$userName!",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSecondary
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.EmojiNature,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .graphicsLayer(alpha = 0.99f)
-                            .drawWithCache {
-                                onDrawWithContent {
-                                    drawContent()
-                                    drawRect(
-                                        Brush.horizontalGradient(
-                                            listOf(
-                                                Color.Yellow,
-                                                Color.White
-                                            )
-                                        ), blendMode = BlendMode.SrcAtop
-                                    )
-                                }
-                            },
-                    )
-                }
+                ProfileUserName(userName)
 
             }
         }
+    }
+}
+
+@Composable
+private fun ProfileUserName(userName: String) {
+    Row {
+        Text(
+            text = "$userName!",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSecondary
+        )
+        Icon(
+            imageVector = Icons.Filled.EmojiNature,
+            contentDescription = null,
+            modifier = Modifier
+                .padding(start = 4.dp)
+                .graphicsLayer(alpha = 0.99f)
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    Color.Yellow,
+                                    Color.White
+                                )
+                            ), blendMode = BlendMode.SrcAtop
+                        )
+                    }
+                },
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.FireStreaks(modifier: Modifier, streaks: Int) {
+    Row(
+        modifier = modifier
+            .align(Alignment.TopEnd),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "$streaks", style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSecondary,
+            textAlign = TextAlign.Center,
+            modifier = modifier
+                .offset(y = 5.dp)
+        )
+        LottieAnimationContent(animationId = R.raw.firestreak, modifier = modifier.size(35.dp))
     }
 }
 
