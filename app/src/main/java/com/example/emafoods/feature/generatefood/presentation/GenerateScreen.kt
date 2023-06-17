@@ -147,7 +147,6 @@ fun GenerateScreenRoute(
         onPreviousButtonClick = {
             viewModel.onPreviousButtonClick()
         },
-        previousButtonVisible = state.previousButtonVisible,
         userName = state.userName,
         nrOfFireStreaks = state.nrOfFireStreaks,
         profileImage = state.profileImage,
@@ -183,7 +182,6 @@ fun GenerateScreen(
     onClickCategoryDropDown: () -> Unit,
     onDropDownItemClick: (CategoryType) -> Unit,
     onPreviousButtonClick: () -> Unit,
-    previousButtonVisible: Boolean,
     userName: String,
     nrOfFireStreaks: Int,
     profileImage: ProfileImage,
@@ -249,8 +247,6 @@ fun GenerateScreen(
             GenerateButtons(
                 modifier,
                 onPreviousButtonClick,
-                previousButtonVisible,
-                showFilterAndButtons,
                 onGenerateClick = {
                     if (generateButtonsAlpha >= 0.7f) {
                         generateButtonsAlpha -= 0.1f
@@ -283,8 +279,6 @@ fun GenerateScreen(
 private fun BoxScope.GenerateButtons(
     modifier: Modifier,
     onPreviousButtonClick: () -> Unit,
-    previousButtonVisible: Boolean,
-    showFilterAndButtons: Boolean,
     onGenerateClick: () -> Unit,
     alpha: Float = 1f,
 ) {
@@ -293,14 +287,12 @@ private fun BoxScope.GenerateButtons(
             .align(Alignment.CenterStart)
             .alpha(alpha),
         onPreviousButtonClick = onPreviousButtonClick,
-        previousButtonVisible = (previousButtonVisible && showFilterAndButtons),
     )
     GenerateButton(
         onGenerateClick = onGenerateClick,
         modifier = modifier
             .align(Alignment.CenterEnd)
             .alpha(alpha),
-        visible = showFilterAndButtons,
     )
 }
 
@@ -308,7 +300,6 @@ private fun BoxScope.GenerateButtons(
 fun PreviousGenerateButton(
     modifier: Modifier = Modifier,
     onPreviousButtonClick: () -> Unit,
-    previousButtonVisible: Boolean,
 ) {
     val offsetXInitial = (-40).dp
     val coroutineScope = rememberCoroutineScope()
@@ -347,28 +338,10 @@ fun PreviousGenerateButton(
 
         contentAlignment = Alignment.Center
     ) {
-        AnimatedVisibility(
-            visible = previousButtonVisible,
-            enter = slideInHorizontally(
-                initialOffsetX = { -it },
-                animationSpec = tween(
-                    durationMillis = 500,
-                    easing = FastOutSlowInEasing
-                )
-            ),
-            exit = slideOutHorizontally(
-                targetOffsetX = { -it },
-                animationSpec = tween(
-                    durationMillis = 500,
-                    easing = FastOutSlowInEasing
-                )
-            )
-        ) {
-            PreviousButtonArcComposable(
-                modifier = modifier,
-                offsetXHideButton = offsetXInitial
-            )
-        }
+        PreviousButtonArcComposable(
+            modifier = modifier,
+            offsetXHideButton = offsetXInitial
+        )
     }
 }
 
@@ -428,7 +401,6 @@ private fun PreviousButtonArcComposable(
 fun GenerateButton(
     onGenerateClick: () -> Unit,
     modifier: Modifier = Modifier,
-    visible: Boolean,
 ) {
     val offsetXInitial = 30.dp
     val coroutineScope = rememberCoroutineScope()
@@ -466,28 +438,10 @@ fun GenerateButton(
             ),
         contentAlignment = Alignment.Center
     ) {
-        AnimatedVisibility(
-            visible = visible,
-            enter = slideInHorizontally(
-                initialOffsetX = { fullWidth -> fullWidth },
-                animationSpec = tween(
-                    durationMillis = 500,
-                    easing = FastOutSlowInEasing
-                )
-            ),
-            exit = slideOutHorizontally(
-                targetOffsetX = { fullWidth -> fullWidth },
-                animationSpec = tween(
-                    durationMillis = 500,
-                    easing = FastOutSlowInEasing
-                )
-            )
-        ) {
-            GenerateArcComposable(
-                modifier = modifier,
-                offsetXHideButton = offsetXInitial
-            )
-        }
+        GenerateArcComposable(
+            modifier = modifier,
+            offsetXHideButton = offsetXInitial
+        )
     }
 }
 
