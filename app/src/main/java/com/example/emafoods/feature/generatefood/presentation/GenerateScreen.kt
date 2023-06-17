@@ -81,6 +81,7 @@ import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.pending.presentation.FoodItem
+import com.example.emafoods.feature.profile.domain.models.ProfileImage
 import com.example.emafoods.feature.profile.presentation.ProfileHeader
 import kotlin.math.abs
 
@@ -143,6 +144,10 @@ fun GenerateScreenRoute(
         previousButtonVisible = state.previousButtonVisible,
         userName = state.userName,
         nrOfFireStreaks = state.nrOfFireStreaks,
+        profileImage = state.profileImage,
+        onProfileImageClick = {
+            viewModel.onProfileImageClick(it)
+        },
     )
 }
 
@@ -174,7 +179,9 @@ fun GenerateScreen(
     onPreviousButtonClick: () -> Unit,
     previousButtonVisible: Boolean,
     userName: String,
-    nrOfFireStreaks: Int
+    nrOfFireStreaks: Int,
+    profileImage: ProfileImage,
+    onProfileImageClick: (ProfileImage) -> Unit
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -222,7 +229,9 @@ fun GenerateScreen(
                 onShowCategoryClick = onCategoryClick,
                 onChooseCategoryClick = onChooseCategoryClick,
                 userName = userName,
-                nrOfFireStreaks = nrOfFireStreaks
+                nrOfFireStreaks = nrOfFireStreaks,
+                profileImage = profileImage,
+                onProfileImageClick = onProfileImageClick
             )
         } else {
             FoodItem(
@@ -629,6 +638,8 @@ fun BoxScope.WaitingGenerateFoodContent(
     onChooseCategoryClick: (CategoryType) -> Unit,
     userName: String,
     nrOfFireStreaks: Int,
+    onProfileImageClick: (ProfileImage) -> Unit,
+    profileImage: ProfileImage,
 ) {
     Column(
         modifier = modifier,
@@ -639,6 +650,8 @@ fun BoxScope.WaitingGenerateFoodContent(
             userName = userName,
             streaks = nrOfFireStreaks,
             profileTopPadding = 20.dp,
+            onProfileImageClick = onProfileImageClick,
+            profileImage = profileImage,
         )
     }
     AnimatedVisibility(
