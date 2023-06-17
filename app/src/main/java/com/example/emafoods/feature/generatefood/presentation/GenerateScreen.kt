@@ -13,7 +13,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -314,7 +313,7 @@ fun PreviousGenerateButton(
     val offsetXInitial = (-40).dp
     val coroutineScope = rememberCoroutineScope()
     val offsetXAnimation = remember { Animatable(offsetXInitial.value) }
-    val threshold = 10f
+    val threshold = -30f
 
     Box(
         modifier = modifier
@@ -430,13 +429,40 @@ fun GenerateButton(
     modifier: Modifier = Modifier,
     visible: Boolean,
 ) {
-    val offsetXHideButton = 30.dp
+    val offsetXInitial = 30.dp
+    val coroutineScope = rememberCoroutineScope()
+    val offsetXAnimation = remember { Animatable(offsetXInitial.value) }
+    val threshold = 28f
+
     Box(
         modifier = modifier
-            .offset(x = offsetXHideButton)
             .bounceClick {
                 onGenerateClick()
-            },
+            }
+            .offset(
+                x = if (offsetXAnimation.value < 0f)
+                    (0).dp
+                else
+                    offsetXAnimation.value.dp
+            )
+            .draggable(
+                orientation = Orientation.Horizontal,
+                state = rememberDraggableState { delta ->
+                    coroutineScope.launch {
+                        offsetXAnimation.animateTo(offsetXAnimation.value + delta)
+                    }
+                },
+                onDragStopped = {
+                    coroutineScope.launch {
+                        if (offsetXAnimation.value < threshold) {
+                            onGenerateClick()
+                            offsetXAnimation.animateTo(offsetXInitial.value)
+                        } else {
+                            offsetXAnimation.animateTo(offsetXInitial.value)
+                        }
+                    }
+                }
+            ),
         contentAlignment = Alignment.Center
     ) {
         AnimatedVisibility(
@@ -458,7 +484,7 @@ fun GenerateButton(
         ) {
             GenerateArcComposable(
                 modifier = modifier,
-                offsetXHideButton = offsetXHideButton
+                offsetXHideButton = offsetXInitial
             )
         }
     }
