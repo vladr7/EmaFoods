@@ -33,13 +33,14 @@ class FoodMapper @Inject constructor(
         val imageRef = viewData.imageRef
         val authorUid = viewData.authorUid
         val ingredients = serializeIngredientsUseCase.execute(viewData.ingredients.map { ingredientMapper.mapToModel(it) })
+        val category = viewData.categoryType.string
         return Food(
             id = id,
             author = author,
             authorUid = authorUid,
             description = description,
             imageRef = imageRef,
-            category = viewData.categoryType.string,
+            category = category,
             ingredients = ingredients
         )
     }
@@ -51,13 +52,14 @@ class FoodMapper @Inject constructor(
         val imageRef = model.imageRef
         val ingredients = deserializeIngredientsUseCase.execute(model.ingredients)
             .map { ingredientMapper.mapToViewData(it) }
+        val categoryType = CategoryType.fromString(model.category)
         return FoodViewData(
             id = id,
             author = author,
             authorUid = model.authorUid,
             description = description,
             imageRef = imageRef,
-            categoryType = CategoryType.fromString(model.category),
+            categoryType = categoryType,
             ingredients = ingredients
         )
     }

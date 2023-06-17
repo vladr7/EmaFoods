@@ -71,6 +71,7 @@ import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
+import com.example.emafoods.feature.addfood.presentation.insert.CategoryTypeRow
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import kotlinx.coroutines.delay
@@ -157,6 +158,7 @@ fun PendingFoodScreen(
                 food = food,
                 modifier = modifier,
                 ingredientsList = ingredientsList,
+                isCategoryTypeVisible = food.id.isNotEmpty()
             )
             if (ingredientsList.isNotEmpty()) {
                 Box(
@@ -200,6 +202,7 @@ fun FoodItem(
     food: FoodViewData,
     modifier: Modifier = Modifier,
     ingredientsList: List<IngredientViewData>,
+    isCategoryTypeVisible: Boolean = false,
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
@@ -224,6 +227,9 @@ fun FoodItem(
                 .background(color)
         ) {
             FoodImage(imageUri = food.imageRef)
+            if(isCategoryTypeVisible) {
+                CategoryTypeRow(categoryType = food.categoryType)
+            }
             if (ingredientsList.isNotEmpty()) {
                 Box(
                     modifier = Modifier
@@ -402,8 +408,6 @@ fun FoodAuthor(
     modifier: Modifier = Modifier,
     author: String
 ) {
-//    Row {
-//        Spacer(modifier = modifier.weight(1f))
     Text(
         text = author,
         fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
@@ -416,8 +420,6 @@ fun FoodAuthor(
                 start = 25.dp, end = 20.dp,
             )
     )
-//    }
-
 }
 
 @Composable
