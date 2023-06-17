@@ -317,15 +317,6 @@ fun PreviousGenerateButton(
 
     Box(
         modifier = modifier
-            .bounceClick {
-                onPreviousButtonClick()
-            }
-            .offset(
-                x = if (offsetXAnimation.value > -10f)
-                    (-10).dp
-                else
-                    offsetXAnimation.value.dp
-            )
             .draggable(
                 orientation = Orientation.Horizontal,
                 state = rememberDraggableState { delta ->
@@ -343,7 +334,17 @@ fun PreviousGenerateButton(
                         }
                     }
                 }
+            )
+            .bounceClick {
+                onPreviousButtonClick()
+            }
+            .offset(
+                x = if (offsetXAnimation.value > -10f)
+                    (-10).dp
+                else
+                    offsetXAnimation.value.dp
             ),
+
         contentAlignment = Alignment.Center
     ) {
         AnimatedVisibility(
@@ -436,15 +437,6 @@ fun GenerateButton(
 
     Box(
         modifier = modifier
-            .bounceClick {
-                onGenerateClick()
-            }
-            .offset(
-                x = if (offsetXAnimation.value < 0f)
-                    (0).dp
-                else
-                    offsetXAnimation.value.dp
-            )
             .draggable(
                 orientation = Orientation.Horizontal,
                 state = rememberDraggableState { delta ->
@@ -462,6 +454,15 @@ fun GenerateButton(
                         }
                     }
                 }
+            )
+            .bounceClick {
+                onGenerateClick()
+            }
+            .offset(
+                x = if (offsetXAnimation.value < 0f)
+                    (0).dp
+                else
+                    offsetXAnimation.value.dp
             ),
         contentAlignment = Alignment.Center
     ) {
