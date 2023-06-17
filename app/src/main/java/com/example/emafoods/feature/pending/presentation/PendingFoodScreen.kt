@@ -481,7 +481,7 @@ fun FoodDescription(
     }
 
     LaunchedEffect(
-        key1 = "description effect",
+        key1 = description,
     ) {
         description.forEachIndexed { charIndex, _ ->
             descriptionDisplay = description
