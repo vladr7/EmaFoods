@@ -185,7 +185,7 @@ fun PendingFoodScreen(
                 )
             }
         }
-        if(ingredientsList.isNotEmpty() && ingredientsList.size > 2 && food.description.length > 50) {
+        if(ingredientsList.isNotEmpty() && scrollState.canScrollForward) {
             ScrollArrow(
                 modifier = modifier
                     .align(Alignment.BottomCenter)
