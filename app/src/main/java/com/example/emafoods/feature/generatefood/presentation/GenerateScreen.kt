@@ -1,7 +1,11 @@
 package com.example.emafoods.feature.generatefood.presentation
 
 import android.content.Context
+import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,21 +14,25 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,12 +41,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -47,27 +55,36 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.presentation.category.CategoryChoices
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
+import com.example.emafoods.feature.addfood.presentation.category.OpenCategoryButton
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.game.domain.model.UserLevel
+import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
-import kotlinx.coroutines.delay
+import com.example.emafoods.feature.pending.presentation.FoodItem
+import com.example.emafoods.feature.profile.domain.models.ProfileImage
+import com.example.emafoods.feature.profile.presentation.ProfileHeader
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @Composable
 fun GenerateScreenRoute(
@@ -79,14 +96,12 @@ fun GenerateScreenRoute(
 
     GenerateScreenBackground()
     GenerateScreen(
-        generatedImagedRef = state.food.imageRef,
         modifier = modifier,
         onGenerateClick = {
             viewModel.onXpIncrease()
             viewModel.generateFoodEvent()
         },
-        description = state.food.description,
-        foodHasBeenGenerated = state.foodHasBeenGenerated,
+        categorySelected = state.categorySelected,
         showXpIncreaseToast = state.showXpIncreaseToast,
         xpIncreased = state.xpIncreased,
         onToastShown = { viewModel.onXpIncreaseToastShown() },
@@ -95,24 +110,52 @@ fun GenerateScreenRoute(
         newLevel = state.newLevel,
         onDismissLevelUp = {
             viewModel.onDismissLevelUp()
-            // todo: restart app
-//            context.restartApp()
         },
         showRewardsAlert = state.showRewardsAlert,
         nrOfRewards = state.nrOfRewards,
         onDismissRewardsAlert = {
             viewModel.onDismissRewardsAlert()
-        }
+        },
+        showCategories = state.showCategories,
+        onCategoryClick = {
+            viewModel.onCategoryClick()
+        },
+        onChooseCategoryClick = { categoryType ->
+            viewModel.onCategorySelected(categoryType)
+        },
+        food = state.currentFood,
+        showEmptyListToast = state.showEmptyListToast,
+        onShowedEmptyListToast = {
+            viewModel.onShowedEmptyListToast()
+        },
+        categoryDropdownExpanded = state.categoryDropdownExpanded,
+        onDismissCategoryDropDown = {
+            viewModel.onDismissCategoryDropDown()
+        },
+        onClickCategoryDropDown = {
+            viewModel.onClickCategoryDropDown()
+        },
+        onDropDownItemClick = { categoryType ->
+            viewModel.onCategorySelected(categoryType)
+            viewModel.onDismissCategoryDropDown()
+        },
+        onPreviousButtonClick = {
+            viewModel.onPreviousButtonClick()
+        },
+        userName = state.userName,
+        nrOfFireStreaks = state.nrOfFireStreaks,
+        profileImage = state.profileImage,
+        onProfileImageClick = {
+            viewModel.onProfileImageClick(it)
+        },
     )
 }
 
 @Composable
 fun GenerateScreen(
-    generatedImagedRef: String,
     onGenerateClick: () -> Unit,
-    description: String,
     modifier: Modifier = Modifier,
-    foodHasBeenGenerated: Boolean,
+    categorySelected: Boolean,
     showXpIncreaseToast: Boolean,
     onToastShown: () -> Unit,
     context: Context,
@@ -123,6 +166,21 @@ fun GenerateScreen(
     showRewardsAlert: Boolean,
     nrOfRewards: Int,
     onDismissRewardsAlert: () -> Unit,
+    showCategories: Boolean,
+    onCategoryClick: () -> Unit,
+    onChooseCategoryClick: (CategoryType) -> Unit,
+    food: FoodViewData,
+    showEmptyListToast: Boolean,
+    onShowedEmptyListToast: () -> Unit,
+    onDismissCategoryDropDown: () -> Unit,
+    categoryDropdownExpanded: Boolean,
+    onClickCategoryDropDown: () -> Unit,
+    onDropDownItemClick: (CategoryType) -> Unit,
+    onPreviousButtonClick: () -> Unit,
+    userName: String,
+    nrOfFireStreaks: Int,
+    profileImage: ProfileImage,
+    onProfileImageClick: (ProfileImage) -> Unit
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -136,7 +194,7 @@ fun GenerateScreen(
             onDismiss = onDismissLevelUp,
         )
     }
-    if (showXpIncreaseToast) {
+    if (showXpIncreaseToast && !leveledUpEvent && !showRewardsAlert) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.GENERATE_RECIPE,
             onToastShown = onToastShown,
@@ -144,30 +202,493 @@ fun GenerateScreen(
             customXP = xpIncreased
         )
     }
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+    if (showEmptyListToast) {
+        Toast.makeText(
+            context,
+            stringResource(R.string.recipes_could_not_be_found),
+            Toast.LENGTH_SHORT
+        ).show()
+        onShowedEmptyListToast()
+    }
+
+    val scrollState = rememberScrollState()
+    var showFilterAndButtons by remember { mutableStateOf(false) }
+    val scrollVisibilityThreshold = 80
+    showFilterAndButtons = scrollState.value < scrollVisibilityThreshold
+    var generateButtonsAlpha by remember { mutableStateOf(1f) }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
     ) {
 
-        if (!foodHasBeenGenerated) {
-            WaitingCookAnimation()
-        } else {
-            GenerateImage(generatedImagedRef = generatedImagedRef, modifier = modifier)
-            Divider(
-                color = MaterialTheme.colorScheme.primary, thickness = 2.dp,
-                modifier = modifier
-                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-                    .alpha(0.2f),
+        if (!categorySelected) {
+            WaitingGenerateFoodContent(
+                showCategories = showCategories,
+                onShowCategoryClick = onCategoryClick,
+                onChooseCategoryClick = onChooseCategoryClick,
+                userName = userName,
+                nrOfFireStreaks = nrOfFireStreaks,
+                profileImage = profileImage,
+                onProfileImageClick = onProfileImageClick
             )
-            GenerateDescription(modifier, description)
+        } else {
+            FoodItem(
+                modifier = modifier
+                    .verticalScroll(scrollState),
+                food = food,
+                ingredientsList = food.ingredients,
+            )
+            GenerateButtons(
+                modifier,
+                onPreviousButtonClick,
+                onGenerateClick = {
+                    if (generateButtonsAlpha >= 0.7f) {
+                        generateButtonsAlpha -= 0.1f
+                    }
+                    onGenerateClick()
+                },
+                alpha = generateButtonsAlpha
+            )
+            CategoryDropDown(
+                modifier = modifier,
+                expanded = categoryDropdownExpanded,
+                onDismissRequest = onDismissCategoryDropDown,
+                onClickCategoryDropDown = onClickCategoryDropDown,
+                onDropDownItemClick = onDropDownItemClick,
+                visible = showFilterAndButtons
+            )
         }
-
-        GenerateButton(
-            modifier = modifier,
-            onGenerateClick = onGenerateClick
+        ScrollArrow(
+            modifier = modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = 10.dp)
+                .size(80.dp),
+            visible = showFilterAndButtons && categorySelected && scrollState.canScrollForward,
+            color = MaterialTheme.colorScheme.primaryContainer
         )
     }
+}
+
+@Composable
+private fun BoxScope.GenerateButtons(
+    modifier: Modifier,
+    onPreviousButtonClick: () -> Unit,
+    onGenerateClick: () -> Unit,
+    alpha: Float = 1f,
+) {
+    PreviousGenerateButton(
+        modifier = modifier
+            .align(Alignment.CenterStart)
+            .alpha(alpha),
+        onPreviousButtonClick = onPreviousButtonClick,
+    )
+    GenerateButton(
+        onGenerateClick = onGenerateClick,
+        modifier = modifier
+            .align(Alignment.CenterEnd)
+            .alpha(alpha),
+    )
+}
+
+@Composable
+fun PreviousGenerateButton(
+    modifier: Modifier = Modifier,
+    onPreviousButtonClick: () -> Unit,
+) {
+    val offsetXInitial = (-40).dp
+    val coroutineScope = rememberCoroutineScope()
+    val offsetXAnimation = remember { Animatable(offsetXInitial.value) }
+    val threshold = -30f
+
+    Box(
+        modifier = modifier
+            .draggable(
+                orientation = Orientation.Horizontal,
+                state = rememberDraggableState { delta ->
+                    coroutineScope.launch {
+                        offsetXAnimation.animateTo(offsetXAnimation.value + delta)
+                    }
+                },
+                onDragStopped = {
+                    coroutineScope.launch {
+                        if (offsetXAnimation.value > threshold) {
+                            onPreviousButtonClick()
+                            offsetXAnimation.animateTo(offsetXInitial.value)
+                        } else {
+                            offsetXAnimation.animateTo(offsetXInitial.value)
+                        }
+                    }
+                }
+            )
+            .bounceClick {
+                onPreviousButtonClick()
+            }
+            .offset(
+                x = if (offsetXAnimation.value > -10f)
+                    (-10).dp
+                else
+                    offsetXAnimation.value.dp
+            ),
+
+        contentAlignment = Alignment.Center
+    ) {
+        PreviousButtonArcComposable(
+            modifier = modifier,
+            offsetXHideButton = offsetXInitial
+        )
+    }
+}
+
+@Composable
+private fun PreviousButtonArcComposable(
+    modifier: Modifier = Modifier,
+    offsetXHideButton: Dp,
+) {
+    val color1 = MaterialTheme.colorScheme.primaryContainer
+    val color2 = MaterialTheme.colorScheme.primary
+    val colorOnPrimary = MaterialTheme.colorScheme.onPrimaryContainer
+    Canvas(
+        modifier = modifier
+            .height(500.dp)
+            .width(70.dp + abs(offsetXHideButton.value).dp)
+            .zIndex(0f)
+            .alpha(0.8f)
+    ) {
+        val canvasWidth = size.width
+        val canvasHeight = size.height
+        val xPosArc =
+            -canvasWidth - 80f + offsetXHideButton.value
+
+        drawArc(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    color1,
+                    color2
+                ),
+            ),
+            startAngle = -90f,
+            sweepAngle = 180f,
+            useCenter = true,
+            size = Size(canvasWidth * 2, canvasHeight),
+            topLeft = Offset(x = xPosArc, y = 0f),
+        )
+
+        val arrowWidth = 30f
+        val arrowHeight = 100f
+        val xPosArrow = canvasWidth - 100f + offsetXHideButton.value
+        val arrowPath = Path().let {
+            it.moveTo(x = xPosArrow, y = canvasHeight / 2 - arrowHeight / 2) // Top
+            it.lineTo(x = xPosArrow - arrowWidth + 15f, y = canvasHeight / 2) // Left
+            it.lineTo(x = xPosArrow, y = canvasHeight / 2 + arrowHeight / 2) // Bottom
+            it.lineTo(x = xPosArrow - arrowWidth, y = canvasHeight / 2) // Far left
+            it.close()
+            it
+        }
+        drawPath(
+            path = arrowPath,
+            color = colorOnPrimary,
+        )
+    }
+}
+
+@Composable
+fun GenerateButton(
+    onGenerateClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val offsetXInitial = 30.dp
+    val coroutineScope = rememberCoroutineScope()
+    val offsetXAnimation = remember { Animatable(offsetXInitial.value) }
+    val threshold = 28f
+
+    Box(
+        modifier = modifier
+            .draggable(
+                orientation = Orientation.Horizontal,
+                state = rememberDraggableState { delta ->
+                    coroutineScope.launch {
+                        offsetXAnimation.animateTo(offsetXAnimation.value + delta)
+                    }
+                },
+                onDragStopped = {
+                    coroutineScope.launch {
+                        if (offsetXAnimation.value < threshold) {
+                            onGenerateClick()
+                            offsetXAnimation.animateTo(offsetXInitial.value)
+                        } else {
+                            offsetXAnimation.animateTo(offsetXInitial.value)
+                        }
+                    }
+                }
+            )
+            .bounceClick {
+                onGenerateClick()
+            }
+            .offset(
+                x = if (offsetXAnimation.value < 0f)
+                    (0).dp
+                else
+                    offsetXAnimation.value.dp
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        GenerateArcComposable(
+            modifier = modifier,
+            offsetXHideButton = offsetXInitial
+        )
+    }
+}
+
+@Composable
+private fun GenerateArcComposable(
+    modifier: Modifier = Modifier,
+    offsetXHideButton: Dp,
+) {
+    val color1 = MaterialTheme.colorScheme.primaryContainer
+    val color2 = MaterialTheme.colorScheme.primary
+    val colorOnPrimary = MaterialTheme.colorScheme.onPrimaryContainer
+    Canvas(
+        modifier = modifier
+            .height(500.dp)
+            .width(70.dp + abs(offsetXHideButton.value).dp)
+            .zIndex(0f)
+            .alpha(0.8f)
+    ) {
+        val canvasWidth = size.width
+        val canvasHeight = size.height
+        val xPosArc = canvasWidth - 180f + offsetXHideButton.value
+        drawArc(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    color1,
+                    color2
+                ),
+            ),
+            startAngle = 90f,
+            sweepAngle = 180f,
+            useCenter = true,
+            size = Size(canvasWidth * 2, canvasHeight),
+            topLeft = Offset(x = xPosArc, y = 0f),
+        )
+
+        val arrowWidth = 30f
+        val arrowHeight = 100f
+        val xPosArrow = canvasWidth - 160f + offsetXHideButton.value
+        val arrowPath = Path().let {
+            it.moveTo(x = xPosArrow, y = canvasHeight / 2 - arrowHeight / 2) // Top
+            it.lineTo(x = xPosArrow + arrowWidth - 15f, y = canvasHeight / 2) // Right
+            it.lineTo(x = xPosArrow, y = canvasHeight / 2 + arrowHeight / 2) // Bottom
+            it.lineTo(x = xPosArrow + arrowWidth, y = canvasHeight / 2) // Far right
+            it.close()
+            it
+        }
+        drawPath(
+            path = arrowPath,
+            color = colorOnPrimary,
+        )
+    }
+}
+
+@Composable
+fun BoxScope.CategoryDropDown(
+    modifier: Modifier = Modifier,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onClickCategoryDropDown: () -> Unit,
+    onDropDownItemClick: (CategoryType) -> Unit,
+    visible: Boolean
+) {
+    Column(
+        modifier = modifier
+            .align(Alignment.TopEnd)
+            .padding(start = 20.dp, top = 20.dp, end = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        AnimatedVisibility(visible = visible) {
+            FilterTextAndIcon(
+                onClickCategoryDropDown = onClickCategoryDropDown
+            )
+            DropdownMenu(
+                modifier = modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
+                expanded = expanded,
+                onDismissRequest = onDismissRequest
+            ) {
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.spaghetti),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.main_dish_dropdown),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }, onClick = {
+                        onDropDownItemClick(CategoryType.MAIN_DISH)
+                    })
+                Divider()
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.dessert),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.dessert),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }, onClick = {
+                        onDropDownItemClick(CategoryType.DESSERT)
+                    })
+                Divider()
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.soup),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.soup),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }, onClick = {
+                        onDropDownItemClick(CategoryType.SOUP)
+                    })
+                Divider()
+                DropdownMenuItem(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.breakfast),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.breakfast),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }, onClick = {
+                        onDropDownItemClick(CategoryType.BREAKFAST)
+                    })
+            }
+        }
+    }
+}
+
+@Composable
+fun FilterTextAndIcon(
+    modifier: Modifier = Modifier,
+    onClickCategoryDropDown: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .bounceClick(onClick = onClickCategoryDropDown)
+            .padding(top = 20.dp, end = 20.dp, start = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(id = R.string.filter),
+            fontSize = 16.sp,
+            fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSecondary,
+            style = TextStyle(
+                shadow = Shadow(
+                    color = MaterialTheme.colorScheme.secondary,
+                    blurRadius = 10f,
+                )
+            ),
+            textAlign = TextAlign.Center,
+            modifier = modifier
+        )
+        Icon(
+            imageVector = Icons.Default.FilterList,
+            contentDescription = "Category",
+            tint = Color.White,
+            modifier = Modifier
+                .size(50.dp)
+        )
+    }
+}
+
+@Composable
+fun BoxScope.WaitingGenerateFoodContent(
+    modifier: Modifier = Modifier,
+    showCategories: Boolean,
+    onShowCategoryClick: () -> Unit,
+    onChooseCategoryClick: (CategoryType) -> Unit,
+    userName: String,
+    nrOfFireStreaks: Int,
+    onProfileImageClick: (ProfileImage) -> Unit,
+    profileImage: ProfileImage,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        ProfileHeader(
+            userName = userName,
+            streaks = nrOfFireStreaks,
+            profileTopPadding = 20.dp,
+            onProfileImageClick = onProfileImageClick,
+            profileImage = profileImage,
+        )
+    }
+    AnimatedVisibility(
+        visible = !showCategories,
+        enter = fadeIn(),
+        exit = fadeOut(),
+        modifier = modifier
+            .align(Alignment.Center)
+    ) {
+        TitleWithBackground(
+            text = stringResource(id = R.string.generate_title),
+            modifier = modifier
+                .padding(bottom = 160.dp),
+            fontSize = 20.sp,
+        )
+    }
+    OpenCategoryButton(
+        modifier = modifier
+            .align(Alignment.Center),
+        onClick = onShowCategoryClick,
+        animationVisible = !showCategories,
+    )
+    CategoryChoices(
+        onChooseCategoryClick = onChooseCategoryClick,
+        showCategories = showCategories
+    )
 }
 
 @Composable
@@ -205,200 +726,98 @@ fun LoadingCookingAnimation() {
     )
 }
 
-@Composable
-fun WaitingCookAnimation(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .padding(start = 32.dp, end = 32.dp, bottom = 32.dp)
-    ) {
-        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.waitingcook))
-        val progress by animateLottieCompositionAsState(
-            composition = composition,
-            iterations = LottieConstants.IterateForever,
-            speed = 1f
-        )
-        LottieAnimation(
-            composition = composition,
-            progress = { progress },
-        )
-    }
-}
+//@Composable
+//fun GenerateButton(
+//    onGenerateClick: () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    val coroutineScope = rememberCoroutineScope()
+//    val offsetY = remember { Animatable(0f) }
+//    val threshold = -20f
+//    Box(
+//        modifier = modifier
+//            .offset(
+//                y = if (offsetY.value < -100f) {
+//                    maxOf(-100f, offsetY.value).dp
+//                } else if (offsetY.value > 0f) {
+//                    minOf(offsetY.value, 0f).dp
+//                } else {
+//                    offsetY.value.dp
+//                }
+//            )
+//            .draggable(
+//                state = rememberDraggableState { delta ->
+//                    coroutineScope.launch {
+//                        offsetY.animateTo(offsetY.value + delta)
+//                    }
+//                },
+//                orientation = Orientation.Vertical,
+//                onDragStarted = {
+//
+//                },
+//                onDragStopped = {
+//                    if (offsetY.value < threshold) {
+//                        onGenerateClick()
+//                    }
+//                    coroutineScope.launch {
+//                        offsetY.animateTo(0f)
+//                    }
+//                },
+//            ),
+//        contentAlignment = Alignment.Center
+//    ) {
+////        ArcComposable(
+////            modifier = modifier,
+////            exceededThreshold = offsetY.value < threshold
+////        )
+//    }
+//
+//}
 
-@Composable
-fun GenerateDescription(
-    modifier: Modifier,
-    description: String,
-) {
-    var textToDisplay by remember {
-        mutableStateOf("")
-    }
-
-    LaunchedEffect(
-        key1 = description
-    ) {
-        description.forEachIndexed { charIndex, _ ->
-            textToDisplay = description
-                .substring(
-                    startIndex = 0,
-                    endIndex = charIndex + 1,
-                )
-            delay(2)
-        }
-    }
-
-    Text(
-        text = textToDisplay,
-        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
-        fontWeight = FontWeight.Bold,
-        style = TextStyle(
-            brush = Brush.linearGradient(
-                colors = listOf(
-                    MaterialTheme.colorScheme.onSecondary,
-                    MaterialTheme.colorScheme.onSecondary,
-                )
-            )
-        ),
-        fontSize = 16.sp,
-        textAlign = TextAlign.Left,
-        modifier = modifier
-            .heightIn(max = 300.dp)
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-            .padding(start = 25.dp, end = 20.dp, top = 10.dp)
-    )
-
-
-}
-
-@Composable
-fun GenerateImage(
-    generatedImagedRef: String,
-    modifier: Modifier
-) {
-
-    SubcomposeAsyncImage(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(300.dp)
-            .padding(20.dp)
-            .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(generatedImagedRef)
-            .crossfade(true)
-            .build(),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        loading = {
-            LoadingCookingAnimation()
-        },
-        error = {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-                    .padding(20.dp)
-                    .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
-            ) {
-                Text(text = "Error loading image ${it.result.throwable.message}")
-            }
-        }
-    )
-}
-
-@Composable
-fun GenerateButton(
-    onGenerateClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val coroutineScope = rememberCoroutineScope()
-    val offsetY = remember { Animatable(0f) }
-    val threshold = -20f
-    Box(
-        modifier = modifier
-            .offset(
-                y = if (offsetY.value < -100f) {
-                    maxOf(-100f, offsetY.value).dp
-                } else if (offsetY.value > 0f) {
-                    minOf(offsetY.value, 0f).dp
-                } else {
-                    offsetY.value.dp
-                }
-            )
-            .draggable(
-                state = rememberDraggableState { delta ->
-                    coroutineScope.launch {
-                        offsetY.animateTo(offsetY.value + delta)
-                    }
-                },
-                orientation = Orientation.Vertical,
-                onDragStarted = {
-
-                },
-                onDragStopped = {
-                    if (offsetY.value < threshold) {
-                        onGenerateClick()
-                    }
-                    coroutineScope.launch {
-                        offsetY.animateTo(0f)
-                    }
-                },
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        ArcComposable(
-            modifier = modifier,
-            exceededThreshold = offsetY.value < threshold
-        )
-    }
-
-}
-
-@Composable
-private fun ArcComposable(
-    modifier: Modifier = Modifier,
-    exceededThreshold: Boolean = false,
-) {
-    val color1 =
-        if (!exceededThreshold) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
-    val color2 = MaterialTheme.colorScheme.secondary
-    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
-    Canvas(
-        modifier = modifier
-            .fillMaxSize()
-            .zIndex(0f)
-    ) {
-        val canvasWidth = size.width
-        val canvasHeight = size.height
-        val formWidth = (canvasWidth * 2)
-        val xPos = canvasWidth / 2
-
-        drawArc(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    color1,
-                    color2
-                ),
-            ),
-            0f,
-            -180f,
-            useCenter = true,
-            size = Size(formWidth, 1000f),
-            topLeft = Offset(x = -xPos, y = canvasHeight - 200),
-        )
-
-        val handleWidth = 200f
-        val handleHeight = 30f
-
-        drawRoundRect(
-            color = colorOnPrimary,
-            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
-            size = Size(handleWidth, handleHeight),
-            cornerRadius = CornerRadius(50f, 50f)
-        )
-    }
-}
+//@Composable
+//private fun ArcComposable(
+//    modifier: Modifier = Modifier,
+//    exceededThreshold: Boolean = false,
+//) {
+//    val color1 =
+//        if (!exceededThreshold) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+//    val color2 = MaterialTheme.colorScheme.secondary
+//    val colorOnPrimary = MaterialTheme.colorScheme.onPrimary
+//    Canvas(
+//        modifier = modifier
+//            .fillMaxSize()
+//            .zIndex(0f)
+//    ) {
+//        val canvasWidth = size.width
+//        val canvasHeight = size.height
+//        val formWidth = (canvasWidth * 2)
+//        val xPos = canvasWidth / 2
+//
+//        drawArc(
+//            brush = Brush.verticalGradient(
+//                colors = listOf(
+//                    color1,
+//                    color2
+//                ),
+//            ),
+//            0f,
+//            -180f,
+//            useCenter = true,
+//            size = Size(formWidth, 1000f),
+//            topLeft = Offset(x = -xPos, y = canvasHeight - 200),
+//        )
+//
+//        val handleWidth = 200f
+//        val handleHeight = 30f
+//
+//        drawRoundRect(
+//            color = colorOnPrimary,
+//            topLeft = Offset(x = xPos - (handleWidth / 2), y = canvasHeight - 160),
+//            size = Size(handleWidth, handleHeight),
+//            cornerRadius = CornerRadius(50f, 50f)
+//        )
+//    }
+//}
 
 @Composable
 fun GenerateScreenBackground(

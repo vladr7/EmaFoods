@@ -1,6 +1,7 @@
 package com.example.emafoods.feature.profile.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.R
 import com.example.emafoods.core.domain.constants.AnalyticsConstants
 import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
@@ -13,7 +14,11 @@ import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpdateLastTimeUserReviewedUseCase
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
+import com.example.emafoods.feature.profile.domain.models.ProfileImage
+import com.example.emafoods.feature.profile.domain.usecase.GetCurrentProfileImageUseCase
+import com.example.emafoods.feature.profile.domain.usecase.GetNextProfileImageUseCase
 import com.example.emafoods.feature.profile.domain.usecase.SignOutUseCase
+import com.example.emafoods.feature.profile.domain.usecase.StoreProfileImageChoiceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +34,10 @@ class ProfileViewModel @Inject constructor(
     private val consecutiveDaysAppOpenedUseCase: GetConsecutiveDaysAppOpenedUseCase,
     private val checkXNrOfDaysPassedSinceLastReviewUseCase: CheckXNrOfDaysPassedSinceLastReviewUseCase,
     private val updateLastTimeUserReviewedUseCase: UpdateLastTimeUserReviewedUseCase,
-    private val logHelper: LogHelper
+    private val logHelper: LogHelper,
+    private val getNextProfileImageUseCase: GetNextProfileImageUseCase,
+    private val storeProfileImageChoiceUseCase: StoreProfileImageChoiceUseCase,
+    private val getCurrentProfileImageUseCase: GetCurrentProfileImageUseCase
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<ProfileViewState>(ProfileViewState())
@@ -38,6 +46,7 @@ class ProfileViewModel @Inject constructor(
     init {
         getUserName()
         getStreaks()
+        getCurrentProfileImage()
     }
 
     private fun getUserName() {
@@ -160,6 +169,29 @@ class ProfileViewModel @Inject constructor(
             logHelper.log(AnalyticsConstants.CLICKED_ON_REVIEW)
         }
     }
+
+    fun onProfileImageClick(profileImage: ProfileImage) {
+        viewModelScope.launch {
+            val nextProfileImage = getNextProfileImageUseCase.execute(profileImage)
+            _state.update {
+                it.copy(
+                    profileImage = nextProfileImage
+                )
+            }
+            storeProfileImageChoiceUseCase.execute(nextProfileImage)
+        }
+    }
+
+    private fun getCurrentProfileImage() {
+        viewModelScope.launch {
+            val currentProfileImage = getCurrentProfileImageUseCase.execute()
+            _state.update {
+                it.copy(
+                    profileImage = currentProfileImage
+                )
+            }
+        }
+    }
 }
 
 data class ProfileViewState(
@@ -171,4 +203,8 @@ data class ProfileViewState(
     val streaks: Int = 1,
     val leveledUpEvent: Boolean = false,
     val newLevel: UserLevel? = null,
+    val profileImage: ProfileImage = ProfileImage(
+        id = 0,
+        image = R.drawable.profilepic1,
+    )
 )

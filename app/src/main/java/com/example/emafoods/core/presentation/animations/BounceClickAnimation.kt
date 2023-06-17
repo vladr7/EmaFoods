@@ -20,6 +20,8 @@ fun Modifier.bounceClick(
 ) = composed {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
     val scale by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0.70f else 1f)
+    var lastEventTime by remember { mutableStateOf(0L) }
+    val debounceTime = 200L
 
     this
         .graphicsLayer {
@@ -29,7 +31,12 @@ fun Modifier.bounceClick(
         .clickable(
             interactionSource = remember { MutableInteractionSource() },
             indication = null,
-            onClick = onClick
+            onClick = {
+                if (System.currentTimeMillis() - lastEventTime > debounceTime) {
+                    onClick()
+                }
+                lastEventTime = System.currentTimeMillis()
+            }
         )
         .pointerInput(buttonState) {
             awaitPointerEventScope {
@@ -43,3 +50,4 @@ fun Modifier.bounceClick(
             }
         }
 }
+

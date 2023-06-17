@@ -29,7 +29,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -39,6 +38,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,8 +70,11 @@ import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
+import com.example.emafoods.feature.addfood.presentation.insert.CategoryTypeRow
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
 import com.example.emafoods.feature.game.presentation.ScrollArrow
+import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -151,10 +154,12 @@ fun PendingFoodScreen(
             modifier = modifier
                 .verticalScroll(scrollState)
         ) {
+            println("vlad: food description: ${food.description}")
             FoodItem(
                 food = food,
                 modifier = modifier,
                 ingredientsList = ingredientsList,
+                isCategoryTypeVisible = food.id.isNotEmpty()
             )
             if (ingredientsList.isNotEmpty()) {
                 Box(
@@ -181,7 +186,7 @@ fun PendingFoodScreen(
                 )
             }
         }
-        if(ingredientsList.isNotEmpty() && ingredientsList.size > 2 && food.description.length > 50) {
+        if(ingredientsList.isNotEmpty() && scrollState.canScrollForward) {
             ScrollArrow(
                 modifier = modifier
                     .align(Alignment.BottomCenter)
@@ -198,13 +203,15 @@ fun FoodItem(
     food: FoodViewData,
     modifier: Modifier = Modifier,
     ingredientsList: List<IngredientViewData>,
+    isCategoryTypeVisible: Boolean = false,
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
     )
 
     Card(
-        modifier = Modifier
+        modifier = modifier
+            .heightIn(max = 5500.dp)
             .padding(16.dp),
         elevation = 8.dp, shape = RoundedCornerShape(8.dp)
     ) {
@@ -212,18 +219,21 @@ fun FoodItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
+                .background(color)
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
                         stiffness = Spring.StiffnessMediumLow
                     )
                 )
-                .background(color)
         ) {
-            PendingFoodImage(imageUri = food.imageRef)
+            FoodImage(imageUri = food.imageRef)
+            if(isCategoryTypeVisible) {
+                CategoryTypeRow(categoryType = food.categoryType)
+            }
             if (ingredientsList.isNotEmpty()) {
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     IngredientsReadOnlyContent(
@@ -233,28 +243,53 @@ fun FoodItem(
                         },
                         isEditButtonVisible = false,
                     )
-                    PendingFoodAuthor(
+                    FoodAuthor(
                         author = food.author,
-                        modifier = modifier
+                        modifier = Modifier
                             .align(Alignment.TopEnd)
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Start,
                 ) {
                     BasicTitle(
-                        modifier = modifier,
+                        modifier = Modifier,
                         text = stringResource(id = R.string.description_title)
                     )
                 }
             }
-            PendingFoodDescription(description = food.description)
+            if(food.description.isNotEmpty()) {
+                FoodDescription(description = food.description)
+            } else {
+                EmptyDescriptionMessage()
+            }
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
+}
+
+@Composable
+fun EmptyDescriptionMessage(
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = stringResource(id = R.string.for_the_moment_there_are_no_more_pending_foods),
+        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        textAlign = TextAlign.Left,
+        color = MaterialTheme.colorScheme.onSecondary,
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(max = 250.dp)
+            .verticalScroll(rememberScrollState())
+            .padding(
+                start = 25.dp, end = 20.dp, top = 5.dp, bottom = 10.dp
+            ),
+    )
 }
 
 @Composable
@@ -395,12 +430,10 @@ fun AcceptFood() {
 }
 
 @Composable
-fun PendingFoodAuthor(
+fun FoodAuthor(
     modifier: Modifier = Modifier,
     author: String
 ) {
-//    Row {
-//        Spacer(modifier = modifier.weight(1f))
     Text(
         text = author,
         fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
@@ -413,12 +446,10 @@ fun PendingFoodAuthor(
                 start = 25.dp, end = 20.dp,
             )
     )
-//    }
-
 }
 
 @Composable
-fun PendingFoodImage(
+fun FoodImage(
     modifier: Modifier = Modifier,
     imageUri: String,
 ) {
@@ -435,27 +466,42 @@ fun PendingFoodImage(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         loading = {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .padding(100.dp)
-            )
+            LoadingCookingAnimation()
         }
     )
 }
 
 @Composable
-fun PendingFoodDescription(
+fun FoodDescription(
     description: String,
     modifier: Modifier = Modifier
 ) {
+    var descriptionDisplay by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(
+        key1 = description,
+    ) {
+        description.forEachIndexed { charIndex, _ ->
+            descriptionDisplay = description
+                .substring(
+                    startIndex = 0,
+                    endIndex = charIndex + 1,
+                )
+            delay(2)
+        }
+    }
+
     Text(
-        text = description.ifEmpty { stringResource(R.string.for_the_moment_there_are_no_more_pending_foods) },
+        text = descriptionDisplay,
         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         textAlign = TextAlign.Left,
         color = MaterialTheme.colorScheme.onSecondary,
         modifier = modifier
+            .fillMaxWidth()
             .heightIn(max = 250.dp)
             .verticalScroll(rememberScrollState())
             .padding(
