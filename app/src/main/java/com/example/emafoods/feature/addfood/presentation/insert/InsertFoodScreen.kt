@@ -417,7 +417,7 @@ fun IngredientReadOnlyItem(
     }
 
     LaunchedEffect(
-        key1 = "ingredientName",
+        key1 = ingredientName,
     ) {
         ingredientName.forEachIndexed { charIndex, _ ->
             ingredientNameDisplay = ingredientName
@@ -430,7 +430,7 @@ fun IngredientReadOnlyItem(
     }
 
     LaunchedEffect(
-        key1 = "measurement",
+        key1 = measurement,
     ) {
         measurement.forEachIndexed { charIndex, _ ->
             measurementDisplay = measurement
