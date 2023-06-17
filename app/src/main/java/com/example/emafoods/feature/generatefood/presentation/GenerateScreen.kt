@@ -4,6 +4,10 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -41,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -213,7 +218,6 @@ fun GenerateScreen(
                 onShowCategoryClick = onCategoryClick,
                 onChooseCategoryClick = onChooseCategoryClick,
             )
-
         } else {
             FoodItem(
                 modifier = modifier
@@ -436,6 +440,29 @@ private fun GenerateArcComposable(
 }
 
 @Composable
+fun Pulsating(
+    modifier: Modifier = Modifier,
+    pulseFraction: Float = 1.2f,
+    duration : Int = 1000,
+    content: @Composable () -> Unit,
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "")
+
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = pulseFraction,
+        animationSpec = infiniteRepeatable(
+            animation = tween(duration),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
+    Box(modifier = modifier.scale(scale)) {
+        content()
+    }
+}
+
+@Composable
 fun BoxScope.CategoryDropDown(
     modifier: Modifier = Modifier,
     expanded: Boolean,
@@ -592,6 +619,7 @@ fun BoxScope.WaitingGenerateFoodContent(
         modifier = modifier
             .align(Alignment.Center),
         onClick = onShowCategoryClick,
+        animationVisible = !showCategories,
     )
     CategoryChoices(
         onChooseCategoryClick = onChooseCategoryClick,
