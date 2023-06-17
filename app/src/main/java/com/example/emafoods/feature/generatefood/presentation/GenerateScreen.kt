@@ -72,7 +72,6 @@ import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
-import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.category.CategoryChoices
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
@@ -142,6 +141,8 @@ fun GenerateScreenRoute(
             viewModel.onPreviousButtonClick()
         },
         previousButtonVisible = state.previousButtonVisible,
+        userName = state.userName,
+        nrOfFireStreaks = state.nrOfFireStreaks,
     )
 }
 
@@ -171,7 +172,9 @@ fun GenerateScreen(
     onClickCategoryDropDown: () -> Unit,
     onDropDownItemClick: (CategoryType) -> Unit,
     onPreviousButtonClick: () -> Unit,
-    previousButtonVisible: Boolean
+    previousButtonVisible: Boolean,
+    userName: String,
+    nrOfFireStreaks: Int
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -218,6 +221,8 @@ fun GenerateScreen(
                 showCategories = showCategories,
                 onShowCategoryClick = onCategoryClick,
                 onChooseCategoryClick = onChooseCategoryClick,
+                userName = userName,
+                nrOfFireStreaks = nrOfFireStreaks
             )
         } else {
             FoodItem(
@@ -622,6 +627,8 @@ fun BoxScope.WaitingGenerateFoodContent(
     showCategories: Boolean,
     onShowCategoryClick: () -> Unit,
     onChooseCategoryClick: (CategoryType) -> Unit,
+    userName: String,
+    nrOfFireStreaks: Int,
 ) {
     Column(
         modifier = modifier,
@@ -629,8 +636,8 @@ fun BoxScope.WaitingGenerateFoodContent(
         verticalArrangement = Arrangement.Center
     ) {
         ProfileHeader(
-            userName = "Vlad Ricean",
-            streaks = 5,
+            userName = userName,
+            streaks = nrOfFireStreaks,
             profileTopPadding = 20.dp,
         )
     }
@@ -646,10 +653,6 @@ fun BoxScope.WaitingGenerateFoodContent(
                 .padding(bottom = 160.dp),
             fontSize = 20.sp,
         )
-//        GenerateTitle(
-//            modifier = modifier
-//                .padding(bottom = 140.dp)
-//        )
     }
     OpenCategoryButton(
         modifier = modifier
@@ -660,17 +663,6 @@ fun BoxScope.WaitingGenerateFoodContent(
     CategoryChoices(
         onChooseCategoryClick = onChooseCategoryClick,
         showCategories = showCategories
-    )
-}
-
-@Composable
-fun GenerateTitle(
-    modifier: Modifier = Modifier
-) {
-    BasicTitle(
-        modifier = modifier,
-        text = stringResource(id = R.string.generate_title),
-        fontSize = 18.sp,
     )
 }
 
