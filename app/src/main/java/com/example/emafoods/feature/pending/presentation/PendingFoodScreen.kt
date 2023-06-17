@@ -219,13 +219,13 @@ fun FoodItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
+                .background(color)
                 .animateContentSize(
                     animationSpec = spring(
                         dampingRatio = Spring.DampingRatioMediumBouncy,
                         stiffness = Spring.StiffnessMediumLow
                     )
                 )
-                .background(color)
         ) {
             FoodImage(imageUri = food.imageRef)
             if(isCategoryTypeVisible) {
