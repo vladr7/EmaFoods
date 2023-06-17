@@ -43,6 +43,7 @@
     <string name="choose_a_category">Alege o categorie</string>
     <string name="breakfast">Mic dejun</string>
     <string name="main_dish">Prânz\nCină</string>
+    <string name="main_dish_dropdown">Prânz/Cină</string>
     <string name="soup">Supe</string>
     <string name="dessert">Desert</string>
     <string name="add_a_new_recipe">Adaugă o rețetă nouă</string>
@@ -61,4 +62,7 @@
     <string name="edit_ingredients">Modifica</string>
     <string name="edit_ingredients_title">Editeaza ingrediente</string>
     <string name="save_changes">Salveaza modificarile</string>
+    <string name="generate_title">Pentru a genera o reteta noua,\nalege o categorie</string>
+    <string name="recipes_could_not_be_found">Nu se gasesc retete, verifica conexiunea la internet!</string>
+    <string name="filter">Filtre</string>
 </resources>

@@ -45,8 +45,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.Pulsating
+import com.example.emafoods.core.presentation.animations.PulsatingCircle
 import com.example.emafoods.core.presentation.animations.bounceClick
-import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.image.navigation.ImageArguments
 
 @Composable
@@ -60,14 +62,20 @@ fun CategoryRoute(
 
     CategoryScreen(
         modifier = modifier,
-        onNextClicked = onNextClicked,
+        onChooseCategoryClick = { category ->
+            onNextClicked(
+                ImageArguments(
+                    category = category.string,
+                )
+            )
+        }
     )
 }
 
 @Composable
 fun CategoryScreen(
     modifier: Modifier = Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onChooseCategoryClick: (CategoryType) -> Unit,
 ) {
     var showCategories by remember { mutableStateOf(false) }
     CategoryScreenBackground()
@@ -79,7 +87,7 @@ fun CategoryScreen(
             modifier = modifier
                 .align(Alignment.TopStart)
         ) {
-            AddRecipeTitle(
+            TitleWithBackground(
                 text = stringResource(R.string.add_a_new_recipe),
                 modifier = modifier
             )
@@ -88,22 +96,25 @@ fun CategoryScreen(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                AddRecipeTitle(
-                    text = stringResource(R.string.choose_a_category), fontSize = 24.sp,
-                    modifier = modifier
-                        .padding(start = 30.dp)
-                )
+
             }
         }
+        TitleWithBackground(
+            text = stringResource(R.string.choose_a_category), fontSize = 24.sp,
+            modifier = modifier
+                .align(Alignment.Center)
+                .padding(bottom = 150.dp)
+        )
         OpenCategoryButton(
             modifier = modifier
                 .align(Alignment.Center),
-            onClick = { showCategories = !showCategories }
+            onClick = { showCategories = !showCategories },
+            animationVisible = !showCategories,
         )
         CategoryChoices(
             modifier = modifier
                 .align(Alignment.Center),
-            onNextClicked = onNextClicked,
+            onChooseCategoryClick = onChooseCategoryClick,
             showCategories = showCategories,
         )
     }
@@ -112,24 +123,48 @@ fun CategoryScreen(
 @Composable
 fun OpenCategoryButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    animationVisible: Boolean
 ) {
-    Image(
-        painter = painterResource(id = R.drawable.restaurantmenu),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-            .size(90.dp)
-            .bounceClick(
-                onClick = onClick
+    if(animationVisible) {
+        PulsatingCircle(
+            modifier = modifier,
+            scale = 300f,
+        )
+        Pulsating(
+            modifier = modifier,
+            pulseFraction = 1.1f,
+            duration = 3000,
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.restaurantmenu),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = modifier
+                    .size(90.dp)
+                    .bounceClick(
+                        onClick = onClick
+                    )
             )
-    )
+        }
+    } else {
+        Image(
+            painter = painterResource(id = R.drawable.restaurantmenu),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+                .size(90.dp)
+                .bounceClick(
+                    onClick = onClick
+                )
+        )
+    }
 }
 
 @Composable
 fun CategoryChoices(
     modifier: Modifier = Modifier,
-    onNextClicked: (ImageArguments) -> Unit,
+    onChooseCategoryClick: (CategoryType) -> Unit,
     showCategories: Boolean,
 ) {
     val configuration = LocalConfiguration.current
@@ -142,7 +177,7 @@ fun CategoryChoices(
         modifier = modifier
             .fillMaxSize()
     ) {
-        LeftCategory(showCategories, screenWidth, modifier, onNextClicked)
+        LeftCategory(showCategories, screenWidth, modifier, onChooseCategoryClick)
         Column(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -151,13 +186,13 @@ fun CategoryChoices(
         ) {
             TopCategory(
                 showCategories, screenHeight, modifier,
-                onNextClicked
+                onChooseCategoryClick
             )
             BottomCategory(
-                showCategories, screenHeight, modifier, onNextClicked
+                showCategories, screenHeight, modifier, onChooseCategoryClick
             )
         }
-        RightCategory(showCategories, screenWidth, modifier, onNextClicked)
+        RightCategory(showCategories, screenWidth, modifier, onChooseCategoryClick)
     }
 }
 
@@ -166,7 +201,7 @@ private fun RowScope.LeftCategory(
     showCategories: Boolean,
     screenWidth: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onNextClicked: (CategoryType) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -186,9 +221,7 @@ private fun RowScope.LeftCategory(
             categoryType = CategoryType.BREAKFAST,
             onClick = {
                 onNextClicked(
-                    ImageArguments(
-                        category = CategoryType.BREAKFAST.string
-                    )
+                    CategoryType.BREAKFAST
                 )
             }
         )
@@ -200,7 +233,7 @@ private fun RowScope.RightCategory(
     showCategories: Boolean,
     screenWidth: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onNextClicked: (CategoryType) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -220,9 +253,7 @@ private fun RowScope.RightCategory(
             categoryType = CategoryType.DESSERT,
             onClick = {
                 onNextClicked(
-                    ImageArguments(
-                        category = CategoryType.DESSERT.string
-                    )
+                    CategoryType.DESSERT
                 )
             }
         )
@@ -234,7 +265,7 @@ private fun ColumnScope.BottomCategory(
     showCategories: Boolean,
     screenHeight: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onNextClicked: (CategoryType) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -255,9 +286,7 @@ private fun ColumnScope.BottomCategory(
             categoryType = CategoryType.SOUP,
             onClick = {
                 onNextClicked(
-                    ImageArguments(
-                        category = CategoryType.SOUP.string
-                    )
+                    CategoryType.SOUP
                 )
             }
         )
@@ -269,7 +298,7 @@ private fun ColumnScope.TopCategory(
     showCategories: Boolean,
     screenHeight: Dp,
     modifier: Modifier,
-    onNextClicked: (ImageArguments) -> Unit
+    onNextClicked: (CategoryType) -> Unit
 ) {
     AnimatedVisibility(
         visible = showCategories,
@@ -290,9 +319,7 @@ private fun ColumnScope.TopCategory(
             categoryType = CategoryType.MAIN_DISH,
             onClick = {
                 onNextClicked(
-                    ImageArguments(
-                        category = CategoryType.MAIN_DISH.string
-                    )
+                    CategoryType.MAIN_DISH
                 )
             }
         )
@@ -354,7 +381,7 @@ fun CategoryScreenBackground(
 
     Box() {
         Image(
-            painter = painterResource(id = R.drawable.imagefoodbackgr),
+            painter = painterResource(id = R.drawable.categorybackground),
             contentDescription = null,
             contentScale = ContentScale.FillHeight,
             modifier = modifier

@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,11 +55,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.extension.restartApp
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
+import com.example.emafoods.feature.profile.domain.models.ProfileImage
 import com.google.android.play.core.review.ReviewManagerFactory
 
 @Composable
@@ -120,6 +124,10 @@ fun ProfileRoute(
             viewModel.onDismissLevelUp()
             context.restartApp()
         },
+        onProfileImageClick = {
+            viewModel.onProfileImageClick(it)
+        },
+        profileImage = state.profileImage,
     )
 }
 
@@ -140,7 +148,9 @@ fun ProfileScreen(
     newLevel: UserLevel?,
     leveledUpEvent: Boolean,
     onDismissLevelUp: () -> Unit,
-    ) {
+    onProfileImageClick: (ProfileImage) -> Unit,
+    profileImage: ProfileImage,
+) {
     if (leveledUpEvent) {
         LevelUpDialog(
             newLevel = newLevel,
@@ -167,7 +177,12 @@ fun ProfileScreen(
                 onConfirm = onConfirm
             )
         }
-        ProfileHeader(userName = userName, streaks = streaks)
+        ProfileHeader(
+            userName = userName,
+            streaks = streaks,
+            profileImage = profileImage,
+            onProfileImageClick = onProfileImageClick
+        )
         ProfileReview(onReviewClick = onReviewClick)
         Spacer(modifier = Modifier.weight(1f))
         ProfileLevelUp(onLevelUpClick = onLevelUpClick)
@@ -236,39 +251,31 @@ fun ProfileHeader(
     modifier: Modifier = Modifier,
     userName: String,
     streaks: Int,
+    profileTopPadding: Dp = 36.dp,
+    onProfileImageClick: (ProfileImage) -> Unit,
+    profileImage: ProfileImage
 ) {
-
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 20.dp),
+            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
         contentAlignment = Alignment.Center
     ) {
-        Row (
-            modifier = modifier
-                .align(Alignment.TopEnd),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "$streaks", style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSecondary,
-                textAlign = TextAlign.Center,
-                modifier = modifier
-                    .offset(y = 5.dp)
-            )
-            LottieAnimationContent(animationId = R.raw.firestreak, modifier = modifier.size(35.dp))
-        }
+        FireStreaks(modifier, streaks)
 
         Row(
             modifier = modifier
-                .padding(start = 16.dp, end = 16.dp, top = 36.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, top = profileTopPadding, bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.profilepic1),
+                painter = painterResource(id = profileImage.image),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
+                    .bounceClick {
+                        onProfileImageClick(profileImage)
+                    }
                     .size(100.dp)
                     .clip(CircleShape)
             )
@@ -282,36 +289,59 @@ fun ProfileHeader(
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
-                Row {
-                    Text(
-                        text = "$userName!",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSecondary
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.EmojiNature,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(start = 4.dp)
-                            .graphicsLayer(alpha = 0.99f)
-                            .drawWithCache {
-                                onDrawWithContent {
-                                    drawContent()
-                                    drawRect(
-                                        Brush.horizontalGradient(
-                                            listOf(
-                                                Color.Yellow,
-                                                Color.White
-                                            )
-                                        ), blendMode = BlendMode.SrcAtop
-                                    )
-                                }
-                            },
-                    )
-                }
+                ProfileUserName(userName)
 
             }
         }
+    }
+}
+
+@Composable
+private fun ProfileUserName(userName: String) {
+    Row {
+        Text(
+            text = "$userName!",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSecondary
+        )
+        Icon(
+            imageVector = Icons.Filled.EmojiNature,
+            contentDescription = null,
+            modifier = Modifier
+                .padding(start = 4.dp)
+                .graphicsLayer(alpha = 0.99f)
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    Color.Yellow,
+                                    Color.White
+                                )
+                            ), blendMode = BlendMode.SrcAtop
+                        )
+                    }
+                },
+        )
+    }
+}
+
+@Composable
+private fun BoxScope.FireStreaks(modifier: Modifier, streaks: Int) {
+    Row(
+        modifier = modifier
+            .align(Alignment.TopEnd),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "$streaks", style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSecondary,
+            textAlign = TextAlign.Center,
+            modifier = modifier
+                .offset(y = 5.dp)
+        )
+        LottieAnimationContent(animationId = R.raw.firestreak, modifier = modifier.size(35.dp))
     }
 }
 
@@ -357,7 +387,8 @@ fun ProfileReview(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(R.string.review_bold_description), style = MaterialTheme.typography.bodySmall,
+                        text = stringResource(R.string.review_bold_description),
+                        style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold
                     )
                     Icon(

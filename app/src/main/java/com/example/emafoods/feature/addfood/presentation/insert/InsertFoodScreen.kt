@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -61,6 +64,7 @@ import com.example.emafoods.core.presentation.animations.LoadingButton
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
+import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
@@ -68,6 +72,7 @@ import com.example.emafoods.feature.addfood.presentation.ingredients.Ingredients
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -212,7 +217,7 @@ fun InsertFoodScreen(
                 .align(Alignment.BottomCenter)
                 .offset(y = 10.dp)
                 .size(80.dp),
-            visible = scrollState.value == 0,
+            visible = scrollState.value == 0 && scrollState.canScrollForward,
         )
     }
 }
@@ -222,7 +227,7 @@ fun IngredientsReadOnlyContent(
     modifier: Modifier = Modifier,
     ingredients: List<IngredientViewData>,
     onEditClick: () -> Unit,
-    isEditButtonVisible: Boolean = true
+    isEditButtonVisible: Boolean = true,
 ) {
     Box(
         modifier = modifier
@@ -255,6 +260,111 @@ fun IngredientsReadOnlyContent(
                     modifier = modifier
                         .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 4.dp)
                         .alpha(0.5f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CategoryTypeRow(
+    modifier: Modifier = Modifier,
+    categoryType: CategoryType,
+) {
+    when(categoryType) {
+        CategoryType.BREAKFAST -> {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = modifier
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    painterResource(id = R.drawable.breakfast),
+                    contentDescription = null,
+                    modifier = modifier
+                        .size(50.dp)
+                        .padding(start = 20.dp, end = 4.dp)
+                )
+                Text(
+                    modifier = modifier
+                        .padding(start = 4.dp, end = 20.dp),
+                    text = stringResource(id = R.string.breakfast),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+        CategoryType.MAIN_DISH -> {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = modifier
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    painterResource(id = R.drawable.pasta),
+                    contentDescription = null,
+                    modifier = modifier
+                        .size(50.dp)
+                        .padding(start = 20.dp, end = 4.dp)
+                )
+                Text(
+                    modifier = modifier
+                        .padding(start = 4.dp, end = 20.dp),
+                    text = stringResource(id = R.string.main_dish),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+        CategoryType.SOUP -> {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = modifier
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    painterResource(id = R.drawable.soup),
+                    contentDescription = null,
+                    modifier = modifier
+                        .size(50.dp)
+                        .padding(start = 20.dp, end = 4.dp)
+                )
+                Text(
+                    modifier = modifier
+                        .padding(start = 4.dp, end = 20.dp),
+                    text = stringResource(id = R.string.soup),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+        CategoryType.DESSERT -> {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = modifier
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    painterResource(id = R.drawable.dessert),
+                    contentDescription = null,
+                    modifier = modifier
+                        .size(50.dp)
+                        .padding(start = 20.dp, end = 4.dp)
+                )
+                Text(
+                    modifier = modifier
+                        .padding(start = 4.dp, end = 20.dp),
+                    text = stringResource(id = R.string.dessert),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -298,6 +408,40 @@ fun IngredientReadOnlyItem(
     ingredientName: String,
     measurement: String,
 ) {
+    var ingredientNameDisplay by remember {
+        mutableStateOf("")
+    }
+
+    var measurementDisplay by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(
+        key1 = ingredientName,
+    ) {
+        ingredientName.forEachIndexed { charIndex, _ ->
+            ingredientNameDisplay = ingredientName
+                .substring(
+                    startIndex = 0,
+                    endIndex = charIndex + 1,
+                )
+            delay(2)
+        }
+    }
+
+    LaunchedEffect(
+        key1 = measurement,
+    ) {
+        measurement.forEachIndexed { charIndex, _ ->
+            measurementDisplay = measurement
+                .substring(
+                    startIndex = 0,
+                    endIndex = charIndex + 1,
+                )
+            delay(2)
+        }
+    }
+
     Row(
         verticalAlignment = Alignment.Top,
         modifier = modifier
@@ -320,7 +464,7 @@ fun IngredientReadOnlyItem(
                         color = MaterialTheme.colorScheme.onSecondary,
                     )
                 ) {
-                    append(ingredientName)
+                    append(ingredientNameDisplay)
                 }
                 withStyle(
                     style = SpanStyle(
@@ -333,7 +477,7 @@ fun IngredientReadOnlyItem(
                         )
                     ),
                 ) {
-                    append(" $measurement")
+                    append(" $measurementDisplay")
                 }
                 withStyle(
                     style = SpanStyle(
