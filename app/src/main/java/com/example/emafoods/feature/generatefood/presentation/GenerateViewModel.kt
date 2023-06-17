@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.constants.AnalyticsConstants
 import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
+import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
+import com.example.emafoods.core.extension.capitalizeWords
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.game.domain.model.UserLevel
+import com.example.emafoods.feature.game.domain.usecase.GetConsecutiveDaysAppOpenedUseCase
 import com.example.emafoods.feature.game.domain.usecase.GetUserRewardsUseCase
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
 import com.example.emafoods.feature.game.domain.usecase.ResetUserRewardsUseCase
@@ -39,7 +42,9 @@ class GenerateViewModel @Inject constructor(
     private val getAllFoodsUseCase: GetAllFoodsUseCase,
     private val logHelper: LogHelper,
     private val getFoodsByCategoryUseCase: GetFoodsByCategoryUseCase,
-    private val previousFoodUseCase: PreviousFoodUseCase
+    private val previousFoodUseCase: PreviousFoodUseCase,
+    private val consecutiveDaysAppOpenedUseCase: GetConsecutiveDaysAppOpenedUseCase,
+    private val getUserDetailsUseCase: GetUserDetailsUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
@@ -50,6 +55,30 @@ class GenerateViewModel @Inject constructor(
         updateFireStreaks()
         checkForAwaitingRewards()
         refreshFoodsFromRepository()
+        getUserName()
+        getStreaks()
+    }
+
+    private fun getUserName() {
+        viewModelScope.launch {
+            val userDetails = getUserDetailsUseCase.execute()
+            _state.update {
+                it.copy(
+                    userName = userDetails.displayName.capitalizeWords()
+                )
+            }
+        }
+    }
+
+    private fun getStreaks() {
+        viewModelScope.launch {
+            val streaks = consecutiveDaysAppOpenedUseCase.execute()
+            _state.update {
+                it.copy(
+                    nrOfFireStreaks = streaks
+                )
+            }
+        }
     }
 
     private fun updateFireStreaks() {
@@ -450,5 +479,7 @@ data class GenerateViewState(
     val showCategories: Boolean = false,
     val showEmptyListToast: Boolean = false,
     val categoryDropdownExpanded: Boolean = false,
-    val previousButtonVisible: Boolean = false
+    val previousButtonVisible: Boolean = false,
+    val userName: String = "",
+    val nrOfFireStreaks: Int = 0,
 )
