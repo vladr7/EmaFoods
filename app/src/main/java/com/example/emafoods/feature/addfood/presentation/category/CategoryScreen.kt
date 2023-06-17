@@ -99,12 +99,21 @@ fun CategoryScreen(
 
             }
         }
-        TitleWithBackground(
-            text = stringResource(R.string.choose_a_category), fontSize = 24.sp,
+        AnimatedVisibility(
+            visible = !showCategories,
+            enter = fadeIn(),
+            exit = fadeOut(),
             modifier = modifier
                 .align(Alignment.Center)
                 .padding(bottom = 150.dp)
-        )
+        ) {
+            TitleWithBackground(
+                text = stringResource(R.string.choose_a_category), fontSize = 24.sp,
+                modifier = modifier
+
+            )
+        }
+
         OpenCategoryButton(
             modifier = modifier
                 .align(Alignment.Center),
@@ -375,8 +384,6 @@ fun CategoryScreenBackground(
             Color.Transparent,
             MaterialTheme.colorScheme.secondary
         ),
-//        start = Offset(0f, 0f),
-//        end = Offset(sizeImage.width.toFloat(), sizeImage.height.toFloat() / 2),
     )
 
     Box() {
