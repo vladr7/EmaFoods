@@ -29,7 +29,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -74,6 +73,7 @@ import com.example.emafoods.feature.addfood.presentation.ingredients.models.Ingr
 import com.example.emafoods.feature.addfood.presentation.insert.CategoryTypeRow
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
 import com.example.emafoods.feature.game.presentation.ScrollArrow
+import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -440,10 +440,7 @@ fun FoodImage(
         contentDescription = null,
         contentScale = ContentScale.Crop,
         loading = {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .padding(100.dp)
-            )
+            LoadingCookingAnimation()
         }
     )
 }
