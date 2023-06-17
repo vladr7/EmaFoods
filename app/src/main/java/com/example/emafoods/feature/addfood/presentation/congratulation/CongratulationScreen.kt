@@ -1,7 +1,6 @@
 package com.example.emafoods.feature.addfood.presentation.congratulation
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -39,6 +38,7 @@ import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 
 @Composable
@@ -71,11 +71,6 @@ fun CongratulationScreen(
     context: Context,
 ) {
     if (showMessage) {
-        Toast.makeText(
-            context,
-            stringResource(id = R.string.recipe_added_on_the_waiting_list),
-            Toast.LENGTH_SHORT
-        ).show()
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.ADD_RECIPE,
             context = context
@@ -95,6 +90,12 @@ fun CongratulationScreen(
             speed = 1f,
             iterations = LottieConstants.IterateForever
 
+        )
+        TitleWithBackground(
+            text = stringResource(R.string.recipe_added_on_the_waiting_list),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 32.dp)
         )
         InsertNewFoodButton(
             modifier = Modifier
@@ -126,7 +127,7 @@ fun InsertNewFoodButton(
                 tint = MaterialTheme.colorScheme.onSecondary,
             )
             Text(
-                stringResource(R.string.add_recipe),
+                stringResource(R.string.add_new_recipe),
                 modifier = Modifier.padding(8.dp),
                 color = MaterialTheme.colorScheme.onSecondary,
             )

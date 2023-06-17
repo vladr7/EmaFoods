@@ -83,22 +83,6 @@ fun CategoryScreen(
         modifier = modifier
             .fillMaxSize(),
     ) {
-        Column(
-            modifier = modifier
-                .align(Alignment.TopStart)
-        ) {
-            TitleWithBackground(
-                text = stringResource(R.string.add_a_new_recipe),
-                modifier = modifier
-            )
-            AnimatedVisibility(
-                visible = !showCategories,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-
-            }
-        }
         AnimatedVisibility(
             visible = !showCategories,
             enter = fadeIn(),
@@ -108,9 +92,9 @@ fun CategoryScreen(
                 .padding(bottom = 150.dp)
         ) {
             TitleWithBackground(
-                text = stringResource(R.string.choose_a_category), fontSize = 24.sp,
+                text = stringResource(R.string.create_your_own_recipe), fontSize = 24.sp,
                 modifier = modifier
-
+                    .padding(bottom = 20.dp)
             )
         }
 
