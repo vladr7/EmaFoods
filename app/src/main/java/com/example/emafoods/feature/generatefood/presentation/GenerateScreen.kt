@@ -201,6 +201,7 @@ fun GenerateScreen(
     var showFilterAndButtons by remember { mutableStateOf(false) }
     val scrollVisibilityThreshold = 80
     showFilterAndButtons = scrollState.value < scrollVisibilityThreshold
+    var generateButtonsAlpha by remember { mutableStateOf(1f) }
 
     Box(
         modifier = modifier
@@ -220,17 +221,18 @@ fun GenerateScreen(
                 food = food,
                 ingredientsList = food.ingredients,
             )
-            PreviousGenerateButton(
-                modifier = modifier
-                    .align(Alignment.CenterStart),
-                onPreviousButtonClick = onPreviousButtonClick,
-                previousButtonVisible = (previousButtonVisible && showFilterAndButtons)
-            )
-            GenerateButton(
-                onGenerateClick = onGenerateClick,
-                modifier = modifier
-                    .align(Alignment.CenterEnd),
-                visible = showFilterAndButtons
+            GenerateButtons(
+                modifier,
+                onPreviousButtonClick,
+                previousButtonVisible,
+                showFilterAndButtons,
+                onGenerateClick = {
+                    if(generateButtonsAlpha >= 0.7f) {
+                        generateButtonsAlpha -= 0.1f
+                    }
+                    onGenerateClick()
+                },
+                alpha = generateButtonsAlpha
             )
             CategoryDropDown(
                 modifier = modifier,
@@ -253,10 +255,35 @@ fun GenerateScreen(
 }
 
 @Composable
+private fun BoxScope.GenerateButtons(
+    modifier: Modifier,
+    onPreviousButtonClick: () -> Unit,
+    previousButtonVisible: Boolean,
+    showFilterAndButtons: Boolean,
+    onGenerateClick: () -> Unit,
+    alpha: Float = 1f,
+) {
+    PreviousGenerateButton(
+        modifier = modifier
+            .align(Alignment.CenterStart)
+            .alpha(alpha),
+        onPreviousButtonClick = onPreviousButtonClick,
+        previousButtonVisible = (previousButtonVisible && showFilterAndButtons),
+    )
+    GenerateButton(
+        onGenerateClick = onGenerateClick,
+        modifier = modifier
+            .align(Alignment.CenterEnd)
+            .alpha(alpha),
+        visible = showFilterAndButtons,
+    )
+}
+
+@Composable
 fun PreviousGenerateButton(
     modifier: Modifier = Modifier,
     onPreviousButtonClick: () -> Unit,
-    previousButtonVisible: Boolean
+    previousButtonVisible: Boolean,
 ) {
     val offsetXHideButton = (-40).dp
     Box(
@@ -310,7 +337,7 @@ private fun PreviousButtonArcComposable(
         val canvasWidth = size.width
         val canvasHeight = size.height
         val xPosArc =
-            -canvasWidth - 80f
+            -canvasWidth - 80f + offsetXHideButton.value
 
         drawArc(
             brush = Brush.verticalGradient(
@@ -328,7 +355,7 @@ private fun PreviousButtonArcComposable(
 
         val arrowWidth = 30f
         val arrowHeight = 100f
-        val xPosArrow = canvasWidth - 110f
+        val xPosArrow = canvasWidth - 100f + offsetXHideButton.value
         val arrowPath = Path().let {
             it.moveTo(x = xPosArrow, y = canvasHeight / 2 - arrowHeight / 2) // Top
             it.lineTo(x = xPosArrow - arrowWidth + 15f, y = canvasHeight / 2) // Left
@@ -348,9 +375,9 @@ private fun PreviousButtonArcComposable(
 fun GenerateButton(
     onGenerateClick: () -> Unit,
     modifier: Modifier = Modifier,
-    visible: Boolean
+    visible: Boolean,
 ) {
-    val offsetXHideButton = 25.dp
+    val offsetXHideButton = 30.dp
     Box(
         modifier = modifier
             .offset(x = offsetXHideButton)
@@ -401,7 +428,7 @@ private fun GenerateArcComposable(
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
-        val xPosArc = canvasWidth - 180f
+        val xPosArc = canvasWidth - 180f + offsetXHideButton.value
         drawArc(
             brush = Brush.verticalGradient(
                 colors = listOf(
@@ -418,7 +445,7 @@ private fun GenerateArcComposable(
 
         val arrowWidth = 30f
         val arrowHeight = 100f
-        val xPosArrow = canvasWidth - 140f
+        val xPosArrow = canvasWidth - 160f + offsetXHideButton.value
         val arrowPath = Path().let {
             it.moveTo(x = xPosArrow, y = canvasHeight / 2 - arrowHeight / 2) // Top
             it.lineTo(x = xPosArrow + arrowWidth - 15f, y = canvasHeight / 2) // Right
