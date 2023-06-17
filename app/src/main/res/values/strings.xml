@@ -9,6 +9,7 @@
     <string name="description_empty_input_label_text_min_chars">Minim 10 caractere</string>
     <string name="description_screen_title">Mod de preparare</string>
     <string name="add_recipe">Adaugă rețeta</string>
+    <string name="add_new_recipe">Adaugă altă rețetă</string>
     <string name="how_to_gain_xp">Cum pot să cresc nivelul?</string>
     <string name="your_recipe_has_been_accepted">Ți-a fost acceptată o rețetă! 🥳 Ai primit %1$s XP!</string>
     <string name="your_receipes_have_been_accepted">Ți-au fost acceptate %1$s rețete! 🥳 Ai primit %2$s XP!</string>
@@ -41,7 +42,7 @@
     <string name="main_dish_dropdown">Prânz/Cină</string>
     <string name="soup">Supe</string>
     <string name="dessert">Desert</string>
-    <string name="add_a_new_recipe">Creează-ți propria rețetă în aplicație!</string>
+    <string name="create_your_own_recipe">Creează-ți propria rețetă în aplicație!</string>
     <string name="add_ingredients">Adaugă ingrediente</string>
     <string name="ingredient_hint">Ingredient</string>
     <string name="measurement_hint">gr/ml</string>
