@@ -2,7 +2,6 @@ package com.example.emafoods
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,9 +17,7 @@ import com.example.emafoods.navigation.signin.SignInNavigation
 import com.example.emafoods.ui.theme.EmaTheme
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,14 +25,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private lateinit var appUpdateManager: AppUpdateManager
-    private val updateType = AppUpdateType.FLEXIBLE
+    private val updateType = AppUpdateType.IMMEDIATE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
-        if(updateType == AppUpdateType.FLEXIBLE) {
-            appUpdateManager.registerListener(installStateUpdatedListener)
-        }
         checkForAppUpdate()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
@@ -68,22 +62,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            Toast.makeText(
-                applicationContext,
-                "Update descărcat cu succes, restartează aplicația pentru ca schimbările să aibă efect!",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
     private fun checkForAppUpdate() {
         appUpdateManager.appUpdateInfo.addOnSuccessListener { appUpdateInfo ->
             val isUpdateAvailable =
                 appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-            val isUpdateTypeAllowed = appUpdateInfo.isUpdateTypeAllowed(updateType)
-            if (isUpdateAvailable && isUpdateTypeAllowed) {
+            if (isUpdateAvailable) {
                 appUpdateManager.startUpdateFlowForResult(
                     appUpdateInfo,
                     updateType,
@@ -118,13 +101,6 @@ class MainActivity : ComponentActivity() {
             } else {
                 println("Update flow complete! Result code: $resultCode")
             }
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if(updateType == AppUpdateType.FLEXIBLE) {
-            appUpdateManager.unregisterListener(installStateUpdatedListener)
         }
     }
 
