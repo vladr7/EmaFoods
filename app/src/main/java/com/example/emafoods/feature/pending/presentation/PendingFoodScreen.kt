@@ -154,6 +154,7 @@ fun PendingFoodScreen(
             modifier = modifier
                 .verticalScroll(scrollState)
         ) {
+            println("vlad: food description: ${food.description}")
             FoodItem(
                 food = food,
                 modifier = modifier,
@@ -260,10 +261,35 @@ fun FoodItem(
                     )
                 }
             }
-            FoodDescription(description = food.description)
+            if(food.description.isNotEmpty()) {
+                FoodDescription(description = food.description)
+            } else {
+                EmptyDescriptionMessage()
+            }
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
+}
+
+@Composable
+fun EmptyDescriptionMessage(
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = stringResource(id = R.string.for_the_moment_there_are_no_more_pending_foods),
+        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        textAlign = TextAlign.Left,
+        color = MaterialTheme.colorScheme.onSecondary,
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(max = 250.dp)
+            .verticalScroll(rememberScrollState())
+            .padding(
+                start = 25.dp, end = 20.dp, top = 5.dp, bottom = 10.dp
+            ),
+    )
 }
 
 @Composable
@@ -455,7 +481,7 @@ fun FoodDescription(
     }
 
     LaunchedEffect(
-        key1 = "description",
+        key1 = "description effect",
     ) {
         description.forEachIndexed { charIndex, _ ->
             descriptionDisplay = description
@@ -468,13 +494,14 @@ fun FoodDescription(
     }
 
     Text(
-        text = if(description.isNotEmpty()) descriptionDisplay else stringResource(id = R.string.for_the_moment_there_are_no_more_pending_foods),
+        text = descriptionDisplay,
         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         textAlign = TextAlign.Left,
         color = MaterialTheme.colorScheme.onSecondary,
         modifier = modifier
+            .fillMaxWidth()
             .heightIn(max = 250.dp)
             .verticalScroll(rememberScrollState())
             .padding(
