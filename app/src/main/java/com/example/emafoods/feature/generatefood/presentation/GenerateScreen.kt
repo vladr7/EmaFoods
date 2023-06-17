@@ -4,12 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,7 +30,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -507,15 +502,16 @@ fun BoxScope.CategoryDropDown(
     Column(
         modifier = modifier
             .align(Alignment.TopEnd)
-            .padding(top = 20.dp, end = 20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(start = 20.dp, top = 20.dp, end = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         AnimatedVisibility(visible = visible) {
             FilterTextAndIcon(
                 onClickCategoryDropDown = onClickCategoryDropDown
             )
             DropdownMenu(
-                modifier = Modifier,
+                modifier = modifier,
                 expanded = expanded,
                 onDismissRequest = onDismissRequest
             ) {
@@ -612,12 +608,28 @@ fun FilterTextAndIcon(
     modifier: Modifier = Modifier,
     onClickCategoryDropDown: () -> Unit,
 ) {
-    IconButton(
-        onClick = onClickCategoryDropDown,
+    Column(
         modifier = modifier
-            .size(100.dp)
-            .bounceClick()
+            .bounceClick(onClick = onClickCategoryDropDown)
+            .padding(top = 20.dp, end = 20.dp, start = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = stringResource(id = R.string.filter),
+            fontSize = 16.sp,
+            fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSecondary,
+            style = TextStyle(
+                shadow = Shadow(
+                    color = MaterialTheme.colorScheme.secondary,
+                    blurRadius = 10f,
+                )
+            ),
+            textAlign = TextAlign.Center,
+            modifier = modifier
+        )
         Icon(
             imageVector = Icons.Default.FilterList,
             contentDescription = "Category",
@@ -626,23 +638,6 @@ fun FilterTextAndIcon(
                 .size(50.dp)
         )
     }
-
-    Text(
-        text = stringResource(id = R.string.filter),
-        fontSize = 16.sp,
-        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.onSecondary,
-        style = TextStyle(
-            shadow = Shadow(
-                color = MaterialTheme.colorScheme.secondary,
-                blurRadius = 10f,
-            )
-        ),
-        textAlign = TextAlign.Center,
-        modifier = modifier
-            .padding(start = 20.dp, top = 10.dp)
-    )
 }
 
 @Composable
