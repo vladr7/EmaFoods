@@ -52,7 +52,7 @@ import com.example.emafoods.R
 import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
-import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
@@ -114,7 +114,7 @@ fun ImageScreen(
             modifier = modifier,
             step = 1,
         )
-        AddRecipeTitle(text = stringResource(id = R.string.add_image_title))
+        TitleWithBackground(text = stringResource(id = R.string.add_image_title))
         InsertFoodImage(
             imageUri = imageUri,
             modifier = modifier,

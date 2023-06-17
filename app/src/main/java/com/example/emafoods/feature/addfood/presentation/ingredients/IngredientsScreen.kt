@@ -52,7 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
-import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
@@ -140,7 +140,7 @@ fun IngredientsScreen(
                 .fillMaxSize()
         ) {
             AnimatedVisibility(visible = !isIngredientsListFocused) {
-                AddRecipeTitle(
+                TitleWithBackground(
                     text = screenTitle,
                     modifier = modifier
                         .padding(top = screenTitlePaddingTop.dp)
