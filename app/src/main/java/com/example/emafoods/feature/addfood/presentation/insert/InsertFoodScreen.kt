@@ -217,7 +217,7 @@ fun InsertFoodScreen(
                 .align(Alignment.BottomCenter)
                 .offset(y = 10.dp)
                 .size(80.dp),
-            visible = scrollState.value == 0,
+            visible = scrollState.value == 0 && scrollState.canScrollForward,
         )
     }
 }
