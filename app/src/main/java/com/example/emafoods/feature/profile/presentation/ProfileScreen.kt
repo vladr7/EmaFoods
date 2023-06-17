@@ -61,6 +61,7 @@ import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
+import com.example.emafoods.feature.profile.domain.models.ProfileImage
 import com.google.android.play.core.review.ReviewManagerFactory
 
 @Composable
@@ -123,6 +124,10 @@ fun ProfileRoute(
             viewModel.onDismissLevelUp()
             context.restartApp()
         },
+        onProfileImageClick = {
+            viewModel.onProfileImageClick(it)
+        },
+        profileImage = state.profileImage,
     )
 }
 
@@ -143,7 +148,9 @@ fun ProfileScreen(
     newLevel: UserLevel?,
     leveledUpEvent: Boolean,
     onDismissLevelUp: () -> Unit,
-    ) {
+    onProfileImageClick: (ProfileImage) -> Unit,
+    profileImage: ProfileImage,
+) {
     if (leveledUpEvent) {
         LevelUpDialog(
             newLevel = newLevel,
@@ -170,7 +177,12 @@ fun ProfileScreen(
                 onConfirm = onConfirm
             )
         }
-        ProfileHeader(userName = userName, streaks = streaks)
+        ProfileHeader(
+            userName = userName,
+            streaks = streaks,
+            profileImage = profileImage,
+            onProfileImageClick = onProfileImageClick
+        )
         ProfileReview(onReviewClick = onReviewClick)
         Spacer(modifier = Modifier.weight(1f))
         ProfileLevelUp(onLevelUpClick = onLevelUpClick)
@@ -240,8 +252,9 @@ fun ProfileHeader(
     userName: String,
     streaks: Int,
     profileTopPadding: Dp = 36.dp,
+    onProfileImageClick: (ProfileImage) -> Unit,
+    profileImage: ProfileImage
 ) {
-    var profilePic by remember { mutableStateOf(R.drawable.profilepic1) }
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -256,16 +269,12 @@ fun ProfileHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = profilePic),
+                painter = painterResource(id = profileImage.image),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .bounceClick {
-                        profilePic = if(profilePic == R.drawable.profilepic1) {
-                            R.drawable.profilepic2
-                        } else {
-                            R.drawable.profilepic1
-                        }
+                        onProfileImageClick(profileImage)
                     }
                     .size(100.dp)
                     .clip(CircleShape)
@@ -378,7 +387,8 @@ fun ProfileReview(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(R.string.review_bold_description), style = MaterialTheme.typography.bodySmall,
+                        text = stringResource(R.string.review_bold_description),
+                        style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold
                     )
                     Icon(

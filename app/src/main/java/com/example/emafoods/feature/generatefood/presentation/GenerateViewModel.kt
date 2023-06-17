@@ -2,6 +2,7 @@ package com.example.emafoods.feature.generatefood.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.emafoods.R
 import com.example.emafoods.core.domain.constants.AnalyticsConstants
 import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
@@ -22,6 +23,10 @@ import com.example.emafoods.feature.game.presentation.model.IncreaseXpResult
 import com.example.emafoods.feature.generatefood.domain.usecase.GenerateFoodUseCase
 import com.example.emafoods.feature.generatefood.domain.usecase.GetFoodsByCategoryUseCase
 import com.example.emafoods.feature.generatefood.domain.usecase.PreviousFoodUseCase
+import com.example.emafoods.feature.profile.domain.models.ProfileImage
+import com.example.emafoods.feature.profile.domain.usecase.GetCurrentProfileImageUseCase
+import com.example.emafoods.feature.profile.domain.usecase.GetNextProfileImageUseCase
+import com.example.emafoods.feature.profile.domain.usecase.StoreProfileImageChoiceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,6 +50,9 @@ class GenerateViewModel @Inject constructor(
     private val previousFoodUseCase: PreviousFoodUseCase,
     private val consecutiveDaysAppOpenedUseCase: GetConsecutiveDaysAppOpenedUseCase,
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
+    private val getNextProfileImageUseCase: GetNextProfileImageUseCase,
+    private val storeProfileImageChoiceUseCase: StoreProfileImageChoiceUseCase,
+    private val getCurrentProfileImageUseCase: GetCurrentProfileImageUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
@@ -57,6 +65,18 @@ class GenerateViewModel @Inject constructor(
         refreshFoodsFromRepository()
         getUserName()
         getStreaks()
+        getCurrentProfileImage()
+    }
+
+    private fun getCurrentProfileImage() {
+        viewModelScope.launch {
+            val currentProfileImage = getCurrentProfileImageUseCase.execute()
+            _state.update {
+                it.copy(
+                    profileImage = currentProfileImage
+                )
+            }
+        }
     }
 
     private fun getUserName() {
@@ -255,89 +275,91 @@ class GenerateViewModel @Inject constructor(
     }
 
     fun generateFoodEvent() {
-            when(state.value.currentCategory) {
-                CategoryType.BREAKFAST -> {
-                    if (state.value.breakfastList.isEmpty()) {
-                        showEmptyListToast()
-                        return
-                    }
-                    val nextFood = generateFoodUseCase.execute(
-                        foodList = state.value.breakfastList,
-                        index = state.value.indexBreakfast
-                    )
-                    val newCounter = state.value.counterBreakfast + 1
-                    val newIndex = state.value.indexBreakfast + 1
-                    _state.update {
-                        it.copy(
-                            indexBreakfast = if(newIndex > state.value.breakfastList.size - 1) 0 else newIndex,
-                            counterBreakfast = newCounter,
-                            currentFood = nextFood,
-                            previousButtonVisible = newCounter > 1
-                        )
-                    }
+        when (state.value.currentCategory) {
+            CategoryType.BREAKFAST -> {
+                if (state.value.breakfastList.isEmpty()) {
+                    showEmptyListToast()
+                    return
                 }
-
-                CategoryType.MAIN_DISH -> {
-                    if (state.value.mainDishList.isEmpty()) {
-                        showEmptyListToast()
-                        return
-                    }
-                    val nextFood = generateFoodUseCase.execute(
-                        foodList = state.value.mainDishList,
-                        index = state.value.indexMainDish
+                val nextFood = generateFoodUseCase.execute(
+                    foodList = state.value.breakfastList,
+                    index = state.value.indexBreakfast
+                )
+                val newCounter = state.value.counterBreakfast + 1
+                val newIndex = state.value.indexBreakfast + 1
+                _state.update {
+                    it.copy(
+                        indexBreakfast = if (newIndex > state.value.breakfastList.size - 1) 0 else newIndex,
+                        counterBreakfast = newCounter,
+                        currentFood = nextFood,
+                        previousButtonVisible = newCounter > 1
                     )
-                    val newCounter = state.value.counterMainDish + 1
-                    val newIndex = state.value.indexMainDish + 1
-                    _state.update {
-                        it.copy(
-                            indexMainDish = if(newIndex > state.value.mainDishList.size - 1) 0 else newIndex,
-                            counterMainDish = newCounter,
-                            currentFood = nextFood,
-                            previousButtonVisible = newCounter > 1
-                        )
-                    }
-                }
-                CategoryType.SOUP -> {
-                    if (state.value.soupList.isEmpty()) {
-                        showEmptyListToast()
-                        return
-                    }
-                    val nextFood = generateFoodUseCase.execute(
-                        foodList = state.value.soupList,
-                        index = state.value.indexSoup
-                    )
-                    val newCounter = state.value.counterSoup + 1
-                    val newIndex = state.value.indexSoup + 1
-                    _state.update {
-                        it.copy(
-                            indexSoup = if(newIndex > state.value.soupList.size - 1) 0 else newIndex,
-                            counterSoup = newCounter,
-                            currentFood = nextFood,
-                            previousButtonVisible = newCounter > 1
-                        )
-                    }
-                }
-                CategoryType.DESSERT -> {
-                    if (state.value.dessertList.isEmpty()) {
-                        showEmptyListToast()
-                        return
-                    }
-                    val nextFood = generateFoodUseCase.execute(
-                        foodList = state.value.dessertList,
-                        index = state.value.indexDessert
-                    )
-                    val newCounter = state.value.counterDessert + 1
-                    val newIndex = state.value.indexDessert + 1
-                    _state.update {
-                        it.copy(
-                            indexDessert = if(newIndex > state.value.dessertList.size - 1) 0 else newIndex,
-                            counterDessert = newCounter,
-                            currentFood = nextFood,
-                            previousButtonVisible = newCounter > 1
-                        )
-                    }
                 }
             }
+
+            CategoryType.MAIN_DISH -> {
+                if (state.value.mainDishList.isEmpty()) {
+                    showEmptyListToast()
+                    return
+                }
+                val nextFood = generateFoodUseCase.execute(
+                    foodList = state.value.mainDishList,
+                    index = state.value.indexMainDish
+                )
+                val newCounter = state.value.counterMainDish + 1
+                val newIndex = state.value.indexMainDish + 1
+                _state.update {
+                    it.copy(
+                        indexMainDish = if (newIndex > state.value.mainDishList.size - 1) 0 else newIndex,
+                        counterMainDish = newCounter,
+                        currentFood = nextFood,
+                        previousButtonVisible = newCounter > 1
+                    )
+                }
+            }
+
+            CategoryType.SOUP -> {
+                if (state.value.soupList.isEmpty()) {
+                    showEmptyListToast()
+                    return
+                }
+                val nextFood = generateFoodUseCase.execute(
+                    foodList = state.value.soupList,
+                    index = state.value.indexSoup
+                )
+                val newCounter = state.value.counterSoup + 1
+                val newIndex = state.value.indexSoup + 1
+                _state.update {
+                    it.copy(
+                        indexSoup = if (newIndex > state.value.soupList.size - 1) 0 else newIndex,
+                        counterSoup = newCounter,
+                        currentFood = nextFood,
+                        previousButtonVisible = newCounter > 1
+                    )
+                }
+            }
+
+            CategoryType.DESSERT -> {
+                if (state.value.dessertList.isEmpty()) {
+                    showEmptyListToast()
+                    return
+                }
+                val nextFood = generateFoodUseCase.execute(
+                    foodList = state.value.dessertList,
+                    index = state.value.indexDessert
+                )
+                val newCounter = state.value.counterDessert + 1
+                val newIndex = state.value.indexDessert + 1
+                _state.update {
+                    it.copy(
+                        indexDessert = if (newIndex > state.value.dessertList.size - 1) 0 else newIndex,
+                        counterDessert = newCounter,
+                        currentFood = nextFood,
+                        previousButtonVisible = newCounter > 1
+                    )
+                }
+            }
+        }
         viewModelScope.launch {
             logHelper.log(AnalyticsConstants.GENERATE_FOOD)
         }
@@ -362,7 +384,7 @@ class GenerateViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         currentFood = previousFood,
-                        indexBreakfast = if(newIndex < 0) it.breakfastList.size - 1 else newIndex,
+                        indexBreakfast = if (newIndex < 0) it.breakfastList.size - 1 else newIndex,
                         counterBreakfast = newCounter,
                         previousButtonVisible = newCounter > 1
                     )
@@ -386,12 +408,13 @@ class GenerateViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         currentFood = previousFood,
-                        indexMainDish = if(newIndex < 0) it.mainDishList.size - 1 else newIndex,
+                        indexMainDish = if (newIndex < 0) it.mainDishList.size - 1 else newIndex,
                         counterMainDish = newCounter,
                         previousButtonVisible = newCounter > 1
                     )
                 }
             }
+
             CategoryType.SOUP -> {
                 if (state.value.soupList.isEmpty()) {
                     showEmptyListToast()
@@ -409,12 +432,13 @@ class GenerateViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         currentFood = previousFood,
-                        indexSoup = if(newIndex < 0) it.soupList.size - 1 else newIndex,
+                        indexSoup = if (newIndex < 0) it.soupList.size - 1 else newIndex,
                         counterSoup = newCounter,
                         previousButtonVisible = newCounter > 1
                     )
                 }
             }
+
             CategoryType.DESSERT -> {
                 val currentCounter = state.value.counterDessert
                 if (state.value.dessertList.isEmpty()) {
@@ -433,7 +457,7 @@ class GenerateViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         currentFood = previousFood,
-                        indexDessert = if(newIndex < 0) it.dessertList.size - 1 else newIndex,
+                        indexDessert = if (newIndex < 0) it.dessertList.size - 1 else newIndex,
                         counterDessert = newCounter,
                         previousButtonVisible = newCounter > 1
                     )
@@ -448,6 +472,18 @@ class GenerateViewModel @Inject constructor(
             it.copy(
                 showEmptyListToast = true
             )
+        }
+    }
+
+    fun onProfileImageClick(profileImage: ProfileImage) {
+        viewModelScope.launch {
+            val nextProfileImage = getNextProfileImageUseCase.execute(profileImage)
+            _state.update {
+                it.copy(
+                    profileImage = nextProfileImage
+                )
+            }
+            storeProfileImageChoiceUseCase.execute(nextProfileImage)
         }
     }
 }
@@ -482,4 +518,8 @@ data class GenerateViewState(
     val previousButtonVisible: Boolean = false,
     val userName: String = "",
     val nrOfFireStreaks: Int = 0,
+    val profileImage: ProfileImage = ProfileImage(
+        id = 0,
+        image = R.drawable.profilepic1,
+    )
 )
