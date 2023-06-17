@@ -77,6 +77,7 @@ import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.category.CategoryChoices
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.category.OpenCategoryButton
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.game.domain.model.UserLevel
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
@@ -640,10 +641,15 @@ fun BoxScope.WaitingGenerateFoodContent(
         modifier = modifier
             .align(Alignment.Center)
     ) {
-        GenerateTitle(
+        TitleWithBackground(text = stringResource(id = R.string.generate_title),
             modifier = modifier
-                .padding(bottom = 140.dp)
+                .padding(bottom = 160.dp),
+            fontSize = 20.sp,
         )
+//        GenerateTitle(
+//            modifier = modifier
+//                .padding(bottom = 140.dp)
+//        )
     }
     OpenCategoryButton(
         modifier = modifier

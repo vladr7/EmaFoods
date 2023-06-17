@@ -48,7 +48,7 @@ import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.Pulsating
 import com.example.emafoods.core.presentation.animations.PulsatingCircle
 import com.example.emafoods.core.presentation.animations.bounceClick
-import com.example.emafoods.feature.addfood.presentation.common.AddRecipeTitle
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.image.navigation.ImageArguments
 
 @Composable
@@ -87,7 +87,7 @@ fun CategoryScreen(
             modifier = modifier
                 .align(Alignment.TopStart)
         ) {
-            AddRecipeTitle(
+            TitleWithBackground(
                 text = stringResource(R.string.add_a_new_recipe),
                 modifier = modifier
             )
@@ -96,13 +96,15 @@ fun CategoryScreen(
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
-                AddRecipeTitle(
-                    text = stringResource(R.string.choose_a_category), fontSize = 24.sp,
-                    modifier = modifier
-                        .padding(start = 30.dp)
-                )
+
             }
         }
+        TitleWithBackground(
+            text = stringResource(R.string.choose_a_category), fontSize = 24.sp,
+            modifier = modifier
+                .align(Alignment.Center)
+                .padding(bottom = 150.dp)
+        )
         OpenCategoryButton(
             modifier = modifier
                 .align(Alignment.Center),

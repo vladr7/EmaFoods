@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AddRecipeTitle(
+fun TitleWithBackground(
     modifier: Modifier = Modifier,
     text: String,
     fontSize: TextUnit = 36.sp
