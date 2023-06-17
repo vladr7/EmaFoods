@@ -55,6 +55,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.extension.restartApp
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
 import com.example.emafoods.core.presentation.common.alert.LevelUpDialog
 import com.example.emafoods.core.presentation.common.alert.XpIncreaseToast
@@ -240,6 +241,7 @@ fun ProfileHeader(
     streaks: Int,
     profileTopPadding: Dp = 36.dp,
 ) {
+    var profilePic by remember { mutableStateOf(R.drawable.profilepic1) }
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -254,10 +256,17 @@ fun ProfileHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.profilepic1),
+                painter = painterResource(id = profilePic),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
+                    .bounceClick {
+                        profilePic = if(profilePic == R.drawable.profilepic1) {
+                            R.drawable.profilepic2
+                        } else {
+                            R.drawable.profilepic1
+                        }
+                    }
                     .size(100.dp)
                     .clip(CircleShape)
             )

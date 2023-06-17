@@ -46,11 +46,15 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -477,20 +481,9 @@ fun BoxScope.CategoryDropDown(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AnimatedVisibility(visible = visible) {
-            IconButton(
-                onClick = onClickCategoryDropDown,
-                modifier = Modifier
-                    .size(100.dp)
-                    .bounceClick()
-            ) {
-                Icon(
-                    imageVector = Icons.Default.FilterList,
-                    contentDescription = "Category",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(50.dp)
-                )
-            }
+            FilterTextAndIcon(
+                onClickCategoryDropDown = onClickCategoryDropDown
+            )
             DropdownMenu(
                 modifier = Modifier,
                 expanded = expanded,
@@ -582,6 +575,44 @@ fun BoxScope.CategoryDropDown(
             }
         }
     }
+}
+
+@Composable
+fun FilterTextAndIcon(
+    modifier: Modifier = Modifier,
+    onClickCategoryDropDown: () -> Unit,
+) {
+    IconButton(
+        onClick = onClickCategoryDropDown,
+        modifier = modifier
+            .size(100.dp)
+            .bounceClick()
+    ) {
+        Icon(
+            imageVector = Icons.Default.FilterList,
+            contentDescription = "Category",
+            tint = Color.White,
+            modifier = Modifier
+                .size(50.dp)
+        )
+    }
+
+    Text(
+        text = stringResource(id = R.string.filter),
+        fontSize = 16.sp,
+        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSecondary,
+        style = TextStyle(
+            shadow = Shadow(
+                color = MaterialTheme.colorScheme.secondary,
+                blurRadius = 10f,
+            )
+        ),
+        textAlign = TextAlign.Center,
+        modifier = modifier
+            .padding(start = 20.dp, top = 10.dp)
+    )
 }
 
 @Composable
