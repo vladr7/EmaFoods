@@ -12,9 +12,7 @@ class GetNextLevelUseCase @Inject constructor(
         return when(userGameDetails.userLevel) {
             UserLevel.LEVEL_1 -> UserLevel.LEVEL_2
             UserLevel.LEVEL_2 -> UserLevel.LEVEL_3
-            UserLevel.LEVEL_3 -> UserLevel.LEVEL_4
-            UserLevel.LEVEL_4 -> UserLevel.LEVEL_5
-            UserLevel.LEVEL_5 -> UserLevel.LEVEL_5
+            UserLevel.LEVEL_3 -> UserLevel.LEVEL_3
         }
     }
 }

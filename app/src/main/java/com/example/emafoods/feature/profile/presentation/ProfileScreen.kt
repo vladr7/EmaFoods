@@ -2,6 +2,7 @@ package com.example.emafoods.feature.profile.presentation
 
 import android.app.Activity
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -329,8 +330,19 @@ private fun ProfileUserName(userName: String) {
 
 @Composable
 private fun BoxScope.FireStreaks(modifier: Modifier, streaks: Int) {
+    val context = LocalContext.current
+    val text = stringResource(R.string.fire_streaks_text)
     Row(
         modifier = modifier
+            .bounceClick {
+                Toast
+                    .makeText(
+                        context,
+                        text, Toast.LENGTH_SHORT
+                    )
+                    .show()
+            }
+            .padding(bottom = 15.dp, start = 15.dp)
             .align(Alignment.TopEnd),
         verticalAlignment = Alignment.CenterVertically
     ) {

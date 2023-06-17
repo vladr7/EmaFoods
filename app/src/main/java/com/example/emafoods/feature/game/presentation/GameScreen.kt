@@ -355,7 +355,7 @@ fun LevelList(
 ) {
     Box(
         modifier = modifier
-            .height(400.dp)
+            .height(450.dp)
             .padding(16.dp)
     ) {
         val scrollState = rememberScrollState()
@@ -378,7 +378,7 @@ fun LevelList(
                 .padding(top = 16.dp)
                 .alpha(0.8f)
                 .size(64.dp),
-            visible = scrollState.value == 0
+            visible = scrollState.value == 0 && scrollState.canScrollForward
         )
     }
 }
