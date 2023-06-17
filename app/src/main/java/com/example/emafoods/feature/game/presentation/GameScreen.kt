@@ -93,7 +93,7 @@ fun GameRoute(
             } else {
                 Toast.makeText(
                     context,
-                    "Mai ai nevoie de ${levelPermission.remainingXp} XP pentru a debloca ${levelPermission.level.uiString}!",
+                    "Mai ai nevoie de ${levelPermission.remainingXp} puncte pentru a debloca ${levelPermission.level.uiString}!",
                     Toast.LENGTH_SHORT
                 ).show()
             }
