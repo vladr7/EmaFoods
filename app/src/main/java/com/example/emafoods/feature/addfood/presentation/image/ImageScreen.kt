@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -52,9 +51,9 @@ import com.example.emafoods.R
 import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFileProvider
-import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
 import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
@@ -250,8 +249,6 @@ fun ImageScreenBackground(
             Color.Transparent,
             MaterialTheme.colorScheme.secondary
         ),
-        start = Offset(0f, 0f),
-        end = Offset(sizeImage.width.toFloat(), sizeImage.height.toFloat() / 2),
     )
 
     Box() {

@@ -381,7 +381,7 @@ fun CategoryScreenBackground(
 
     Box() {
         Image(
-            painter = painterResource(id = R.drawable.imagefoodbackgr),
+            painter = painterResource(id = R.drawable.categorybackground),
             contentDescription = null,
             contentScale = ContentScale.FillHeight,
             modifier = modifier
