@@ -92,7 +92,7 @@ fun CategoryScreen(
                 .padding(bottom = 150.dp)
         ) {
             TitleWithBackground(
-                text = stringResource(R.string.add_a_new_recipe), fontSize = 24.sp,
+                text = stringResource(R.string.create_your_own_recipe), fontSize = 24.sp,
                 modifier = modifier
                     .padding(bottom = 20.dp)
             )
