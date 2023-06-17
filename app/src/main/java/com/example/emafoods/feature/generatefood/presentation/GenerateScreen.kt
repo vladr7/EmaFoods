@@ -511,7 +511,8 @@ fun BoxScope.CategoryDropDown(
                 onClickCategoryDropDown = onClickCategoryDropDown
             )
             DropdownMenu(
-                modifier = modifier,
+                modifier = modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer),
                 expanded = expanded,
                 onDismissRequest = onDismissRequest
             ) {
