@@ -189,9 +189,10 @@ fun InsertFoodScreen(
         ) {
             InsertFoodImage(
                 imageUri = imageUri,
-                modifier = modifier,
+                modifier = modifier
+                    .padding(top = 20.dp),
                 onUriChangedChoseFile = onUriChanged,
-                onUriChangedTakePicture = onUriChanged
+                onUriChangedTakePicture = onUriChanged,
             )
             IngredientsReadOnlyContent(
                 modifier = modifier,
@@ -555,7 +556,7 @@ fun InsertFoodImage(
         modifier = modifier
             .fillMaxWidth()
             .height(300.dp)
-            .padding(20.dp)
+            .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
             .shadow(
                 elevation = 8.dp,
                 shape = MaterialTheme.shapes.medium,
