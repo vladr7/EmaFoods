@@ -44,10 +44,11 @@ fun HomeNavHost(
                 }
             )
             imageScreen(
-                onHasImage = { ingredientsArguments ->
+                onHasImage = { insertFoodArguments ->
                     navController.navigateToInsertFood(
-                        uriId = ingredientsArguments.uri,
-                        categoryId = ingredientsArguments.category
+                        uriId = insertFoodArguments.uri,
+                        categoryId = insertFoodArguments.category,
+                        title = insertFoodArguments.title
                     )
                 }
             )
