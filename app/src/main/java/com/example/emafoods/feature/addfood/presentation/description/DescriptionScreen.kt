@@ -50,10 +50,8 @@ fun DescriptionRoute(
         onConfirmedClick = {
             onConfirmedClick(
                 InsertFoodArguments(
-                    description = state.description,
                     uri = state.uri,
                     category = state.category,
-                    ingredientsList = state.ingredientsListSerialized
                 )
             )
         },

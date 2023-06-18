@@ -41,8 +41,6 @@ class InsertFoodViewModel @Inject constructor(
     private val increaseXpUseCase: IncreaseXpUseCase,
     private val getTemporaryPendingImageUseCase: GetTemporaryPendingImageUseCase,
     private val logHelper: LogHelper,
-    private val deserializeIngredientsUseCase: DeserializeIngredientsUseCase,
-    private val ingredientMapper: IngredientMapper,
     private val addIngredientToListUseCase: AddIngredientToListUseCase,
     private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
     private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
@@ -52,9 +50,7 @@ class InsertFoodViewModel @Inject constructor(
     private val insertFoodArgs: InsertFoodArguments =
         InsertFoodArguments(savedStateHandle, stringDecoder)
     private val uriId = insertFoodArgs.uri
-    private val descriptionId = insertFoodArgs.description
     private val categoryId = insertFoodArgs.category
-    private val ingredientsListId = insertFoodArgs.ingredientsList
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
@@ -67,30 +63,20 @@ class InsertFoodViewModel @Inject constructor(
                 when(val result = getTemporaryPendingImageUseCase.execute()) {
                     is State.Failed -> {
                         _state.update {
-                            it.copy(errorMessage = result.message, description = descriptionId)
+                            it.copy(errorMessage = result.message)
                         }
                     }
                     is State.Success -> {
                         _state.update {
-                            it.copy(shouldAddImageFromTemporary = true, imageUri = result.data, description = descriptionId)
+                            it.copy(shouldAddImageFromTemporary = true, imageUri = result.data)
                         }
                     }
                 }
             }
         } else {
             _state.update {
-                it.copy(imageUri = Uri.parse(uriId), description = descriptionId)
+                it.copy(imageUri = Uri.parse(uriId))
             }
-        }
-        _state.update {
-            it.copy(ingredientsList = deserializeIngredients())
-        }
-    }
-
-    private fun deserializeIngredients(): List<IngredientViewData> {
-        val deserializedIngredients = deserializeIngredientsUseCase.execute(ingredientsListId)
-        return deserializedIngredients.map {
-            ingredientMapper.mapToViewData(it)
         }
     }
 
@@ -125,7 +111,7 @@ class InsertFoodViewModel @Inject constructor(
                     description = description,
                     category = categoryId,
                 ),
-                ingredients = state.value.ingredientsList,
+                ingredients = ingredients,
                 fileUri = imageUri ?: Uri.EMPTY,
                 shouldAddImageFromTemporary = state.value.shouldAddImageFromTemporary
             )) {
