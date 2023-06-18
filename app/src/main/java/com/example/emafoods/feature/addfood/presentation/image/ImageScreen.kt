@@ -60,14 +60,14 @@ import com.example.emafoods.feature.addfood.data.composefileprovider.ComposeFile
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
-import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodImage
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun ImageRoute(
-    onNextClicked: (IngredientsArguments) -> Unit,
+    onNextClicked: (InsertFoodArguments) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AddImageViewModel = hiltViewModel()
 ) {
@@ -93,9 +93,10 @@ fun ImageRoute(
         hasTakePictureImage = state.hasTakePictureImage,
         onNextClicked = { imageUri ->
             onNextClicked(
-                IngredientsArguments(
+                InsertFoodArguments(
                     category = state.category,
                     uri = imageUri ?: IMAGE_FROM_GALLERY_FLAG,
+                    title = state.title,
                 )
             )
         },

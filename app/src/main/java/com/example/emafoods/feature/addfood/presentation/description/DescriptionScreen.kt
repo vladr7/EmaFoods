@@ -28,9 +28,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
-import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 
 @Composable
@@ -52,6 +52,7 @@ fun DescriptionRoute(
                 InsertFoodArguments(
                     uri = state.uri,
                     category = state.category,
+                    title = ""
                 )
             )
         },

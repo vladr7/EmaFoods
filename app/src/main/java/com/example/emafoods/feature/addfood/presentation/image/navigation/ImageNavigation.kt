@@ -12,9 +12,10 @@ import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.category.navigation.CategoryIdArg
 import com.example.emafoods.feature.addfood.presentation.image.ImageRoute
-import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsArguments
+import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 
 const val IMAGE_FROM_GALLERY_FLAG = "IMAGE_FROM_GALLERY_FLAG"
+const val TitleIdArg = "TitleArg"
 
 data class ImageArguments(
     val category: String,
@@ -32,7 +33,7 @@ fun NavController.navigateToImage(categoryId: String) {
 }
 
 
-fun NavGraphBuilder.imageScreen(onHasImage: (IngredientsArguments) -> Unit) {
+fun NavGraphBuilder.imageScreen(onHasImage: (InsertFoodArguments) -> Unit) {
     composable(
         route = "${AddFoodDestinations.Image.route}/{$CategoryIdArg}",
         arguments = listOf(

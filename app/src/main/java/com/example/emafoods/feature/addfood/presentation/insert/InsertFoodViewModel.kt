@@ -13,14 +13,12 @@ import com.example.emafoods.core.presentation.base.ViewState
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.domain.models.IngredientResult
 import com.example.emafoods.feature.addfood.domain.usecase.AddIngredientToListUseCase
-import com.example.emafoods.feature.addfood.domain.usecase.DeserializeIngredientsUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.GetTemporaryPendingImageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.InsertFoodUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
 import com.example.emafoods.feature.addfood.presentation.image.navigation.IMAGE_FROM_GALLERY_FLAG
-import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientMapper
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.InsertFoodArguments
 import com.example.emafoods.feature.game.domain.usecase.IncreaseXpUseCase
@@ -51,6 +49,7 @@ class InsertFoodViewModel @Inject constructor(
         InsertFoodArguments(savedStateHandle, stringDecoder)
     private val uriId = insertFoodArgs.uri
     private val categoryId = insertFoodArgs.category
+    private val titleId = insertFoodArgs.title
 
     private val _state = MutableStateFlow<InsertFoodViewState>(
         InsertFoodViewState()
@@ -58,6 +57,9 @@ class InsertFoodViewModel @Inject constructor(
     val state: StateFlow<InsertFoodViewState> = _state
 
     init {
+        _state.update {
+            it.copy(title = titleId)
+        }
         if(uriId == IMAGE_FROM_GALLERY_FLAG) {
             viewModelScope.launch {
                 when(val result = getTemporaryPendingImageUseCase.execute()) {
@@ -259,5 +261,6 @@ data class InsertFoodViewState(
     val description: String = "",
     val insertFoodSuccess: Boolean = false,
     val shouldAddImageFromTemporary: Boolean = false,
-    val ingredientsList: List<IngredientViewData> = emptyList()
+    val ingredientsList: List<IngredientViewData> = emptyList(),
+    val title: String = ""
 ) : ViewState(isLoading, errorMessage)
