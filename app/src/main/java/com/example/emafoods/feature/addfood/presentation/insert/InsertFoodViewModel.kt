@@ -60,14 +60,15 @@ class InsertFoodViewModel @Inject constructor(
         _state.update {
             it.copy(title = titleId)
         }
-        if(uriId == IMAGE_FROM_GALLERY_FLAG) {
+        if (uriId == IMAGE_FROM_GALLERY_FLAG) {
             viewModelScope.launch {
-                when(val result = getTemporaryPendingImageUseCase.execute()) {
+                when (val result = getTemporaryPendingImageUseCase.execute()) {
                     is State.Failed -> {
                         _state.update {
                             it.copy(errorMessage = result.message)
                         }
                     }
+
                     is State.Success -> {
                         _state.update {
                             it.copy(shouldAddImageFromTemporary = true, imageUri = result.data)
@@ -170,7 +171,8 @@ class InsertFoodViewModel @Inject constructor(
     }
 
     fun addIngredientToList(ingredient: IngredientViewData) {
-        when(val result = addIngredientToListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+        when (val result =
+            addIngredientToListUseCase.execute(ingredient, _state.value.ingredientsList)) {
             is IngredientResult.ErrorAlreadyAdded -> {
                 _state.update {
                     it.copy(
@@ -178,6 +180,7 @@ class InsertFoodViewModel @Inject constructor(
                     )
                 }
             }
+
             is IngredientResult.Success -> {
                 _state.update {
                     it.copy(
@@ -189,7 +192,8 @@ class InsertFoodViewModel @Inject constructor(
     }
 
     fun removeIngredientFromList(ingredient: IngredientViewData) {
-        when(val result = removeIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+        when (val result =
+            removeIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
             is IngredientResult.ErrorAlreadyAdded -> {}
             is IngredientResult.Success -> {
                 _state.update {
@@ -202,7 +206,10 @@ class InsertFoodViewModel @Inject constructor(
     }
 
     fun saveChangesIngredient(ingredient: IngredientViewData) {
-        when(val result = saveChangedIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+        when (val result = saveChangedIngredientFromListUseCase.execute(
+            ingredient,
+            _state.value.ingredientsList
+        )) {
             is IngredientResult.ErrorAlreadyAdded -> {}
             is IngredientResult.Success -> {
                 _state.update {
@@ -239,7 +246,11 @@ class InsertFoodViewModel @Inject constructor(
     }
 
     fun onUpdateIngredientFocus(ingredient: IngredientViewData, isFocused: Boolean) {
-        when(val result = updateIngredientFocusUseCase.execute(_state.value.ingredientsList, ingredient, isFocused)) {
+        when (val result = updateIngredientFocusUseCase.execute(
+            _state.value.ingredientsList,
+            ingredient,
+            isFocused
+        )) {
             is IngredientResult.ErrorAlreadyAdded -> {}
             is IngredientResult.Success -> {
                 _state.update {
@@ -250,17 +261,25 @@ class InsertFoodViewModel @Inject constructor(
             }
         }
     }
-}
 
-data class InsertFoodViewState(
-    override val isLoading: Boolean = false,
-    override val errorMessage: String? = null,
-    val showEditIngredientsContent: Boolean = false,
-    val showIngredientAlreadyAddedError: Boolean = false,
-    val imageUri: Uri? = null,
-    val description: String = "",
-    val insertFoodSuccess: Boolean = false,
-    val shouldAddImageFromTemporary: Boolean = false,
-    val ingredientsList: List<IngredientViewData> = emptyList(),
-    val title: String = ""
-) : ViewState(isLoading, errorMessage)
+    fun updateTitle(title: String) {
+        _state.update {
+            it.copy(
+                title = title
+            )
+        }
+    }
+
+    data class InsertFoodViewState(
+        override val isLoading: Boolean = false,
+        override val errorMessage: String? = null,
+        val showEditIngredientsContent: Boolean = false,
+        val showIngredientAlreadyAddedError: Boolean = false,
+        val imageUri: Uri? = null,
+        val description: String = "",
+        val insertFoodSuccess: Boolean = false,
+        val shouldAddImageFromTemporary: Boolean = false,
+        val ingredientsList: List<IngredientViewData> = emptyList(),
+        val title: String = ""
+    ) : ViewState(isLoading, errorMessage)
+}

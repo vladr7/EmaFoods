@@ -68,6 +68,7 @@ import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
+import com.example.emafoods.feature.addfood.presentation.image.TitleScreenInput
 import com.example.emafoods.feature.addfood.presentation.ingredients.IngredientsScreen
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.game.presentation.ScrollArrow
@@ -152,7 +153,9 @@ fun InsertFoodRoute(
                 ingredients = state.ingredientsList,
                 onEditIngredientsClick = {
                     viewModel.onEditIngredients()
-                }
+                },
+                title = state.title,
+                onTitleChange = { viewModel.updateTitle(it) },
             )
         }
     }
@@ -173,9 +176,10 @@ fun InsertFoodScreen(
     onUriChanged: (Uri?) -> Unit,
     loading: Boolean,
     ingredients: List<IngredientViewData>,
-    onEditIngredientsClick: () -> Unit
+    onEditIngredientsClick: () -> Unit,
+    title: String,
+    onTitleChange: (String) -> Unit,
 ) {
-
     BackgroundTopToBot(
         imageId = R.drawable.descriptionbackgr
     )
@@ -193,6 +197,10 @@ fun InsertFoodScreen(
                     .padding(top = 20.dp),
                 onUriChangedChoseFile = onUriChanged,
                 onUriChangedTakePicture = onUriChanged,
+            )
+            TitleScreenInput(
+                onTitleChange = onTitleChange,
+                title = title
             )
             IngredientsReadOnlyContent(
                 modifier = modifier,
