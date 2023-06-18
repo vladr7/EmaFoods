@@ -7,6 +7,7 @@
     <string name="add_image_title">Adaugă o imagine a rețetei</string>
     <string name="description_empty_input_label_text">Mod de preparare</string>
     <string name="description_empty_input_label_text_min_chars">Minim 10 caractere</string>
+    <string name="title_empty_input_label_text_min_chars">Minim 5 caractere</string>
     <string name="description_screen_title">Mod de preparare</string>
     <string name="add_recipe">Adaugă rețeta</string>
     <string name="add_new_recipe">Adaugă altă rețetă</string>
@@ -61,4 +62,6 @@
     <string name="recipes_could_not_be_found">Nu se găsesc rețete, verifică conexiunea la internet!</string>
     <string name="filter">Filtre</string>
     <string name="fire_streaks_text">Numărul foculețelor indică zilele consecutive de utilizare a aplicației!</string>
+    <string name="title_recipe">Titlu rețetă</string>
+    <string name="title_must_contain_min_chars_error">Titlul trebuie să conțină minim 5 caractere</string>
 </resources>

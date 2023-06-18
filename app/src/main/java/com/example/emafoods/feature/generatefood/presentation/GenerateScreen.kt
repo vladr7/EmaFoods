@@ -675,7 +675,7 @@ fun BoxScope.WaitingGenerateFoodContent(
         TitleWithBackground(
             text = stringResource(id = R.string.generate_title),
             modifier = modifier
-                .padding(bottom = 160.dp),
+                .padding(bottom = 160.dp, top = 20.dp),
             fontSize = 20.sp,
         )
     }

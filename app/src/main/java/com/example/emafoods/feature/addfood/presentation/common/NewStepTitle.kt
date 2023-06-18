@@ -46,7 +46,7 @@ fun TitleWithBackground(
         ),
         textAlign = TextAlign.Center,
         modifier = modifier
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+            .padding(start = 20.dp, end = 20.dp)
             .background(
                 brush = gradient
             )

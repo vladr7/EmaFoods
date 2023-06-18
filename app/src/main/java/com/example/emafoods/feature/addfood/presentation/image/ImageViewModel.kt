@@ -105,6 +105,12 @@ class AddImageViewModel @Inject constructor(
             it.copy(isLoading = false)
         }
     }
+
+    fun updateTitle(title: String) {
+        _state.update {
+            it.copy(title = title)
+        }
+    }
 }
 
 data class ImageViewState(
@@ -113,5 +119,6 @@ data class ImageViewState(
     val hasTakePictureImage: Boolean = false,
     val hasChooseFilesImage: Boolean = false,
     val imageUri: String = Uri.EMPTY.toString(),
-    val category: String = CategoryType.MAIN_DISH.string
+    val category: String = CategoryType.MAIN_DISH.string,
+    val title: String = ""
 ) : ViewState(isLoading, errorMessage)
