@@ -263,7 +263,7 @@ fun TitleScreenInput(
             color = MaterialTheme.colorScheme.onSecondary,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(8.dp)
+                .padding(top = 20.dp, end = 10.dp)
         )
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -184,6 +185,9 @@ fun InsertFoodScreen(
         imageId = R.drawable.descriptionbackgr
     )
     val scrollState = rememberScrollState()
+    LaunchedEffect(scrollState.maxValue) {
+        scrollState.scrollTo(scrollState.maxValue)
+    }
     Box(modifier = modifier) {
         Column(
             modifier = modifier
@@ -206,27 +210,33 @@ fun InsertFoodScreen(
                 modifier = modifier,
                 ingredients = ingredients,
                 onEditClick = onEditIngredientsClick,
+                isContentVisible = ingredients.isNotEmpty()
             )
-            Spacer(modifier = modifier.height(16.dp))
-            BasicTitle(modifier = modifier, text = stringResource(id = R.string.description_title))
-            DescriptionScreenInput(
-                modifier = modifier,
-                onDescriptionChange = onDescriptionChange,
-                description = description
-            )
-            Spacer(modifier = modifier.height(16.dp))
-            AddRecipeButton(
-                modifier,
-                onInsertFoodClick,
-                loading
-            )
+            if (ingredients.isNotEmpty()) {
+                Spacer(modifier = modifier.height(16.dp))
+                BasicTitle(
+                    modifier = modifier,
+                    text = stringResource(id = R.string.description_title)
+                )
+                DescriptionScreenInput(
+                    modifier = modifier,
+                    onDescriptionChange = onDescriptionChange,
+                    description = description
+                )
+                Spacer(modifier = modifier.height(16.dp))
+                AddRecipeButton(
+                    modifier,
+                    onInsertFoodClick,
+                    loading
+                )
+            }
         }
         ScrollArrow(
             modifier = modifier
                 .align(Alignment.BottomCenter)
                 .offset(y = 10.dp)
                 .size(80.dp),
-            visible = scrollState.value == 0 && scrollState.canScrollForward,
+            visible = scrollState.value == 0 && scrollState.canScrollForward && scrollState.maxValue > 100,
         )
     }
 }
@@ -237,40 +247,77 @@ fun IngredientsReadOnlyContent(
     ingredients: List<IngredientViewData>,
     onEditClick: () -> Unit,
     isEditButtonVisible: Boolean = true,
+    isContentVisible: Boolean = true,
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(max = 500.dp)
     ) {
-        Column {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                BasicTitle(
-                    modifier = modifier
-                        .padding(bottom = 8.dp),
-                    text = stringResource(id = R.string.ingredients_list_title)
+        if (isContentVisible) {
+            IngredientsNotEmptyContent(modifier, isEditButtonVisible, onEditClick, ingredients)
+        } else {
+            IngredientsEmptyContent(
+                modifier,
+                onAddIngredientsClick = onEditClick
+            )
+        }
+    }
+}
+
+@Composable
+fun IngredientsEmptyContent(
+    modifier: Modifier,
+    onAddIngredientsClick: () -> Unit
+) {
+    Button(
+        onClick = onAddIngredientsClick,
+        modifier = modifier
+            .padding(start = 20.dp)
+            .height(50.dp)
+    ) {
+        Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+        Text(
+            text = stringResource(id = R.string.add_ingredients),
+            modifier = modifier.padding(start = 8.dp)
+        )
+    }
+}
+
+@Composable
+private fun IngredientsNotEmptyContent(
+    modifier: Modifier,
+    isEditButtonVisible: Boolean,
+    onEditClick: () -> Unit,
+    ingredients: List<IngredientViewData>
+) {
+    Column {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BasicTitle(
+                modifier = modifier
+                    .padding(bottom = 8.dp),
+                text = stringResource(id = R.string.ingredients_list_title)
+            )
+            if (isEditButtonVisible) {
+                EditIngredientsButton(
+                    onClick = onEditClick
                 )
-                if(isEditButtonVisible) {
-                    EditIngredientsButton(
-                        onClick = onEditClick
-                    )
-                }
             }
-            ingredients.forEach { ingredient ->
-                IngredientReadOnlyItem(
-                    modifier = modifier,
-                    ingredientName = ingredient.name,
-                    measurement = ingredient.measurement.toString()
-                )
-                Divider(
-                    modifier = modifier
-                        .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 4.dp)
-                        .alpha(0.5f)
-                )
-            }
+        }
+        ingredients.forEach { ingredient ->
+            IngredientReadOnlyItem(
+                modifier = modifier,
+                ingredientName = ingredient.name,
+                measurement = ingredient.measurement.toString()
+            )
+            Divider(
+                modifier = modifier
+                    .padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 4.dp)
+                    .alpha(0.5f)
+            )
         }
     }
 }
@@ -280,7 +327,7 @@ fun CategoryTypeRow(
     modifier: Modifier = Modifier,
     categoryType: CategoryType,
 ) {
-    when(categoryType) {
+    when (categoryType) {
         CategoryType.BREAKFAST -> {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -305,6 +352,7 @@ fun CategoryTypeRow(
                 )
             }
         }
+
         CategoryType.MAIN_DISH -> {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -329,6 +377,7 @@ fun CategoryTypeRow(
                 )
             }
         }
+
         CategoryType.SOUP -> {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -353,6 +402,7 @@ fun CategoryTypeRow(
                 )
             }
         }
+
         CategoryType.DESSERT -> {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
