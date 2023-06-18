@@ -100,7 +100,8 @@ class InsertFoodViewModel @Inject constructor(
     fun insertFood(
         description: String,
         imageUri: Uri?,
-        ingredients: List<IngredientViewData>
+        ingredients: List<IngredientViewData>,
+        title: String
     ) {
         if (state.value.isLoading) {
             return
@@ -113,7 +114,7 @@ class InsertFoodViewModel @Inject constructor(
                 food = Food(
                     description = description,
                     category = categoryId,
-                    title = state.value.title
+                    title = title
                 ),
                 ingredients = ingredients,
                 fileUri = imageUri ?: Uri.EMPTY,
