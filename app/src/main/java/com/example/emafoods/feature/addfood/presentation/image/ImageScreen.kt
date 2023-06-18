@@ -132,7 +132,10 @@ fun ImageScreen(
                     .fillMaxWidth()
                     .padding(top = 20.dp),
             )
-            TitleScreenInput(onTitleChange = onTitleChange, title = title)
+            TitleScreenInput(onTitleChange = onTitleChange, title = title,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp))
             TitleWithBackground(
                 text = stringResource(id = R.string.add_image_title),
                 fontSize = 26.sp,
@@ -205,8 +208,8 @@ fun TitleScreenInput(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 100.dp, max = 200.dp)
-            .padding(top = 10.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
+            .heightIn(max = 200.dp)
+            .padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
     ) {
         OutlinedTextField(
             value = title,
