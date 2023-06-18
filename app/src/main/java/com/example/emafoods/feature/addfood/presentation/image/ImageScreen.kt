@@ -36,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -126,9 +127,17 @@ fun ImageScreen(
     ) {
         Column {
             TitleWithBackground(
+                text = stringResource(R.string.title_recipe), fontSize = 26.sp,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+            )
+            TitleScreenInput(onTitleChange = onTitleChange, title = title)
+            TitleWithBackground(
                 text = stringResource(id = R.string.add_image_title),
-                modifier = modifier.padding(top = 20.dp),
-                fontSize = 26.sp
+                fontSize = 26.sp,
+                modifier = modifier
+                    .padding(bottom = 20.dp),
             )
             InsertFoodImage(
                 imageUri = imageUri,
@@ -136,17 +145,18 @@ fun ImageScreen(
                 onUriChangedChoseFile = onChoosePictureUriRetrieved,
                 onUriChangedTakePicture = onTakePictureUriRetrieved
             )
-            TitleWithBackground(text = stringResource(R.string.title_recipe), fontSize = 26.sp)
-            TitleScreenInput(onTitleChange = onTitleChange, title = title)
+            Spacer(modifier = modifier.weight(0.5f))
+            ImageScreenNextStep(
+                modifier
+                    .weight(1f),
+                hasTakePictureImage,
+                onNextClicked,
+                imageUri,
+                title,
+            )
+            Spacer(modifier = modifier.weight(0.5f))
         }
-        ImageScreenNextStep(
-            modifier
-                .align(Alignment.BottomEnd),
-            hasTakePictureImage,
-            onNextClicked,
-            imageUri,
-            title,
-        )
+
     }
 }
 
@@ -319,20 +329,22 @@ fun TakePictureIcon(
 
 @Composable
 fun ImageScreenBackground(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
-    val gradient = Brush.linearGradient(
+    val gradient = Brush.verticalGradient(
         colors = listOf(
             Color.Transparent,
             MaterialTheme.colorScheme.secondary
         ),
+        startY = sizeImage.height.toFloat(),
+        endY = 900f,
     )
 
     Box() {
         Image(
-            painter = painterResource(id = R.drawable.imagefoodbackgr),
+            painter = painterResource(R.drawable.imagefoodbackgr),
             contentDescription = null,
             contentScale = ContentScale.FillHeight,
             modifier = modifier
@@ -340,16 +352,13 @@ fun ImageScreenBackground(
                     sizeImage = it.size
                 }
                 .fillMaxSize(),
-            alpha = 0.35f
+            alpha = 0.45f
         )
         Box(
             modifier = Modifier
                 .matchParentSize()
+                .alpha(0.85f)
                 .background(gradient)
         )
     }
 }
-
-
-
-
