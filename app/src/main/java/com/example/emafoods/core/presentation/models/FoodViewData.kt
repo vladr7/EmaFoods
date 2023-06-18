@@ -17,7 +17,8 @@ data class FoodViewData(
     val description: String = "",
     val imageRef: String = "",
     val categoryType: CategoryType,
-    val ingredients: List<IngredientViewData> = emptyList()
+    val ingredients: List<IngredientViewData> = emptyList(),
+    val title: String = ""
 ) : ViewData()
 
 class FoodMapper @Inject constructor(
@@ -34,6 +35,7 @@ class FoodMapper @Inject constructor(
         val authorUid = viewData.authorUid
         val ingredients = serializeIngredientsUseCase.execute(viewData.ingredients.map { ingredientMapper.mapToModel(it) })
         val category = viewData.categoryType.string
+        val title = viewData.title
         return Food(
             id = id,
             author = author,
@@ -41,7 +43,8 @@ class FoodMapper @Inject constructor(
             description = description,
             imageRef = imageRef,
             category = category,
-            ingredients = ingredients
+            ingredients = ingredients,
+            title = title
         )
     }
 
@@ -53,6 +56,7 @@ class FoodMapper @Inject constructor(
         val ingredients = deserializeIngredientsUseCase.execute(model.ingredients)
             .map { ingredientMapper.mapToViewData(it) }
         val categoryType = CategoryType.fromString(model.category)
+        val title = model.title
         return FoodViewData(
             id = id,
             author = author,
@@ -60,7 +64,8 @@ class FoodMapper @Inject constructor(
             description = description,
             imageRef = imageRef,
             categoryType = categoryType,
-            ingredients = ingredients
+            ingredients = ingredients,
+            title = title
         )
     }
 }
