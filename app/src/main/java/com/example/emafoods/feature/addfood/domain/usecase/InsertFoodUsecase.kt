@@ -22,28 +22,31 @@ class InsertFoodUseCase @Inject constructor(
         shouldAddImageFromTemporary: Boolean,
         ingredients: List<IngredientViewData>
     ): State<Food> {
-        if (!checkFieldsAreFilledUseCase.execute(food.description)) {
-            return State.failed("Te rog adauga o scurta descriere a retetei (minim 10 caractere)")
+        when(val result = checkFieldsAreFilledUseCase.execute(
+            foodDescription = food.description,
+            title = food.title,
+            fileUri = fileUri,
+            ingredients = ingredients
+        )) {
+            is State.Failed -> {
+                return State.failed(result.message)
+            }
+            is State.Success -> {
+                val user = getUserDetailsUseCase.execute()
+                val serializedIngredients = serializeIngredientsUseCase.execute(
+                    ingredients.map { ingredientsMapper.mapToModel(it) }
+                )
+                val newFood = Food(
+                    authorUid = user.uid,
+                    author = user.displayName,
+                    description = food.description,
+                    imageRef = fileUri.toString(),
+                    category = food.category,
+                    ingredients = serializedIngredients
+                )
+                return addFoodToPendingListUseCase.execute(newFood, shouldAddImageFromTemporary)
+            }
         }
-
-        if (fileUri == Uri.EMPTY) {
-            return State.failed("Te rog adauga o imagine a retetei")
-        }
-
-        val user = getUserDetailsUseCase.execute()
-        val serializedIngredients = serializeIngredientsUseCase.execute(
-            ingredients.map { ingredientsMapper.mapToModel(it) }
-        )
-        val newFood = Food(
-            authorUid = user.uid,
-            author = user.displayName,
-            description = food.description,
-            imageRef = fileUri.toString(),
-            category = food.category,
-            ingredients = serializedIngredients
-        )
-
-        return addFoodToPendingListUseCase.execute(newFood, shouldAddImageFromTemporary)
     }
 }
 
