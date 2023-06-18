@@ -42,7 +42,8 @@ class InsertFoodUseCase @Inject constructor(
                     description = food.description,
                     imageRef = fileUri.toString(),
                     category = food.category,
-                    ingredients = serializedIngredients
+                    ingredients = serializedIngredients,
+                    title = food.title
                 )
                 return addFoodToPendingListUseCase.execute(newFood, shouldAddImageFromTemporary)
             }

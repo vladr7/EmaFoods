@@ -48,16 +48,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -154,7 +158,6 @@ fun PendingFoodScreen(
             modifier = modifier
                 .verticalScroll(scrollState)
         ) {
-            println("vlad: food description: ${food.description}")
             FoodItem(
                 food = food,
                 modifier = modifier,
@@ -186,7 +189,7 @@ fun PendingFoodScreen(
                 )
             }
         }
-        if(ingredientsList.isNotEmpty() && scrollState.canScrollForward) {
+        if(ingredientsList.isNotEmpty() && scrollState.canScrollForward && scrollState.maxValue > 100) {
             ScrollArrow(
                 modifier = modifier
                     .align(Alignment.BottomCenter)
@@ -231,6 +234,7 @@ fun FoodItem(
             if(isCategoryTypeVisible) {
                 CategoryTypeRow(categoryType = food.categoryType)
             }
+            FoodTitle(text = food.title)
             if (ingredientsList.isNotEmpty()) {
                 Box(
                     modifier = Modifier
@@ -269,6 +273,32 @@ fun FoodItem(
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
+}
+
+@Composable
+fun FoodTitle(
+    modifier: Modifier = Modifier,
+    text: String,
+    fontSize: TextUnit = 20.sp,
+) {
+    Text(
+        text = text,
+        fontSize = fontSize,
+        fontFamily = MaterialTheme.typography.titleLarge.fontFamily,
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Start,
+        color = MaterialTheme.colorScheme.onSecondary,
+        style = TextStyle(
+            shadow = Shadow(
+                color = Color.Yellow,
+                blurRadius = 4f,
+                offset = Offset(1f, 1f)
+            )
+        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 10.dp)
+    )
 }
 
 @Composable

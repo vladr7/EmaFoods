@@ -139,7 +139,8 @@ fun InsertFoodRoute(
                     viewModel.insertFood(
                         description = state.description,
                         imageUri = state.imageUri,
-                        ingredients = state.ingredientsList
+                        ingredients = state.ingredientsList,
+                        title = state.title
                     )
                 },
                 onUriChanged = { uri ->
