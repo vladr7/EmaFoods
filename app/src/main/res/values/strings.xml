@@ -64,4 +64,9 @@
     <string name="fire_streaks_text">Numărul foculețelor indică zilele consecutive de utilizare a aplicației!</string>
     <string name="title_recipe">Titlu rețetă</string>
     <string name="title_must_contain_min_chars_error">Titlul trebuie să conțină minim 5 caractere</string>
+    <string name="please_add_image">Te rog adăugă o imagine a rețetei</string>
+    <string name="please_add_description">Te rog adăugă modul de preparare a rețetei (minim 10 caractere)</string>
+    <string name="please_add_title">Te rog adăugă un titlu rețetei (minim 5 caractere)</string>
+    <string name="please_add_ingredient">Te rog adăugă cel puțin un ingredient</string>
+    <string name="all_fields_are_filled">Toate câmpurile sunt completate</string>
 </resources>

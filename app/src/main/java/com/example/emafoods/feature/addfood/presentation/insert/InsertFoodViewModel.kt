@@ -113,6 +113,7 @@ class InsertFoodViewModel @Inject constructor(
                 food = Food(
                     description = description,
                     category = categoryId,
+                    title = state.value.title
                 ),
                 ingredients = ingredients,
                 fileUri = imageUri ?: Uri.EMPTY,
