@@ -148,6 +148,7 @@ fun GenerateScreenRoute(
         onProfileImageClick = {
             viewModel.onProfileImageClick(it)
         },
+        previousButtonVisible = state.previousButtonVisible,
     )
 }
 
@@ -180,7 +181,8 @@ fun GenerateScreen(
     userName: String,
     nrOfFireStreaks: Int,
     profileImage: ProfileImage,
-    onProfileImageClick: (ProfileImage) -> Unit
+    onProfileImageClick: (ProfileImage) -> Unit,
+    previousButtonVisible: Boolean
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -248,7 +250,8 @@ fun GenerateScreen(
                     }
                     onGenerateClick()
                 },
-                alpha = generateButtonsAlpha
+                alpha = generateButtonsAlpha,
+                previousButtonVisible = previousButtonVisible
             )
             CategoryDropDown(
                 modifier = modifier,
@@ -264,7 +267,8 @@ fun GenerateScreen(
             modifier = modifier
                 .align(Alignment.BottomCenter)
                 .offset(y = 10.dp)
-                .size(80.dp),
+                .size(80.dp)
+                .alpha(generateButtonsAlpha),
             visible = showFilterAndButtons && categorySelected && scrollState.canScrollForward,
             color = MaterialTheme.colorScheme.primaryContainer
         )
@@ -277,12 +281,14 @@ private fun BoxScope.GenerateButtons(
     onPreviousButtonClick: () -> Unit,
     onGenerateClick: () -> Unit,
     alpha: Float = 1f,
+    previousButtonVisible: Boolean,
 ) {
     PreviousGenerateButton(
         modifier = modifier
             .align(Alignment.CenterStart)
             .alpha(alpha),
         onPreviousButtonClick = onPreviousButtonClick,
+        previousButtonVisible = previousButtonVisible
     )
     GenerateButton(
         onGenerateClick = onGenerateClick,
@@ -296,6 +302,7 @@ private fun BoxScope.GenerateButtons(
 fun PreviousGenerateButton(
     modifier: Modifier = Modifier,
     onPreviousButtonClick: () -> Unit,
+    previousButtonVisible: Boolean,
 ) {
     val offsetXInitial = (-40).dp
     val coroutineScope = rememberCoroutineScope()
@@ -334,10 +341,12 @@ fun PreviousGenerateButton(
 
         contentAlignment = Alignment.Center
     ) {
-        PreviousButtonArcComposable(
-            modifier = modifier,
-            offsetXHideButton = offsetXInitial
-        )
+        AnimatedVisibility(visible = previousButtonVisible) {
+            PreviousButtonArcComposable(
+                modifier = modifier,
+                offsetXHideButton = offsetXInitial
+            )
+        }
     }
 }
 
