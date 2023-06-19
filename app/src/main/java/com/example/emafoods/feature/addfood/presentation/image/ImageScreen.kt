@@ -49,6 +49,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -127,26 +128,25 @@ fun ImageScreen(
     ) {
         Column {
             TitleWithBackground(
-                text = stringResource(R.string.title_recipe), fontSize = 26.sp,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp),
-            )
-            TitleScreenInput(onTitleChange = onTitleChange, title = title,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp))
-            TitleWithBackground(
                 text = stringResource(id = R.string.add_image_title),
                 fontSize = 26.sp,
                 modifier = modifier
-                    .padding(bottom = 20.dp),
+                    .padding(bottom = 8.dp, top = 20.dp),
             )
             InsertFoodImage(
                 imageUri = imageUri,
                 modifier = modifier,
                 onUriChangedChoseFile = onChoosePictureUriRetrieved,
                 onUriChangedTakePicture = onTakePictureUriRetrieved
+            )
+            TitleWithBackground(
+                text = stringResource(R.string.title_recipe), fontSize = 26.sp,
+                modifier = modifier
+                    .fillMaxWidth(),
+            )
+            TitleScreenInput(onTitleChange = onTitleChange, title = title,
+                modifier = modifier
+                    .fillMaxWidth()
             )
             Spacer(modifier = modifier.weight(0.5f))
             ImageScreenNextStep(
@@ -341,8 +341,8 @@ fun ImageScreenBackground(
             Color.Transparent,
             MaterialTheme.colorScheme.secondary
         ),
-        startY = sizeImage.height.toFloat(),
-        endY = 900f,
+        startY = -1500f,
+        endY = sizeImage.height.toFloat(),
     )
 
     Box() {
@@ -355,12 +355,12 @@ fun ImageScreenBackground(
                     sizeImage = it.size
                 }
                 .fillMaxSize(),
-            alpha = 0.45f
+            alpha = 0.35f
         )
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .alpha(0.85f)
+                .alpha(0.95f)
                 .background(gradient)
         )
     }
