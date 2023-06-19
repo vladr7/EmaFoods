@@ -69,4 +69,7 @@
     <string name="please_add_title">Te rog adăugă un titlu rețetei (minim 5 caractere)</string>
     <string name="please_add_ingredient">Te rog adăugă cel puțin un ingredient</string>
     <string name="all_fields_are_filled">Toate câmpurile sunt completate</string>
+    <string name="exit">Exit</string>
+    <string name="are_you_sure_you_want_to_exit">Sunteți sigur că vreți să părăsiți ecranul?</string>
+    <string name="i_want_to_stay">Vreau să rămân</string>
 </resources>

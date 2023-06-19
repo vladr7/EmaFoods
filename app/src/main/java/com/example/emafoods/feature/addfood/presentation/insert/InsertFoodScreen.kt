@@ -2,6 +2,7 @@ package com.example.emafoods.feature.addfood.presentation.insert
 
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -68,6 +69,7 @@ import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.LoadingButton
 import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
+import com.example.emafoods.core.presentation.common.alert.BackButtonAskExitDialog
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
@@ -86,10 +88,14 @@ fun InsertFoodRoute(
     modifier: Modifier = Modifier,
     onSuccess: () -> Unit,
     viewModel: InsertFoodViewModel = hiltViewModel(),
+    onBackPressed: () -> Unit
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val coroutine = rememberCoroutineScope()
+    BackHandler {
+        viewModel.onBackPressed()
+    }
 
     if (state.insertFoodSuccess) {
         viewModel.onXpIncrease()
@@ -168,7 +174,16 @@ fun InsertFoodRoute(
         Toast.makeText(context, "${state.errorMessage}", Toast.LENGTH_LONG).show()
         viewModel.hideError()
     }
-
+    if (state.showBackButtonDialog) {
+        BackButtonAskExitDialog(
+            onDismissClick = {
+                viewModel.onDismissBackButtonDialog()
+            },
+            onConfirmClick = {
+                onBackPressed()
+            },
+        )
+    }
 }
 
 @Composable

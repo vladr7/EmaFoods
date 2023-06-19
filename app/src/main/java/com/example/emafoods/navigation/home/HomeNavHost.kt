@@ -55,6 +55,9 @@ fun HomeNavHost(
             insertFoodScreen(
                 onSuccess = {
                     navController.navigateToCongratulation()
+                },
+                onBackPressed = {
+                    navController.navigateUp()
                 }
             )
             congratulationScreen(
