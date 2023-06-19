@@ -16,6 +16,7 @@ import com.example.emafoods.feature.addfood.presentation.insert.navigation.Inser
 
 const val IMAGE_FROM_GALLERY_FLAG = "IMAGE_FROM_GALLERY_FLAG"
 const val TitleIdArg = "TitleArg"
+const val UriIdArg = "UriIdArg"
 
 data class ImageArguments(
     val category: String,
