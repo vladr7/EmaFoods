@@ -256,7 +256,8 @@ fun GenerateScreen(
                 onDismissRequest = onDismissCategoryDropDown,
                 onClickCategoryDropDown = onClickCategoryDropDown,
                 onDropDownItemClick = onDropDownItemClick,
-                visible = showFilterAndButtons
+                visible = showFilterAndButtons,
+                categoryType = food.categoryType
             )
         }
         ScrollArrow(
@@ -497,6 +498,7 @@ fun BoxScope.CategoryDropDown(
     onDismissRequest: () -> Unit,
     onClickCategoryDropDown: () -> Unit,
     onDropDownItemClick: (CategoryType) -> Unit,
+    categoryType: CategoryType,
     visible: Boolean
 ) {
     Column(
@@ -518,7 +520,9 @@ fun BoxScope.CategoryDropDown(
             ) {
                 DropdownMenuItem(
                     modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                        .background(color = if (categoryType == CategoryType.MAIN_DISH)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer),
                     leadingIcon = {
                         Image(
                             painter = painterResource(id = R.drawable.spaghetti),
@@ -539,7 +543,9 @@ fun BoxScope.CategoryDropDown(
                 Divider()
                 DropdownMenuItem(
                     modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                        .background(color = if (categoryType == CategoryType.DESSERT)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer),
                     leadingIcon = {
                         Image(
                             painter = painterResource(id = R.drawable.dessert),
@@ -560,7 +566,9 @@ fun BoxScope.CategoryDropDown(
                 Divider()
                 DropdownMenuItem(
                     modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                        .background(color = if (categoryType == CategoryType.SOUP)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer),
                     leadingIcon = {
                         Image(
                             painter = painterResource(id = R.drawable.soup),
@@ -581,7 +589,9 @@ fun BoxScope.CategoryDropDown(
                 Divider()
                 DropdownMenuItem(
                     modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.primaryContainer),
+                        .background(color = if (categoryType == CategoryType.BREAKFAST)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer),
                     leadingIcon = {
                         Image(
                             painter = painterResource(id = R.drawable.breakfast),
@@ -631,11 +641,21 @@ fun FilterTextAndIcon(
             textAlign = TextAlign.Center,
             modifier = modifier
         )
+        val brush = Brush.radialGradient(
+            colors = listOf(
+                MaterialTheme.colorScheme.secondary,
+                Color.Transparent,
+            ),
+            radius = 80f,
+        )
         Icon(
             imageVector = Icons.Default.FilterList,
             contentDescription = "Category",
             tint = Color.White,
             modifier = Modifier
+                .background(
+                    brush = brush,
+                )
                 .size(50.dp)
         )
     }
