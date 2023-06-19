@@ -46,7 +46,8 @@ class DefaultFoodRepository @Inject constructor(
                     imageRef = image?.imageRef ?: "",
                     addedDateInSeconds = food.addedDateInSeconds,
                     category = food.category,
-                    ingredients = food.ingredients
+                    ingredients = food.ingredients,
+                    title = food.title
                 )
                 if (newFood.imageRef.isNotEmpty()) {
                     mutableListOfFoods.add(newFood)
@@ -86,7 +87,8 @@ class DefaultFoodRepository @Inject constructor(
                     imageRef = image?.imageRef ?: "",
                     addedDateInSeconds = food.addedDateInSeconds,
                     category = food.category,
-                    ingredients = food.ingredients
+                    ingredients = food.ingredients,
+                    title = food.title
                 )
                 if (newFood.imageRef.isNotEmpty()) {
                     mutableListOfFoods.add(newFood)
