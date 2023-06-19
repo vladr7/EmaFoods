@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -52,9 +53,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
-import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
+import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
 import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 
@@ -143,7 +144,7 @@ fun IngredientsScreen(
                 TitleWithBackground(
                     text = screenTitle,
                     modifier = modifier
-                        .padding(top = screenTitlePaddingTop.dp)
+                        .padding(top = screenTitlePaddingTop.dp, bottom = 8.dp)
                 )
             }
             AnimatedVisibility(visible = !shouldShowIngredientCard && !isIngredientsListFocused) {
@@ -302,34 +303,18 @@ fun IngredientCard(
 
     Column(
         modifier = modifier
-            .padding(12.dp)
+            .padding(6.dp)
     ) {
-        AnimatedVisibility(visible = isFocused) {
-            Row(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                RemoveIngredientButton(
-                    onClick = onRemoveIngredientClick,
-                )
-                ConfirmIngredientsButton(
-                    isEnabled = ingredientValue.isNotEmpty() && measurementValue.isNotEmpty(),
-                    modifier = modifier.padding(start = 20.dp),
-                    onClick = {
-                        onConfirmIngredientClick(
-                            IngredientViewData(
-                                id = ingredient.id,
-                                name = ingredientValue,
-                                measurement = measurementValue.toLong()
-                            )
-                        )
-                    },
-                    text = addFoodText
-                )
-            }
-        }
+        RemoveAndConfirmIngredientButtons(
+            isFocused,
+            modifier,
+            onRemoveIngredientClick,
+            ingredientValue,
+            measurementValue,
+            onConfirmIngredientClick,
+            ingredient,
+            addFoodText
+        )
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -373,6 +358,45 @@ fun IngredientCard(
                     }
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.RemoveAndConfirmIngredientButtons(
+    isFocused: Boolean,
+    modifier: Modifier,
+    onRemoveIngredientClick: () -> Unit,
+    ingredientValue: String,
+    measurementValue: String,
+    onConfirmIngredientClick: (IngredientViewData) -> Unit,
+    ingredient: IngredientViewData,
+    addFoodText: String
+) {
+    AnimatedVisibility(visible = isFocused) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            RemoveIngredientButton(
+                onClick = onRemoveIngredientClick,
+            )
+            ConfirmIngredientsButton(
+                isEnabled = ingredientValue.isNotEmpty() && measurementValue.isNotEmpty(),
+                modifier = modifier.padding(start = 20.dp),
+                onClick = {
+                    onConfirmIngredientClick(
+                        IngredientViewData(
+                            id = ingredient.id,
+                            name = ingredientValue,
+                            measurement = measurementValue.toLong()
+                        )
+                    )
+                },
+                text = addFoodText
+            )
         }
     }
 }
