@@ -268,7 +268,7 @@ fun GenerateScreen(
                 .align(Alignment.BottomCenter)
                 .offset(y = 10.dp)
                 .size(80.dp)
-                .alpha(generateButtonsAlpha),
+                .alpha(generateButtonsAlpha - 0.4f),
             visible = showFilterAndButtons && categorySelected && scrollState.canScrollForward,
             color = MaterialTheme.colorScheme.primaryContainer
         )
