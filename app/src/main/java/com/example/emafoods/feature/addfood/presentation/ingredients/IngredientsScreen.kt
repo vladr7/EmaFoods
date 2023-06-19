@@ -48,55 +48,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
 import com.example.emafoods.feature.addfood.presentation.common.NextStepButton
 import com.example.emafoods.feature.addfood.presentation.common.StepIndicator
 import com.example.emafoods.feature.addfood.presentation.common.TitleWithBackground
-import com.example.emafoods.feature.addfood.presentation.description.navigation.DescriptionArguments
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 
-@Composable
-fun IngredientsRoute(
-    modifier: Modifier = Modifier,
-    viewModel: IngredientsViewModel = hiltViewModel(),
-    onConfirmedClick: (DescriptionArguments) -> Unit,
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    IngredientsScreen(
-        modifier = modifier,
-        onConfirmedClick = {
-            onConfirmedClick(
-                DescriptionArguments(
-                    uri = state.uriId,
-                    category = state.categoryType.string,
-                    ingredientsList = viewModel.serializedIngredients(),
-                )
-            )
-        },
-        ingredients = state.ingredientsList,
-        onAddIngredientToList = { ingredient ->
-            viewModel.addIngredientToList(ingredient)
-        },
-        onRemoveIngredientFromList = { ingredient ->
-            viewModel.removeIngredientFromList(ingredient)
-        },
-        onSaveChangesIngredient = { ingredient ->
-            viewModel.saveChangesIngredient(ingredient)
-        },
-        showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
-        onShowedIngredientAlreadyAddedError = {
-            viewModel.onShowedIngredientAlreadyAdded()
-        },
-        onUpdateIngredientFocus = { ingredient, isFocused ->
-            viewModel.onUpdateIngredientFocus(ingredient, isFocused)
-        },
-    )
-}
 
 @Composable
 fun IngredientsScreen(

@@ -30,6 +30,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,10 +53,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
@@ -66,7 +70,6 @@ import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.common.BackgroundTopToBot
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.feature.addfood.presentation.category.CategoryType
-import com.example.emafoods.feature.addfood.presentation.description.DescriptionScreenInput
 import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
 import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
 import com.example.emafoods.feature.addfood.presentation.image.TitleScreenInput
@@ -238,6 +241,64 @@ fun InsertFoodScreen(
                 .offset(y = 10.dp)
                 .size(80.dp),
             visible = scrollState.value == 0 && scrollState.canScrollForward && scrollState.maxValue > 100,
+        )
+    }
+}
+
+@Composable
+fun DescriptionScreenInput(
+    modifier: Modifier = Modifier,
+    onDescriptionChange: (String) -> Unit,
+    description: String
+) {
+    val maxChars = 1000
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 100.dp, max = 350.dp)
+            .padding(top = 10.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
+    ) {
+        OutlinedTextField(
+            value = description,
+            onValueChange = {
+                if (it.length <= maxChars) {
+                    onDescriptionChange(it)
+                }
+            },
+            label = {
+                if (description.length <= 10) {
+                    Text(
+                        text = stringResource(id = R.string.description_empty_input_label_text_min_chars),
+                        color = MaterialTheme.colorScheme.onSecondary,
+                    )
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.description_empty_input_label_text),
+                        color = MaterialTheme.colorScheme.onSecondary,
+                    )
+                }
+            },
+            modifier = modifier
+                .fillMaxWidth(),
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSecondary,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = MaterialTheme.typography.titleLarge.fontFamily
+            ),
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = MaterialTheme.colorScheme.onSecondary,
+                focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSecondary,
+            ),
+        )
+        Text(
+            text = (maxChars - description.count()).toString(),
+            color = MaterialTheme.colorScheme.onSecondary,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
         )
     }
 }

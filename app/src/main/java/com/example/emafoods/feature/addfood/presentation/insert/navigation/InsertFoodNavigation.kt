@@ -10,8 +10,8 @@ import androidx.navigation.navArgument
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.category.navigation.CategoryIdArg
-import com.example.emafoods.feature.addfood.presentation.description.navigation.UriIdArg
 import com.example.emafoods.feature.addfood.presentation.image.navigation.TitleIdArg
+import com.example.emafoods.feature.addfood.presentation.image.navigation.UriIdArg
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodRoute
 
 class InsertFoodArguments(
