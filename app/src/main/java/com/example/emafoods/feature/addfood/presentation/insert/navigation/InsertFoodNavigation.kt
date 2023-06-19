@@ -49,6 +49,7 @@ fun NavController.navigateToInsertFood(
 
 fun NavGraphBuilder.insertFoodScreen(
     onSuccess: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     composable(
         route = "${AddFoodDestinations.InsertFood.route}/{$UriIdArg}&{$CategoryIdArg}&{$TitleIdArg}",
@@ -64,6 +65,6 @@ fun NavGraphBuilder.insertFoodScreen(
             },
         ),
     ) {
-        InsertFoodRoute(onSuccess = onSuccess)
+        InsertFoodRoute(onSuccess = onSuccess, onBackPressed = onBackPressed)
     }
 }

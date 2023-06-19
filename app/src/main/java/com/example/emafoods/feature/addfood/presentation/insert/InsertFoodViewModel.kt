@@ -272,6 +272,22 @@ class InsertFoodViewModel @Inject constructor(
         }
     }
 
+    fun onBackPressed() {
+        _state.update {
+            it.copy(
+                showBackButtonDialog = true
+            )
+        }
+    }
+
+    fun onDismissBackButtonDialog() {
+        _state.update {
+            it.copy(
+                showBackButtonDialog = false
+            )
+        }
+    }
+
     data class InsertFoodViewState(
         override val isLoading: Boolean = false,
         override val errorMessage: String? = null,
@@ -282,6 +298,7 @@ class InsertFoodViewModel @Inject constructor(
         val insertFoodSuccess: Boolean = false,
         val shouldAddImageFromTemporary: Boolean = false,
         val ingredientsList: List<IngredientViewData> = emptyList(),
-        val title: String = ""
+        val title: String = "",
+        val showBackButtonDialog: Boolean = false,
     ) : ViewState(isLoading, errorMessage)
 }
