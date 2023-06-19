@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.addfood.di
 
+import android.content.Context
 import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
@@ -20,6 +21,7 @@ import com.example.emafoods.feature.addfood.presentation.ingredients.models.Ingr
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 @Module
@@ -27,7 +29,12 @@ import dagger.hilt.components.SingletonComponent
 object AddFoodModule {
 
     @Provides
-    fun provideCheckFieldsAreFilledUseCase() = CheckFieldsAreFilledUseCase()
+    fun provideCheckFieldsAreFilledUseCase(
+        @ApplicationContext
+        context: Context
+    ) = CheckFieldsAreFilledUseCase(
+        context = context
+    )
 
     @Provides
     fun provideAddFoodUseCase(

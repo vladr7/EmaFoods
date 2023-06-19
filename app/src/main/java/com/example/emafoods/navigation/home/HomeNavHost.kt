@@ -9,12 +9,8 @@ import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.category.navigation.categoryScreen
 import com.example.emafoods.feature.addfood.presentation.congratulation.navigation.congratulationScreen
 import com.example.emafoods.feature.addfood.presentation.congratulation.navigation.navigateToCongratulation
-import com.example.emafoods.feature.addfood.presentation.description.navigation.descriptionScreen
-import com.example.emafoods.feature.addfood.presentation.description.navigation.navigateToDescription
 import com.example.emafoods.feature.addfood.presentation.image.navigation.imageScreen
 import com.example.emafoods.feature.addfood.presentation.image.navigation.navigateToImage
-import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.ingredientsScreen
-import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.navigateToIngredients
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.navigateToInsertFood
 import com.example.emafoods.feature.game.presentation.navigation.gameScreen
@@ -48,35 +44,20 @@ fun HomeNavHost(
                 }
             )
             imageScreen(
-                onHasImage = { ingredientsArguments ->
-                    navController.navigateToIngredients(
-                        uriId = ingredientsArguments.uri,
-                        categoryId = ingredientsArguments.category
-                    )
-                }
-            )
-            ingredientsScreen(
-                onConfirmedClick = { descriptionArguments ->
-                    navController.navigateToDescription(
-                        uriId = descriptionArguments.uri,
-                        categoryId = descriptionArguments.category,
-                        ingredientsList = descriptionArguments.ingredientsList
-                    )
-                }
-            )
-            descriptionScreen(
-                onConfirmedClick = {
+                onHasImage = { insertFoodArguments ->
                     navController.navigateToInsertFood(
-                        uriId = it.uri,
-                        descriptionId = it.description,
-                        categoryId = it.category,
-                        ingredientsList = it.ingredientsList
+                        uriId = insertFoodArguments.uri,
+                        categoryId = insertFoodArguments.category,
+                        title = insertFoodArguments.title
                     )
-                },
+                }
             )
             insertFoodScreen(
                 onSuccess = {
                     navController.navigateToCongratulation()
+                },
+                onBackPressed = {
+                    navController.navigateUp()
                 }
             )
             congratulationScreen(

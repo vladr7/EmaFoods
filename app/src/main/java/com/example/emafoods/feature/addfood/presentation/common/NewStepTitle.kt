@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.sp
 fun TitleWithBackground(
     modifier: Modifier = Modifier,
     text: String,
-    fontSize: TextUnit = 36.sp
+    fontSize: TextUnit = 36.sp,
+    textAlign: TextAlign = TextAlign.Center
 ) {
 
     val gradient = Brush.horizontalGradient(
@@ -44,9 +45,9 @@ fun TitleWithBackground(
                 )
             )
         ),
-        textAlign = TextAlign.Center,
+        textAlign = textAlign,
         modifier = modifier
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+            .padding(start = 20.dp, end = 20.dp)
             .background(
                 brush = gradient
             )

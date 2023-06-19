@@ -10,17 +10,14 @@ import androidx.navigation.navArgument
 import com.example.emafoods.core.presentation.stringdecoder.StringDecoder
 import com.example.emafoods.feature.addfood.navigation.AddFoodDestinations
 import com.example.emafoods.feature.addfood.presentation.category.navigation.CategoryIdArg
-import com.example.emafoods.feature.addfood.presentation.description.navigation.UriIdArg
-import com.example.emafoods.feature.addfood.presentation.ingredients.navigation.IngredientsIdArg
+import com.example.emafoods.feature.addfood.presentation.image.navigation.TitleIdArg
+import com.example.emafoods.feature.addfood.presentation.image.navigation.UriIdArg
 import com.example.emafoods.feature.addfood.presentation.insert.InsertFoodRoute
-
-const val DescriptionIdArg = "DescriptionIdArg"
 
 class InsertFoodArguments(
     val uri: String,
-    val description: String,
     val category: String,
-    val ingredientsList: String,
+    val title: String
 ) {
     constructor(
         savedStateHandle: SavedStateHandle,
@@ -30,51 +27,44 @@ class InsertFoodArguments(
             checkNotNull(savedStateHandle[UriIdArg]),
         ),
         stringDecoder.decodeString(
-            checkNotNull(savedStateHandle[DescriptionIdArg]),
-        ),
-        stringDecoder.decodeString(
             checkNotNull(savedStateHandle[CategoryIdArg]),
         ),
         stringDecoder.decodeString(
-            checkNotNull(savedStateHandle[IngredientsIdArg]),
+            checkNotNull(savedStateHandle[TitleIdArg]),
         ),
     )
 }
 
 fun NavController.navigateToInsertFood(
     uriId: String,
-    descriptionId: String,
     categoryId: String,
-    ingredientsList: String
+    title: String
 ) {
     this.popBackStack()
     val uri = Uri.encode(uriId)
-    val description = Uri.encode(descriptionId)
     val categoryEncoded = Uri.encode(categoryId)
-    val ingredientsEncoded = Uri.encode(ingredientsList)
-    this.navigate("${AddFoodDestinations.InsertFood.route}/$uri&$description&$categoryEncoded&$ingredientsEncoded")
+    val titleEncoded = Uri.encode(title)
+    this.navigate("${AddFoodDestinations.InsertFood.route}/$uri&$categoryEncoded&$titleEncoded")
 }
 
 fun NavGraphBuilder.insertFoodScreen(
     onSuccess: () -> Unit,
+    onBackPressed: () -> Unit,
 ) {
     composable(
-        route = "${AddFoodDestinations.InsertFood.route}/{$UriIdArg}&{$DescriptionIdArg}&{$CategoryIdArg}&{$IngredientsIdArg}",
+        route = "${AddFoodDestinations.InsertFood.route}/{$UriIdArg}&{$CategoryIdArg}&{$TitleIdArg}",
         arguments = listOf(
             navArgument(UriIdArg) {
-                type = NavType.StringType
-            },
-            navArgument(DescriptionIdArg) {
                 type = NavType.StringType
             },
             navArgument(CategoryIdArg) {
                 type = NavType.StringType
             },
-            navArgument(IngredientsIdArg) {
+            navArgument(TitleIdArg) {
                 type = NavType.StringType
             },
         ),
     ) {
-        InsertFoodRoute(onSuccess = onSuccess)
+        InsertFoodRoute(onSuccess = onSuccess, onBackPressed = onBackPressed)
     }
 }
