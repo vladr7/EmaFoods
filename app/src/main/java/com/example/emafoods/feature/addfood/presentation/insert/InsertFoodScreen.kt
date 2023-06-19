@@ -685,7 +685,6 @@ fun InsertFoodImage(
 ) {
     val context = LocalContext.current
     val hasImage = imageUri != null && imageUri.toString().isNotEmpty()
-    var alreadyShowedErrorImage by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -709,17 +708,7 @@ fun InsertFoodImage(
             loading = {
                 LoadingCookingAnimation()
             },
-            error = {
-                // todo undo this
-//                if (!alreadyShowedErrorImage) {
-//                    alreadyShowedErrorImage = true
-//                    Toast.makeText(
-//                        context,
-//                        stringResource(R.string.error_loading_picture),
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                }
-            }
+            error = {}
         )
         Column(
             modifier = modifier
