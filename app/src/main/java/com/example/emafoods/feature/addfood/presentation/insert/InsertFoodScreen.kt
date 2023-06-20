@@ -271,7 +271,7 @@ fun DescriptionScreenInput(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(min = 100.dp, max = 350.dp)
+            .heightIn(min = 100.dp, max = 1050.dp)
             .padding(top = 10.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
     ) {
         OutlinedTextField(

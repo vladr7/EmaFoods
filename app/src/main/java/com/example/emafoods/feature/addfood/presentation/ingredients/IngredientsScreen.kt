@@ -259,6 +259,7 @@ fun IngredientCard(
             if (ingredient.measurement == 0L) "" else ingredient.measurement.toString()
         )
     }
+    val maxChars = 200
 
     Column(
         modifier = modifier
@@ -293,7 +294,9 @@ fun IngredientCard(
                     modifier = modifier,
                     ingredientText = ingredientValue,
                     onValueChange = {
-                        ingredientValue = it
+                        if (it.length <= maxChars) {
+                            ingredientValue = it
+                        }
                     },
                     focusRequester = focusRequester,
                     onFocused = { focused ->
