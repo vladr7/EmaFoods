@@ -7,6 +7,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -282,10 +284,11 @@ fun GenerateScreen(
             BackButton(
                 modifier = modifier
                     .align(Alignment.TopStart)
-                    .padding(start = 10.dp, top = 10.dp),
+                    .padding(start = 5.dp, top = 5.dp),
                 onClick = {
                     onBackClick()
-                }
+                },
+                visible = showFilterAndButtons && categorySelected
             )
         }
         ScrollArrow(
@@ -308,20 +311,35 @@ fun GenerateScreen(
 @Composable
 fun BackButton(
     modifier: Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    visible: Boolean
 ) {
-    IconButton(
-        modifier = modifier
-            .size(80.dp),
-        onClick = onClick
-    ) {
-        Icon(
-            modifier = modifier
-                .size(40.dp),
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "Back",
-            tint = MaterialTheme.colorScheme.onSecondary
+    val brush = Brush.horizontalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.secondary,
+            Color.Transparent
         )
+    )
+    AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically(),
+        exit = slideOutVertically(),
+        modifier = modifier
+    ) {
+        IconButton(
+            modifier = modifier
+                .size(80.dp),
+            onClick = onClick
+        ) {
+            Icon(
+                modifier = modifier
+                    .background(brush = brush)
+                    .size(40.dp),
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = MaterialTheme.colorScheme.onSecondary
+            )
+        }
     }
 }
 
@@ -560,10 +578,16 @@ fun BoxScope.CategoryDropDown(
     categoryType: CategoryType,
     visible: Boolean
 ) {
+    val brush = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.secondary,
+            Color.Transparent
+        )
+    )
     Column(
         modifier = modifier
             .align(Alignment.TopEnd)
-            .padding(start = 20.dp, top = 20.dp, end = 20.dp),
+            .padding(top = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -678,10 +702,18 @@ fun FilterTextAndIcon(
     modifier: Modifier = Modifier,
     onClickCategoryDropDown: () -> Unit,
 ) {
+    val brush = Brush.radialGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.secondary,
+            Color.Transparent,
+        ),
+        radius = 80f,
+    )
     Column(
         modifier = modifier
             .bounceClick(onClick = onClickCategoryDropDown)
-            .padding(top = 20.dp, end = 20.dp, start = 20.dp),
+            .background(brush = brush)
+            .padding(end = 15.dp, start = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -699,14 +731,11 @@ fun FilterTextAndIcon(
             ),
             textAlign = TextAlign.Center,
             modifier = modifier
+                .background(
+                    brush = brush,
+                )
         )
-        val brush = Brush.radialGradient(
-            colors = listOf(
-                MaterialTheme.colorScheme.secondary,
-                Color.Transparent,
-            ),
-            radius = 80f,
-        )
+
         Icon(
             imageVector = Icons.Default.FilterList,
             contentDescription = "Category",
