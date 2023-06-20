@@ -2,6 +2,7 @@ package com.example.emafoods.feature.generatefood.presentation
 
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
@@ -25,11 +26,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,6 +70,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.emafoods.MainActivity
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.common.alert.AlertDialog2Buttons
@@ -93,6 +97,14 @@ fun GenerateScreenRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val activity = (LocalContext.current as? MainActivity)
+    BackHandler {
+        if(state.categorySelected) {
+            viewModel.onBackClick()
+        } else {
+            activity?.finish()
+        }
+    }
 
     GenerateScreenBackground()
     GenerateScreen(
@@ -149,6 +161,9 @@ fun GenerateScreenRoute(
             viewModel.onProfileImageClick(it)
         },
         previousButtonVisible = state.previousButtonVisible,
+        onBackClick = {
+            viewModel.onBackClick()
+        },
     )
 }
 
@@ -182,7 +197,8 @@ fun GenerateScreen(
     nrOfFireStreaks: Int,
     profileImage: ProfileImage,
     onProfileImageClick: (ProfileImage) -> Unit,
-    previousButtonVisible: Boolean
+    previousButtonVisible: Boolean,
+    onBackClick: () -> Unit,
 ) {
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
@@ -263,6 +279,14 @@ fun GenerateScreen(
                 visible = showFilterAndButtons,
                 categoryType = food.categoryType
             )
+            BackButton(
+                modifier = modifier
+                    .align(Alignment.TopStart)
+                    .padding(start = 10.dp, top = 10.dp),
+                onClick = {
+                    onBackClick()
+                }
+            )
         }
         ScrollArrow(
             modifier = modifier
@@ -277,6 +301,26 @@ fun GenerateScreen(
                     scrollState.animateScrollTo(scrollState.maxValue)
                 }
             }
+        )
+    }
+}
+
+@Composable
+fun BackButton(
+    modifier: Modifier,
+    onClick: () -> Unit
+) {
+    IconButton(
+        modifier = modifier
+            .size(80.dp),
+        onClick = onClick
+    ) {
+        Icon(
+            modifier = modifier
+                .size(40.dp),
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "Back",
+            tint = MaterialTheme.colorScheme.onSecondary
         )
     }
 }

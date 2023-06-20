@@ -486,6 +486,16 @@ class GenerateViewModel @Inject constructor(
             storeProfileImageChoiceUseCase.execute(nextProfileImage)
         }
     }
+
+    fun onBackClick() {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    categorySelected = false
+                )
+            }
+        }
+    }
 }
 
 data class GenerateViewState(
