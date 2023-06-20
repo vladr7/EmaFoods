@@ -509,6 +509,7 @@ fun FoodDescription(
     var descriptionDisplay by remember {
         mutableStateOf("")
     }
+    val minHeight = 0.9f * description.length
 
     LaunchedEffect(
         key1 = description,
@@ -532,7 +533,7 @@ fun FoodDescription(
         color = MaterialTheme.colorScheme.onSecondary,
         modifier = modifier
             .fillMaxWidth()
-            .heightIn(max = 250.dp)
+            .heightIn(min = minHeight.dp, max = 1500.dp)
             .verticalScroll(rememberScrollState())
             .padding(
                 start = 25.dp, end = 20.dp, top = 5.dp, bottom = 10.dp
