@@ -146,6 +146,7 @@ fun PendingFoodScreen(
         onErrorShown()
     }
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
 
     PendingFoodBackground(imageId = R.drawable.pendingbackground)
     Box(
@@ -196,6 +197,11 @@ fun PendingFoodScreen(
                     .offset(y = 10.dp)
                     .size(80.dp),
                 visible = scrollState.value == 0,
+                onClick = {
+                    coroutineScope.launch {
+                        scrollState.animateScrollTo(scrollState.maxValue)
+                    }
+                }
             )
         }
     }

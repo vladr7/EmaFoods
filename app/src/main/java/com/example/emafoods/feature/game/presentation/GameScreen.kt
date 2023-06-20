@@ -62,6 +62,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.extension.restartApp
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.game.presentation.model.Permission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -353,6 +354,7 @@ fun LevelList(
     onLevelClick: (ViewDataLevelPermission) -> Unit,
     levelDataList: List<ViewDataLevelPermission>
 ) {
+    val coroutineScope = rememberCoroutineScope()
     Box(
         modifier = modifier
             .height(450.dp)
@@ -378,7 +380,12 @@ fun LevelList(
                 .padding(top = 16.dp)
                 .alpha(0.8f)
                 .size(64.dp),
-            visible = scrollState.value == 0 && scrollState.canScrollForward
+            visible = scrollState.value == 0 && scrollState.canScrollForward,
+            onClick = {
+                coroutineScope.launch {
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
+            }
         )
     }
 }
@@ -387,13 +394,15 @@ fun LevelList(
 fun ScrollArrow(
     modifier: Modifier,
     visible: Boolean = false,
-    color: Color = MaterialTheme.colorScheme.onSecondary
+    color: Color = MaterialTheme.colorScheme.onSecondary,
+    onClick: () -> Unit = {}
 ) {
     AnimatedVisibility(
         visible = visible,
         enter = slideInVertically(),
         exit = slideOutVertically(),
         modifier = modifier
+            .bounceClick(onClick = onClick)
     ) {
         Icon(
             imageVector = Icons.Filled.ArrowDropDown,
