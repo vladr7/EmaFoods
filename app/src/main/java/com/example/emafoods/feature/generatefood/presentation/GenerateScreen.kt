@@ -218,6 +218,7 @@ fun GenerateScreen(
     val scrollVisibilityThreshold = 80
     showFilterAndButtons = scrollState.value < scrollVisibilityThreshold
     var generateButtonsAlpha by remember { mutableStateOf(1f) }
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = modifier
@@ -270,7 +271,12 @@ fun GenerateScreen(
                 .size(80.dp)
                 .alpha(generateButtonsAlpha - 0.4f),
             visible = showFilterAndButtons && categorySelected && scrollState.canScrollForward,
-            color = MaterialTheme.colorScheme.primaryContainer
+            color = MaterialTheme.colorScheme.primaryContainer,
+            onClick = {
+                coroutineScope.launch {
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
+            }
         )
     }
 }

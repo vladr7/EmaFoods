@@ -203,6 +203,7 @@ fun InsertFoodScreen(
     BackgroundTopToBot(
         imageId = R.drawable.descriptionbackgr
     )
+    val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
     LaunchedEffect(scrollState.maxValue) {
         scrollState.scrollTo(scrollState.maxValue)
@@ -256,6 +257,11 @@ fun InsertFoodScreen(
                 .offset(y = 10.dp)
                 .size(80.dp),
             visible = scrollState.value == 0 && scrollState.canScrollForward && scrollState.maxValue > 100,
+            onClick = {
+                coroutineScope.launch {
+                    scrollState.animateScrollTo(scrollState.maxValue)
+                }
+            }
         )
     }
 }
