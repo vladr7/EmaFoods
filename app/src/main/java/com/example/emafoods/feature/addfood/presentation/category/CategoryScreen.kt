@@ -89,7 +89,7 @@ fun CategoryScreen(
             exit = fadeOut(),
             modifier = modifier
                 .align(Alignment.Center)
-                .padding(bottom = 150.dp)
+                .padding(bottom = 170.dp)
         ) {
             TitleWithBackground(
                 text = stringResource(R.string.create_your_own_recipe), fontSize = 24.sp,
@@ -363,11 +363,12 @@ fun CategoryScreenBackground(
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
-    val gradient = Brush.linearGradient(
+    val gradient = Brush.radialGradient(
         colors = listOf(
+            MaterialTheme.colorScheme.secondary,
             Color.Transparent,
-            MaterialTheme.colorScheme.secondary
         ),
+        radius = 1800f,
     )
 
     Box() {
