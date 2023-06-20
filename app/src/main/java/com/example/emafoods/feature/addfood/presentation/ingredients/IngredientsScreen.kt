@@ -71,7 +71,7 @@ fun IngredientsScreen(
     onUpdateIngredientFocus: (IngredientViewData, Boolean) -> Unit,
     screenTitle: String = stringResource(R.string.add_ingredients),
     screenTitlePaddingTop: Int = 50,
-    nextStepButtonText: String = stringResource(R.string.next_step),
+    nextStepButtonText: String,
 ) {
     var shouldShowIngredientCard by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -152,7 +152,7 @@ fun IngredientsScreen(
                 .padding(bottom = 24.dp, end = 24.dp)
                 .align(Alignment.BottomEnd),
             onConfirmedClick = onConfirmedClick,
-            visible = ingredients.isNotEmpty(),
+            visible = ingredients.isNotEmpty() && !isIngredientsListFocused,
             text = nextStepButtonText,
         )
     }
