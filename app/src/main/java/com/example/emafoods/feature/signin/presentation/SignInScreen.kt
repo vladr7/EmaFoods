@@ -174,7 +174,7 @@ fun SignInTopBar(
         modifier = modifier
     ) {
         Image(
-            painter = painterResource(id = R.drawable.chefgirlcircle), contentDescription = null,
+            painter = painterResource(id = R.drawable.chefgirlcirclevegan), contentDescription = null,
             modifier = modifier
                 .size(150.dp, 150.dp)
                 .align(Alignment.CenterHorizontally)
