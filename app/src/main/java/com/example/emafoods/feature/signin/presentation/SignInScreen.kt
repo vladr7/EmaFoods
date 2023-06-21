@@ -188,8 +188,8 @@ fun SignInTopBar(
             style = TextStyle(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.onSurface
+                        Color.Gray,
+                        Color.DarkGray
                     )
                 )
             ),
@@ -200,13 +200,14 @@ fun SignInTopBar(
         )
         Text(
             text = stringResource(id = R.string.login_subtitle),
+            fontSize = 17.sp,
             fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
             fontWeight = FontWeight.Bold,
             style = TextStyle(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.secondary,
-                        MaterialTheme.colorScheme.tertiary,
+                        Color.DarkGray,
+                        Color.Gray,
                     )
                 )
             ),
