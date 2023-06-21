@@ -9,6 +9,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -470,18 +471,24 @@ fun FoodAuthor(
     modifier: Modifier = Modifier,
     author: String
 ) {
-    Text(
-        text = author,
-        fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 12.sp,
-        textAlign = TextAlign.Left,
-        color = MaterialTheme.colorScheme.onSecondary,
+    Row(
         modifier = modifier
+            .clickable {  }
+            .width(200.dp)
             .padding(
                 start = 25.dp, end = 20.dp,
-            )
-    )
+            ),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Text(
+            text = author,
+            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
+            textAlign = TextAlign.End,
+            color = MaterialTheme.colorScheme.onSecondary,
+        )
+    }
 }
 
 @Composable
