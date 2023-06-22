@@ -126,6 +126,9 @@ Here i will post some screenshots to ilustrate how the app works.
 
 1. Login Screen
 
+2. <img src="https://github.com/vladr7/EmaFoods/blob/main/images/signin.png" width="48">
+
+
 ![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/signin.png?raw=true)
 
 2. Choose what type of recipe to generate
