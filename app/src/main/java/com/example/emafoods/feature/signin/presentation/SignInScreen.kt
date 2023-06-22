@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.emafoods.BuildConfig
 import com.example.emafoods.R
 import com.example.emafoods.navigation.home.EmaFoodsNavigation
 import com.google.android.gms.common.api.ApiException
@@ -99,7 +100,9 @@ fun SignInRoute(
         },
         signInLoading = state.signInLoading,
     )
-
+    if(BuildConfig.DEBUG) {
+        viewModel.bypassSignInOnDebug()
+    }
     if (state.signInSuccess) {
         EmaFoodsNavigation(
             isAdmin = state.isAdmin,
