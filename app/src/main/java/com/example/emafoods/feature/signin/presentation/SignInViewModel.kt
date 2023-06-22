@@ -56,6 +56,15 @@ class SignInViewModel @Inject constructor(
         }
     }
 
+    fun bypassSignInOnDebug() {
+        _state.update {
+            it.copy(
+                signInSuccess = true,
+                isAdmin = true
+            )
+        }
+    }
+
     fun updateSignInLoading(isLoading: Boolean) {
         _state.update {
             it.copy(
