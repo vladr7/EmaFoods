@@ -126,37 +126,29 @@ Here i will post some screenshots to ilustrate how the app works.
 
 1. Login Screen
 
-2. <img src="https://github.com/vladr7/EmaFoods/blob/main/images/signin.png" width="48">
-
-
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/signin.png?raw=true)
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/signin.png" width="512">
 
 2. Choose what type of recipe to generate
 
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/choices.png?raw=true)
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/choices.png" width="512">
 
 3. Insert a recipe
 
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/insert.png?raw=true)
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/insert.png" width="512">
 
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/sushi.png?raw=true)
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/sushi.png" width="512">
+ 
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/ingredients.png" width="512">
 
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/ingredients.png?raw=true)
-
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/congrats.png?raw=true)
-
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/signin.png" width="512">
+ 
 4. Generate a deliciously random recipe!
 
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/generate1.png?raw=true)
-
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/generate2.png?raw=true)
-
-![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/generate3.png?raw=true)
-
-
-
-
-
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/generate1.png" width="512">
+ 
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/generate2.png" width="512">
+ 
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/generate3.png" width="512">
 
 
 <!-- ROADMAP -->
@@ -206,9 +198,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+ricean.vlad7@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/your_username/repo_name](https://github.com/vladr7/EmaFoods)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
