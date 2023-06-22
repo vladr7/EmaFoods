@@ -89,11 +89,11 @@ My girlfriend Ema and I often found ourselves running out of cooking ideas, so I
 
 * [Android Studio](https://developer.android.com/studio)
 * [Firebase](https://firebase.google.com/)
-* [Kotlin] (https://developer.android.com/studio](https://kotlinlang.org)
-* [Compose](https://developer.android.com/studio](https://developer.android.com/jetpack/compose)
+* [Kotlin](https://kotlinlang.org/)
+* [Compose](https://developer.android.com/jetpack/compose)
 * [Coroutines](https://developer.android.com/studio](https://kotlinlang.org/docs/coroutines-overview.html))
-* [Flows](https://developer.android.com/studio](https://developer.android.com/kotlin/flow)
-* [Room]([[https://developer.android.com/studio](https://developer.android.com/kotlin/flow)](https://developer.android.com/training/data-storage/room))
+* [Flows](https://developer.android.com/kotlin/flow)
+* [Room](https://developer.android.com/training/data-storage/room)
 * [DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
