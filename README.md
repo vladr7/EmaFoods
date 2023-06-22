@@ -31,13 +31,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/chefgirlcircle-overlay512.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+  <h3 align="center">Ema's Kitchen</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+  "Enjoy vegan inspiration on days without culinary ideas!"
     <br />
     <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
     <br />
@@ -83,35 +83,18 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
-
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
+My girlfriend Ema and I often found ourselves running out of cooking ideas, so I decided to create this app to provide culinary inspiration to those who follow a vegan diet or who wish to experiment with vegan food. Our goal is to demonstrate that vegan food can be diverse, delicious, and easy to prepare.
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* [Android Studio](https://developer.android.com/studio)
+* [Firebase](https://firebase.google.com/)
+* [Kotlin]([https://developer.android.com/studio](https://kotlinlang.org/))
+* [Compose]([https://developer.android.com/studio](https://developer.android.com/jetpack/compose))
+* [Coroutines]([https://developer.android.com/studio](https://kotlinlang.org/docs/coroutines-overview.html))
+* [Flows]([https://developer.android.com/studio](https://developer.android.com/kotlin/flow))
+* [Room]([[https://developer.android.com/studio](https://developer.android.com/kotlin/flow)](https://developer.android.com/training/data-storage/room))
+* [DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -120,47 +103,56 @@ This section should list any major frameworks/libraries used to bootstrap your p
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+* Android studio
+  You can download it here: https://developer.android.com/studio
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+You just Clone the repo 
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+   git clone ([https://github.com/RiceanVlad/SkiRental.git](https://github.com/vladr7/EmaFoods.git))
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
+And then import it to Android Studio
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Here i will post some screenshots to ilustrate how the app works.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+1. Login Screen
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/signin.png?raw=true)
+
+2. Choose what type of recipe to generate
+
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/choices.png?raw=true)
+
+3. Insert a recipe
+
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/insert.png?raw=true)
+
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/sushi.png?raw=true)
+
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/ingredients.png?raw=true)
+
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/congrats.png?raw=true)
+
+4. Generate a deliciously random recipe!
+
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/generate1.png?raw=true)
+
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/generate2.png?raw=true)
+
+![alt text](https://github.com/vladr7/EmaFoods/blob/main/images/generate3.png?raw=true)
+
+
+
+
 
 
 
