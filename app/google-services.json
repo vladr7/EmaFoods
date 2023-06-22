@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "807673064052-v3ordac6q6a8l37oi5qtm9tf34tm0lsa.apps.googleusercontent.com",
+          "client_id": "807673064052-roq2gv1t6l084nn28136m6aka7decndb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.riviem.emafoods",
-            "certificate_hash": "0ec658b5c7ea5371960e3bf30f5929f579e46096"
+            "certificate_hash": "1ec80e9ff2624daceb14e0b8998178c87225349d"
           }
         },
         {
