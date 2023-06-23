@@ -187,7 +187,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Email: ricean.vlad7@gmail.com
 
-Linkedin: [Link](https://www.linkedin.com/in/vlad-ricean-12155622a/)
+Linkedin: [Profile](https://www.linkedin.com/in/vlad-ricean-12155622a/)
 
 Project Link: [Link](https://github.com/vladr7/EmaFoods)
 
@@ -217,7 +217,7 @@ Project Link: [Link](https://github.com/vladr7/EmaFoods)
 [issues-shield]: https://img.shields.io/github/issues/vladr7/EmaFoods.svg?style=for-the-badge
 [issues-url]: https://github.com/vladr7/EmaFoods/issues
 [license-shield]: https://img.shields.io/github/license/vladr7/EmaFoods.svg?style=for-the-badge
-[license-url]: https://github.com/vladr7/EmaFoods/blob/master/LICENSE.txt
+[license-url]: https://github.com/vladr7/EmaFoods/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/vlad-ricean-12155622a
 
