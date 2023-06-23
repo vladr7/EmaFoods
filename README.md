@@ -80,13 +80,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The first why
-
 This project features an Android application that I've developed with an intention to expand my knowledge and skill set into Compose, Coroutines, Flows, and Compose Native Navigation. It uses Clean Architecture with a feature-layered structure (data/domain/presentation per each feature), mappers, data sources, repositories, and use cases. The design uses MaterialDesign & MaterialYou and Typography. I've also included Animations, and worked with ROOM and Firebase. To ensure everything works as it should, I've also added Unit Tests.
 
-The second why
-
-My girlfriend Ema and I often found ourselves running out of cooking ideas, so I decided to create this app to provide culinary inspiration to those who follow a vegan diet or who wish to experiment with vegan food. Our goal is to demonstrate that vegan food can be diverse, delicious, and easy to prepare.
+Also, my girlfriend Ema and I often found ourselves running out of cooking ideas, so I decided to create this app to provide culinary inspiration to those who follow a vegan diet or who wish to experiment with vegan food. Our goal is to demonstrate that vegan food can be diverse, delicious, and easy to prepare.
 
 ### Built With
 
