@@ -71,6 +71,11 @@ android {
     packagingOptions {
         resources.excludes.add("META-INF/notice.txt")
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 kapt {

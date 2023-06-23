@@ -60,6 +60,7 @@ hilt-android-testing = "2.44.2"
 mockito-inline = "2.13.0"
 hamcrest = "1.3"
 core-testing = "2.2.0"
+robolectric = "4.10.3"
 
 [libraries]
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
@@ -136,6 +137,7 @@ mockito-inline = { module = "org.mockito:mockito-inline", version.ref = "mockito
 hamcrest = { module="org.hamcrest:hamcrest-all", version.ref = "hamcrest" }
 core-testing = { module = "androidx.arch.core:core-testing", version.ref = "core-testing" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 #VideoPlayer dependecy
 media3 = { module = "androidx.media3:media3-exoplayer", version.ref = "media3"}
@@ -160,7 +162,7 @@ androidx = ["androidx-core", "androidx-lifecycle-runtime", "androidx-lifecycle-v
 firebase = ["firebase-core", "firebase-analytics", "firebase-crashlytics", "firebase-config", "firebase-auth", "firebase-firestore", "firebase-storage"]
 retrofitAndSerialization = ["squareup-retrofit", "retrofit-converter", "kotlinx-serialization"]
 hilt = ["google-hilt", "hilt-navigation-compose"]
-testing = ["mockk", "mockito-kotlin", "hilt-android-testing", "mockito-inline", "core-testing"]
+testing = ["mockk", "mockito-kotlin", "hilt-android-testing", "mockito-inline", "core-testing", "robolectric"]
 review = ["play-review", "play-review-ktx"]
 appupdate = ["appupdate", "appupdate-ktx"]
 
