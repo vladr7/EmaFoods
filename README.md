@@ -81,11 +81,11 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The first why:
+The first why
 
 This project serves as a learning journey and exploration into Compose, Coroutines, Flows, and Compose Native Navigation. It uses Clean Architecture with a feature-layered structure (data/domain/presentation per each feature), mappers, data sources, repositories, and use cases. The design uses MaterialDesign & MaterialYou and Typography. I've also included Animations, and worked with ROOM and Firebase. To ensure everything works as it should, I've also added Unit Tests.
 
-The second why:
+The second why
 
 My girlfriend Ema and I often found ourselves running out of cooking ideas, so I decided to create this app to provide culinary inspiration to those who follow a vegan diet or who wish to experiment with vegan food. Our goal is to demonstrate that vegan food can be diverse, delicious, and easy to prepare.
 
@@ -145,7 +145,7 @@ Here i will post some screenshots to ilustrate how the app works.
  
  <img src="https://github.com/vladr7/EmaFoods/blob/main/images/ingredients.png" width="320">
 
- <img src="https://github.com/vladr7/EmaFoods/blob/main/images/signin.png" width="320">
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/congrats.png" width="320">
  
 4. Generate a deliciously random recipe!
 
@@ -206,7 +206,7 @@ Project Link: [Link](https://github.com/vladr7/EmaFoods)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/vladr7/EmaFoods.svg?style=for-the-badge
 [contributors-url]: https://github.com/vladr7/EmaFoods/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
 [forks-url]: https://github.com/vladr7/EmaFoods/network/members
