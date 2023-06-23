@@ -30,4 +30,4 @@ fun XpIncreaseToast(
 
 }
 
-const val XP_INCREASE_THRESHOLD = 200 // show toast every 'X' xp
+const val XP_INCREASE_THRESHOLD = 50 // show toast every 'X' xp
