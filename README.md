@@ -83,6 +83,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+This project serves as a learning journey and exploration into Compose, Coroutines, Flows, and Compose Native Navigation. It uses Clean Architecture with a feature-layered structure (data/domain/presentation per each feature), mappers, data sources, repositories, and use cases. The design uses MaterialDesign & MaterialYou and Typography. I've also included Animations, and worked with ROOM and Firebase. To ensure everything works as it should, I've also added Unit Tests.
+
 My girlfriend Ema and I often found ourselves running out of cooking ideas, so I decided to create this app to provide culinary inspiration to those who follow a vegan diet or who wish to experiment with vegan food. Our goal is to demonstrate that vegan food can be diverse, delicious, and easy to prepare.
 
 ### Built With
@@ -126,11 +128,11 @@ Here i will post some screenshots to ilustrate how the app works.
 
 1. Login Screen
 
- <img src="https://github.com/vladr7/EmaFoods/blob/main/images/signin.png" width="512">
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/signin.png" width="320">
 
 2. Choose what type of recipe to generate
 
- <img src="https://github.com/vladr7/EmaFoods/blob/main/images/choices.png" width="512">
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/choices.png" width="320">
 
 3. Insert a recipe
 
@@ -149,24 +151,6 @@ Here i will post some screenshots to ilustrate how the app works.
  <img src="https://github.com/vladr7/EmaFoods/blob/main/images/generate2.png" width="512">
  
  <img src="https://github.com/vladr7/EmaFoods/blob/main/images/generate3.png" width="512">
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
@@ -198,9 +182,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-ricean.vlad7@gmail.com
+Email: ricean.vlad7@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/vladr7/EmaFoods)
+Project Link: [Link](https://github.com/vladr7/EmaFoods)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -211,14 +195,9 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/vl
 
 Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+* [Lottie animations](https://lottiefiles.com/)
+* [Android Icons](https://icons8.com/icons/set/android)
+* [Lexica Images AI](https://lexica.art/aperture)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
