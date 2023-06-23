@@ -187,6 +187,8 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Email: ricean.vlad7@gmail.com
 
+Linkedin: [Link](https://www.linkedin.com/in/vlad-ricean-12155622a/)
+
 Project Link: [Link](https://github.com/vladr7/EmaFoods)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
