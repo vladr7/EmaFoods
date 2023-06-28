@@ -31,6 +31,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -88,7 +89,7 @@ fun IngredientsScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
-        if(showStepIndicator) {
+        if (showStepIndicator) {
             StepIndicator(
                 modifier = modifier
                     .align(Alignment.TopStart),
@@ -125,6 +126,7 @@ fun IngredientsScreen(
                         onAddIngredientToList(ingredientViewData)
                     },
                     addFoodText = stringResource(R.string.add_food),
+                    shouldRequestFocus = shouldShowIngredientCard,
                 )
             }
             AnimatedVisibility(visible = !isIngredientsListFocused && ingredients.isNotEmpty()) {
@@ -200,7 +202,8 @@ fun IngredientsEditableList(
                 onConfirmIngredientClick = {
                     onConfirmIngredientClick(it)
                 },
-                onFocusChanged = onFocusChanged
+                onFocusChanged = onFocusChanged,
+                shouldRequestFocus = false,
             )
         }
     }
@@ -248,11 +251,13 @@ fun IngredientCard(
             measurement = 0L,
         ),
     onFocusChanged: (IngredientViewData, Boolean) -> Unit = { _, _ -> },
-    addFoodText: String = stringResource(id = R.string.save)
+    addFoodText: String = stringResource(id = R.string.save),
+    shouldRequestFocus: Boolean = false
 ) {
     val pattern = remember { Regex("^\\d+\$") }
-    val focusRequester = remember { FocusRequester() }
-    var isFocused by remember { mutableStateOf(false) }
+    val focusRequesterIngredient = remember { FocusRequester() }
+    val focusRequesterMeasurement = remember { FocusRequester() }
+    var isFocused by remember { mutableStateOf(true) }
     var ingredientValue by remember { mutableStateOf(ingredient.name) }
     var measurementValue by remember {
         mutableStateOf(
@@ -298,7 +303,7 @@ fun IngredientCard(
                             ingredientValue = it
                         }
                     },
-                    focusRequester = focusRequester,
+                    focusRequester = focusRequesterIngredient,
                     onFocused = { focused ->
                         isFocused = focused
                         onFocusChanged(ingredient, focused)
@@ -313,13 +318,19 @@ fun IngredientCard(
                             measurementValue = newValue
                         }
                     },
-                    focusRequester = focusRequester,
+                    focusRequester = focusRequesterMeasurement,
                     onFocused = { focused ->
                         isFocused = focused
                         onFocusChanged(ingredient, focused)
                     }
                 )
             }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if(shouldRequestFocus) {
+            focusRequesterIngredient.requestFocus()
         }
     }
 }
