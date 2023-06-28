@@ -219,7 +219,7 @@ fun GenerateScreen(
             increaseXpActionType = IncreaseXpActionType.GENERATE_RECIPE,
             onToastShown = onToastShown,
             context = context,
-            customXP = xpIncreased
+            xpIncreased = xpIncreased
         )
     }
     if (showEmptyListToast) {

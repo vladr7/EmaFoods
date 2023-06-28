@@ -73,7 +73,8 @@ fun CongratulationScreen(
     if (showMessage) {
         XpIncreaseToast(
             increaseXpActionType = IncreaseXpActionType.ADD_RECIPE,
-            context = context
+            context = context,
+            xpIncreased = IncreaseXpActionType.ADD_RECIPE.xp
         )
         onMessagesShown()
     }

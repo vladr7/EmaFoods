@@ -14,16 +14,16 @@ fun XpIncreaseToast(
     increaseXpActionType: IncreaseXpActionType,
     onToastShown: () -> Unit = {},
     context: Context,
-    customXP: Long = 0
+    xpIncreased: Long
 ) {
     when(increaseXpActionType) {
         IncreaseXpActionType.RECIPE_ACCEPTED -> {
             Toast.makeText(context,
-                stringResource(R.string.you_gained_points, customXP), Toast.LENGTH_SHORT).show()
+                stringResource(R.string.you_gained_points, xpIncreased), Toast.LENGTH_SHORT).show()
             onToastShown()
         }
         else -> {
-            Toast.makeText(context, stringResource(R.string.you_gained_points, increaseXpActionType.xp), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, stringResource(R.string.you_gained_points, xpIncreased), Toast.LENGTH_SHORT).show()
             onToastShown()
         }
     }

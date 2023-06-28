@@ -163,6 +163,7 @@ fun ProfileScreen(
             increaseXpActionType = IncreaseXpActionType.ADD_REVIEW,
             onToastShown = onIncreaseXpToastShown,
             context = context,
+            xpIncreased = IncreaseXpActionType.ADD_RECIPE.xp
         )
     }
     ProfileBackground()
