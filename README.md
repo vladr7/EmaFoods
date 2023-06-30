@@ -71,6 +71,7 @@
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact">Published</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -189,7 +190,9 @@ Project Link: [Link](https://github.com/vladr7/EmaFoods)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Published
 
+App is published on play store: [Playstore](https://play.google.com/store/apps/details?id=com.riviem.emafoods)
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
