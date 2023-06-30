@@ -51,7 +51,7 @@
     <string name="add_new_ingredient">Adaugă un ingredient nou</string>
     <string name="ingredients_list_title">Ingrediente</string>
     <string name="ingredient_already_added_error">Ingredientul acesta a fost deja adăugat!</string>
-    <string name="next_step">Pasul urmator</string>
+    <string name="next_step">Pasul următor</string>
     <string name="remove">Elimină</string>
     <string name="save">Salvează</string>
     <string name="description_title">Mod de preparare</string>
