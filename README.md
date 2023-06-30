@@ -94,6 +94,7 @@ Also, my girlfriend Ema and I often found ourselves running out of cooking ideas
 * [Flows](https://developer.android.com/kotlin/flow)
 * [Room](https://developer.android.com/training/data-storage/room)
 * [DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
+* [HILT](https://dagger.dev/hilt/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
