@@ -10,6 +10,7 @@ import com.example.emafoods.feature.profile.domain.repository.ProfileRepository
 import com.example.emafoods.feature.profile.domain.usecase.GetNextProfileImageUseCase
 import com.example.emafoods.feature.profile.domain.usecase.SignOutUseCase
 import com.example.emafoods.feature.profile.domain.usecase.StoreProfileImageChoiceUseCase
+import com.example.emafoods.feature.profile.domain.usecase.UpdateUsernameUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,4 +61,12 @@ object ProfileModule {
     @Singleton
     fun provideProfileDataSource(
     ): ProfileDataSource = DefaultProfileDataSource()
+
+    @Provides
+    @Singleton
+    fun provideUpdateUsernameUseCase(
+        authService: AuthService
+    )= UpdateUsernameUseCase(
+        authService = authService
+    )
 }

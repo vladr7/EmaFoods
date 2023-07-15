@@ -19,6 +19,7 @@ import com.example.emafoods.feature.profile.domain.usecase.GetCurrentProfileImag
 import com.example.emafoods.feature.profile.domain.usecase.GetNextProfileImageUseCase
 import com.example.emafoods.feature.profile.domain.usecase.SignOutUseCase
 import com.example.emafoods.feature.profile.domain.usecase.StoreProfileImageChoiceUseCase
+import com.example.emafoods.feature.profile.domain.usecase.UpdateUsernameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,7 +38,8 @@ class ProfileViewModel @Inject constructor(
     private val logHelper: LogHelper,
     private val getNextProfileImageUseCase: GetNextProfileImageUseCase,
     private val storeProfileImageChoiceUseCase: StoreProfileImageChoiceUseCase,
-    private val getCurrentProfileImageUseCase: GetCurrentProfileImageUseCase
+    private val getCurrentProfileImageUseCase: GetCurrentProfileImageUseCase,
+    private val updateUserNameUseCase: UpdateUsernameUseCase
 ) : BaseViewModel() {
 
     private val _state = MutableStateFlow<ProfileViewState>(ProfileViewState())
@@ -101,7 +103,7 @@ class ProfileViewModel @Inject constructor(
 
     override fun onXpIncrease() {
         viewModelScope.launch {
-            if(checkXNrOfDaysPassedSinceLastReviewUseCase.execute(7)) {
+            if (checkXNrOfDaysPassedSinceLastReviewUseCase.execute(7)) {
                 updateLastTimeUserReviewedUseCase.execute()
                 when (val result = increaseXpUseCase.execute(IncreaseXpActionType.ADD_REVIEW)) {
                     is IncreaseXpResult.ExceededUnspentThreshold -> {
@@ -192,9 +194,37 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
+    fun onShowNewUsernameDialog() {
+        _state.update {
+            it.copy(
+                showNewUsernameDialog = true
+            )
+        }
+    }
+
+    fun onDismissNewUsernameDialog() {
+        _state.update {
+            it.copy(
+                showNewUsernameDialog = false
+            )
+        }
+    }
+
+    fun onConfirmNewUsernameDialog(newUserName: String) {
+        viewModelScope.launch {
+            updateUserNameUseCase.execute(newUserName)
+            _state.update {
+                it.copy(
+                    userName = newUserName.capitalizeWords(),
+                    showNewUsernameDialog = false
+                )
+            }
+        }
+    }
 }
 
-data class ProfileViewState(
+    data class ProfileViewState(
     val signOutConfirmed: Boolean = false,
     val showSignOutAlert: Boolean = false,
     val userName: String = "",
@@ -206,5 +236,7 @@ data class ProfileViewState(
     val profileImage: ProfileImage = ProfileImage(
         id = 0,
         image = R.drawable.profilepic1,
-    )
+    ),
+    val showNewUsernameDialog: Boolean = false
 )
+

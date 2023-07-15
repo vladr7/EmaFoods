@@ -14,6 +14,7 @@ import com.example.emafoods.feature.game.domain.usecase.GetListOfXpActionsUseCas
 import com.example.emafoods.feature.game.domain.usecase.GetUserGameDetailsUseCase
 import com.example.emafoods.feature.game.domain.usecase.UpgradeBasicUserToAdminUseCase
 import com.example.emafoods.feature.game.presentation.model.Permission
+import com.example.emafoods.feature.profile.domain.usecase.UpdateUsernameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +31,8 @@ class GameViewModel @Inject constructor(
     private val getUserGameDetailsUseCase: GetUserGameDetailsUseCase,
     private val checkIfAdminCodeIsValidUseCase: CheckIfAdminCodeIsValidUseCase,
     private val upgradeBasicUserToAdminUseCase: UpgradeBasicUserToAdminUseCase,
-    private val logHelper: LogHelper
+    private val logHelper: LogHelper,
+    private val updateUserNameUseCase: UpdateUsernameUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow<GameViewState>(GameViewState())
@@ -99,6 +101,34 @@ class GameViewModel @Inject constructor(
             }
         }
     }
+
+    fun onShowNewUsernameDialog() {
+        _state.update {
+            it.copy(
+                showNewUsernameDialog = true
+            )
+        }
+    }
+
+    fun onDismissNewUsernameDialog() {
+        _state.update {
+            it.copy(
+                showNewUsernameDialog = false
+            )
+        }
+    }
+
+    fun onConfirmNewUsernameDialog(newUserName: String) {
+        viewModelScope.launch {
+            updateUserNameUseCase.execute(newUserName)
+            _state.update {
+                it.copy(
+                    userName = newUserName.capitalizeWords(),
+                    showNewUsernameDialog = false
+                )
+            }
+        }
+    }
 }
 
 data class GameViewState(
@@ -108,7 +138,8 @@ data class GameViewState(
     val userLevel: String = "",
     val listOfLevelPermission: List<ViewDataLevelPermission> = listOf(),
     val showEnterAdminCode: Boolean = false,
-    val showUpgradedToAdminAlert: Boolean = false
+    val showUpgradedToAdminAlert: Boolean = false,
+    val showNewUsernameDialog: Boolean = false,
 )
 
 data class ViewDataLevelPermission(

@@ -64,6 +64,7 @@ import com.example.emafoods.R
 import com.example.emafoods.core.extension.restartApp
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.feature.game.presentation.model.Permission
+import com.example.emafoods.feature.profile.presentation.EnterNewUsernameDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -74,16 +75,16 @@ fun GameRoute(
     viewModel: GameViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val state = viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val coroutine = rememberCoroutineScope()
 
     GameScreen(
         modifier = modifier,
-        userName = state.value.userName,
-        userLevel = state.value.userLevel,
-        displayXpAlert = state.value.displayXpAlert,
-        xpList = state.value.listOfXpActions,
-        levelDataList = state.value.listOfLevelPermission,
+        userName = state.userName,
+        userLevel = state.userLevel,
+        displayXpAlert = state.displayXpAlert,
+        xpList = state.listOfXpActions,
+        levelDataList = state.listOfLevelPermission,
         onLevelClick = { levelPermission ->
             if (levelPermission.remainingXp <= 0) {
                 Toast.makeText(
@@ -108,16 +109,26 @@ fun GameRoute(
         onLadyBugIconClick = {
             viewModel.onLadyBugIconClick()
         },
-        showEnterAdminCode = state.value.showEnterAdminCode,
+        showEnterAdminCode = state.showEnterAdminCode,
         onCodeConfirmClick = {
             viewModel.onCodeEntered(it)
         },
         onCodeDismiss = {
             viewModel.onCodeAlertDimiss()
         },
-        showUpgradedToAdminAlert = state.value.showUpgradedToAdminAlert,
+        showUpgradedToAdminAlert = state.showUpgradedToAdminAlert,
         context = context,
-        coroutine = coroutine
+        coroutine = coroutine,
+        onUserNameClick = {
+            viewModel.onShowNewUsernameDialog()
+        },
+        showNewUsernameDialog = state.showNewUsernameDialog,
+        onDismissNewUsernameDialog = {
+            viewModel.onDismissNewUsernameDialog()
+        },
+        onConfirmNewUsernameDialog = {
+            viewModel.onConfirmNewUsernameDialog(it)
+        }
     )
 }
 
@@ -138,9 +149,20 @@ fun GameScreen(
     onCodeDismiss: () -> Unit,
     showUpgradedToAdminAlert: Boolean,
     context: Context,
-    coroutine: CoroutineScope
+    coroutine: CoroutineScope,
+    onUserNameClick: () -> Unit,
+    showNewUsernameDialog: Boolean,
+    onDismissNewUsernameDialog: () -> Unit,
+    onConfirmNewUsernameDialog: (String) -> Unit,
 ) {
     GameBackground()
+
+    if (showNewUsernameDialog) {
+        EnterNewUsernameDialog(
+            onDismissClick = onDismissNewUsernameDialog,
+            onConfirmClick = onConfirmNewUsernameDialog
+        )
+    }
     if (showUpgradedToAdminAlert) {
         Toast.makeText(context, stringResource(R.string.promoted_successfully), Toast.LENGTH_LONG)
             .show()
@@ -175,7 +197,8 @@ fun GameScreen(
             modifier = modifier,
             userName = userName,
             userLevel = userLevel,
-            onLadyBugIconClick = onLadyBugIconClick
+            onLadyBugIconClick = onLadyBugIconClick,
+            onUsernameClick = onUserNameClick
         )
         LevelList(
             modifier = modifier,
@@ -417,7 +440,8 @@ fun GameHeader(
     modifier: Modifier,
     userName: String,
     userLevel: String,
-    onLadyBugIconClick: () -> Unit
+    onLadyBugIconClick: () -> Unit,
+    onUsernameClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -446,7 +470,9 @@ fun GameHeader(
                 Text(
                     text = userName,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSecondary
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .bounceClick(onUsernameClick)
                 )
                 Icon(
                     imageVector = Icons.Filled.EmojiNature,

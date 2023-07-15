@@ -30,4 +30,5 @@ object AnalyticsConstants {
     const val SIGN_IN_GOOGLE_FAILED = "sign_in_failed"
     const val SIGN_IN_ANONYMOUS_SUCCESS = "sign_in_anonymous_success"
     const val SIGN_IN_ANONYMOUS_FAILED = "sign_in_anonymous_failed"
+    const val CLICKED_ON_USERNAME = "clicked_on_username"
 }

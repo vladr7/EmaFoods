@@ -27,6 +27,7 @@ import com.example.emafoods.feature.profile.domain.models.ProfileImage
 import com.example.emafoods.feature.profile.domain.usecase.GetCurrentProfileImageUseCase
 import com.example.emafoods.feature.profile.domain.usecase.GetNextProfileImageUseCase
 import com.example.emafoods.feature.profile.domain.usecase.StoreProfileImageChoiceUseCase
+import com.example.emafoods.feature.profile.domain.usecase.UpdateUsernameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,7 +53,8 @@ class GenerateViewModel @Inject constructor(
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
     private val getNextProfileImageUseCase: GetNextProfileImageUseCase,
     private val storeProfileImageChoiceUseCase: StoreProfileImageChoiceUseCase,
-    private val getCurrentProfileImageUseCase: GetCurrentProfileImageUseCase
+    private val getCurrentProfileImageUseCase: GetCurrentProfileImageUseCase,
+    private val updateUsernameUseCase: UpdateUsernameUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<GenerateViewState>(GenerateViewState())
@@ -496,6 +498,34 @@ class GenerateViewModel @Inject constructor(
             }
         }
     }
+
+    fun onShowNewUsernameDialog() {
+        _state.update {
+            it.copy(
+                showNewUsernameDialog = true
+            )
+        }
+    }
+
+    fun onDismissNewUsernameDialog() {
+        _state.update {
+            it.copy(
+                showNewUsernameDialog = false
+            )
+        }
+    }
+
+    fun onConfirmNewUsernameDialog(newUserName: String) {
+        viewModelScope.launch {
+            updateUsernameUseCase.execute(newUserName)
+            _state.update {
+                it.copy(
+                    userName = newUserName.capitalizeWords(),
+                    showNewUsernameDialog = false
+                )
+            }
+        }
+    }
 }
 
 data class GenerateViewState(
@@ -531,5 +561,6 @@ data class GenerateViewState(
     val profileImage: ProfileImage = ProfileImage(
         id = 0,
         image = R.drawable.profilepic1,
-    )
+    ),
+    val showNewUsernameDialog: Boolean = false
 )

@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -21,11 +22,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiNature
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
@@ -129,6 +133,16 @@ fun ProfileRoute(
             viewModel.onProfileImageClick(it)
         },
         profileImage = state.profileImage,
+        onUsernameClick = {
+            viewModel.onShowNewUsernameDialog()
+        },
+        showNewUsernameDialog = state.showNewUsernameDialog,
+        onDismissNewUsernameDialog = {
+            viewModel.onDismissNewUsernameDialog()
+        },
+        onConfirmNewUsernameDialog = {
+            viewModel.onConfirmNewUsernameDialog(it)
+        }
     )
 }
 
@@ -151,7 +165,17 @@ fun ProfileScreen(
     onDismissLevelUp: () -> Unit,
     onProfileImageClick: (ProfileImage) -> Unit,
     profileImage: ProfileImage,
+    onUsernameClick: () -> Unit,
+    showNewUsernameDialog: Boolean,
+    onDismissNewUsernameDialog: () -> Unit,
+    onConfirmNewUsernameDialog: (String) -> Unit,
 ) {
+    if (showNewUsernameDialog) {
+        EnterNewUsernameDialog(
+            onDismissClick = onDismissNewUsernameDialog,
+            onConfirmClick = onConfirmNewUsernameDialog
+        )
+    }
     if (leveledUpEvent) {
         LevelUpDialog(
             newLevel = newLevel,
@@ -183,7 +207,8 @@ fun ProfileScreen(
             userName = userName,
             streaks = streaks,
             profileImage = profileImage,
-            onProfileImageClick = onProfileImageClick
+            onProfileImageClick = onProfileImageClick,
+            onUsernameClick = onUsernameClick
         )
         ProfileReview(onReviewClick = onReviewClick)
         Spacer(modifier = Modifier.weight(1f))
@@ -201,7 +226,7 @@ fun SignOutAlert(
     AlertDialog2Buttons(
         modifier = modifier,
         title = stringResource(R.string.logout_popup_title),
-        dismissText = stringResource(R.string.logout_popup_cancel),
+        dismissText = stringResource(R.string.cancel),
         confirmText = stringResource(R.string.logout_button),
         onDismissClick = onDismiss,
         onConfirmClick = onConfirm
@@ -255,7 +280,8 @@ fun ProfileHeader(
     streaks: Int,
     profileTopPadding: Dp = 36.dp,
     onProfileImageClick: (ProfileImage) -> Unit,
-    profileImage: ProfileImage
+    profileImage: ProfileImage,
+    onUsernameClick: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -291,7 +317,12 @@ fun ProfileHeader(
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onSecondary
                 )
-                ProfileUserName(userName)
+                ProfileUserName(
+                    userName,
+                    onUsernameClick = {
+                        onUsernameClick()
+                    }
+                )
 
             }
         }
@@ -299,9 +330,14 @@ fun ProfileHeader(
 }
 
 @Composable
-private fun ProfileUserName(userName: String) {
+private fun ProfileUserName(
+    userName: String,
+    onUsernameClick: () -> Unit
+) {
     Row {
         Text(
+            modifier = Modifier
+                .bounceClick(onUsernameClick),
             text = "$userName!",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSecondary
@@ -327,6 +363,56 @@ private fun ProfileUserName(userName: String) {
                 },
         )
     }
+}
+
+@Composable
+fun EnterNewUsernameDialog(
+    modifier: Modifier = Modifier,
+    onDismissClick: () -> Unit,
+    onConfirmClick: (String) -> Unit,
+
+    ) {
+    var text by remember { mutableStateOf("") }
+    AlertDialog(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        iconContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        textContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = modifier,
+        onDismissRequest = { onDismissClick() },
+        title = {
+            Text(
+                text = stringResource(R.string.new_username),
+                fontSize = 20.sp,
+            )
+        },
+        confirmButton = {
+            Text(
+                text = stringResource(R.string.confirmed),
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .clickable { onConfirmClick(text) }
+                    .padding(8.dp)
+            )
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { newText -> text = newText }
+                )
+            }
+        },
+        dismissButton = {
+            Text(
+                text = stringResource(R.string.cancel),
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .clickable { onDismissClick() }
+                    .padding(8.dp)
+            )
+        }
+    )
 }
 
 @Composable

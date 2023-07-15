@@ -174,4 +174,14 @@ class DefaultAuthService @Inject constructor(
             logHelper.reportCrash(Throwable("DefaultAuthService: upgradeBasicUserToAdmin: ${e.localizedMessage}"))
         }
     }
+
+    override suspend fun updateUserName(userName: String) {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update("displayName", userName)
+        } catch (e: Exception) {
+            logHelper.reportCrash(Throwable("DefaultAuthService: updateUserName: ${e.localizedMessage}"))
+        }
+    }
 }

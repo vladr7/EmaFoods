@@ -88,6 +88,7 @@ import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.game.presentation.enums.IncreaseXpActionType
 import com.example.emafoods.feature.pending.presentation.FoodItem
 import com.example.emafoods.feature.profile.domain.models.ProfileImage
+import com.example.emafoods.feature.profile.presentation.EnterNewUsernameDialog
 import com.example.emafoods.feature.profile.presentation.ProfileHeader
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -166,6 +167,16 @@ fun GenerateScreenRoute(
         onBackClick = {
             viewModel.onBackClick()
         },
+        onUserNameClick = {
+            viewModel.onShowNewUsernameDialog()
+        },
+        showNewUsernameDialog = state.showNewUsernameDialog,
+        onDismissNewUsernameDialog = {
+            viewModel.onDismissNewUsernameDialog()
+        },
+        onConfirmNewUsernameDialog = {
+            viewModel.onConfirmNewUsernameDialog(it)
+        }
     )
 }
 
@@ -201,7 +212,17 @@ fun GenerateScreen(
     onProfileImageClick: (ProfileImage) -> Unit,
     previousButtonVisible: Boolean,
     onBackClick: () -> Unit,
+    onUserNameClick: () -> Unit,
+    showNewUsernameDialog: Boolean,
+    onDismissNewUsernameDialog: () -> Unit,
+    onConfirmNewUsernameDialog: (String) -> Unit,
 ) {
+    if (showNewUsernameDialog) {
+        EnterNewUsernameDialog(
+            onDismissClick = onDismissNewUsernameDialog,
+            onConfirmClick = onConfirmNewUsernameDialog
+        )
+    }
     if (showRewardsAlert) {
         RewardsAcquiredAlert(
             nrOfRewards = nrOfRewards,
@@ -251,7 +272,8 @@ fun GenerateScreen(
                 userName = userName,
                 nrOfFireStreaks = nrOfFireStreaks,
                 profileImage = profileImage,
-                onProfileImageClick = onProfileImageClick
+                onProfileImageClick = onProfileImageClick,
+                onUserNameClick = onUserNameClick
             )
         } else {
             FoodItem(
@@ -759,6 +781,7 @@ fun BoxScope.WaitingGenerateFoodContent(
     nrOfFireStreaks: Int,
     onProfileImageClick: (ProfileImage) -> Unit,
     profileImage: ProfileImage,
+    onUserNameClick: () -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -771,6 +794,7 @@ fun BoxScope.WaitingGenerateFoodContent(
             profileTopPadding = 20.dp,
             onProfileImageClick = onProfileImageClick,
             profileImage = profileImage,
+            onUsernameClick = onUserNameClick
         )
     }
     AnimatedVisibility(

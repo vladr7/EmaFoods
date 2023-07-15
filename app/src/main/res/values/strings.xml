@@ -23,7 +23,7 @@
     <string name="level_up_button">Nivelul tău</string>
     <string name="logout_button">Deconectare</string>
     <string name="logout_popup_title">Ești sigur că vrei să te deconectezi?</string>
-    <string name="logout_popup_cancel">Anulare</string>
+    <string name="cancel">Anulare</string>
     <string name="get_xp_from_following_actions">Primești puncte pentru următoarele:</string>
     <string name="you_gained_points">Ai acumulat %1$s puncte!</string>
     <string name="signing_in">Conectare…</string>
@@ -74,4 +74,5 @@
     <string name="i_want_to_stay">Vreau să rămân</string>
     <string name="or">sau</string>
     <string name="sign_in_anonymously">Conectează-te anonim</string>
+    <string name="new_username">Nume utilizator nou</string>
 </resources>
