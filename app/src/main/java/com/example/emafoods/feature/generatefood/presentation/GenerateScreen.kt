@@ -451,14 +451,14 @@ private fun PreviousButtonArcComposable(
     Canvas(
         modifier = modifier
             .height(500.dp)
-            .width(70.dp + abs(offsetXHideButton.value).dp)
+            .width(30.dp + abs(offsetXHideButton.value).dp)
             .zIndex(0f)
             .alpha(0.8f)
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height
         val xPosArc =
-            -canvasWidth - 80f + offsetXHideButton.value
+            -canvasWidth + 20f + offsetXHideButton.value
 
         drawArc(
             brush = Brush.verticalGradient(
@@ -476,7 +476,7 @@ private fun PreviousButtonArcComposable(
 
         val arrowWidth = 30f
         val arrowHeight = 100f
-        val xPosArrow = canvasWidth - 100f + offsetXHideButton.value
+        val xPosArrow = canvasWidth + offsetXHideButton.value
         val arrowPath = Path().let {
             it.moveTo(x = xPosArrow, y = canvasHeight / 2 - arrowHeight / 2) // Top
             it.lineTo(x = xPosArrow - arrowWidth + 15f, y = canvasHeight / 2) // Left
@@ -551,7 +551,7 @@ private fun GenerateArcComposable(
     Canvas(
         modifier = modifier
             .height(500.dp)
-            .width(70.dp + abs(offsetXHideButton.value).dp)
+            .width(30.dp + abs(offsetXHideButton.value).dp)
             .zIndex(0f)
             .alpha(0.8f)
     ) {
