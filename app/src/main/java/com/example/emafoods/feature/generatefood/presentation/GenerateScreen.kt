@@ -220,7 +220,8 @@ fun GenerateScreen(
     if (showNewUsernameDialog) {
         EnterNewUsernameDialog(
             onDismissClick = onDismissNewUsernameDialog,
-            onConfirmClick = onConfirmNewUsernameDialog
+            onConfirmClick = onConfirmNewUsernameDialog,
+            initialUsername = userName
         )
     }
     if (showRewardsAlert) {

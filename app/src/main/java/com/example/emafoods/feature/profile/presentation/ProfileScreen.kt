@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiNature
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.AlertDialog
@@ -44,6 +45,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -173,7 +175,8 @@ fun ProfileScreen(
     if (showNewUsernameDialog) {
         EnterNewUsernameDialog(
             onDismissClick = onDismissNewUsernameDialog,
-            onConfirmClick = onConfirmNewUsernameDialog
+            onConfirmClick = onConfirmNewUsernameDialog,
+            initialUsername = userName
         )
     }
     if (leveledUpEvent) {
@@ -208,7 +211,8 @@ fun ProfileScreen(
             streaks = streaks,
             profileImage = profileImage,
             onProfileImageClick = onProfileImageClick,
-            onUsernameClick = onUsernameClick
+            onUsernameClick = onUsernameClick,
+            profileIcon = Icons.Filled.Edit,
         )
         ProfileReview(onReviewClick = onReviewClick)
         Spacer(modifier = Modifier.weight(1f))
@@ -281,7 +285,8 @@ fun ProfileHeader(
     profileTopPadding: Dp = 36.dp,
     onProfileImageClick: (ProfileImage) -> Unit,
     profileImage: ProfileImage,
-    onUsernameClick: () -> Unit
+    onUsernameClick: () -> Unit,
+    profileIcon: ImageVector = Icons.Default.EmojiNature,
 ) {
     Box(
         modifier = modifier
@@ -321,9 +326,9 @@ fun ProfileHeader(
                     userName,
                     onUsernameClick = {
                         onUsernameClick()
-                    }
+                    },
+                    icon = profileIcon
                 )
-
             }
         }
     }
@@ -332,7 +337,8 @@ fun ProfileHeader(
 @Composable
 private fun ProfileUserName(
     userName: String,
-    onUsernameClick: () -> Unit
+    onUsernameClick: () -> Unit,
+    icon: ImageVector = Icons.Filled.EmojiNature
 ) {
     Row {
         Text(
@@ -343,7 +349,7 @@ private fun ProfileUserName(
             color = MaterialTheme.colorScheme.onSecondary
         )
         Icon(
-            imageVector = Icons.Filled.EmojiNature,
+            imageVector = icon,
             contentDescription = null,
             modifier = Modifier
                 .padding(start = 4.dp)
@@ -370,9 +376,10 @@ fun EnterNewUsernameDialog(
     modifier: Modifier = Modifier,
     onDismissClick: () -> Unit,
     onConfirmClick: (String) -> Unit,
+    initialUsername: String
 
     ) {
-    var text by remember { mutableStateOf("") }
+    var text by remember { mutableStateOf(initialUsername) }
     AlertDialog(
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         titleContentColor = MaterialTheme.colorScheme.onSecondaryContainer,

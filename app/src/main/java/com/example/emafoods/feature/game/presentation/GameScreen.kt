@@ -160,7 +160,8 @@ fun GameScreen(
     if (showNewUsernameDialog) {
         EnterNewUsernameDialog(
             onDismissClick = onDismissNewUsernameDialog,
-            onConfirmClick = onConfirmNewUsernameDialog
+            onConfirmClick = onConfirmNewUsernameDialog,
+            initialUsername = userName
         )
     }
     if (showUpgradedToAdminAlert) {
