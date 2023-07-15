@@ -49,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -56,8 +57,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.emafoods.BuildConfig
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.navigation.home.EmaFoodsNavigation
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.launch
@@ -77,32 +78,43 @@ fun SignInRoute(
             try {
                 val account = task?.getResult(ApiException::class.java)
                 if (account == null) {
-                    Toast.makeText(context, signInFailedText, Toast.LENGTH_SHORT).show()
-                    viewModel.updateSignInLoading(false)
+                    viewModel.updateSignInFailedToast(true)
+                    viewModel.updateSignInGoogleLoading(false)
                 } else {
                     coroutineScope.launch {
-                        viewModel.signIn(
+                        viewModel.signInGoogle(
                             idToken = account.idToken ?: ""
                         )
                     }
                 }
             } catch (e: ApiException) {
-                Toast.makeText(context, signInFailedText, Toast.LENGTH_SHORT).show()
-                viewModel.updateSignInLoading(false)
+                viewModel.updateSignInFailedToast(true)
+                viewModel.updateSignInGoogleLoading(false)
             }
         }
 
     SignInScreen(
         modifier = modifier,
-        onSignInClick = {
-            viewModel.updateSignInLoading(true)
+        onSignInGoogleClick = {
+            viewModel.updateSignInGoogleLoading(true)
             authResultLauncher.launch(signInRequestCode)
         },
-        signInLoading = state.signInLoading,
+        signInGoogleLoading = state.signInGoogleLoading,
+        onSignInAnonymouslyClick = {
+            viewModel.updateSignInAnonymousLoading(true)
+            viewModel.onSignInAnonymous()
+        },
+        signInAnonymousLoading = state.signInAnonymousLoading,
     )
-    if(BuildConfig.DEBUG) {
-        viewModel.bypassSignInOnDebug()
+
+    if (state.showSignInFailedToast) {
+        Toast.makeText(context, signInFailedText, Toast.LENGTH_SHORT).show()
+        viewModel.updateSignInFailedToast(false)
     }
+
+//    if(BuildConfig.DEBUG) {
+//        viewModel.bypassSignInOnDebug()
+//    }
     if (state.signInSuccess) {
         EmaFoodsNavigation(
             isAdmin = state.isAdmin,
@@ -113,8 +125,10 @@ fun SignInRoute(
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
-    onSignInClick: () -> Unit,
-    signInLoading: Boolean,
+    onSignInGoogleClick: () -> Unit,
+    onSignInAnonymouslyClick: () -> Unit,
+    signInGoogleLoading: Boolean,
+    signInAnonymousLoading: Boolean,
 ) {
     SignInBackground(modifier = modifier)
     Column(
@@ -125,17 +139,115 @@ fun SignInScreen(
         Spacer(modifier = modifier.weight(0.05f))
         SignInTopBar()
         Spacer(modifier = modifier.weight(0.2f))
-        SignInButton(
+        SignInGoogleButton(
             modifier = modifier,
             loadingText = stringResource(R.string.signing_in),
-            isLoading = signInLoading,
+            isLoading = signInGoogleLoading,
             icon = painterResource(id = R.drawable.ic_google_logo),
             onClick = {
-                onSignInClick()
+                onSignInGoogleClick()
+            },
+        )
+        Text(
+            text = stringResource(id = R.string.or),
+            fontSize = 17.sp,
+            fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+            style = TextStyle(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color.DarkGray,
+                        Color.Gray,
+                    )
+                )
+            ),
+            textAlign = TextAlign.Center,
+            modifier = modifier
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+        )
+        SignInAnonymouslyButton(
+            modifier = modifier,
+            loadingText = stringResource(R.string.signing_in),
+            isLoading = signInAnonymousLoading,
+            onClick = {
+                onSignInAnonymouslyClick()
             },
         )
         Spacer(modifier = modifier.weight(0.2f))
     }
+}
+
+@Composable
+fun SignInAnonymouslyButton(
+    modifier: Modifier,
+    loadingText: String,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    if (isLoading) {
+        SignInAnonymouslyLoading(loadingText, modifier)
+    } else {
+        SignInAnonymouslyDefault(modifier, onClick)
+    }
+}
+
+@Composable
+private fun SignInAnonymouslyLoading(loadingText: String, modifier: Modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            text = loadingText,
+            fontSize = 18.sp,
+            fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color.DarkGray,
+                        Color.Gray,
+                    )
+                ),
+                fontStyle = FontStyle.Italic,
+            ),
+            textAlign = TextAlign.Center,
+            modifier = modifier
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        CircularProgressIndicator(
+            modifier = Modifier
+                .height(16.dp)
+                .width(16.dp),
+            strokeWidth = 2.dp,
+        )
+    }
+}
+
+@Composable
+private fun SignInAnonymouslyDefault(modifier: Modifier, onClick: () -> Unit) {
+    Text(
+        text = stringResource(id = R.string.sign_in_anonymously),
+        fontSize = 18.sp,
+        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+        fontWeight = FontWeight.Bold,
+        style = TextStyle(
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    Color.DarkGray,
+                    Color.Gray,
+                )
+            ),
+            fontStyle = FontStyle.Italic,
+        ),
+        textAlign = TextAlign.Center,
+        modifier = modifier
+            .bounceClick(
+                onClick = onClick,
+            )
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+    )
 }
 
 @Composable
@@ -177,7 +289,8 @@ fun SignInTopBar(
         modifier = modifier
     ) {
         Image(
-            painter = painterResource(id = R.drawable.chefgirlcirclevegan), contentDescription = null,
+            painter = painterResource(id = R.drawable.chefgirlcirclevegan),
+            contentDescription = null,
             modifier = modifier
                 .size(150.dp, 150.dp)
                 .align(Alignment.CenterHorizontally)
@@ -223,7 +336,7 @@ fun SignInTopBar(
 }
 
 @Composable
-fun SignInButton(
+fun SignInGoogleButton(
     modifier: Modifier = Modifier,
     loadingText: String = stringResource(R.string.sigining_in),
     icon: Painter,

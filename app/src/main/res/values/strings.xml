@@ -72,4 +72,6 @@
     <string name="exit">Exit</string>
     <string name="are_you_sure_you_want_to_exit">Sunteți sigur că vreți să părăsiți ecranul?</string>
     <string name="i_want_to_stay">Vreau să rămân</string>
+    <string name="or">sau</string>
+    <string name="sign_in_anonymously">Conectează-te anonim</string>
 </resources>

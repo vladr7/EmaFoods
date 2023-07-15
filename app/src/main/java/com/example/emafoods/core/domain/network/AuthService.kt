@@ -9,7 +9,8 @@ interface AuthService {
     fun isUserSignedIn(): Boolean
     suspend fun getUserDetails(): UserData
     fun signOut()
-    suspend fun signIn(idToken: String): State<Unit>
+    suspend fun signInGoogle(idToken: String): State<Unit>
+    suspend fun signInAnonymous(): State<Unit>
     suspend fun addUserDataToFirestore(userData: UserData)
     suspend fun addRewardToUser(rewardedUserUid: String)
     suspend fun getUserRewards(): State<Long>

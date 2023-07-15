@@ -1,12 +1,13 @@
 package com.example.emafoods.feature.signin.domain.usecase
 
+import com.example.emafoods.core.domain.models.State
 import com.example.emafoods.core.domain.network.AuthService
 import javax.inject.Inject
 
-class SignInUseCase @Inject constructor(
+class SignInAnonymousUseCase @Inject constructor(
     private val authService: AuthService
 ) {
 
-    suspend fun execute(idToken: String) =
-        authService.signIn(idToken)
+    suspend fun execute(): State<Unit> =
+        authService.signInAnonymous()
 }

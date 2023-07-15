@@ -42,7 +42,7 @@ class DefaultAuthService @Inject constructor(
                 UserData(
                     uid = firebaseAuth.currentUser?.uid ?: "",
                     email = firebaseAuth.currentUser?.email ?: "",
-                    displayName = firebaseAuth.currentUser?.displayName ?: "",
+                    displayName = firebaseAuth.currentUser?.displayName ?: "User${uid?.substring(0, 5)}",
                 )
             }
         } catch (e: Exception) {
@@ -50,7 +50,7 @@ class DefaultAuthService @Inject constructor(
             UserData(
                 uid = firebaseAuth.currentUser?.uid ?: "",
                 email = firebaseAuth.currentUser?.email ?: "",
-                displayName = firebaseAuth.currentUser?.displayName ?: "",
+                displayName = firebaseAuth.currentUser?.displayName ?: "User${uid?.substring(0, 5)}",
             )
         }
     }
@@ -59,10 +59,24 @@ class DefaultAuthService @Inject constructor(
         firebaseAuth.signOut()
     }
 
-    override suspend fun signIn(idToken: String): State<Unit> {
+    override suspend fun signInGoogle(idToken: String): State<Unit> {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         return suspendCancellableCoroutine { continuation ->
             firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener() { task ->
+                    if (task.isSuccessful) {
+                        continuation.resume(State.success(Unit))
+                    } else {
+                        logHelper.reportCrash(Throwable("DefaultAuthService: SignIn: ${task.exception?.localizedMessage}"))
+                        continuation.resume(State.failed(task.exception?.localizedMessage ?: ""))
+                    }
+                }
+        }
+    }
+
+    override suspend fun signInAnonymous(): State<Unit> {
+        return suspendCancellableCoroutine { continuation ->
+            firebaseAuth.signInAnonymously()
                 .addOnCompleteListener() { task ->
                     if (task.isSuccessful) {
                         continuation.resume(State.success(Unit))

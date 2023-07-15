@@ -26,6 +26,8 @@ object AnalyticsConstants {
     const val ADMIN_REJECTED_RECIPE = "admin_rejected_recipe"
     const val CLICKED_ON_SIGN_OUT = "clicked_on_sign_out"
     const val CLICKED_ON_BEE_SECRET_CODE = "clicked_on_bee_secret_code"
-    const val SIGN_IN_SUCCESS = "sign_in_success"
-    const val SIGN_IN_FAILED = "sign_in_failed"
+    const val SIGN_IN_GOOGLE_SUCCESS = "sign_in_success"
+    const val SIGN_IN_GOOGLE_FAILED = "sign_in_failed"
+    const val SIGN_IN_ANONYMOUS_SUCCESS = "sign_in_anonymous_success"
+    const val SIGN_IN_ANONYMOUS_FAILED = "sign_in_anonymous_failed"
 }
