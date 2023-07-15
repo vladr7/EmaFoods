@@ -48,7 +48,7 @@
     <string name="ingredient_hint">Ingredient</string>
     <string name="measurement_hint">gr/ml</string>
     <string name="measurement_hint_extended">grame/ml</string>
-    <string name="add_new_ingredient">Adaugă un ingredient nou</string>
+    <string name="add_new_ingredient">Adaugă un ingredient</string>
     <string name="ingredients_list_title">Ingrediente</string>
     <string name="ingredient_already_added_error">Ingredientul acesta a fost deja adăugat!</string>
     <string name="next_step">Pasul următor</string>

@@ -257,7 +257,7 @@ fun IngredientCard(
     val pattern = remember { Regex("^\\d+\$") }
     val focusRequesterIngredient = remember { FocusRequester() }
     val focusRequesterMeasurement = remember { FocusRequester() }
-    var isFocused by remember { mutableStateOf(true) }
+    var isFocused by remember { mutableStateOf(false) }
     var ingredientValue by remember { mutableStateOf(ingredient.name) }
     var measurementValue by remember {
         mutableStateOf(
