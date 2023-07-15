@@ -44,7 +44,7 @@ internal class  UpdateFireStreaksUseCaseTest {
     }
 
 	@Test
-    fun `when time difference is more than 2 days then reset fire streaks`() = runTest {
+    fun `when time difference is more than 3 days then reset fire streaks`() = runTest {
         // Given
         `when`(lastTimeUserOpenedAppUseCase.execute()).thenReturn(
             Date().time - 3 * 24 * 60 * 60 * 1000 // days * hours * minutes * seconds * milliseconds
@@ -59,11 +59,10 @@ internal class  UpdateFireStreaksUseCaseTest {
     }
 
     @Test
-    fun `when time difference is less than 2 days and more than 1 day then update fire streaks`() = runTest {
+    fun `when last time opened app time is less than midnight time then increase firestreaks count`() = runTest {
         // Given
-        val lastTimeUserOpenedApp = Date().time - 1 * 30 * 60 * 60 * 1000
         `when`(lastTimeUserOpenedAppUseCase.execute()).thenReturn(
-            lastTimeUserOpenedApp
+            Date().time - 25 * 60 * 60 * 1000 // days * hours * minutes * seconds * milliseconds
         )
 
         // When
@@ -75,10 +74,10 @@ internal class  UpdateFireStreaksUseCaseTest {
     }
 
     @Test
-    fun `when time difference is less than 1 day then do not update fire streaks`() = runTest {
+    fun `when last time opened app time is more than midnight time then do only update last time opened app`() = runTest {
         // Given
         `when`(lastTimeUserOpenedAppUseCase.execute()).thenReturn(
-            Date().time - 1 * 20 * 60 * 60 * 1000
+            Date().time - 10 * 60 * 60 * 1000 // days * hours * minutes * seconds * milliseconds
         )
 
         // When
@@ -86,6 +85,7 @@ internal class  UpdateFireStreaksUseCaseTest {
 
         // Then
         verify(updateConsecutiveDaysAppOpenedUseCase, times(numInvocations = 0)).execute()
+        verify(resetConsecutiveDaysAppOpenedUseCase, times(numInvocations = 0)).execute()
         verify(updateLastTimeUserOpenedAppUseCase, times(numInvocations = 1)).execute()
     }
 
