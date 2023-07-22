@@ -110,6 +110,10 @@ class DefaultGameDataSource @Inject constructor(
         authService.upgradeBasicUserToAdmin()
     }
 
+    override suspend fun getAdminCode(): String {
+        return authService.getAdminCode()
+    }
+
 
     override suspend fun storeUserXP(xp: Long) {
         val currentXp = userXP()

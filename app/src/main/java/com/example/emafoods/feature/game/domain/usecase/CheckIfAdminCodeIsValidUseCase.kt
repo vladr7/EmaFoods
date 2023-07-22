@@ -1,14 +1,14 @@
 package com.example.emafoods.feature.game.domain.usecase
 
+import com.example.emafoods.feature.game.domain.repository.GameRepository
 import javax.inject.Inject
 
-class CheckIfAdminCodeIsValidUseCase @Inject constructor() {
+class CheckIfAdminCodeIsValidUseCase @Inject constructor(
+    private val gameRepository: GameRepository
+) {
 
-    fun execute(adminCode: String): Boolean {
-        return adminCode == ADMIN_CODE
-    }
-
-    companion object {
-        private const val ADMIN_CODE = "j34arw"
+    suspend fun execute(adminCode: String): Boolean {
+        val code = gameRepository.getAdminCode()
+        return adminCode == code
     }
 }

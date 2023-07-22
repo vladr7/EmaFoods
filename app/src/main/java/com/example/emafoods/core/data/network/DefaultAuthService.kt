@@ -21,10 +21,14 @@ class DefaultAuthService @Inject constructor(
     companion object {
         const val FIRESTORE_USERS_COLLECTION = "USERS"
         const val FIRESTORE_USER_AWAITING_REWARDS = "awaitingRewards"
+        const val FIRESTORE_SETTINGS_COLLECTION = "SETTINGS"
+        const val FIRESTORE_SETTINGS_DOC_ID = "e1CRFkuAb4iLCWSI8aIa"
     }
 
     private val usersCollection = FirebaseFirestore.getInstance()
         .collection(FIRESTORE_USERS_COLLECTION)
+    private val settingsCollection = FirebaseFirestore.getInstance()
+        .collection(FIRESTORE_SETTINGS_COLLECTION)
     private val firebaseAuth = FirebaseAuth.getInstance()
 
     override fun isUserSignedIn(): Boolean =
@@ -182,6 +186,16 @@ class DefaultAuthService @Inject constructor(
                 .update("displayName", userName)
         } catch (e: Exception) {
             logHelper.reportCrash(Throwable("DefaultAuthService: updateUserName: ${e.localizedMessage}"))
+        }
+    }
+
+    override suspend fun getAdminCode(): String {
+        return try {
+            val adminCode = settingsCollection.document(FIRESTORE_SETTINGS_DOC_ID).get().await().get("adminCode")
+            if (adminCode != null) adminCode as String else ""
+        } catch (e: Exception) {
+            logHelper.reportCrash(Throwable("DefaultAuthService: getAdminCode: ${e.localizedMessage}"))
+            ""
         }
     }
 }

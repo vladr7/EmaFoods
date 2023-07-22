@@ -92,4 +92,8 @@ class DefaultGameRepository @Inject constructor(
     override suspend fun upgradeBasicUserToAdmin() {
         gameDataSource.upgradeBasicUserToAdmin()
     }
+
+    override suspend fun getAdminCode(): String {
+        return gameDataSource.getAdminCode()
+    }
 }

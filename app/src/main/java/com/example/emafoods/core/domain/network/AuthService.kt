@@ -20,4 +20,5 @@ interface AuthService {
     suspend fun storeUserLevel(userLevel: UserLevel)
     suspend fun upgradeBasicUserToAdmin()
     suspend fun updateUserName(userName: String)
+    suspend fun getAdminCode(): String
 }

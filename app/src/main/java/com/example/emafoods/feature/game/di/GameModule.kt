@@ -258,7 +258,9 @@ object GameModule {
     @Provides
     @Singleton
     fun provideCheckIfAdminCodeIsValidUseCase(
+        gameRepository: GameRepository
     ) = CheckIfAdminCodeIsValidUseCase(
+        gameRepository = gameRepository
     )
 
     @Provides
