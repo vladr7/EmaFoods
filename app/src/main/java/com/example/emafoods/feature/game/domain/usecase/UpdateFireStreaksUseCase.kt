@@ -14,7 +14,7 @@ class UpdateFireStreaksUseCase @Inject constructor(
     suspend fun execute() {
         val lastTimeUserOpenedApp = lastTimeUserOpenedAppUseCase.execute()
         val currentTime = Calendar.getInstance().timeInMillis
-        if(currentTime - lastTimeUserOpenedApp > 3 * DateConstants.DAY) {
+        if(currentTime - lastTimeUserOpenedApp > 14 * DateConstants.DAY) {
             resetConsecutiveDaysAppOpenedUseCase.execute()
             updateLastTimeUserOpenedAppUseCase.execute()
             return

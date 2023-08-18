@@ -106,6 +106,7 @@ class GenerateViewModel @Inject constructor(
     private fun updateFireStreaks() {
         viewModelScope.launch {
             updateFireStreaksUseCase.execute()
+            getStreaks()
         }
     }
 
