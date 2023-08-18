@@ -75,4 +75,5 @@
     <string name="or">sau</string>
     <string name="sign_in_anonymously">Conectează-te anonim</string>
     <string name="new_username">Modifică nume utilizator</string>
+    <string name="search_food_hint">Caută rețetă..</string>
 </resources>

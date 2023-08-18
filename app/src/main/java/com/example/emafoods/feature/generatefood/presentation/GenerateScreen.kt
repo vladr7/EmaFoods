@@ -281,7 +281,6 @@ fun GenerateScreen(
                 modifier = modifier
                     .verticalScroll(scrollState),
                 food = food,
-                ingredientsList = food.ingredients,
             )
             GenerateButtons(
                 modifier,

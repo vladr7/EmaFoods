@@ -93,12 +93,14 @@ private fun getBottomNavItems(isAdmin: Boolean): List<HomeBottomDestination> =
             HomeBottomDestination.AddFood,
             HomeBottomDestination.GenerateFood,
             HomeBottomDestination.PendingFood,
+            HomeBottomDestination.AllFoods,
             HomeBottomDestination.Profile,
         )
     } else {
         listOf(
             HomeBottomDestination.AddFood,
             HomeBottomDestination.GenerateFood,
+            HomeBottomDestination.AllFoods,
             HomeBottomDestination.Profile,
         )
     }

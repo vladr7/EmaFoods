@@ -2,10 +2,12 @@ package com.example.emafoods.navigation.home
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.PendingActions
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.outlined.AddCircleOutline
+import androidx.compose.material.icons.outlined.Fastfood
 import androidx.compose.material.icons.outlined.PendingActions
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Restaurant
@@ -38,6 +40,12 @@ sealed class HomeBottomDestination(
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person,
         "home_profile",
+    )
+
+    object AllFoods : HomeBottomDestination(
+        selectedIcon = Icons.Filled.Fastfood,
+        unselectedIcon = Icons.Outlined.Fastfood,
+        "all_foods",
     )
 }
 

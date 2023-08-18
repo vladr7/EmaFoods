@@ -13,6 +13,7 @@ import com.example.emafoods.feature.addfood.presentation.image.navigation.imageS
 import com.example.emafoods.feature.addfood.presentation.image.navigation.navigateToImage
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.insertFoodScreen
 import com.example.emafoods.feature.addfood.presentation.insert.navigation.navigateToInsertFood
+import com.example.emafoods.feature.allfoods.navigation.allFoodsScreen
 import com.example.emafoods.feature.game.presentation.navigation.gameScreen
 import com.example.emafoods.feature.game.presentation.navigation.navigateToGame
 import com.example.emafoods.feature.generatefood.navigation.generateFoodScreen
@@ -68,6 +69,7 @@ fun HomeNavHost(
         }
         generateFoodScreen()
         pendingFoodScreen()
+        allFoodsScreen()
         navigation(
             route = HomeBottomDestination.Profile.route,
             startDestination = ProfileDestinations.Profile.route

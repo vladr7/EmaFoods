@@ -163,7 +163,6 @@ fun PendingFoodScreen(
             FoodItem(
                 food = food,
                 modifier = modifier,
-                ingredientsList = ingredientsList,
                 isCategoryTypeVisible = food.id.isNotEmpty()
             )
             if (ingredientsList.isNotEmpty()) {
@@ -212,7 +211,6 @@ fun PendingFoodScreen(
 fun FoodItem(
     food: FoodViewData,
     modifier: Modifier = Modifier,
-    ingredientsList: List<IngredientViewData>,
     isCategoryTypeVisible: Boolean = false,
 ) {
     val color by animateColorAsState(
@@ -242,13 +240,13 @@ fun FoodItem(
                 CategoryTypeRow(categoryType = food.categoryType)
             }
             FoodTitle(text = food.title)
-            if (ingredientsList.isNotEmpty()) {
+            if (food.ingredients.isNotEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     IngredientsReadOnlyContent(
-                        ingredients = ingredientsList,
+                        ingredients = food.ingredients,
                         onEditClick = {
 
                         },
