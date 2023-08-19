@@ -44,8 +44,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
-import com.example.emafoods.feature.generatefood.presentation.GenerateScreenBackground
 import com.example.emafoods.feature.pending.presentation.EmptyDescriptionMessage
 import com.example.emafoods.feature.pending.presentation.FoodAuthor
 import com.example.emafoods.feature.pending.presentation.FoodDescription
@@ -75,7 +75,7 @@ fun AllFoodsScreen(
     onSearchTextChanged: (String) -> Unit,
     foods: List<FoodViewData> = emptyList(),
 ) {
-    GenerateScreenBackground()
+    CategoryScreenBackground(alpha = 0.50f)
     Column {
         Spacer(modifier = Modifier.height(16.dp))
         SearchFoodBar(searchText = searchText, onSearchTextChanged = onSearchTextChanged)
