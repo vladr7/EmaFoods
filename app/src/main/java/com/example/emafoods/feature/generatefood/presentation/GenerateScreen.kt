@@ -419,9 +419,6 @@ fun PreviousGenerateButton(
                     }
                 }
             )
-            .bounceClick {
-                onPreviousButtonClick()
-            }
             .offset(
                 x = if (offsetXAnimation.value > -10f)
                     (-10).dp
@@ -522,9 +519,6 @@ fun GenerateButton(
                     }
                 }
             )
-            .bounceClick {
-                onGenerateClick()
-            }
             .offset(
                 x = if (offsetXAnimation.value < 0f)
                     (0).dp
