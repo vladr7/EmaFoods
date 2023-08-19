@@ -35,7 +35,7 @@ class AllFoodsViewModel @Inject constructor(
                 val mappedFoods = foods.map { food ->
                     foodMapper.mapToViewData(food)
                 }
-                persistedFoods = mappedFoods
+                persistedFoods = mappedFoods.shuffled()
                 _state.update {
                     it.copy(
                         foods = mappedFoods.filterFoods(it.searchText)
