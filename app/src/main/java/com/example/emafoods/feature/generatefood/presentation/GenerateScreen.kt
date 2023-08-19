@@ -419,9 +419,6 @@ fun PreviousGenerateButton(
                     }
                 }
             )
-            .bounceClick {
-                onPreviousButtonClick()
-            }
             .offset(
                 x = if (offsetXAnimation.value > -10f)
                     (-10).dp
@@ -522,9 +519,6 @@ fun GenerateButton(
                     }
                 }
             )
-            .bounceClick {
-                onGenerateClick()
-            }
             .offset(
                 x = if (offsetXAnimation.value < 0f)
                     (0).dp
@@ -600,12 +594,6 @@ fun BoxScope.CategoryDropDown(
     categoryType: CategoryType,
     visible: Boolean
 ) {
-    val brush = Brush.verticalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.secondary,
-            Color.Transparent
-        )
-    )
     Column(
         modifier = modifier
             .align(Alignment.TopEnd)

@@ -5,28 +5,38 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +44,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -42,10 +56,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.emafoods.R
+import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
-import com.example.emafoods.feature.generatefood.presentation.GenerateScreenBackground
+import com.example.emafoods.feature.allfoods.presentation.models.FilterCategoryType
 import com.example.emafoods.feature.pending.presentation.EmptyDescriptionMessage
 import com.example.emafoods.feature.pending.presentation.FoodAuthor
 import com.example.emafoods.feature.pending.presentation.FoodDescription
@@ -60,11 +76,17 @@ fun AllFoodsRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getAllFoods()
+    }
+
     AllFoodsScreen(
         modifier = modifier,
         foods = state.foods,
         searchText = state.searchText,
-        onSearchTextChanged = { viewModel.onSearchTextChange(it) }
+        onSearchTextChanged = { viewModel.onSearchTextChange(it) },
+        filterCategoryType = state.filterCategoryType,
+        onDropDownItemClick = { viewModel.onDropDownItemClick(it) }
     )
 }
 
@@ -74,21 +96,106 @@ fun AllFoodsScreen(
     searchText: String,
     onSearchTextChanged: (String) -> Unit,
     foods: List<FoodViewData> = emptyList(),
+    filterCategoryType: FilterCategoryType,
+    onDropDownItemClick: (FilterCategoryType) -> Unit
 ) {
-    GenerateScreenBackground()
-    Column {
-        Spacer(modifier = Modifier.height(16.dp))
-        SearchFoodBar(searchText = searchText, onSearchTextChanged = onSearchTextChanged)
-        Spacer(modifier = Modifier.height(4.dp))
-        LazyColumn(content = {
-            items(foods.size) { index ->
-                val food = foods[index]
-                FoodItemList(
-                    food = food,
+    var dropDownFilterExpanded by remember { mutableStateOf(false) }
+
+    CategoryScreenBackground(alpha = 0.50f)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Column {
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SearchFoodBar(
+                    searchText = searchText,
+                    onSearchTextChanged = onSearchTextChanged,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 16.dp)
+                )
+                FilterIcon(
+                    modifier = Modifier
+                        .bounceClick {
+                            dropDownFilterExpanded = !dropDownFilterExpanded
+                        }
                 )
             }
-        })
+            if(foods.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.number_of_recipes_found, foods.size),
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 24.dp, top = 2.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+            if (foods.isEmpty()) {
+                EmptyDescriptionMessage(
+                    message = stringResource(id = R.string.no_foods_found),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+            } else {
+                FoodList(foods = foods)
+            }
+        }
+        DropDownFilter(
+            modifier = Modifier,
+            filterCategoryType = filterCategoryType,
+            expanded = dropDownFilterExpanded,
+            onDismissRequest = { dropDownFilterExpanded = false }
+        ) { filterCategoryType ->
+            onDropDownItemClick(filterCategoryType)
+            dropDownFilterExpanded = false
+        }
     }
+}
+
+@Composable
+fun FoodList(foods: List<FoodViewData>) {
+    LazyColumn(content = {
+        items(foods.size) { index ->
+            val food = foods[index]
+            FoodItemList(
+                food = food,
+            )
+        }
+    })
+}
+
+@Composable
+fun FilterIcon(
+    modifier: Modifier = Modifier,
+) {
+    val brush = Brush.radialGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.secondary,
+            Color.Transparent,
+        ),
+        radius = 80f,
+    )
+    Icon(
+        imageVector = Icons.Default.FilterList,
+        contentDescription = "Category",
+        tint = Color.White,
+        modifier = modifier
+            .background(
+                brush = brush,
+            )
+            .size(40.dp)
+    )
 }
 
 @Composable
@@ -159,7 +266,9 @@ fun FoodItemList(
                     if (food.description.isNotEmpty()) {
                         FoodDescription(description = food.description)
                     } else {
-                        EmptyDescriptionMessage()
+                        EmptyDescriptionMessage(
+                            message = stringResource(id = R.string.no_description_message)
+                        )
                     }
                 }
             }
@@ -176,8 +285,6 @@ private fun SearchFoodBar(
 ) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp)
             .background(color = MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp))
     ) {
         if (searchText.isEmpty()) {
@@ -191,6 +298,7 @@ private fun SearchFoodBar(
                 fontSize = 18.sp
             )
         }
+
         BasicTextField(
             value = searchText,
             onValueChange = onSearchTextChanged,
@@ -199,19 +307,179 @@ private fun SearchFoodBar(
                 fontSize = 18.sp
             ),
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(start = 16.dp, end = 40.dp, top = 12.dp, bottom = 12.dp),
             singleLine = true,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
         )
 
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = 10.dp)
-        )
+        if (searchText.isNotEmpty()) {
+            Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = "Clear",
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 10.dp)
+                    .clickable {
+                        onSearchTextChanged("")
+                    }
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 10.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun BoxScope.DropDownFilter(
+    modifier: Modifier = Modifier,
+    filterCategoryType: FilterCategoryType,
+    expanded: Boolean,
+    onDismissRequest: () -> Unit,
+    onDropDownItemClick: (FilterCategoryType) -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .padding(top = 75.dp, end = 10.dp)
+            .align(Alignment.TopEnd)
+    ) {
+        DropdownMenu(
+            modifier = modifier
+                .background(color = MaterialTheme.colorScheme.primaryContainer),
+            expanded = expanded,
+            onDismissRequest = onDismissRequest
+        ) {
+            DropdownMenuItem(
+                modifier = modifier
+                    .background(
+                        color = if (filterCategoryType == FilterCategoryType.ALL)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer
+                    ),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.allfoodsicon),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.all_foods),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(FilterCategoryType.ALL)
+                })
+            Divider()
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(
+                        color = if (filterCategoryType == FilterCategoryType.MAIN_DISH)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer
+                    ),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.spaghetti),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.main_dish_dropdown),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(FilterCategoryType.MAIN_DISH)
+                })
+            Divider()
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(
+                        color = if (filterCategoryType == FilterCategoryType.DESSERT)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer
+                    ),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.dessert),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.dessert),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(FilterCategoryType.DESSERT)
+                })
+            Divider()
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(
+                        color = if (filterCategoryType == FilterCategoryType.SOUP)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer
+                    ),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.soup),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.soup),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(FilterCategoryType.SOUP)
+                })
+            Divider()
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(
+                        color = if (filterCategoryType == FilterCategoryType.BREAKFAST)
+                            MaterialTheme.colorScheme.tertiaryContainer
+                        else MaterialTheme.colorScheme.primaryContainer
+                    ),
+                leadingIcon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.breakfast),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(30.dp)
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.breakfast),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }, onClick = {
+                    onDropDownItemClick(FilterCategoryType.BREAKFAST)
+                })
+        }
     }
 }

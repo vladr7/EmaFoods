@@ -359,7 +359,8 @@ fun CategoryItem(
 
 @Composable
 fun CategoryScreenBackground(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    alpha: Float = 0.35f,
 ) {
     var sizeImage by remember { mutableStateOf(IntSize.Zero) }
 
@@ -381,7 +382,7 @@ fun CategoryScreenBackground(
                     sizeImage = it.size
                 }
                 .fillMaxSize(),
-            alpha = 0.35f
+            alpha = alpha
         )
         Box(
             modifier = Modifier

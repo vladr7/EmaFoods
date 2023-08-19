@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.allfoods.presentation.models.FilterCategoryType
+import com.example.emafoods.feature.allfoods.presentation.models.toFilterCategoryType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.Normalizer
@@ -25,22 +27,17 @@ class AllFoodsViewModel @Inject constructor(
 
     private var persistedFoods: List<FoodViewData> = emptyList()
 
-    init {
-        getAllFoods()
-    }
-
-    private fun getAllFoods() {
+    fun getAllFoods() {
         viewModelScope.launch {
-            getAllFoodsUseCase.execute().collectLatest { foods ->
-                val mappedFoods = foods.map { food ->
-                    foodMapper.mapToViewData(food)
-                }
-                persistedFoods = mappedFoods
-                _state.update {
-                    it.copy(
-                        foods = mappedFoods.filterFoods(it.searchText)
-                    )
-                }
+            val foods = getAllFoodsUseCase.execute().first()
+            val mappedFoods = foods.map { food ->
+                foodMapper.mapToViewData(food)
+            }
+            persistedFoods = mappedFoods.shuffled()
+            _state.update {
+                it.copy(
+                    foods = persistedFoods.filterFoods(it.searchText, it.filterCategoryType)
+                )
             }
         }
     }
@@ -49,7 +46,7 @@ class AllFoodsViewModel @Inject constructor(
         _state.update {
             it.copy(
                 searchText = searchText,
-                foods = persistedFoods.filterFoods(searchText)
+                foods = persistedFoods.filterFoods(searchText = searchText, filterCategoryType = it.filterCategoryType)
             )
         }
     }
@@ -59,14 +56,22 @@ class AllFoodsViewModel @Inject constructor(
             .replace("\\p{InCombiningDiacriticalMarks}".toRegex(), "")
     }
 
-    private fun List<FoodViewData>.filterFoods(searchText: String): List<FoodViewData> {
+    private fun List<FoodViewData>.filterFoods(searchText: String, filterCategoryType: FilterCategoryType): List<FoodViewData> {
         val normalizedSearchText = removeDiacritics(searchText)
         return this.filter { food ->
-            removeDiacritics(food.title).contains(normalizedSearchText, ignoreCase = true) ||
-                    removeDiacritics(food.description).contains(
-                        normalizedSearchText,
-                        ignoreCase = true
-                    )
+            (removeDiacritics(food.title).contains(normalizedSearchText, ignoreCase = true) ||
+                    removeDiacritics(food.description).contains(normalizedSearchText, ignoreCase = true)) &&
+                    (filterCategoryType == FilterCategoryType.ALL ||
+                            food.categoryType.toFilterCategoryType() == filterCategoryType)
+        }
+    }
+
+    fun onDropDownItemClick(filterCategoryType: FilterCategoryType) {
+        _state.update {
+            it.copy(
+                filterCategoryType = filterCategoryType,
+                foods = persistedFoods.filterFoods(it.searchText, filterCategoryType)
+            )
         }
     }
 }
@@ -74,4 +79,5 @@ class AllFoodsViewModel @Inject constructor(
 data class AllFoodsState(
     val foods: List<FoodViewData> = emptyList(),
     val searchText: String = "",
+    val filterCategoryType: FilterCategoryType = FilterCategoryType.ALL,
 )

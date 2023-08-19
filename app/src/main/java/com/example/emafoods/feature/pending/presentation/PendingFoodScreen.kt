@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +34,10 @@ import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Pinch
 import androidx.compose.material.icons.filled.SwipeLeft
 import androidx.compose.material.icons.filled.SwipeRight
+import androidx.compose.material.icons.outlined.Pinch
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -53,6 +56,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -190,7 +195,7 @@ fun PendingFoodScreen(
                 )
             }
         }
-        if(ingredientsList.isNotEmpty() && scrollState.canScrollForward && scrollState.maxValue > 100) {
+        if (ingredientsList.isNotEmpty() && scrollState.canScrollForward && scrollState.maxValue > 100) {
             ScrollArrow(
                 modifier = modifier
                     .align(Alignment.BottomCenter)
@@ -236,7 +241,7 @@ fun FoodItem(
                 )
         ) {
             FoodImage(imageUri = food.imageRef)
-            if(isCategoryTypeVisible) {
+            if (isCategoryTypeVisible) {
                 CategoryTypeRow(categoryType = food.categoryType)
             }
             FoodTitle(text = food.title)
@@ -270,10 +275,12 @@ fun FoodItem(
                     )
                 }
             }
-            if(food.description.isNotEmpty()) {
+            if (food.description.isNotEmpty()) {
                 FoodDescription(description = food.description)
             } else {
-                EmptyDescriptionMessage()
+                EmptyDescriptionMessage(
+                    message = stringResource(id = R.string.for_the_moment_there_are_no_more_pending_foods)
+                )
             }
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -309,9 +316,10 @@ fun FoodTitle(
 @Composable
 fun EmptyDescriptionMessage(
     modifier: Modifier = Modifier,
+    message: String,
 ) {
     Text(
-        text = stringResource(id = R.string.for_the_moment_there_are_no_more_pending_foods),
+        text = message,
         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
@@ -471,7 +479,7 @@ fun FoodAuthor(
 ) {
     Row(
         modifier = modifier
-            .clickable {  }
+            .clickable { }
             .width(200.dp)
             .padding(
                 start = 25.dp, end = 20.dp,
@@ -494,22 +502,61 @@ fun FoodImage(
     modifier: Modifier = Modifier,
     imageUri: String,
 ) {
-    SubcomposeAsyncImage(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-            .padding(10.dp)
-            .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(imageUri.ifEmpty { R.drawable.radish })
-            .crossfade(true)
-            .build(),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        loading = {
-            LoadingCookingAnimation()
+    var scale by remember { mutableStateOf(1f) }
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
+    var zoomEnabled by remember { mutableStateOf(false) }
+
+    var imageModifier = modifier
+        .fillMaxWidth()
+        .height(300.dp)
+        .padding(10.dp)
+        .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp))
+        .graphicsLayer(
+            scaleX = scale,
+            scaleY = scale,
+            translationX = offsetX,
+            translationY = offsetY
+        )
+
+    if (zoomEnabled) {
+        imageModifier = imageModifier.pointerInput(Unit) {
+            detectTransformGestures { _, pan, zoom, _ ->
+                scale *= zoom
+                scale = scale.coerceIn(1.0f, 3f)
+                offsetX += pan.x
+                offsetY += pan.y
+            }
         }
-    )
+    }
+
+    Box(modifier = modifier) {
+        SubcomposeAsyncImage(
+            modifier = imageModifier,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUri.ifEmpty { R.drawable.radish })
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            loading = {
+                LoadingCookingAnimation()
+            }
+        )
+
+        val icon = if (zoomEnabled) Icons.Filled.Pinch else Icons.Outlined.Pinch
+        Icon(
+            imageVector = icon, contentDescription = "Zoom Icon",
+            modifier = Modifier
+                .bounceClick {
+                    zoomEnabled = !zoomEnabled
+                }
+                .padding(16.dp)
+                .align(Alignment.BottomEnd)
+                .size(35.dp),
+            tint = MaterialTheme.colorScheme.onSecondary
+        )
+    }
 }
 
 @Composable
@@ -520,7 +567,7 @@ fun FoodDescription(
     var descriptionDisplay by remember {
         mutableStateOf("")
     }
-    val minHeight = 0.9f * description.length
+    val minHeight = 0.6f * description.length
 
     LaunchedEffect(
         key1 = description,
