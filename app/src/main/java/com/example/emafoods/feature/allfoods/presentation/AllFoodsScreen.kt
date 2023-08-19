@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -207,6 +208,7 @@ private fun SearchFoodBar(
                 fontSize = 18.sp
             )
         }
+
         BasicTextField(
             value = searchText,
             onValueChange = onSearchTextChanged,
@@ -221,13 +223,27 @@ private fun SearchFoodBar(
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
         )
 
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = 10.dp)
-        )
+        if (searchText.isNotEmpty()) {
+            Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = "Clear",
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 10.dp)
+                    .clickable {
+                        onSearchTextChanged("")
+                    }
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 10.dp)
+            )
+        }
     }
 }
