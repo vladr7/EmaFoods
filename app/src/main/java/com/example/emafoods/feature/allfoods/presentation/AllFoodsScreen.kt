@@ -80,15 +80,29 @@ fun AllFoodsScreen(
         Spacer(modifier = Modifier.height(16.dp))
         SearchFoodBar(searchText = searchText, onSearchTextChanged = onSearchTextChanged)
         Spacer(modifier = Modifier.height(4.dp))
-        LazyColumn(content = {
-            items(foods.size) { index ->
-                val food = foods[index]
-                FoodItemList(
-                    food = food,
-                )
-            }
-        })
+        if(foods.isEmpty()) {
+            EmptyDescriptionMessage(
+                message = stringResource(id = R.string.no_foods_found),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+        } else {
+            FoodList(foods = foods)
+        }
     }
+}
+
+@Composable
+fun FoodList(foods: List<FoodViewData>) {
+    LazyColumn(content = {
+        items(foods.size) { index ->
+            val food = foods[index]
+            FoodItemList(
+                food = food,
+            )
+        }
+    })
 }
 
 @Composable
@@ -159,7 +173,9 @@ fun FoodItemList(
                     if (food.description.isNotEmpty()) {
                         FoodDescription(description = food.description)
                     } else {
-                        EmptyDescriptionMessage()
+                        EmptyDescriptionMessage(
+                            message = stringResource(id = R.string.no_description_message)
+                        )
                     }
                 }
             }

@@ -273,7 +273,9 @@ fun FoodItem(
             if(food.description.isNotEmpty()) {
                 FoodDescription(description = food.description)
             } else {
-                EmptyDescriptionMessage()
+                EmptyDescriptionMessage(
+                    message = stringResource(id = R.string.for_the_moment_there_are_no_more_pending_foods)
+                )
             }
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -309,9 +311,10 @@ fun FoodTitle(
 @Composable
 fun EmptyDescriptionMessage(
     modifier: Modifier = Modifier,
+    message: String,
 ) {
     Text(
-        text = stringResource(id = R.string.for_the_moment_there_are_no_more_pending_foods),
+        text = message,
         fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
@@ -520,7 +523,7 @@ fun FoodDescription(
     var descriptionDisplay by remember {
         mutableStateOf("")
     }
-    val minHeight = 0.9f * description.length
+    val minHeight = 0.6f * description.length
 
     LaunchedEffect(
         key1 = description,

@@ -76,4 +76,6 @@
     <string name="sign_in_anonymously">Conectează-te anonim</string>
     <string name="new_username">Modifică nume utilizator</string>
     <string name="search_food_hint">Caută rețetă..</string>
+    <string name="no_description_message">Nu există descriere</string>
+    <string name="no_foods_found">Nu s-au găsit rețete ☺️</string>
 </resources>
