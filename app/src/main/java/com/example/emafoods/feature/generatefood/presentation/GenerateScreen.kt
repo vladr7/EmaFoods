@@ -594,12 +594,6 @@ fun BoxScope.CategoryDropDown(
     categoryType: CategoryType,
     visible: Boolean
 ) {
-    val brush = Brush.verticalGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.secondary,
-            Color.Transparent
-        )
-    )
     Column(
         modifier = modifier
             .align(Alignment.TopEnd)

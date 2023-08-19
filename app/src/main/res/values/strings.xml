@@ -78,4 +78,5 @@
     <string name="search_food_hint">Caută rețetă..</string>
     <string name="no_description_message">Nu există descriere</string>
     <string name="no_foods_found">Nu s-au găsit rețete ☺️</string>
+    <string name="all_foods">Toate rețetele</string>
 </resources>
