@@ -36,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,6 +75,10 @@ fun AllFoodsRoute(
     viewModel: AllFoodsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getAllFoods()
+    }
 
     AllFoodsScreen(
         modifier = modifier,
@@ -122,6 +127,16 @@ fun AllFoodsScreen(
                         .bounceClick {
                             dropDownFilterExpanded = !dropDownFilterExpanded
                         }
+                )
+            }
+            if(foods.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.number_of_recipes_found, foods.size),
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 24.dp, top = 2.dp)
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))

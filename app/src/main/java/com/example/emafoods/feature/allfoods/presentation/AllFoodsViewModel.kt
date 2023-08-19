@@ -10,7 +10,7 @@ import com.example.emafoods.feature.allfoods.presentation.models.toFilterCategor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.Normalizer
@@ -27,22 +27,17 @@ class AllFoodsViewModel @Inject constructor(
 
     private var persistedFoods: List<FoodViewData> = emptyList()
 
-    init {
-        getAllFoods()
-    }
-
-    private fun getAllFoods() {
+    fun getAllFoods() {
         viewModelScope.launch {
-            getAllFoodsUseCase.execute().collectLatest { foods ->
-                val mappedFoods = foods.map { food ->
-                    foodMapper.mapToViewData(food)
-                }
-                persistedFoods = mappedFoods.shuffled()
-                _state.update {
-                    it.copy(
-                        foods = mappedFoods.filterFoods(it.searchText, it.filterCategoryType)
-                    )
-                }
+            val foods = getAllFoodsUseCase.execute().first()
+            val mappedFoods = foods.map { food ->
+                foodMapper.mapToViewData(food)
+            }
+            persistedFoods = mappedFoods.shuffled()
+            _state.update {
+                it.copy(
+                    foods = persistedFoods.filterFoods(it.searchText, it.filterCategoryType)
+                )
             }
         }
     }
@@ -52,9 +47,6 @@ class AllFoodsViewModel @Inject constructor(
             it.copy(
                 searchText = searchText,
                 foods = persistedFoods.filterFoods(searchText = searchText, filterCategoryType = it.filterCategoryType)
-                    .filter { food ->
-                        food.categoryType.toFilterCategoryType() == it.filterCategoryType
-                    }
             )
         }
     }
@@ -75,8 +67,6 @@ class AllFoodsViewModel @Inject constructor(
     }
 
     fun onDropDownItemClick(filterCategoryType: FilterCategoryType) {
-        val filteredFoods = persistedFoods.filterFoods(_state.value.searchText, filterCategoryType)
-        println("vlad: filteredFoods: $filteredFoods")
         _state.update {
             it.copy(
                 filterCategoryType = filterCategoryType,
