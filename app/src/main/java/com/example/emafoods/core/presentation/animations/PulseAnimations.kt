@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -17,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
 
@@ -48,7 +48,7 @@ fun Pulsating(
 fun PulsatingCircle(
     modifier: Modifier = Modifier,
     delay: Int = 0,
-    durationMillis: Int = 3000,
+    durationMillis: Int = 1500,
     scale: Float = 0f,
 ) {
     var currentScale by remember { mutableStateOf(scale) }
@@ -65,6 +65,7 @@ fun PulsatingCircle(
             ),
         label = "",
     )
+    val color = MaterialTheme.colorScheme.onSecondary
     SideEffect { targetValue = 1f }
     Canvas(
         modifier = modifier
@@ -72,10 +73,11 @@ fun PulsatingCircle(
             .scale(animationProgress)
     ) {
         drawCircle(
-            color = Color(0f, 0f, 0f, 1 - animationProgress),
+            color = color,
+            alpha = 1 - animationProgress,
             center = center,
             radius = currentScale,
-            style = Stroke(2f)
+            style = Stroke(5f)
         )
     }
 }

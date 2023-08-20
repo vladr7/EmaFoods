@@ -550,6 +550,13 @@ fun FoodImage(
             modifier = Modifier
                 .bounceClick {
                     zoomEnabled = !zoomEnabled
+                    if(!zoomEnabled) {
+                        scale = 1f
+                        offsetX = 0f
+                        offsetY = 0f
+                    } else {
+                        scale = 1.2f
+                    }
                 }
                 .padding(16.dp)
                 .align(Alignment.BottomEnd)

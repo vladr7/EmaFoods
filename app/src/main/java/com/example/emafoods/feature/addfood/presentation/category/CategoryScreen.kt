@@ -126,8 +126,8 @@ fun OpenCategoryButton(
         )
         Pulsating(
             modifier = modifier,
-            pulseFraction = 1.1f,
-            duration = 3000,
+            pulseFraction = 1.2f,
+            duration = 1500,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.restaurantmenu),

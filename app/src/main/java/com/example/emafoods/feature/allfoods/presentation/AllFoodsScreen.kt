@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -47,6 +50,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -67,6 +71,7 @@ import com.example.emafoods.feature.pending.presentation.FoodAuthor
 import com.example.emafoods.feature.pending.presentation.FoodDescription
 import com.example.emafoods.feature.pending.presentation.FoodImage
 import com.example.emafoods.feature.pending.presentation.FoodTitle
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -130,14 +135,7 @@ fun AllFoodsScreen(
                 )
             }
             if(foods.isNotEmpty()) {
-                Text(
-                    text = stringResource(R.string.number_of_recipes_found, foods.size),
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 24.dp, top = 2.dp)
-                )
+                TextNumberOfRecipesFound(numberOfRecipes = foods.size)
             }
             Spacer(modifier = Modifier.height(4.dp))
             if (foods.isEmpty()) {
@@ -173,6 +171,34 @@ fun FoodList(foods: List<FoodViewData>) {
             )
         }
     })
+}
+
+@Composable
+fun ColumnScope.TextNumberOfRecipesFound(
+    numberOfRecipes: Int,
+    modifier: Modifier = Modifier,
+) {
+    val animatedNumber by animateIntAsState(targetValue = numberOfRecipes)
+
+    var scale by remember { mutableStateOf(1f) }
+
+    LaunchedEffect(key1 = numberOfRecipes) {
+        scale = 1.1f
+        delay(300)
+        scale = 1f   
+    }
+
+    val animatedScale by animateFloatAsState(targetValue = scale)
+
+    Text(
+        text = stringResource(R.string.number_of_recipes_found, animatedNumber),
+        fontSize = 16.sp,
+        color = MaterialTheme.colorScheme.onSecondary,
+        modifier = modifier
+            .align(Alignment.Start)
+            .padding(start = 24.dp, top = 2.dp)
+            .graphicsLayer(scaleX = animatedScale, scaleY = animatedScale)
+    )
 }
 
 @Composable
