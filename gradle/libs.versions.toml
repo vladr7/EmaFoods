@@ -1,5 +1,5 @@
 [versions]
-versionName = "1.0.7"
+versionName = "1.0.8"
 versionCode = "1"
 gradlePlugins-agp = "8.0.2"
 kotlin = "1.8.10"
