@@ -32,6 +32,9 @@ import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
@@ -87,7 +90,7 @@ fun AllFoodsRoute(
         viewModel.getAllFoods()
     }
 
-    if(!state.showEditIngredientsContent) {
+    if (!state.showEditIngredientsContent) {
         AllFoodsScreen(
             modifier = modifier,
             foods = state.foods,
@@ -98,7 +101,16 @@ fun AllFoodsRoute(
             onEditClick = {
                 viewModel.onEditIngredients(it)
             },
-            isAdmin = state.isAdmin
+            isAdmin = state.isAdmin,
+            onDescriptionChanged = { description, food ->
+                viewModel.onDescriptionChanged(description, food)
+            },
+            onCancelDescriptionEditClick = {
+                viewModel.onCancelDescriptionEditClick()
+            },
+            onSaveChangesDescriptionClick = {
+                viewModel.onSaveChangesDescriptionClick()
+            },
         )
     } else {
         AnimatedVisibility(
@@ -145,7 +157,10 @@ fun AllFoodsScreen(
     filterCategoryType: FilterCategoryType,
     onDropDownItemClick: (FilterCategoryType) -> Unit,
     onEditClick: (FoodViewData) -> Unit,
-    isAdmin: Boolean
+    isAdmin: Boolean,
+    onDescriptionChanged: (String, FoodViewData) -> Unit,
+    onCancelDescriptionEditClick: () -> Unit,
+    onSaveChangesDescriptionClick: () -> Unit
 ) {
     var dropDownFilterExpanded by remember { mutableStateOf(false) }
 
@@ -191,10 +206,13 @@ fun AllFoodsScreen(
             } else {
                 FoodList(
                     foods = foods,
-                    onEditClick = {
+                    onEditIngredientsClick = {
                         onEditClick(it)
                     },
-                    isAdmin = isAdmin
+                    isAdmin = isAdmin,
+                    onDescriptionChanged = onDescriptionChanged,
+                    onCancelDescriptionEditClick = onCancelDescriptionEditClick,
+                    onSaveChangesDescriptionClick = onSaveChangesDescriptionClick
                 )
             }
         }
@@ -213,18 +231,26 @@ fun AllFoodsScreen(
 @Composable
 fun FoodList(
     foods: List<FoodViewData>,
-    onEditClick: (FoodViewData) -> Unit,
-    isAdmin: Boolean
+    onEditIngredientsClick: (FoodViewData) -> Unit,
+    onDescriptionChanged: (String, FoodViewData) -> Unit,
+    isAdmin: Boolean,
+    onCancelDescriptionEditClick: () -> Unit,
+    onSaveChangesDescriptionClick: () -> Unit
 ) {
     LazyColumn(content = {
         items(foods.size) { index ->
             val food = foods[index]
             FoodItemList(
                 food = food,
-                onEditClick = {
-                    onEditClick(food)
+                onEditIngredientsClick = {
+                    onEditIngredientsClick(food)
                 },
-                isAdmin = isAdmin
+                isAdmin = isAdmin,
+                onDescriptionChanged = {
+                    onDescriptionChanged(it, food)
+                },
+                onCancelDescriptionEditClick = onCancelDescriptionEditClick,
+                onSaveChangesDescriptionClick = onSaveChangesDescriptionClick
             )
         }
     })
@@ -285,14 +311,18 @@ fun FilterIcon(
 fun FoodItemList(
     food: FoodViewData,
     modifier: Modifier = Modifier,
-    onEditClick: () -> Unit,
-    isAdmin: Boolean
+    onEditIngredientsClick: () -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onCancelDescriptionEditClick: () -> Unit,
+    onSaveChangesDescriptionClick: () -> Unit,
+    isAdmin: Boolean,
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
     )
 
     var expanded by remember { mutableStateOf(false) }
+    var isDescriptionEditable by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
@@ -322,11 +352,10 @@ fun FoodItemList(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-
                             IngredientsList(
                                 ingredients = food.ingredients,
                                 onEditClick = {
-                                    onEditClick()
+                                    onEditIngredientsClick()
                                 },
                                 isEditButtonVisible = isAdmin,
                             )
@@ -340,16 +369,45 @@ fun FoodItemList(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start,
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             BasicTitle(
                                 modifier = Modifier,
                                 text = stringResource(id = R.string.description_title)
                             )
+                            if (!isDescriptionEditable) {
+                                EditPencil(
+                                    modifier = Modifier
+                                        .clickable {
+                                            isDescriptionEditable = isDescriptionEditable.not()
+                                        }
+                                        .padding(start = 8.dp, end = 20.dp)
+                                )
+                            } else {
+                                Close(
+                                    modifier = Modifier
+                                        .clickable {
+                                            onCancelDescriptionEditClick()
+                                            isDescriptionEditable = isDescriptionEditable.not()
+                                        }
+                                )
+                                Checkmark(
+                                    modifier = Modifier
+                                        .clickable {
+                                            onSaveChangesDescriptionClick()
+                                            isDescriptionEditable = isDescriptionEditable.not()
+                                        }
+                                        .padding(start = 13.dp, end = 8.dp)
+                                )
+                            }
                         }
                     }
                     if (food.description.isNotEmpty()) {
-                        FoodDescription(description = food.description)
+                        FoodDescription(
+                            description = food.description,
+                            onDescriptionChange = onDescriptionChanged,
+                            isEditable = isDescriptionEditable
+                        )
                     } else {
                         EmptyDescriptionMessage(
                             message = stringResource(id = R.string.no_description_message)
@@ -360,6 +418,45 @@ fun FoodItemList(
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
+}
+
+@Composable
+fun EditPencil(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier
+            .size(32.dp),
+        imageVector = Icons.Filled.Edit,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSecondary
+    )
+}
+
+@Composable
+fun Checkmark(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier
+            .size(32.dp),
+        imageVector = Icons.Filled.Done,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSecondary
+    )
+}
+
+@Composable
+fun Close(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier
+            .size(32.dp),
+        imageVector = Icons.Filled.Close,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSecondary
+    )
 }
 
 @Composable

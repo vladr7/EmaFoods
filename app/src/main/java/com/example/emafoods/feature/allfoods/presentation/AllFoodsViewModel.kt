@@ -40,7 +40,7 @@ class AllFoodsViewModel @Inject constructor(
     val state get() = _state.asStateFlow()
 
     private var persistedFoods: List<FoodViewData> = emptyList()
-    private var currentSelectedFoodForEditingIngredients: FoodViewData? = null
+    private var currentSelectedFoodForEditing: FoodViewData? = null
 
     init {
         viewModelScope.launch {
@@ -170,7 +170,7 @@ class AllFoodsViewModel @Inject constructor(
     }
 
     fun onEditIngredients(food: FoodViewData) {
-        currentSelectedFoodForEditingIngredients = food
+        currentSelectedFoodForEditing = food
         _state.update {
             it.copy(
                 ingredientsList = food.ingredients,
@@ -180,7 +180,7 @@ class AllFoodsViewModel @Inject constructor(
     }
 
     fun onFinishedEditingIngredients() {
-        val updatedFood = currentSelectedFoodForEditingIngredients?.copy(
+        val updatedFood = currentSelectedFoodForEditing?.copy(
             ingredients = _state.value.ingredientsList
         )
         viewModelScope.launch {
@@ -215,6 +215,55 @@ class AllFoodsViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun onDescriptionChanged(newDescription: String, food: FoodViewData) {
+        currentSelectedFoodForEditing = food
+        val updatedFood = food.copy(
+            description = newDescription
+        )
+        _state.update {
+            it.copy(
+                foods = _state.value.foods.map { food ->
+                    if (food.id == updatedFood.id) {
+                        updatedFood
+                    } else {
+                        food
+                    }
+                }
+            )
+        }
+    }
+
+    fun onCancelDescriptionEditClick() {
+        val persistedDescription = persistedFoods.first { food ->
+            food.id == currentSelectedFoodForEditing?.id
+        }.description
+        val persistedFood = currentSelectedFoodForEditing?.copy(
+            description = persistedDescription
+        )
+        _state.update {
+            it.copy(
+                foods = _state.value.foods.map { food ->
+                    if (food.id == persistedFood?.id) {
+                        persistedFood
+                    } else {
+                        food
+                    }
+                }
+            )
+        }
+    }
+
+    fun onSaveChangesDescriptionClick() {
+        val updatedFood = currentSelectedFoodForEditing?.copy(
+            description = _state.value.foods.first { food ->
+                food.id == currentSelectedFoodForEditing?.id
+            }.description
+        )
+        viewModelScope.launch {
+            updateFoodUseCase.execute(foodMapper.mapToModel(updatedFood ?: return@launch))
         }
     }
 }
