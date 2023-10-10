@@ -3,6 +3,7 @@ package com.example.emafoods.feature.allfoods.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
+import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.domain.models.IngredientResult
@@ -30,12 +31,24 @@ class AllFoodsViewModel @Inject constructor(
     private val addIngredientToListUseCase: AddIngredientToListUseCase,
     private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
     private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
+    private val getUserDetailsUseCase: GetUserDetailsUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<AllFoodsState> = MutableStateFlow(AllFoodsState())
     val state get() = _state.asStateFlow()
 
     private var persistedFoods: List<FoodViewData> = emptyList()
+
+    init {
+        viewModelScope.launch {
+            val userDetails = getUserDetailsUseCase.execute()
+            _state.update {
+                it.copy(
+                    isAdmin = userDetails.admin
+                )
+            }
+        }
+    }
 
     fun getAllFoods() {
         viewModelScope.launch {
@@ -195,4 +208,5 @@ data class AllFoodsState(
     val showEditIngredientsContent: Boolean = false,
     val showIngredientAlreadyAddedError: Boolean = false,
     val ingredientsList: List<IngredientViewData> = emptyList(),
+    val isAdmin: Boolean = false
 )

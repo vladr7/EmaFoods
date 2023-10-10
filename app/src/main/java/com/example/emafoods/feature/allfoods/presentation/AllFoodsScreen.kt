@@ -97,7 +97,8 @@ fun AllFoodsRoute(
             onDropDownItemClick = { viewModel.onDropDownItemClick(it) },
             onEditClick = {
                 viewModel.onEditIngredients(it)
-            }
+            },
+            isAdmin = state.isAdmin
         )
     } else {
         AnimatedVisibility(
@@ -143,7 +144,8 @@ fun AllFoodsScreen(
     foods: List<FoodViewData> = emptyList(),
     filterCategoryType: FilterCategoryType,
     onDropDownItemClick: (FilterCategoryType) -> Unit,
-    onEditClick: (FoodViewData) -> Unit
+    onEditClick: (FoodViewData) -> Unit,
+    isAdmin: Boolean
 ) {
     var dropDownFilterExpanded by remember { mutableStateOf(false) }
 
@@ -191,7 +193,8 @@ fun AllFoodsScreen(
                     foods = foods,
                     onEditClick = {
                         onEditClick(it)
-                    }
+                    },
+                    isAdmin = isAdmin
                 )
             }
         }
@@ -210,7 +213,8 @@ fun AllFoodsScreen(
 @Composable
 fun FoodList(
     foods: List<FoodViewData>,
-    onEditClick: (FoodViewData) -> Unit
+    onEditClick: (FoodViewData) -> Unit,
+    isAdmin: Boolean
 ) {
     LazyColumn(content = {
         items(foods.size) { index ->
@@ -219,7 +223,8 @@ fun FoodList(
                 food = food,
                 onEditClick = {
                     onEditClick(food)
-                }
+                },
+                isAdmin = isAdmin
             )
         }
     })
@@ -281,6 +286,7 @@ fun FoodItemList(
     food: FoodViewData,
     modifier: Modifier = Modifier,
     onEditClick: () -> Unit,
+    isAdmin: Boolean
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
@@ -322,7 +328,7 @@ fun FoodItemList(
                                 onEditClick = {
                                     onEditClick()
                                 },
-                                isEditButtonVisible = true,
+                                isEditButtonVisible = isAdmin,
                             )
 //                            FoodAuthor(
 //                                author = food.author,

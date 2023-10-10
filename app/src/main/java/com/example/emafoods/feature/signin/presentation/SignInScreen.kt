@@ -112,9 +112,6 @@ fun SignInRoute(
         viewModel.updateSignInFailedToast(false)
     }
 
-//    if(BuildConfig.DEBUG) {
-//        viewModel.bypassSignInOnDebug()
-//    }
     if (state.signInSuccess) {
         EmaFoodsNavigation(
             isAdmin = state.isAdmin,
