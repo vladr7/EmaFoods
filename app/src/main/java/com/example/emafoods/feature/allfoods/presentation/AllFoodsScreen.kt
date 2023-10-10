@@ -7,6 +7,8 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -64,10 +66,10 @@ import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
+import com.example.emafoods.feature.addfood.presentation.ingredients.IngredientsScreen
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsList
 import com.example.emafoods.feature.allfoods.presentation.models.FilterCategoryType
 import com.example.emafoods.feature.pending.presentation.EmptyDescriptionMessage
-import com.example.emafoods.feature.pending.presentation.FoodAuthor
 import com.example.emafoods.feature.pending.presentation.FoodDescription
 import com.example.emafoods.feature.pending.presentation.FoodImage
 import com.example.emafoods.feature.pending.presentation.FoodTitle
@@ -85,14 +87,52 @@ fun AllFoodsRoute(
         viewModel.getAllFoods()
     }
 
-    AllFoodsScreen(
-        modifier = modifier,
-        foods = state.foods,
-        searchText = state.searchText,
-        onSearchTextChanged = { viewModel.onSearchTextChange(it) },
-        filterCategoryType = state.filterCategoryType,
-        onDropDownItemClick = { viewModel.onDropDownItemClick(it) }
-    )
+    if(!state.showEditIngredientsContent) {
+        AllFoodsScreen(
+            modifier = modifier,
+            foods = state.foods,
+            searchText = state.searchText,
+            onSearchTextChanged = { viewModel.onSearchTextChange(it) },
+            filterCategoryType = state.filterCategoryType,
+            onDropDownItemClick = { viewModel.onDropDownItemClick(it) },
+            onEditClick = {
+                viewModel.onEditIngredients(it)
+            }
+        )
+    } else {
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            IngredientsScreen(
+                onConfirmedClick = {
+                    viewModel.onFinishedEditingIngredients()
+                },
+                ingredients = state.ingredientsList,
+                onAddIngredientToList = {
+                    viewModel.addIngredientToList(it)
+                },
+                onRemoveIngredientFromList = {
+                    viewModel.removeIngredientFromList(it)
+                },
+                onSaveChangesIngredient = {
+                    viewModel.saveChangesIngredient(it)
+                },
+                onShowedIngredientAlreadyAddedError = {
+                    viewModel.onShowedIngredientAlreadyAdded()
+                },
+                showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
+                showStepIndicator = false,
+                onUpdateIngredientFocus = { ingredient, isFocused ->
+                    viewModel.onUpdateIngredientFocus(ingredient, isFocused)
+                },
+                screenTitle = stringResource(id = R.string.edit_ingredients_title),
+                screenTitlePaddingTop = 10,
+                nextStepButtonText = stringResource(R.string.save_changes)
+            )
+        }
+    }
 }
 
 @Composable
@@ -102,7 +142,8 @@ fun AllFoodsScreen(
     onSearchTextChanged: (String) -> Unit,
     foods: List<FoodViewData> = emptyList(),
     filterCategoryType: FilterCategoryType,
-    onDropDownItemClick: (FilterCategoryType) -> Unit
+    onDropDownItemClick: (FilterCategoryType) -> Unit,
+    onEditClick: (FoodViewData) -> Unit
 ) {
     var dropDownFilterExpanded by remember { mutableStateOf(false) }
 
@@ -134,7 +175,7 @@ fun AllFoodsScreen(
                         }
                 )
             }
-            if(foods.isNotEmpty()) {
+            if (foods.isNotEmpty()) {
                 TextNumberOfRecipesFound(numberOfRecipes = foods.size)
             }
             Spacer(modifier = Modifier.height(4.dp))
@@ -146,7 +187,12 @@ fun AllFoodsScreen(
                         .padding(horizontal = 16.dp)
                 )
             } else {
-                FoodList(foods = foods)
+                FoodList(
+                    foods = foods,
+                    onEditClick = {
+                        onEditClick(it)
+                    }
+                )
             }
         }
         DropDownFilter(
@@ -162,12 +208,18 @@ fun AllFoodsScreen(
 }
 
 @Composable
-fun FoodList(foods: List<FoodViewData>) {
+fun FoodList(
+    foods: List<FoodViewData>,
+    onEditClick: (FoodViewData) -> Unit
+) {
     LazyColumn(content = {
         items(foods.size) { index ->
             val food = foods[index]
             FoodItemList(
                 food = food,
+                onEditClick = {
+                    onEditClick(food)
+                }
             )
         }
     })
@@ -185,7 +237,7 @@ fun ColumnScope.TextNumberOfRecipesFound(
     LaunchedEffect(key1 = numberOfRecipes) {
         scale = 1.1f
         delay(300)
-        scale = 1f   
+        scale = 1f
     }
 
     val animatedScale by animateFloatAsState(targetValue = scale)
@@ -228,6 +280,7 @@ fun FilterIcon(
 fun FoodItemList(
     food: FoodViewData,
     modifier: Modifier = Modifier,
+    onEditClick: () -> Unit,
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
@@ -267,15 +320,15 @@ fun FoodItemList(
                             IngredientsList(
                                 ingredients = food.ingredients,
                                 onEditClick = {
-
+                                    onEditClick()
                                 },
-                                isEditButtonVisible = false,
+                                isEditButtonVisible = true,
                             )
-                            FoodAuthor(
-                                author = food.author,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                            )
+//                            FoodAuthor(
+//                                author = food.author,
+//                                modifier = Modifier
+//                                    .align(Alignment.TopEnd)
+//                            )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(

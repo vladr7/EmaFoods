@@ -5,6 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.domain.models.IngredientResult
+import com.example.emafoods.feature.addfood.domain.usecase.AddIngredientToListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
+import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.allfoods.presentation.models.FilterCategoryType
 import com.example.emafoods.feature.allfoods.presentation.models.toFilterCategoryType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +26,10 @@ import javax.inject.Inject
 class AllFoodsViewModel @Inject constructor(
     private val getAllFoodsUseCase: GetAllFoodsUseCase,
     private val foodMapper: FoodMapper,
+    private val updateIngredientFocusUseCase: UpdateIngredientFocusUseCase,
+    private val addIngredientToListUseCase: AddIngredientToListUseCase,
+    private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
+    private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<AllFoodsState> = MutableStateFlow(AllFoodsState())
@@ -46,7 +56,10 @@ class AllFoodsViewModel @Inject constructor(
         _state.update {
             it.copy(
                 searchText = searchText,
-                foods = persistedFoods.filterFoods(searchText = searchText, filterCategoryType = it.filterCategoryType)
+                foods = persistedFoods.filterFoods(
+                    searchText = searchText,
+                    filterCategoryType = it.filterCategoryType
+                )
             )
         }
     }
@@ -56,11 +69,17 @@ class AllFoodsViewModel @Inject constructor(
             .replace("\\p{InCombiningDiacriticalMarks}".toRegex(), "")
     }
 
-    private fun List<FoodViewData>.filterFoods(searchText: String, filterCategoryType: FilterCategoryType): List<FoodViewData> {
+    private fun List<FoodViewData>.filterFoods(
+        searchText: String,
+        filterCategoryType: FilterCategoryType
+    ): List<FoodViewData> {
         val normalizedSearchText = removeDiacritics(searchText)
         return this.filter { food ->
             (removeDiacritics(food.title).contains(normalizedSearchText, ignoreCase = true) ||
-                    removeDiacritics(food.description).contains(normalizedSearchText, ignoreCase = true)) &&
+                    removeDiacritics(food.description).contains(
+                        normalizedSearchText,
+                        ignoreCase = true
+                    )) &&
                     (filterCategoryType == FilterCategoryType.ALL ||
                             food.categoryType.toFilterCategoryType() == filterCategoryType)
         }
@@ -74,10 +93,106 @@ class AllFoodsViewModel @Inject constructor(
             )
         }
     }
+
+    fun addIngredientToList(ingredient: IngredientViewData) {
+        when (val result =
+            addIngredientToListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {
+                _state.update {
+                    it.copy(
+                        showIngredientAlreadyAddedError = true
+                    )
+                }
+            }
+
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun removeIngredientFromList(ingredient: IngredientViewData) {
+        when (val result =
+            removeIngredientFromListUseCase.execute(ingredient, _state.value.ingredientsList)) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun saveChangesIngredient(ingredient: IngredientViewData) {
+        when (val result = saveChangedIngredientFromListUseCase.execute(
+            ingredient,
+            _state.value.ingredientsList
+        )) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
+
+    fun onShowedIngredientAlreadyAdded() {
+        _state.update {
+            it.copy(
+                showIngredientAlreadyAddedError = false
+            )
+        }
+    }
+
+    fun onEditIngredients(food: FoodViewData) {
+        _state.update {
+            it.copy(
+                ingredientsList = food.ingredients,
+                showEditIngredientsContent = true
+            )
+        }
+    }
+
+    fun onFinishedEditingIngredients() {
+        _state.update {
+            it.copy(
+                showEditIngredientsContent = false
+            )
+        }
+    }
+
+    fun onUpdateIngredientFocus(ingredient: IngredientViewData, isFocused: Boolean) {
+        when (val result = updateIngredientFocusUseCase.execute(
+            _state.value.ingredientsList,
+            ingredient,
+            isFocused
+        )) {
+            is IngredientResult.ErrorAlreadyAdded -> {}
+            is IngredientResult.Success -> {
+                _state.update {
+                    it.copy(
+                        ingredientsList = result.data
+                    )
+                }
+            }
+        }
+    }
 }
 
 data class AllFoodsState(
     val foods: List<FoodViewData> = emptyList(),
     val searchText: String = "",
     val filterCategoryType: FilterCategoryType = FilterCategoryType.ALL,
+    val showEditIngredientsContent: Boolean = false,
+    val showIngredientAlreadyAddedError: Boolean = false,
+    val ingredientsList: List<IngredientViewData> = emptyList(),
 )
