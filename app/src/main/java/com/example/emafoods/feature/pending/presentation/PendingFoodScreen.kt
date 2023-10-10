@@ -76,7 +76,7 @@ import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.CategoryTypeRow
-import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
+import com.example.emafoods.feature.addfood.presentation.insert.IngredientsList
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 import kotlinx.coroutines.delay
@@ -245,7 +245,7 @@ fun FoodItem(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    IngredientsReadOnlyContent(
+                    IngredientsList(
                         ingredients = food.ingredients,
                         onEditClick = {
 

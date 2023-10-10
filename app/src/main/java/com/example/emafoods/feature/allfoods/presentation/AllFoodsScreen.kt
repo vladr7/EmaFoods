@@ -64,7 +64,7 @@ import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
-import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
+import com.example.emafoods.feature.addfood.presentation.insert.IngredientsList
 import com.example.emafoods.feature.allfoods.presentation.models.FilterCategoryType
 import com.example.emafoods.feature.pending.presentation.EmptyDescriptionMessage
 import com.example.emafoods.feature.pending.presentation.FoodAuthor
@@ -264,7 +264,7 @@ fun FoodItemList(
                                 .fillMaxWidth()
                         ) {
 
-                            IngredientsReadOnlyContent(
+                            IngredientsList(
                                 ingredients = food.ingredients,
                                 onEditClick = {
 
