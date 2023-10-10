@@ -180,8 +180,22 @@ class AllFoodsViewModel @Inject constructor(
     }
 
     fun onFinishedEditingIngredients() {
+        val updatedFood = currentSelectedFoodForEditingIngredients?.copy(
+            ingredients = _state.value.ingredientsList
+        )
+        viewModelScope.launch {
+            updateFoodUseCase.execute(foodMapper.mapToModel(updatedFood ?: return@launch))
+        }
+        val newFoods = _state.value.foods.map { food ->
+            if (food.id == updatedFood?.id) {
+                updatedFood
+            } else {
+                food
+            }
+        }
         _state.update {
             it.copy(
+                foods = newFoods,
                 showEditIngredientsContent = false
             )
         }
