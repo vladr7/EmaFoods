@@ -12,6 +12,7 @@ import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromL
 import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.UpdateIngredientFocusUseCase
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
+import com.example.emafoods.feature.allfoods.domain.usecase.UpdateFoodUseCase
 import com.example.emafoods.feature.allfoods.presentation.models.FilterCategoryType
 import com.example.emafoods.feature.allfoods.presentation.models.toFilterCategoryType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,13 +32,15 @@ class AllFoodsViewModel @Inject constructor(
     private val addIngredientToListUseCase: AddIngredientToListUseCase,
     private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
     private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
-    private val getUserDetailsUseCase: GetUserDetailsUseCase
+    private val getUserDetailsUseCase: GetUserDetailsUseCase,
+    private val updateFoodUseCase: UpdateFoodUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<AllFoodsState> = MutableStateFlow(AllFoodsState())
     val state get() = _state.asStateFlow()
 
     private var persistedFoods: List<FoodViewData> = emptyList()
+    private var currentSelectedFoodForEditingIngredients: FoodViewData? = null
 
     init {
         viewModelScope.launch {
@@ -167,6 +170,7 @@ class AllFoodsViewModel @Inject constructor(
     }
 
     fun onEditIngredients(food: FoodViewData) {
+        currentSelectedFoodForEditingIngredients = food
         _state.update {
             it.copy(
                 ingredientsList = food.ingredients,
@@ -208,5 +212,5 @@ data class AllFoodsState(
     val showEditIngredientsContent: Boolean = false,
     val showIngredientAlreadyAddedError: Boolean = false,
     val ingredientsList: List<IngredientViewData> = emptyList(),
-    val isAdmin: Boolean = false
+    val isAdmin: Boolean = false,
 )

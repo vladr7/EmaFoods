@@ -38,4 +38,6 @@ interface FoodDataSource {
     suspend fun deletePendingFoodImage(food: Food): State<Food>
 
     suspend fun movePendingImageToAllImages(food: Food): State<Food>
+
+    suspend fun updateFood(food: Food): State<Food>
 }
