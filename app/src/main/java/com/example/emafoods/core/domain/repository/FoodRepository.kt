@@ -32,4 +32,6 @@ interface FoodRepository {
     suspend fun deletePendingFood(food: Food): State<Food>
 
     suspend fun movePendingFoodToAllFoods(food: Food): State<Food>
+
+    suspend fun updateFood(food: Food): State<Food>
 }

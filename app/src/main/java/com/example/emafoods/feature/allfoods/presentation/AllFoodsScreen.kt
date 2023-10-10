@@ -7,6 +7,8 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +32,9 @@ import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
@@ -64,10 +69,10 @@ import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.category.CategoryScreenBackground
-import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
+import com.example.emafoods.feature.addfood.presentation.ingredients.IngredientsScreen
+import com.example.emafoods.feature.addfood.presentation.insert.IngredientsList
 import com.example.emafoods.feature.allfoods.presentation.models.FilterCategoryType
 import com.example.emafoods.feature.pending.presentation.EmptyDescriptionMessage
-import com.example.emafoods.feature.pending.presentation.FoodAuthor
 import com.example.emafoods.feature.pending.presentation.FoodDescription
 import com.example.emafoods.feature.pending.presentation.FoodImage
 import com.example.emafoods.feature.pending.presentation.FoodTitle
@@ -85,14 +90,62 @@ fun AllFoodsRoute(
         viewModel.getAllFoods()
     }
 
-    AllFoodsScreen(
-        modifier = modifier,
-        foods = state.foods,
-        searchText = state.searchText,
-        onSearchTextChanged = { viewModel.onSearchTextChange(it) },
-        filterCategoryType = state.filterCategoryType,
-        onDropDownItemClick = { viewModel.onDropDownItemClick(it) }
-    )
+    if (!state.showEditIngredientsContent) {
+        AllFoodsScreen(
+            modifier = modifier,
+            foods = state.foods,
+            searchText = state.searchText,
+            onSearchTextChanged = { viewModel.onSearchTextChange(it) },
+            filterCategoryType = state.filterCategoryType,
+            onDropDownItemClick = { viewModel.onDropDownItemClick(it) },
+            onEditClick = {
+                viewModel.onEditIngredients(it)
+            },
+            isAdmin = state.isAdmin,
+            onDescriptionChanged = { description, food ->
+                viewModel.onDescriptionChanged(description, food)
+            },
+            onCancelDescriptionEditClick = {
+                viewModel.onCancelDescriptionEditClick()
+            },
+            onSaveChangesDescriptionClick = {
+                viewModel.onSaveChangesDescriptionClick()
+            },
+        )
+    } else {
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            IngredientsScreen(
+                onConfirmedClick = {
+                    viewModel.onFinishedEditingIngredients()
+                },
+                ingredients = state.ingredientsList,
+                onAddIngredientToList = {
+                    viewModel.addIngredientToList(it)
+                },
+                onRemoveIngredientFromList = {
+                    viewModel.removeIngredientFromList(it)
+                },
+                onSaveChangesIngredient = {
+                    viewModel.saveChangesIngredient(it)
+                },
+                onShowedIngredientAlreadyAddedError = {
+                    viewModel.onShowedIngredientAlreadyAdded()
+                },
+                showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
+                showStepIndicator = false,
+                onUpdateIngredientFocus = { ingredient, isFocused ->
+                    viewModel.onUpdateIngredientFocus(ingredient, isFocused)
+                },
+                screenTitle = stringResource(id = R.string.edit_ingredients_title),
+                screenTitlePaddingTop = 10,
+                nextStepButtonText = stringResource(R.string.save_changes)
+            )
+        }
+    }
 }
 
 @Composable
@@ -102,7 +155,12 @@ fun AllFoodsScreen(
     onSearchTextChanged: (String) -> Unit,
     foods: List<FoodViewData> = emptyList(),
     filterCategoryType: FilterCategoryType,
-    onDropDownItemClick: (FilterCategoryType) -> Unit
+    onDropDownItemClick: (FilterCategoryType) -> Unit,
+    onEditClick: (FoodViewData) -> Unit,
+    isAdmin: Boolean,
+    onDescriptionChanged: (String, FoodViewData) -> Unit,
+    onCancelDescriptionEditClick: () -> Unit,
+    onSaveChangesDescriptionClick: () -> Unit
 ) {
     var dropDownFilterExpanded by remember { mutableStateOf(false) }
 
@@ -134,7 +192,7 @@ fun AllFoodsScreen(
                         }
                 )
             }
-            if(foods.isNotEmpty()) {
+            if (foods.isNotEmpty()) {
                 TextNumberOfRecipesFound(numberOfRecipes = foods.size)
             }
             Spacer(modifier = Modifier.height(4.dp))
@@ -146,7 +204,16 @@ fun AllFoodsScreen(
                         .padding(horizontal = 16.dp)
                 )
             } else {
-                FoodList(foods = foods)
+                FoodList(
+                    foods = foods,
+                    onEditIngredientsClick = {
+                        onEditClick(it)
+                    },
+                    isAdmin = isAdmin,
+                    onDescriptionChanged = onDescriptionChanged,
+                    onCancelDescriptionEditClick = onCancelDescriptionEditClick,
+                    onSaveChangesDescriptionClick = onSaveChangesDescriptionClick
+                )
             }
         }
         DropDownFilter(
@@ -162,12 +229,28 @@ fun AllFoodsScreen(
 }
 
 @Composable
-fun FoodList(foods: List<FoodViewData>) {
+fun FoodList(
+    foods: List<FoodViewData>,
+    onEditIngredientsClick: (FoodViewData) -> Unit,
+    onDescriptionChanged: (String, FoodViewData) -> Unit,
+    isAdmin: Boolean,
+    onCancelDescriptionEditClick: () -> Unit,
+    onSaveChangesDescriptionClick: () -> Unit
+) {
     LazyColumn(content = {
         items(foods.size) { index ->
             val food = foods[index]
             FoodItemList(
                 food = food,
+                onEditIngredientsClick = {
+                    onEditIngredientsClick(food)
+                },
+                isAdmin = isAdmin,
+                onDescriptionChanged = {
+                    onDescriptionChanged(it, food)
+                },
+                onCancelDescriptionEditClick = onCancelDescriptionEditClick,
+                onSaveChangesDescriptionClick = onSaveChangesDescriptionClick
             )
         }
     })
@@ -185,7 +268,7 @@ fun ColumnScope.TextNumberOfRecipesFound(
     LaunchedEffect(key1 = numberOfRecipes) {
         scale = 1.1f
         delay(300)
-        scale = 1f   
+        scale = 1f
     }
 
     val animatedScale by animateFloatAsState(targetValue = scale)
@@ -228,12 +311,18 @@ fun FilterIcon(
 fun FoodItemList(
     food: FoodViewData,
     modifier: Modifier = Modifier,
+    onEditIngredientsClick: () -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onCancelDescriptionEditClick: () -> Unit,
+    onSaveChangesDescriptionClick: () -> Unit,
+    isAdmin: Boolean,
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
     )
 
     var expanded by remember { mutableStateOf(false) }
+    var isDescriptionEditable by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
@@ -263,34 +352,62 @@ fun FoodItemList(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-
-                            IngredientsReadOnlyContent(
+                            IngredientsList(
                                 ingredients = food.ingredients,
                                 onEditClick = {
-
+                                    onEditIngredientsClick()
                                 },
-                                isEditButtonVisible = false,
+                                isEditButtonVisible = isAdmin,
                             )
-                            FoodAuthor(
-                                author = food.author,
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                            )
+//                            FoodAuthor(
+//                                author = food.author,
+//                                modifier = Modifier
+//                                    .align(Alignment.TopEnd)
+//                            )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start,
+                            horizontalArrangement = Arrangement.SpaceBetween,
                         ) {
                             BasicTitle(
                                 modifier = Modifier,
                                 text = stringResource(id = R.string.description_title)
                             )
+                            if (!isDescriptionEditable) {
+                                EditPencil(
+                                    modifier = Modifier
+                                        .clickable {
+                                            isDescriptionEditable = isDescriptionEditable.not()
+                                        }
+                                        .padding(start = 8.dp, end = 20.dp)
+                                )
+                            } else {
+                                Close(
+                                    modifier = Modifier
+                                        .clickable {
+                                            onCancelDescriptionEditClick()
+                                            isDescriptionEditable = isDescriptionEditable.not()
+                                        }
+                                )
+                                Checkmark(
+                                    modifier = Modifier
+                                        .clickable {
+                                            onSaveChangesDescriptionClick()
+                                            isDescriptionEditable = isDescriptionEditable.not()
+                                        }
+                                        .padding(start = 13.dp, end = 8.dp)
+                                )
+                            }
                         }
                     }
                     if (food.description.isNotEmpty()) {
-                        FoodDescription(description = food.description)
+                        FoodDescription(
+                            description = food.description,
+                            onDescriptionChange = onDescriptionChanged,
+                            isEditable = isDescriptionEditable
+                        )
                     } else {
                         EmptyDescriptionMessage(
                             message = stringResource(id = R.string.no_description_message)
@@ -301,6 +418,45 @@ fun FoodItemList(
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
+}
+
+@Composable
+fun EditPencil(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier
+            .size(32.dp),
+        imageVector = Icons.Filled.Edit,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSecondary
+    )
+}
+
+@Composable
+fun Checkmark(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier
+            .size(32.dp),
+        imageVector = Icons.Filled.Done,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSecondary
+    )
+}
+
+@Composable
+fun Close(
+    modifier: Modifier = Modifier,
+) {
+    Icon(
+        modifier = modifier
+            .size(32.dp),
+        imageVector = Icons.Filled.Close,
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.onSecondary
+    )
 }
 
 @Composable

@@ -272,7 +272,6 @@ class DefaultFoodDataSource @Inject constructor(
         }
     }
 
-
     override suspend fun addPendingFood(food: Food): State<Food> {
         return try {
             val task = pendingFoodCollection.document(food.id).set(food)
@@ -413,6 +412,26 @@ class DefaultFoodDataSource @Inject constructor(
             }
         } catch (e: Exception) {
             State.Failed("Could not delete food image from temporary storage")
+        }
+    }
+
+    override suspend fun updateFood(food: Food): State<Food> {
+        val categoryType = CategoryType.fromString(food.category)
+        val collection = getCollectionFromCategory(categoryType)
+        return try {
+            val task = collection.document(food.id).set(food)
+            task.await()
+            if (task.isSuccessful) {
+                State.success(food)
+            } else {
+                val message = "Could not update food ${task.exception?.message}"
+                logHelper.reportCrash(Throwable(message))
+                State.Failed(message)
+            }
+        } catch (e: Exception) {
+            val message = "Could not update food ${e.message}"
+            logHelper.reportCrash(Throwable(message))
+            State.Failed(message)
         }
     }
 }

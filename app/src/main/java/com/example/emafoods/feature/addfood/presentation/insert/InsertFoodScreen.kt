@@ -226,7 +226,7 @@ fun InsertFoodScreen(
                 onTitleChange = onTitleChange,
                 title = title
             )
-            IngredientsReadOnlyContent(
+            IngredientsList(
                 modifier = modifier,
                 ingredients = ingredients,
                 onEditClick = onEditIngredientsClick,
@@ -325,7 +325,7 @@ fun DescriptionScreenInput(
 }
 
 @Composable
-fun IngredientsReadOnlyContent(
+fun IngredientsList(
     modifier: Modifier = Modifier,
     ingredients: List<IngredientViewData>,
     onEditClick: () -> Unit,

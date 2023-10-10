@@ -30,6 +30,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -76,7 +77,7 @@ import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.CategoryTypeRow
-import com.example.emafoods.feature.addfood.presentation.insert.IngredientsReadOnlyContent
+import com.example.emafoods.feature.addfood.presentation.insert.IngredientsList
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 import kotlinx.coroutines.delay
@@ -245,7 +246,7 @@ fun FoodItem(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    IngredientsReadOnlyContent(
+                    IngredientsList(
                         ingredients = food.ingredients,
                         onEditClick = {
 
@@ -520,41 +521,66 @@ fun FoodImage(
 @Composable
 fun FoodDescription(
     description: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isEditable: Boolean = false,
+    onDescriptionChange: (String) -> Unit = {},
 ) {
-    var descriptionDisplay by remember {
-        mutableStateOf("")
-    }
-    val minHeight = 0.6f * description.length
-
-    LaunchedEffect(
-        key1 = description,
-    ) {
-        description.forEachIndexed { charIndex, _ ->
-            descriptionDisplay = description
-                .substring(
-                    startIndex = 0,
-                    endIndex = charIndex + 1,
-                )
-            delay(2)
+    if (!isEditable) {
+        var descriptionDisplay by remember {
+            mutableStateOf("")
         }
-    }
+        val minHeight = 0.6f * description.length
 
-    Text(
-        text = descriptionDisplay,
-        fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-        textAlign = TextAlign.Left,
-        color = MaterialTheme.colorScheme.onSecondary,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = minHeight.dp, max = 1500.dp)
-            .verticalScroll(rememberScrollState())
-            .padding(
-                start = 25.dp, end = 20.dp, top = 5.dp, bottom = 10.dp
+        LaunchedEffect(
+            key1 = description,
+        ) {
+            description.forEachIndexed { charIndex, _ ->
+                descriptionDisplay = description
+                    .substring(
+                        startIndex = 0,
+                        endIndex = charIndex + 1,
+                    )
+                delay(2)
+            }
+        }
+
+        Text(
+            text = descriptionDisplay,
+            fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            textAlign = TextAlign.Left,
+            color = MaterialTheme.colorScheme.onSecondary,
+            modifier = modifier
+                .fillMaxWidth()
+                .heightIn(min = minHeight.dp, max = 1500.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(
+                    start = 25.dp, end = 20.dp, top = 5.dp, bottom = 10.dp
+                ),
+        )
+    } else {
+        TextField(
+            value = description,
+            onValueChange = {
+                onDescriptionChange(it)
+            },
+            textStyle = TextStyle(
+                fontFamily = MaterialTheme.typography.titleSmall.fontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Left,
+                color = MaterialTheme.colorScheme.onSecondary,
             ),
-    )
+            modifier = modifier
+                .fillMaxWidth()
+                .heightIn(min = 50.dp, max = 1500.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(
+                    start = 25.dp, end = 20.dp, top = 5.dp, bottom = 10.dp
+                ),
+        )
+    }
 }
 
 @Composable
