@@ -343,7 +343,7 @@ fun FoodItemList(
                     )
                 )
         ) {
-            FoodImage(imageUri = food.imageRef)
+            FoodImage(imageUri = food.imageRef, author = food.author, showFoodAuthor = expanded)
             FoodTitle(text = food.title)
             AnimatedVisibility(visible = expanded) {
                 Column {
@@ -359,11 +359,6 @@ fun FoodItemList(
                                 },
                                 isEditButtonVisible = isAdmin,
                             )
-//                            FoodAuthor(
-//                                author = food.author,
-//                                modifier = Modifier
-//                                    .align(Alignment.TopEnd)
-//                            )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Row(
