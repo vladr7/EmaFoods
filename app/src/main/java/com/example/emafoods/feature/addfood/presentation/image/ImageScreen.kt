@@ -320,7 +320,6 @@ fun TakePictureIcon(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
             if (success) {
-//                onUriRetrieved(uri)
                 imageCropLauncher.launch(CustomCropImageContractOptions.getDefaultOptions(uri))
             }
         }
@@ -347,11 +346,9 @@ fun TakePictureIcon(
 fun imageCropLauncher(onImageCropped: (Uri) -> Unit, onCropError: (Int) -> Unit) =
     rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
-            // use the cropped image
             result.uriContent?.let { onImageCropped(it) }
                 ?: onCropError(1)
         } else {
-            // an error occurred cropping
             onCropError(1)
         }
     }
@@ -362,7 +359,8 @@ object CustomCropImageContractOptions {
         CropImageOptions(
             cropShape = CropImageView.CropShape.RECTANGLE,
             showProgressBar = false,
-            initialCropWindowPaddingRatio = 0.2f
+            initialCropWindowPaddingRatio = 0.2f,
+            fixAspectRatio = true,
         )
     )
 }
