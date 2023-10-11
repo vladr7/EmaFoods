@@ -55,10 +55,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.canhub.cropper.CropImageContract
-import com.canhub.cropper.CropImageContractOptions
-import com.canhub.cropper.CropImageOptions
-import com.canhub.cropper.CropImageView
 import com.example.emafoods.R
 import com.example.emafoods.core.extension.getCompressedImage
 import com.example.emafoods.core.presentation.animations.bounceClick
@@ -278,13 +274,17 @@ fun TitleScreenInput(
 fun AttachFileIcon(
     modifier: Modifier = Modifier,
     onUriRetrieved: (Uri?) -> Unit,
-    tint: Color = MaterialTheme.colorScheme.onSecondary
+    tint: Color = MaterialTheme.colorScheme.onSecondary,
+    context: Context = LocalContext.current
 ) {
-
+    val imageCropLauncher = imageCropLauncher(
+        onImageCropped = { onUriRetrieved(it) },
+        onCropError = { errorId -> Toast.makeText(context, errorId, Toast.LENGTH_SHORT).show() }
+    )
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
-            onUriRetrieved(uri)
+            imageCropLauncher.launch(uri?.let { CustomCropImageContractOptions.getDefaultOptions(it) })
         }
     )
 
@@ -315,7 +315,6 @@ fun TakePictureIcon(
         onImageCropped = { onUriRetrieved(it) },
         onCropError = { errorId -> Toast.makeText(context, errorId, Toast.LENGTH_SHORT).show() }
     )
-
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
@@ -339,29 +338,6 @@ fun TakePictureIcon(
                 cameraLauncher.launch(uri)
             },
         tint = MaterialTheme.colorScheme.onSecondary
-    )
-}
-
-@Composable
-fun imageCropLauncher(onImageCropped: (Uri) -> Unit, onCropError: (Int) -> Unit) =
-    rememberLauncherForActivityResult(CropImageContract()) { result ->
-        if (result.isSuccessful) {
-            result.uriContent?.let { onImageCropped(it) }
-                ?: onCropError(1)
-        } else {
-            onCropError(1)
-        }
-    }
-
-object CustomCropImageContractOptions {
-    fun getDefaultOptions(imageUri: Uri) = CropImageContractOptions(
-        imageUri,
-        CropImageOptions(
-            cropShape = CropImageView.CropShape.RECTANGLE,
-            showProgressBar = false,
-            initialCropWindowPaddingRatio = 0.2f,
-            fixAspectRatio = true,
-        )
     )
 }
 
