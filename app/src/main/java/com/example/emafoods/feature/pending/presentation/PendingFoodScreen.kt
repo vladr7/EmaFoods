@@ -2,6 +2,7 @@ package com.example.emafoods.feature.pending.presentation
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -9,7 +10,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -236,7 +236,7 @@ fun FoodItem(
                     )
                 )
         ) {
-            FoodImage(imageUri = food.imageRef)
+            FoodImage(imageUri = food.imageRef, author = food.author, showFoodAuthor = true)
             if (isCategoryTypeVisible) {
                 CategoryTypeRow(categoryType = food.categoryType)
             }
@@ -252,11 +252,6 @@ fun FoodItem(
 
                         },
                         isEditButtonVisible = false,
-                    )
-                    FoodAuthor(
-                        author = food.author,
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
                     )
                 }
                 Spacer(modifier = Modifier.height(12.dp))
@@ -471,25 +466,30 @@ fun AcceptFood() {
 @Composable
 fun FoodAuthor(
     modifier: Modifier = Modifier,
-    author: String
+    author: String,
+    showFoodAuthor: Boolean,
 ) {
     Row(
         modifier = modifier
-            .clickable { }
             .width(200.dp)
             .padding(
-                start = 25.dp, end = 20.dp,
+                start = 25.dp, end = 20.dp, bottom = 15.dp
             ),
         horizontalArrangement = Arrangement.End
     ) {
-        Text(
-            text = author,
-            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 12.sp,
-            textAlign = TextAlign.End,
-            color = MaterialTheme.colorScheme.onSecondary,
-        )
+        AnimatedVisibility(visible = showFoodAuthor) {
+            Text(
+                text = " $author ",
+                fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 15.sp,
+                textAlign = TextAlign.End,
+                color = MaterialTheme.colorScheme.onSecondary,
+                style = TextStyle(
+                    background = Color.White.copy(alpha = 0.5f)
+                )
+            )
+        }
     }
 }
 
@@ -497,6 +497,8 @@ fun FoodAuthor(
 fun FoodImage(
     modifier: Modifier = Modifier,
     imageUri: String,
+    author: String,
+    showFoodAuthor: Boolean
 ) {
     Box(modifier = modifier) {
         SubcomposeAsyncImage(
@@ -515,6 +517,12 @@ fun FoodImage(
                 LoadingCookingAnimation()
             }
         )
+            FoodAuthor(
+                author = author,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd),
+                showFoodAuthor = showFoodAuthor
+            )
     }
 }
 

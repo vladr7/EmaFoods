@@ -237,9 +237,9 @@ class AllFoodsViewModel @Inject constructor(
     }
 
     fun onCancelDescriptionEditClick() {
-        val persistedDescription = persistedFoods.first { food ->
+        val persistedDescription = persistedFoods.firstOrNull { food ->
             food.id == currentSelectedFoodForEditing?.id
-        }.description
+        }?.description ?: return
         val persistedFood = currentSelectedFoodForEditing?.copy(
             description = persistedDescription
         )
