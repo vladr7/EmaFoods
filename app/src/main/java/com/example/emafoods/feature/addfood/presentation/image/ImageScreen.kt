@@ -274,13 +274,17 @@ fun TitleScreenInput(
 fun AttachFileIcon(
     modifier: Modifier = Modifier,
     onUriRetrieved: (Uri?) -> Unit,
-    tint: Color = MaterialTheme.colorScheme.onSecondary
+    tint: Color = MaterialTheme.colorScheme.onSecondary,
+    context: Context = LocalContext.current
 ) {
-
+    val imageCropLauncher = imageCropLauncher(
+        onImageCropped = { onUriRetrieved(it) },
+        onCropError = { errorId -> Toast.makeText(context, errorId, Toast.LENGTH_SHORT).show() }
+    )
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
-            onUriRetrieved(uri)
+            imageCropLauncher.launch(uri?.let { CustomCropImageContractOptions.getDefaultOptions(it) })
         }
     )
 
@@ -307,14 +311,19 @@ fun TakePictureIcon(
     context: Context = LocalContext.current,
 ) {
     val uri = ComposeFileProvider.getImageUri(context)
+    val imageCropLauncher = imageCropLauncher(
+        onImageCropped = { onUriRetrieved(it) },
+        onCropError = { errorId -> Toast.makeText(context, errorId, Toast.LENGTH_SHORT).show() }
+    )
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
             if (success) {
-                onUriRetrieved(uri)
+                imageCropLauncher.launch(CustomCropImageContractOptions.getDefaultOptions(uri))
             }
         }
     )
+
     Icon(
         imageVector = Icons.Filled.PhotoCamera,
         contentDescription = null,

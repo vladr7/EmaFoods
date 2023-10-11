@@ -704,13 +704,15 @@ fun InsertFoodImage(
             )
     ) {
         SubcomposeAsyncImage(
-            modifier = modifier,
+            modifier = modifier
+                .fillMaxSize()
+                .align(Alignment.Center),
             model = ImageRequest.Builder(context)
                 .data(imageUri)
                 .crossfade(true)
                 .build(),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.FillBounds,
             loading = {
                 LoadingCookingAnimation()
             },

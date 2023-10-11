@@ -512,7 +512,7 @@ fun FoodImage(
                 .crossfade(true)
                 .build(),
             contentDescription = null,
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.FillBounds,
             loading = {
                 LoadingCookingAnimation()
             }

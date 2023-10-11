@@ -113,6 +113,7 @@ dependencies {
     implementation(libs.play.review.ktx)
     implementation(libs.bundles.accompanist)
     implementation(libs.bundles.appupdate)
+    implementation(libs.image.cropper)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.junit)
