@@ -48,6 +48,7 @@ image-compressor = "3.0.1"
 play-review = "2.0.1"
 play-review-ktx = "2.0.1"
 app-update = "2.1.0"
+image-cropper = "4.5.0"
 
 #Tests
 junit = "4.13.2"
@@ -75,6 +76,7 @@ play-review = { module = "com.google.android.play:review", version.ref = "play-r
 play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "play-review-ktx" }
 appupdate = { module = "com.google.android.play:app-update", version.ref = "app-update" }
 appupdate-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "app-update" }
+image-cropper = {module = "com.vanniktech:android-image-cropper", version.ref = "image-cropper"}
 
 #Androidx dependencies;
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
