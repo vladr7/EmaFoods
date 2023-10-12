@@ -236,7 +236,7 @@ fun FoodItem(
                     )
                 )
         ) {
-            FoodImage(imageUri = food.imageRef, author = food.author, showFoodAuthor = true)
+            FoodImage(imageUri = food.imageRef, author = food.author, showFoodAuthor = true, isFoodNew = false)
             if (isCategoryTypeVisible) {
                 CategoryTypeRow(categoryType = food.categoryType)
             }
@@ -498,7 +498,8 @@ fun FoodImage(
     modifier: Modifier = Modifier,
     imageUri: String,
     author: String,
-    showFoodAuthor: Boolean
+    showFoodAuthor: Boolean,
+    isFoodNew: Boolean,
 ) {
     Box(modifier = modifier) {
         SubcomposeAsyncImage(
@@ -517,13 +518,33 @@ fun FoodImage(
                 LoadingCookingAnimation()
             }
         )
-            FoodAuthor(
-                author = author,
+        if(isFoodNew) {
+            NewFoodTag(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd),
-                showFoodAuthor = showFoodAuthor
+                    .align(Alignment.TopEnd)
             )
+        }
+        FoodAuthor(
+            author = author,
+            modifier = Modifier
+                .align(Alignment.BottomEnd),
+            showFoodAuthor = showFoodAuthor
+        )
     }
+}
+
+@Composable
+fun NewFoodTag(
+    modifier: Modifier = Modifier,
+) {
+    Image(
+        painter = painterResource(id = R.drawable.new_icon),
+        contentDescription = null,
+        modifier = modifier
+            .height(70.dp)
+            .width(70.dp)
+            .padding(10.dp)
+    )
 }
 
 @Composable
