@@ -1,6 +1,7 @@
 package com.example.emafoods.core.presentation.models
 
 import com.example.emafoods.core.data.models.Food
+import com.example.emafoods.core.domain.constants.DateConstants
 import com.example.emafoods.core.presentation.models.helper.DataModelMapper
 import com.example.emafoods.core.presentation.models.helper.ViewData
 import com.example.emafoods.feature.addfood.domain.usecase.DeserializeIngredientsUseCase
@@ -18,7 +19,8 @@ data class FoodViewData(
     val imageRef: String = "",
     val categoryType: CategoryType,
     val ingredients: List<IngredientViewData> = emptyList(),
-    val title: String = ""
+    val title: String = "",
+    val isNew: Boolean = false
 ) : ViewData()
 
 class FoodMapper @Inject constructor(
@@ -44,7 +46,7 @@ class FoodMapper @Inject constructor(
             imageRef = imageRef,
             category = category,
             ingredients = ingredients,
-            title = title
+            title = title,
         )
     }
 
@@ -57,6 +59,7 @@ class FoodMapper @Inject constructor(
             .map { ingredientMapper.mapToViewData(it) }
         val categoryType = CategoryType.fromString(model.category)
         val title = model.title
+        val addedDateInSeconds = model.addedDateInSeconds
         return FoodViewData(
             id = id,
             author = author,
@@ -65,7 +68,8 @@ class FoodMapper @Inject constructor(
             imageRef = imageRef,
             categoryType = categoryType,
             ingredients = ingredients,
-            title = title
+            title = title,
+            isNew = addedDateInSeconds * 1000 > System.currentTimeMillis() - 2 * DateConstants.WEEK
         )
     }
 }

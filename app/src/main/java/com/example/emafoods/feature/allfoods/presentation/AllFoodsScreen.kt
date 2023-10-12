@@ -343,7 +343,12 @@ fun FoodItemList(
                     )
                 )
         ) {
-            FoodImage(imageUri = food.imageRef, author = food.author, showFoodAuthor = expanded)
+            FoodImage(
+                imageUri = food.imageRef,
+                author = food.author,
+                showFoodAuthor = expanded,
+                isFoodNew = food.isNew,
+            )
             FoodTitle(text = food.title)
             AnimatedVisibility(visible = expanded) {
                 Column {
