@@ -352,6 +352,7 @@ private fun ProfileUserName(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier
+                .clickable { onUsernameClick() }
                 .padding(start = 4.dp)
                 .graphicsLayer(alpha = 0.99f)
                 .drawWithCache {

@@ -93,8 +93,8 @@ class DefaultFoodDataSource @Inject constructor(
         fileUri: Uri
     ): State<Food> {
         return try {
-            val extension = ".jpg"
             val refStorage = getStorageReference(food)
+            refStorage.delete().await()
             val task = refStorage.putFile(fileUri)
             task.await()
             if (task.isSuccessful) {

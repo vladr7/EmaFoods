@@ -1,12 +1,15 @@
 package com.example.emafoods.feature.allfoods.presentation
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.emafoods.core.domain.usecase.GetAllFoodsUseCase
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
+import com.example.emafoods.core.domain.usecase.RefreshFoodsUseCase
 import com.example.emafoods.core.presentation.models.FoodMapper
 import com.example.emafoods.core.presentation.models.FoodViewData
 import com.example.emafoods.feature.addfood.domain.models.IngredientResult
+import com.example.emafoods.feature.addfood.domain.usecase.AddFoodImageToStorageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddIngredientToListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.RemoveIngredientFromListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.SaveChangedIngredientFromListUseCase
@@ -33,7 +36,9 @@ class AllFoodsViewModel @Inject constructor(
     private val removeIngredientFromListUseCase: RemoveIngredientFromListUseCase,
     private val saveChangedIngredientFromListUseCase: SaveChangedIngredientFromListUseCase,
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
-    private val updateFoodUseCase: UpdateFoodUseCase
+    private val updateFoodUseCase: UpdateFoodUseCase,
+    private val addFoodImageToStorageUseCase: AddFoodImageToStorageUseCase,
+    private val refreshFoodsUseCase: RefreshFoodsUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<AllFoodsState> = MutableStateFlow(AllFoodsState())
@@ -43,6 +48,11 @@ class AllFoodsViewModel @Inject constructor(
     private var currentSelectedFoodForEditing: FoodViewData? = null
 
     init {
+        refreshFoodsFromRepository()
+        checkUserIsAdmin()
+    }
+
+    private fun checkUserIsAdmin() {
         viewModelScope.launch {
             val userDetails = getUserDetailsUseCase.execute()
             _state.update {
@@ -50,6 +60,12 @@ class AllFoodsViewModel @Inject constructor(
                     isAdmin = userDetails.admin
                 )
             }
+        }
+    }
+
+    private fun refreshFoodsFromRepository() {
+        viewModelScope.launch {
+            refreshFoodsUseCase.execute()
         }
     }
 
@@ -264,6 +280,16 @@ class AllFoodsViewModel @Inject constructor(
         )
         viewModelScope.launch {
             updateFoodUseCase.execute(foodMapper.mapToModel(updatedFood ?: return@launch))
+        }
+    }
+
+    fun onAdminChangedImage(uri: Uri?, food: FoodViewData) {
+        viewModelScope.launch {
+            addFoodImageToStorageUseCase.execute(
+                food = foodMapper.mapToModel(food),
+                fileUri = uri ?: return@launch
+            )
+            refreshFoodsFromRepository()
         }
     }
 }
