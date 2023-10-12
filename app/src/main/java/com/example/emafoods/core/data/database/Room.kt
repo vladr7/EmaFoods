@@ -27,6 +27,9 @@ interface FoodDao{
 
     @Query("delete from databasependingfood where id = :id")
     fun deletePendingFood(id: String)
+
+    @Query("delete from databasefood")
+    fun deleteAllFoods()
 }
 
 @Database(entities = [DatabaseFood::class, DatabasePendingFood::class], version = 1)

@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.emafoods.core.domain.network.LogHelper
 import com.example.emafoods.core.domain.repository.FoodRepository
 import com.example.emafoods.core.domain.usecase.GetUserDetailsUseCase
+import com.example.emafoods.feature.addfood.domain.usecase.AddFoodImageToStorageUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToMainListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddFoodToPendingListUseCase
 import com.example.emafoods.feature.addfood.domain.usecase.AddIngredientToListUseCase
@@ -124,5 +125,12 @@ object AddFoodModule {
     @Provides
     fun provideUpdateIngredientFocusUseCase(
     ) = UpdateIngredientFocusUseCase(
+    )
+
+    @Provides
+    fun provideAddFoodImageToStorageUseCase(
+        foodRepository: FoodRepository
+    ) = AddFoodImageToStorageUseCase(
+        foodRepository = foodRepository
     )
 }

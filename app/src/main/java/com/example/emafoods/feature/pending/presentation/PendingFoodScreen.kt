@@ -1,6 +1,7 @@
 package com.example.emafoods.feature.pending.presentation
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -10,6 +11,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
@@ -75,9 +77,12 @@ import com.example.emafoods.core.presentation.animations.LottieAnimationContent
 import com.example.emafoods.core.presentation.animations.bounceClick
 import com.example.emafoods.core.presentation.features.addfood.BasicTitle
 import com.example.emafoods.core.presentation.models.FoodViewData
+import com.example.emafoods.feature.addfood.presentation.image.AttachFileIcon
+import com.example.emafoods.feature.addfood.presentation.image.TakePictureIcon
 import com.example.emafoods.feature.addfood.presentation.ingredients.models.IngredientViewData
 import com.example.emafoods.feature.addfood.presentation.insert.CategoryTypeRow
 import com.example.emafoods.feature.addfood.presentation.insert.IngredientsList
+import com.example.emafoods.feature.allfoods.presentation.EditPencil
 import com.example.emafoods.feature.game.presentation.ScrollArrow
 import com.example.emafoods.feature.generatefood.presentation.LoadingCookingAnimation
 import kotlinx.coroutines.delay
@@ -236,7 +241,12 @@ fun FoodItem(
                     )
                 )
         ) {
-            FoodImage(imageUri = food.imageRef, author = food.author, showFoodAuthor = true, isFoodNew = false)
+            FoodImage(
+                imageUri = food.imageRef,
+                author = food.author,
+                showFoodAuthor = true,
+                isFoodNew = false,
+            )
             if (isCategoryTypeVisible) {
                 CategoryTypeRow(categoryType = food.categoryType)
             }
@@ -500,7 +510,12 @@ fun FoodImage(
     author: String,
     showFoodAuthor: Boolean,
     isFoodNew: Boolean,
-) {
+    showImageEditButton: Boolean = false,
+    onUriRetrieved: (Uri?) -> Unit = {},
+    ) {
+    var showImagePickers by remember { mutableStateOf(false) }
+    var newUriChangedByAdmin by remember { mutableStateOf(Uri.EMPTY) }
+
     Box(modifier = modifier) {
         SubcomposeAsyncImage(
             modifier = Modifier
@@ -509,7 +524,10 @@ fun FoodImage(
                 .padding(10.dp)
                 .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp)),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUri.ifEmpty { R.drawable.radish })
+                .data(
+                    if (newUriChangedByAdmin != Uri.EMPTY) newUriChangedByAdmin else
+                        imageUri.ifEmpty { R.drawable.radish }
+                )
                 .crossfade(true)
                 .build(),
             contentDescription = null,
@@ -518,11 +536,42 @@ fun FoodImage(
                 LoadingCookingAnimation()
             }
         )
-        if(isFoodNew) {
+        if (isFoodNew) {
             NewFoodTag(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
             )
+        }
+        AnimatedVisibility(visible = showImageEditButton && !showImagePickers) {
+            EditPencil(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable {
+                        showImagePickers = true
+                    }
+                    .align(Alignment.BottomStart)
+            )
+        }
+        AnimatedVisibility(visible = showImagePickers) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+            ) {
+                AttachFileIcon(
+                    onUriRetrieved = {
+                        newUriChangedByAdmin = it
+                        onUriRetrieved(it)
+                    },
+                    modifier = Modifier.size(80.dp)
+                )
+                TakePictureIcon(
+                    onUriRetrieved = {
+                        newUriChangedByAdmin = it
+                        onUriRetrieved(it)
+                    },
+                    modifier = Modifier.size(80.dp)
+                )
+            }
         }
         FoodAuthor(
             author = author,

@@ -54,6 +54,7 @@ class DefaultFoodRepository @Inject constructor(
                 }
             }
             if (mutableListOfFoods.isNotEmpty()) {
+                database.foodDao.deleteAllFoods()
                 database.foodDao.insertAll(
                     mutableListOfFoods.toList().asDatabaseModel()
                 )

@@ -1,5 +1,6 @@
 package com.example.emafoods.feature.allfoods.presentation
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
@@ -111,6 +112,9 @@ fun AllFoodsRoute(
             onSaveChangesDescriptionClick = {
                 viewModel.onSaveChangesDescriptionClick()
             },
+            onUriRetrieved = { uri, food ->
+                viewModel.onAdminChangedImage(uri, food)
+            },
         )
     } else {
         AnimatedVisibility(
@@ -160,7 +164,8 @@ fun AllFoodsScreen(
     isAdmin: Boolean,
     onDescriptionChanged: (String, FoodViewData) -> Unit,
     onCancelDescriptionEditClick: () -> Unit,
-    onSaveChangesDescriptionClick: () -> Unit
+    onSaveChangesDescriptionClick: () -> Unit,
+    onUriRetrieved: (Uri?, FoodViewData) -> Unit,
 ) {
     var dropDownFilterExpanded by remember { mutableStateOf(false) }
 
@@ -212,7 +217,8 @@ fun AllFoodsScreen(
                     isAdmin = isAdmin,
                     onDescriptionChanged = onDescriptionChanged,
                     onCancelDescriptionEditClick = onCancelDescriptionEditClick,
-                    onSaveChangesDescriptionClick = onSaveChangesDescriptionClick
+                    onSaveChangesDescriptionClick = onSaveChangesDescriptionClick,
+                    onUriRetrieved = onUriRetrieved
                 )
             }
         }
@@ -235,7 +241,8 @@ fun FoodList(
     onDescriptionChanged: (String, FoodViewData) -> Unit,
     isAdmin: Boolean,
     onCancelDescriptionEditClick: () -> Unit,
-    onSaveChangesDescriptionClick: () -> Unit
+    onSaveChangesDescriptionClick: () -> Unit,
+    onUriRetrieved: (Uri?, FoodViewData) -> Unit,
 ) {
     LazyColumn(content = {
         items(foods.size) { index ->
@@ -250,7 +257,10 @@ fun FoodList(
                     onDescriptionChanged(it, food)
                 },
                 onCancelDescriptionEditClick = onCancelDescriptionEditClick,
-                onSaveChangesDescriptionClick = onSaveChangesDescriptionClick
+                onSaveChangesDescriptionClick = onSaveChangesDescriptionClick,
+                onUriRetrieved = {
+                    onUriRetrieved(it, food)
+                }
             )
         }
     })
@@ -316,6 +326,7 @@ fun FoodItemList(
     onCancelDescriptionEditClick: () -> Unit,
     onSaveChangesDescriptionClick: () -> Unit,
     isAdmin: Boolean,
+    onUriRetrieved: (Uri?) -> Unit,
 ) {
     val color by animateColorAsState(
         targetValue = MaterialTheme.colorScheme.secondary, label = ""
@@ -348,6 +359,8 @@ fun FoodItemList(
                 author = food.author,
                 showFoodAuthor = expanded,
                 isFoodNew = food.isNew,
+                showImageEditButton = isAdmin && expanded,
+                onUriRetrieved = onUriRetrieved,
             )
             FoodTitle(text = food.title)
             AnimatedVisibility(visible = expanded) {

@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -292,7 +291,6 @@ fun AttachFileIcon(
         imageVector = Icons.Filled.AttachFile, contentDescription = null,
         modifier = modifier
             .padding(16.dp)
-            .size(80.dp)
             .bounceClick()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -329,7 +327,6 @@ fun TakePictureIcon(
         contentDescription = null,
         modifier = modifier
             .padding(16.dp)
-            .size(80.dp)
             .bounceClick()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
