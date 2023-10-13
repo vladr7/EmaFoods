@@ -283,7 +283,9 @@ fun AttachFileIcon(
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
-            imageCropLauncher.launch(uri?.let { CustomCropImageContractOptions.getDefaultOptions(it) })
+            uri?.let {
+                imageCropLauncher.launch(CustomCropImageContractOptions.getDefaultOptions(it))
+            }
         }
     )
 

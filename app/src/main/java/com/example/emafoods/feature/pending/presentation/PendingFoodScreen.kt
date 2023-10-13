@@ -550,6 +550,15 @@ fun FoodImage(
                         showImagePickers = true
                     }
                     .align(Alignment.BottomStart)
+                    .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.secondary,
+                                Color.Transparent
+                            ),
+                            radius = 60f
+                        )
+                    )
             )
         }
         AnimatedVisibility(visible = showImagePickers) {
@@ -562,14 +571,31 @@ fun FoodImage(
                         newUriChangedByAdmin = it
                         onUriRetrieved(it)
                     },
-                    modifier = Modifier.size(80.dp)
+                    modifier = Modifier.size(80.dp) .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.secondary,
+                                Color.Transparent
+                            ),
+                            radius = 90f
+                        )
+                    )
+
                 )
                 TakePictureIcon(
                     onUriRetrieved = {
                         newUriChangedByAdmin = it
                         onUriRetrieved(it)
                     },
-                    modifier = Modifier.size(80.dp)
+                    modifier = Modifier.size(80.dp) .background(
+                        brush = Brush.radialGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.secondary,
+                                Color.Transparent
+                            ),
+                            radius = 90f
+                        )
+                    )
                 )
             }
         }
