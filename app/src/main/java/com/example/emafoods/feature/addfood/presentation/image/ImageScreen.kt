@@ -144,7 +144,8 @@ fun ImageScreen(
                     .padding(bottom = 4.dp)
                     .fillMaxWidth(),
             )
-            TitleScreenInput(onTitleChange = onTitleChange, title = title,
+            TitleScreenInput(
+                onTitleChange = onTitleChange, title = title,
                 modifier = modifier
                     .fillMaxWidth()
             )
@@ -274,11 +275,10 @@ fun AttachFileIcon(
     modifier: Modifier = Modifier,
     onUriRetrieved: (Uri?) -> Unit,
     tint: Color = MaterialTheme.colorScheme.onSecondary,
-    context: Context = LocalContext.current
 ) {
     val imageCropLauncher = imageCropLauncher(
         onImageCropped = { onUriRetrieved(it) },
-        onCropError = { errorId -> Toast.makeText(context, errorId, Toast.LENGTH_SHORT).show() }
+        onCropError = {  }
     )
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -313,7 +313,7 @@ fun TakePictureIcon(
     val uri = ComposeFileProvider.getImageUri(context)
     val imageCropLauncher = imageCropLauncher(
         onImageCropped = { onUriRetrieved(it) },
-        onCropError = { errorId -> Toast.makeText(context, errorId, Toast.LENGTH_SHORT).show() }
+        onCropError = {}
     )
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
