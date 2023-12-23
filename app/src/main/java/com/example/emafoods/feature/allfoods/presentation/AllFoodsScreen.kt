@@ -502,7 +502,8 @@ private fun SearchFoodBar(
                 fontSize = 18.sp
             ),
             modifier = Modifier
-                .padding(start = 16.dp, end = 40.dp, top = 12.dp, bottom = 12.dp),
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 12.dp, bottom = 12.dp),
             singleLine = true,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
         )
