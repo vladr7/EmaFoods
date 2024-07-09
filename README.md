@@ -152,6 +152,12 @@ Here i will post some screenshots to ilustrate how the app works.
  
  <img src="https://github.com/vladr7/EmaFoods/blob/main/images/generate3.png" width="320">
 
+ 5. Or just search for a recipe!
+
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/Foculete.png" width="320">
+ 
+ <img src="https://github.com/vladr7/EmaFoods/blob/main/images/SearchScreen.png" width="320">
+
 <!-- CONTRIBUTING -->
 ## Contributing
 
