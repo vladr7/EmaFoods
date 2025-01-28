@@ -97,7 +97,7 @@ class GenerateViewModel @Inject constructor(
             val streaks = consecutiveDaysAppOpenedUseCase.execute()
             _state.update {
                 it.copy(
-                    nrOfFireStreaks = streaks
+                    nrOfFireStreaks = streaks.toInt()
                 )
             }
         }

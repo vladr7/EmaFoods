@@ -21,4 +21,7 @@ interface AuthService {
     suspend fun upgradeBasicUserToAdmin()
     suspend fun updateUserName(userName: String)
     suspend fun getAdminCode(): String
+    suspend fun consecutiveDaysAppOpened(): Long
+    suspend fun updateConsecutiveDaysAppOpened(count: Long)
+    suspend fun resetConsecutiveDaysAppOpened()
 }

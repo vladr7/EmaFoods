@@ -23,6 +23,7 @@ class DefaultAuthService @Inject constructor(
         const val FIRESTORE_USER_AWAITING_REWARDS = "awaitingRewards"
         const val FIRESTORE_SETTINGS_COLLECTION = "SETTINGS"
         const val FIRESTORE_SETTINGS_DOC_ID = "e1CRFkuAb4iLCWSI8aIa"
+        const val FIRESTORE_CONSECUTIVE_DAYS_APP_OPENED = "consecutiveDaysAppOpened"
     }
 
     private val usersCollection = FirebaseFirestore.getInstance()
@@ -198,4 +199,44 @@ class DefaultAuthService @Inject constructor(
             ""
         }
     }
+
+    override suspend fun consecutiveDaysAppOpened(): Long {
+        val uid = firebaseAuth.currentUser?.uid
+        return try {
+            val documentSnapshot = usersCollection.document(uid ?: "").get().await()
+            val consecutiveDays = documentSnapshot.get(FIRESTORE_CONSECUTIVE_DAYS_APP_OPENED)
+            if (consecutiveDays != null) {
+                consecutiveDays as Long
+            } else {
+                // Initialize the field to a default value (e.g., 0) if it doesn't exist
+                usersCollection.document(uid ?: "").update(FIRESTORE_CONSECUTIVE_DAYS_APP_OPENED, 0).await()
+                0
+            }
+        } catch (e: Exception) {
+            logHelper.reportCrash(Throwable("DefaultAuthService: consecutiveDaysAppOpened: ${e.localizedMessage}"))
+            -1
+        }
+    }
+
+
+    override suspend fun updateConsecutiveDaysAppOpened(count: Long) {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update(FIRESTORE_CONSECUTIVE_DAYS_APP_OPENED, count)
+        } catch (e: Exception) {
+            logHelper.reportCrash(Throwable("DefaultAuthService: updateConsecutiveDaysAppOpened: ${e.localizedMessage}"))
+        }
+    }
+
+    override suspend fun resetConsecutiveDaysAppOpened() {
+        val uid = firebaseAuth.currentUser?.uid
+        try {
+            usersCollection.document(uid ?: "")
+                .update(FIRESTORE_CONSECUTIVE_DAYS_APP_OPENED, 0)
+        } catch (e: Exception) {
+            logHelper.reportCrash(Throwable("DefaultAuthService: resetConsecutiveDaysAppOpened: ${e.localizedMessage}"))
+        }
+    }
+
 }

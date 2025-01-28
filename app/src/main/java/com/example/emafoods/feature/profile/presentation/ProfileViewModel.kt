@@ -67,7 +67,7 @@ class ProfileViewModel @Inject constructor(
             val streaks = consecutiveDaysAppOpenedUseCase.execute()
             _state.update {
                 it.copy(
-                    streaks = streaks
+                    streaks = streaks.toInt()
                 )
             }
         }

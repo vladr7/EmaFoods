@@ -18,5 +18,7 @@ data class UserData(
     @SerialName("userLevel")
     val userLevel: String = UserLevel.LEVEL_1.string,
     @SerialName("admin")
-    val admin: Boolean = false
+    val admin: Boolean = false,
+    @SerialName("consecutiveDaysAppOpened")
+    val consecutiveDaysAppOpened: Int = 0
 )

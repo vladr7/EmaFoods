@@ -7,7 +7,7 @@ class GetConsecutiveDaysAppOpenedUseCase @Inject constructor(
     private val gameRepository: GameRepository
 ) {
 
-    suspend fun execute(): Int {
+    suspend fun execute(): Long {
         return gameRepository.consecutiveDaysAppOpened()
     }
 }

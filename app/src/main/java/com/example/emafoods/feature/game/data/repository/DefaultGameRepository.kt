@@ -42,7 +42,7 @@ class DefaultGameRepository @Inject constructor(
         gameDataSource.resetUnspentXp()
     }
 
-    override suspend fun consecutiveDaysAppOpened(): Int {
+    override suspend fun consecutiveDaysAppOpened(): Long {
         return gameDataSource.consecutiveDaysAppOpened()
     }
 

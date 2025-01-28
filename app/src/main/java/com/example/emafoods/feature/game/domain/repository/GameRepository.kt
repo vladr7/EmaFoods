@@ -15,7 +15,7 @@ interface GameRepository {
     suspend fun storeXpToUnspent(xp: Long)
     suspend fun unspentUserXP(): Long
     suspend fun resetUnspentXp()
-    suspend fun consecutiveDaysAppOpened(): Int
+    suspend fun consecutiveDaysAppOpened(): Long
     suspend fun updateConsecutiveDaysAppOpened()
     suspend fun resetConsecutiveDaysAppOpened()
     suspend fun addRewardToUserAcceptedRecipe(rewardedUserUid: String)
