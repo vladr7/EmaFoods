@@ -26,7 +26,7 @@ android {
     defaultConfig {
         applicationId = "com.riviem.emafoods"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 19
         versionName = libs.versions.versionName.get()
 
