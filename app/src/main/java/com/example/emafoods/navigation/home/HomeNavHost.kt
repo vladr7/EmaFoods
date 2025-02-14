@@ -25,7 +25,7 @@ import com.example.emafoods.feature.profile.presentation.navigation.profileScree
 fun HomeNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    startDestination: String = HomeBottomDestination.GenerateFood.route,
+    startDestination: String = HomeBottomDestination.AllFoods.route,
 ) {
     NavHost(
         navController = navController,
