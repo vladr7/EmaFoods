@@ -301,6 +301,15 @@ class AllFoodsViewModel @Inject constructor(
             refreshFoodsFromRepository()
         }
     }
+
+    fun onRefresh() {
+        viewModelScope.launch {
+            _state.update { it.copy(isRefreshing = true) }
+            refreshFoodsFromRepository()
+            getAllFoods()
+            _state.update { it.copy(isRefreshing = false) }
+        }
+    }
 }
 
 data class AllFoodsState(
@@ -311,4 +320,5 @@ data class AllFoodsState(
     val showIngredientAlreadyAddedError: Boolean = false,
     val ingredientsList: List<IngredientViewData> = emptyList(),
     val isAdmin: Boolean = false,
+    val isRefreshing: Boolean = false // <-- added
 )

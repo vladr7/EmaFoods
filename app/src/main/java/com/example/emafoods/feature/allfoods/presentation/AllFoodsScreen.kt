@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
@@ -38,6 +39,9 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -79,7 +83,7 @@ import com.example.emafoods.feature.pending.presentation.FoodImage
 import com.example.emafoods.feature.pending.presentation.FoodTitle
 import kotlinx.coroutines.delay
 
-
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AllFoodsRoute(
     modifier: Modifier = Modifier,
@@ -87,70 +91,72 @@ fun AllFoodsRoute(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(Unit) {
         viewModel.getAllFoods()
     }
 
-    if (!state.showEditIngredientsContent) {
-        AllFoodsScreen(
-            modifier = modifier,
-            foods = state.foods,
-            searchText = state.searchText,
-            onSearchTextChanged = { viewModel.onSearchTextChange(it) },
-            filterCategoryType = state.filterCategoryType,
-            onDropDownItemClick = { viewModel.onDropDownItemClick(it) },
-            onEditClick = {
-                viewModel.onEditIngredients(it)
-            },
-            isAdmin = state.isAdmin,
-            onDescriptionChanged = { description, food ->
-                viewModel.onDescriptionChanged(description, food)
-            },
-            onCancelDescriptionEditClick = {
-                viewModel.onCancelDescriptionEditClick()
-            },
-            onSaveChangesDescriptionClick = {
-                viewModel.onSaveChangesDescriptionClick()
-            },
-            onUriRetrieved = { uri, food ->
-                viewModel.onAdminChangedImage(uri, food)
-            },
-        )
-    } else {
-        AnimatedVisibility(
-            visible = true,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            IngredientsScreen(
-                onConfirmedClick = {
-                    viewModel.onFinishedEditingIngredients()
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = state.isRefreshing,
+        onRefresh = { viewModel.onRefresh() }
+    )
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .pullRefresh(pullRefreshState)
+    ) {
+        if (!state.showEditIngredientsContent) {
+            AllFoodsScreen(
+                foods = state.foods,
+                searchText = state.searchText,
+                onSearchTextChanged = { viewModel.onSearchTextChange(it) },
+                filterCategoryType = state.filterCategoryType,
+                onDropDownItemClick = { viewModel.onDropDownItemClick(it) },
+                onEditClick = { viewModel.onEditIngredients(it) },
+                isAdmin = state.isAdmin,
+                onDescriptionChanged = { description, food ->
+                    viewModel.onDescriptionChanged(description, food)
                 },
-                ingredients = state.ingredientsList,
-                onAddIngredientToList = {
-                    viewModel.addIngredientToList(it)
+                onCancelDescriptionEditClick = { viewModel.onCancelDescriptionEditClick() },
+                onSaveChangesDescriptionClick = { viewModel.onSaveChangesDescriptionClick() },
+                onUriRetrieved = { uri, food ->
+                    viewModel.onAdminChangedImage(uri, food)
                 },
-                onRemoveIngredientFromList = {
-                    viewModel.removeIngredientFromList(it)
-                },
-                onSaveChangesIngredient = {
-                    viewModel.saveChangesIngredient(it)
-                },
-                onShowedIngredientAlreadyAddedError = {
-                    viewModel.onShowedIngredientAlreadyAdded()
-                },
-                showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
-                showStepIndicator = false,
-                onUpdateIngredientFocus = { ingredient, isFocused ->
-                    viewModel.onUpdateIngredientFocus(ingredient, isFocused)
-                },
-                screenTitle = stringResource(id = R.string.edit_ingredients_title),
-                screenTitlePaddingTop = 10,
-                nextStepButtonText = stringResource(R.string.save_changes)
             )
+        } else {
+            AnimatedVisibility(
+                visible = true,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                IngredientsScreen(
+                    onConfirmedClick = { viewModel.onFinishedEditingIngredients() },
+                    ingredients = state.ingredientsList,
+                    onAddIngredientToList = { viewModel.addIngredientToList(it) },
+                    onRemoveIngredientFromList = { viewModel.removeIngredientFromList(it) },
+                    onSaveChangesIngredient = { viewModel.saveChangesIngredient(it) },
+                    onShowedIngredientAlreadyAddedError = { viewModel.onShowedIngredientAlreadyAdded() },
+                    showIngredientAlreadyAddedError = state.showIngredientAlreadyAddedError,
+                    showStepIndicator = false,
+                    onUpdateIngredientFocus = { ingredient, isFocused ->
+                        viewModel.onUpdateIngredientFocus(ingredient, isFocused)
+                    },
+                    screenTitle = stringResource(id = R.string.edit_ingredients_title),
+                    screenTitlePaddingTop = 10,
+                    nextStepButtonText = stringResource(R.string.save_changes)
+                )
+            }
         }
+        // Add the pull-to-refresh indicator at the top center.
+        PullRefreshIndicator(
+            refreshing = state.isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
+
+
 
 @Composable
 fun AllFoodsScreen(
