@@ -131,13 +131,13 @@ class DefaultFoodRepository @Inject constructor(
     }
 
     override suspend fun movePendingFoodToAllFoods(food: Food): State<Food> {
-        val addFoodResult = foodDataSource.addFood(food = food)
-        if (addFoodResult is State.Failed) {
-            return addFoodResult
-        }
         val addImageResult = foodDataSource.movePendingImageToAllImages(food = food)
         if (addImageResult is State.Failed) {
             return addImageResult
+        }
+        val addFoodResult = foodDataSource.addFood(food = food)
+        if (addFoodResult is State.Failed) {
+            return addFoodResult
         }
 
         foodDataSource.deletePendingFood(food = food)
