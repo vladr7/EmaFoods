@@ -27,7 +27,7 @@ android {
         applicationId = "com.riviem.emafoods"
         minSdk = 26
         targetSdk = 34
-        versionCode = 23
+        versionCode = 24
         versionName = libs.versions.versionName.get()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
