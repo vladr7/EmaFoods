@@ -116,6 +116,7 @@ fun PendingFoodRoute(
         showMovedSuccessfully = state.showMovedSuccessfully,
         showDeletedSuccessfully = state.showDeleteSuccessfully,
         ingredientsList = state.currentFood.ingredients,
+        showMovedFailed = state.showMovedFailed,
     )
 }
 
@@ -131,6 +132,7 @@ fun PendingFoodScreen(
     onErrorShown: () -> Unit,
     showMovedSuccessfully: Boolean,
     showDeletedSuccessfully: Boolean,
+    showMovedFailed: Boolean,
     ingredientsList: List<IngredientViewData>,
 ) {
     if (showError) {
@@ -149,6 +151,13 @@ fun PendingFoodScreen(
         Toast.makeText(
             context,
             stringResource(R.string.recipe_has_been_declined), Toast.LENGTH_SHORT
+        ).show()
+        onErrorShown()
+    }
+    if(showMovedFailed) {
+        Toast.makeText(
+            context,
+            stringResource(R.string.recipe_added_failed), Toast.LENGTH_SHORT
         ).show()
         onErrorShown()
     }

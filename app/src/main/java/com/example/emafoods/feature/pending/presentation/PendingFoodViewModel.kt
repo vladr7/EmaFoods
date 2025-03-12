@@ -99,7 +99,11 @@ class PendingFoodViewModel @Inject constructor(
             }
             when (val result =
                 movePendingFoodToAllFoodsUseCase.execute(foodMapper.mapToModel(currentFood))) {
-                is State.Failed -> {}
+                is State.Failed -> {
+                    _state.update {
+                        it.copy(showMovedFailed = true)
+                    }
+                }
 
                 is State.Success -> {
                     addRewardToUserAcceptedRecipeUseCase.execute(foodMapper.mapToModel(currentFood))
@@ -139,4 +143,5 @@ data class PendingFoodState(
     ),
     val showMovedSuccessfully: Boolean = false,
     val showDeleteSuccessfully: Boolean = false,
+    val showMovedFailed: Boolean = false,
 )
