@@ -140,8 +140,8 @@ class DefaultFoodRepository @Inject constructor(
             return addFoodResult
         }
 
-        foodDataSource.deletePendingFood(food = food)
         database.foodDao.deletePendingFood(id = food.id)
+        foodDataSource.deletePendingFood(food = food)
         return addFoodResult
     }
 
