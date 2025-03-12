@@ -18,6 +18,7 @@ import com.example.emafoods.feature.addfood.presentation.ingredients.models.Ingr
 import com.example.emafoods.feature.allfoods.domain.usecase.UpdateFoodUseCase
 import com.example.emafoods.feature.allfoods.presentation.models.FilterCategoryType
 import com.example.emafoods.feature.allfoods.presentation.models.toFilterCategoryType
+import com.example.emafoods.feature.game.domain.usecase.UpdateFireStreaksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,8 +39,9 @@ class AllFoodsViewModel @Inject constructor(
     private val getUserDetailsUseCase: GetUserDetailsUseCase,
     private val updateFoodUseCase: UpdateFoodUseCase,
     private val addFoodImageToStorageUseCase: AddFoodImageToStorageUseCase,
-    private val refreshFoodsUseCase: RefreshFoodsUseCase
-) : ViewModel() {
+    private val refreshFoodsUseCase: RefreshFoodsUseCase,
+    private val updateFireStreaksUseCase: UpdateFireStreaksUseCase,
+    ) : ViewModel() {
 
     private val _state: MutableStateFlow<AllFoodsState> = MutableStateFlow(AllFoodsState())
     val state get() = _state.asStateFlow()
@@ -50,6 +52,13 @@ class AllFoodsViewModel @Inject constructor(
     init {
         refreshFoodsFromRepository()
         checkUserIsAdmin()
+        updateFireStreaks()
+    }
+
+    private fun updateFireStreaks() {
+        viewModelScope.launch {
+            updateFireStreaksUseCase.execute()
+        }
     }
 
     private fun checkUserIsAdmin() {
